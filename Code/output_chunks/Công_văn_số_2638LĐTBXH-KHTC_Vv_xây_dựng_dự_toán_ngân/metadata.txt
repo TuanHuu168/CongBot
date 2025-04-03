@@ -1,0 +1,4 @@
+filename: Công_văn_số_2638LĐTBXH-KHTC_Vv_xây_dựng_dự_toán_ngân.txt
+total_chunks: 4
+method: hybrid
+first_line: Kính gửi: Giám đốc Sở Lao động - Thương binh và Xã hội các tỉnh, thành phố trực thuộc Trung ương

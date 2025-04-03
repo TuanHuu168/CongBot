@@ -1,0 +1,4 @@
+filename: Công_văn_số_5115LĐTBXH-KHTC_vv_thí_điểm_thực_hiện_chi.txt
+total_chunks: 1
+method: hybrid
+first_line: Kính gửi:

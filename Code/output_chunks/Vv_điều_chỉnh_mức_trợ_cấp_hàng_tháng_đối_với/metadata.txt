@@ -1,0 +1,4 @@
+filename: Vv_điều_chỉnh_mức_trợ_cấp_hàng_tháng_đối_với.txt
+total_chunks: 1
+method: hybrid
+first_line: Kính gửi:

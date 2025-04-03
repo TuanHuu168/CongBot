@@ -1,0 +1,4 @@
+filename: Về_chế_độ,_chính_sách_đối_với_đối_tượng_tham.txt
+total_chunks: 11
+method: hybrid
+first_line: VỀ CHẾ ĐỘ, CHÍNH SÁCH ĐỐI VỚI ĐỐI TƯỢNG THAM GIA CHIẾN TRANH BẢO VỆ TỔ QUỐC, LÀM NHIỆM VỤ QUỐC TẾ Ở CĂM-PU-CHI-A, GIÚP BẠN LÀO SAU NGÀY 30 THÁNG 4 NĂM 1975 ĐÃ PHỤC VIÊN, XUẤT NGŨ, THÔI VIỆC

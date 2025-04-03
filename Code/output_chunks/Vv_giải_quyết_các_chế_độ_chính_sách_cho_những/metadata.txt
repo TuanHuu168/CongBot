@@ -1,0 +1,4 @@
+filename: Vv_giải_quyết_các_chế_độ_chính_sách_cho_những.txt
+total_chunks: 1
+method: hybrid
+first_line: Kính gửi:  Ủ y ban nhân dân tỉnh Long An

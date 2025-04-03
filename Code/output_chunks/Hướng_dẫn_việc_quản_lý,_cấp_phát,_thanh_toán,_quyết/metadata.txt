@@ -1,0 +1,4 @@
+filename: Hướng_dẫn_việc_quản_lý,_cấp_phát,_thanh_toán,_quyết.txt
+total_chunks: 7
+method: hybrid
+first_line: HƯỚNG DẪN VIỆC QUẢN LÝ, CẤP PHÁT, THANH TOÁN, QUYẾT TOÁN NGUỒN VỐN HỖ TRỢ NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VỀ NHÀ Ở THEO QUYẾT ĐỊNH SỐ 22/2013/QĐ-TTG NGÀY 26/4/2013 CỦA THỦ TƯỚNG CHÍNH PHỦ VỀ HỖ TRỢ NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VỀ NHÀ Ở

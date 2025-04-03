@@ -1,0 +1,4 @@
+filename: Về_kết_quả_giám_sát_việc_thực_hiện_chính_sách,.txt
+total_chunks: 1
+method: hybrid
+first_line: NGHỊ QUYẾT

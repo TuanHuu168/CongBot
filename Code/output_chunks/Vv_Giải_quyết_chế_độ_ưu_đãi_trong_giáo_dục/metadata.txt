@@ -1,0 +1,4 @@
+filename: Vv_Giải_quyết_chế_độ_ưu_đãi_trong_giáo_dục.txt
+total_chunks: 1
+method: hybrid
+first_line: Kính gửi: Sở Lao động - Thương binh và Xã hội các tỉnh, thành phố trực thuộc trung ương

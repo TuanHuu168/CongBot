@@ -1,0 +1,4 @@
+filename: Nâng_mức_trợ_cấp_đối_với_người_có_công_giúp.txt
+total_chunks: 4
+method: hybrid
+first_line: VỀ NÂNG MỨC TRỢ CẤP ĐỐI VỚI NGƯỜI CÓ CÔNG GIÚP ĐỠ CÁCH MẠNG

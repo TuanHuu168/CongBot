@@ -1,0 +1,4 @@
+filename: Ban_hành_quy_chế_quản_lý_kinh_phí_chi_thực.txt
+total_chunks: 4
+method: hybrid
+first_line: QUYẾT ĐỊNH

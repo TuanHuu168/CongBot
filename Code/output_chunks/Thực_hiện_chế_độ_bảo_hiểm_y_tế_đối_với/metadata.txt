@@ -1,0 +1,4 @@
+filename: Thực_hiện_chế_độ_bảo_hiểm_y_tế_đối_với.txt
+total_chunks: 8
+method: hybrid
+first_line: QUYẾT ĐỊNH

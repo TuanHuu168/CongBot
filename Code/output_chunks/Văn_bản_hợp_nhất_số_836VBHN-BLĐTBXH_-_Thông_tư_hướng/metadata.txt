@@ -1,0 +1,4 @@
+filename: Văn_bản_hợp_nhất_số_836VBHN-BLĐTBXH_-_Thông_tư_hướng.txt
+total_chunks: 8
+method: hybrid
+first_line: HƯỚNG DẪN THỰC HIỆN QUYẾT ĐỊNH SỐ 170/2008/QĐ-TTG NGÀY 18 THÁNG 12 NĂM 2008 CỦA THỦ TƯỚNG CHÍNH PHỦ VỀ CHẾ ĐỘ BẢO HIỂM Y TẾ VÀ TRỢ CẤP MAI TÁNG ĐỐI VỚI THANH NIÊN XUNG PHONG THỜI KỲ KHÁNG CHIẾN CHỐNG PHÁP

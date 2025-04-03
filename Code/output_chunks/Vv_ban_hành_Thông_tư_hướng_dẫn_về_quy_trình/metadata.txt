@@ -1,0 +1,4 @@
+filename: Vv_ban_hành_Thông_tư_hướng_dẫn_về_quy_trình.txt
+total_chunks: 1
+method: hybrid
+first_line: Kính gửi: Bộ Lao động - Thương binh và Xã hội

@@ -1,0 +1,4 @@
+filename: Vv_Hỗ_trợ_người_có_công_với_cách_mạng_về.txt
+total_chunks: 1
+method: hybrid
+first_line: Kính gửi:

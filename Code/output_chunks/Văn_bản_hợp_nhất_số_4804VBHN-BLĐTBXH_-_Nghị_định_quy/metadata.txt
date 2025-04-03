@@ -1,0 +1,4 @@
+filename: Văn_bản_hợp_nhất_số_4804VBHN-BLĐTBXH_-_Nghị_định_quy.txt
+total_chunks: 6
+method: hybrid
+first_line: QUY ĐỊNH MỨC HƯỞNG TRỢ CẤP, PHỤ CẤP VÀ CÁC CHẾ ĐỘ ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG

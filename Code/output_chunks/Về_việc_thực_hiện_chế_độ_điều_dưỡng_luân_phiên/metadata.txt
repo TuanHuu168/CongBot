@@ -1,0 +1,4 @@
+filename: Về_việc_thực_hiện_chế_độ_điều_dưỡng_luân_phiên.txt
+total_chunks: 4
+method: hybrid
+first_line: QUYẾT ĐỊNH

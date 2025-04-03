@@ -1,0 +1,39 @@
+# QUY ĐỊNH CHI TIẾT VÀ BIỆN PHÁP THI HÀNH PHÁP LỆNH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG
+
+a) Nhiệm vụ huấn luyện chiến đấu, diễn tập có tính chất nguy hiểm trong các trường hợp sau: bắn đạn thật, sử dụng thuốc nổ; chữa cháy; chống khủng bố, bạo loạn;  giải thoát con tin; cứu hộ, cứu nạn, ứng cứu thảm họa thiên tai; trong huấn luyện chiến đấu, diễn tập của lực lượng: không quân, hải quân, kiểm ngư, cảnh sát biển, đặc công, trinh sát đặc nhiệm, cảnh sát cơ động, đặc nhiệm.  
+b) Làm nhiệm vụ quốc phòng, an ninh có tính chất nguy hiểm khi: chữa cháy; chống khủng bố, bạo loạn; giải thoát con tin; cứu hộ, cứu nạn, ứng cứu thảm họa thiên tai; thực hiện nhiệm vụ của kiểm ngư, cảnh sát biển; tìm kiếm, quy tập hài cốt liệt sĩ; rà phá, xử lý, tiêu hủy bom mìn, vật liệu nổ; nghiên cứu, chế tạo, sản xuất, thử nghiệm, bảo quản, vận chuyển thuốc phóng, thuốc nổ, vũ khí, đạn dược; xây dựng công trình ngầm quốc phòng, an ninh.  
+4. Địa bàn biên giới, trên biển, hải đảo có điều kiện đặc biệt khó khăn theo quy định tại điểm h khoản 1 Điều 23 Pháp lệnh (sau đây gọi là địa bàn đặc biệt khó khăn) là địa bàn có điều kiện tự nhiên hiểm trở, khắc nghiệt, khó khăn để xảy ra tai nạn, bao gồm các địa bàn theo Phụ lục IV Nghị định này.  
+5. Trực tiếp làm nhiệm vụ đấu tranh chống tội phạm quy định tại điểm i khoản 1 Điều 23 Pháp lệnh là trực tiếp thực thi nhiệm vụ theo yêu cầu của cơ quan có thẩm quyền giao nhằm điều tra, phát hiện, ngăn chặn, bắt giữ đối tượng phạm tội hoặc ngăn chặn hành vi nguy hiểm cho xã hội thuộc các tội được quy định trong Bộ luật Hình sự.  
+6. Xem xét công nhận thương binh theo quy định tại điểm k khoản 1 Điều 23 Pháp lệnh bao gồm các yếu tố sau:  
+a) Nhận thức được đầy đủ sự nguy hiểm và tính cấp bách của sự việc.  
+b) Chủ động thực hiện hành vi đặc biệt dũng cảm, chấp nhận hy sinh bản thân.  
+c) Bảo vệ lợi ích quan trọng của Nhà nước, tính mạng và lợi ích hợp pháp của Nhân dân hoặc để ngăn chặn, bắt giữ người có hành vi phạm tội đặc biệt nghiêm trọng.  
+d) Là tấm gương có ý nghĩa tôn vinh, giáo dục, lan tỏa rộng rãi trong xã hội, được tặng thưởng Huân chương và được cơ quan quản lý nhà nước về người có công tổ chức phát động học tập tấm gương trong phạm vi cả nước.  
+7. Các trường hợp khác thực hiện theo quy định tại các điểm c, d, đ, e khoản 1 Điều 23 Pháp lệnh.  
+Điều 35. Trách nhiệm lập hồ sơ đề nghị công nhận thương binh  
+Cơ quan, tổ chức, đơn vị trực tiếp quản lý người bị thương có trách nhiệm lập hồ sơ đề nghị công nhận thương binh.  
+Điều 36. Thẩm quyền cấp giấy chứng nhận bị thương  
+Cơ quan, đơn vị quản lý cá nhân tại thời điểm bị thương có thẩm quyền cấp giấy chứng nhận bị thương như sau:  
+1. Người khi bị thương là sĩ quan, quân nhân chuyên nghiệp, hạ sĩ quan, binh sĩ, công chức quốc phòng, công nhân và viên chức quốc phòng do thủ trưởng trung đoàn hoặc cấp tương đương trở lên; người bị thương là người làm công tác cơ yếu, người làm công tác khác trong tổ chức cơ yếu và học viên cơ yếu thuộc Ban Cơ yếu Chính phủ do thủ trưởng đơn vị trực thuộc ban trở lên.  
+2. Người khi bị thương là sĩ quan, hạ sĩ quan, chiến sĩ, công nhân, lao động hợp đồng không xác định thời hạn hưởng lương từ ngân sách thuộc công an do thủ trưởng đơn vị trực thuộc bộ hoặc Giám đốc Công an cấp tỉnh.  
+3. Người khi bị thương thuộc cơ quan trung ương do Bộ trưởng hoặc cấp tương đương.  
+4. Người khi bị thương thuộc cơ quan cấp tỉnh quản lý do Chủ tịch Ủy ban nhân dân cấp tỉnh.  
+5. Người khi bị thương thuộc cơ quan cấp huyện, cấp xã; thuộc các doanh nghiệp đóng trên địa bàn và các trường hợp không thuộc quy định tại các khoản 1, 2, 3, 4 Điều này do Chủ tịch Ủy ban nhân dân cấp huyện.  
+Điều 37. Các giấy tờ làm căn cứ cấp giấy chứng nhận bị thương và thẩm quyền cấp  
+Người bị thương quy định tại khoản 1 Điều 23 Pháp lệnh phải có bản tóm tắt bệnh án điều trị vết thương của bệnh viện tuyến huyện hoặc trung tâm y tế huyện hoặc tương đương trở lên (bao gồm cả bệnh viện quân đội, công an) kèm một trong các giấy tờ sau:  
+1. Trường hợp bị thương quy định tại điểm a khoản 1 Điều 23 Pháp lệnh phải có giấy xác nhận trường hợp bị thương do các cơ quan, đơn vị đã được quy định tại khoản 1 Điều 17 Nghị định này cấp.  
+2. Trường hợp bị thương quy định tại điểm đ, e, g, i, k khoản 1 Điều 23 của Pháp lệnh thì phải có các giấy tờ theo quy định tương ứng tại các khoản 2, 3, 4, 6, 7 Điều 17 Nghị định này .  
+3. Trường hợp bị thương quy định tại điểm h khoản 1 Điều 23 của Pháp lệnh phải có quyết định phân công nhiệm vụ của cơ quan có thẩm quyền, biên bản xảy ra sự việc kèm theo bản sao được chứng thực từ một trong các giấy tờ có ghi nhận thời gian làm nhiệm vụ quốc phòng, an ninh ở địa bàn đặc biệt khó khăn như sau: lý lịch cán bộ; lý lịch quân nhân; lý lịch đảng viên; hồ sơ bảo hiểm xã hội.  
+4. Trường hợp bị thương trong kháng chiến chống Pháp, kháng chiến chống Mỹ, chiến tranh biên giới phía Bắc, biên giới Tây Nam và làm nghĩa vụ quốc tế tại Lào và Campuchia, truy quét Ful rô quy định tại một trong các khoản a, b, c, d, đ Điều 23 Pháp lệnh thì thực hiện theo hướng dẫn tại Mục 12 Chương II Nghị định này.  
+Điều 38. Thẩm quyền cấp giấy chứng nhận thương binh, giấy chứng nhận người hưởng chính sách như thương binh và quyết định trợ cấp, phụ cấp  
+1. Đối với người khi bị thương thuộc quân đội:  
+a) Tư lệnh hoặc Chính ủy quân khu ban hành quyết định cấp giấy chứng nhận thương binh, giấy chứng nhận người hưởng chính sách như thương binh và trợ cấp, phụ cấp hoặc ban hành quyết định trợ cấp thương tật một lần đối với đối tượng thuộc quyền quản lý và đối tượng đã chuyển ra ngoài quân đội thuộc địa bàn quân khu.  
+b) Cục trưởng Cục Chính sách ban hành quyết định cấp giấy chứng nhận thương binh, giấy chứng nhận người hưởng chính sách như thương binh và trợ cấp, phụ cấp hoặc ban hành quyết định trợ cấp thương tật một lần đối với đối tượng thuộc các cơ quan, đơn vị còn lại và đối tượng đã chuyển ra ngoài quân đội thuộc địa bàn thành phố Hà Nội.  
+2. Đối với người khi bị thương thuộc công an:  
+Cục trưởng Cục Tổ chức cán bộ, Bộ Công an cấp giấy chứng nhận thương binh, giấy chứng nhận người hưởng chính sách như thương binh và trợ cấp, phụ cấp hoặc ban hành quyết định trợ cấp thương tật một lần đối với các trường hợp bị thương khi đang công tác trong Công an.  
+3. Đối với người khi bị thương không thuộc quy định tại khoản 1, khoản 2 Điều này thì Sở Lao động - Thương binh và Xã hội cấp giấy chứng nhận người hưởng chính sách như thương binh và trợ cấp, phụ cấp ưu đãi hoặc ban hành quyết định trợ cấp thương tật một lần.  
+Điều 39. Hồ sơ, thủ tục công nhận thương binh  
+1. Đối với người khi bị thương thuộc quân đội, công an quản lý:  
+a) Bộ Quốc phòng, Bộ Công an hướng dẫn về quy trình công nhận theo quy định, ban hành quyết định cấp giấy chứng nhận thương binh, người hưởng chính sách như thương binh và trợ cấp, phụ cấp ưu đãi theo Mẫu số 59 Phụ lục I  Nghị định này hoặc ban hành quyết định trợ cấp thương tật một lần theo Mẫu số 61 Phụ lục I Nghị định này đối với trường hợp có tỷ lệ tổn thương cơ thể từ 5% đến 20%. Thương binh có tỷ lệ tổn thương cơ thể từ 81% trở lên có vết thương đặc biệt nặng là: cụt hoặc liệt hoàn toàn hai chi trở lên; mù hoàn toàn hai mắt; tâm thần nặng dẫn đến không tự lực được trong sinh hoạt thì được hưởng phụ cấp đặc biệt hằng tháng theo quy định tại điểm d khoản 1 Điều 24 Pháp lệnh.  
+Đồng thời thực hiện việc cấp giấy chứng nhận thương binh theo Mẫu số 102 Phụ lục I Nghị định này và di chuyển hồ sơ đến Sở Lao động - Thương binh và Xã hội nơi người bị thương thường trú đối với trường hợp đã phục viên, xuất ngũ, chuyển ngành, thôi việc, nghỉ hưu.  
+Thời gian xem xét, giải quyết không quá 70 ngày kể từ ngày cơ quan, đơn vị vị trực tiếp quản lý người bị thương xác lập, hoàn thiện các giấy tờ quy định tại Điều 37 Nghị định này .

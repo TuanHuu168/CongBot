@@ -1,0 +1,4 @@
+filename: Về_việc_ban_hành_quy_định_tặng_quà_đối_với.txt
+total_chunks: 4
+method: hybrid
+first_line: QUYẾT ĐỊNH

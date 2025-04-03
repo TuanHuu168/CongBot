@@ -1,0 +1,67 @@
+# QUY ĐỊNH CHI TIẾT VÀ BIỆN PHÁP THI HÀNH PHÁP LỆNH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG
+
+## Chương VI  
+GIÁM ĐỊNH Y KHOA ĐỂ XEM XÉT CÔNG NHẬN, GIẢI QUYẾT CHẾ ĐỘ ƯU ĐÃI ĐỐI VỚI NGƯỜI CÓ CÔNG VÀ THÂN NHÂN CỦA NGƯỜI CÓ CÔNG  
+Mục 1. QUY ĐỊNH TRONG GIÁM ĐỊNH Y KHOA  
+Điều 161. Hoạt động khám giám định y khoa  
+1. Hoạt động khám giám định làm cơ sở để xem xét công nhận, giải quyết chế độ ưu đãi đối với người có công và thân nhân của người có công do Hội đồng giám định y khoa các cấp thực hiện gồm khám giám định lần đầu, khám giám định lại, khám giám định phúc quyết, khám giám định phúc quyết lần cuối.  
+2. Hội đồng giám định y khoa các cấp là Hội đồng chuyên môn về y tế bao gồm các Hội đồng sau:  
+a) Hội đồng giám định y khoa cấp tỉnh.  
+b) Hội đồng giám định y khoa các Bộ: Bộ Quốc phòng, Bộ Công an; Bộ Giao thông vận tải.  
+c) Hội đồng giám định y khoa cấp trung ương bao gồm: Hội đồng giám định y khoa Trung ương I, Hội đồng giám định y khoa Trung ương II, Hội đồng giám định y khoa Trung ương III.  
+d) Hội đồng giám định y khoa phúc quyết lần cuối là Hội đồng cấp cao nhất và cuối cùng về giám định y khoa do Bộ Y tế thành lập.  
+3. Cơ quan thường trực Hội đồng giám định y khoa các cấp gồm:  
+a) Cơ quan thường trực Hội đồng giám định y khoa cấp tỉnh là đơn vị có chức năng chuyên trách về giám định y khoa trực thuộc Sở Y tế do Ủy ban nhân dân các tỉnh, thành phố trực thuộc T rung ương quyết định.  
+b) Cơ quan thường trực Hội đồng giám định y khoa các bộ do Bộ trưởng các bộ quyết định.  
+c) Cơ quan thường trực Hội đồng giám định y khoa cấp trung ương là đơn vị có chức năng chuyên trách về giám định y khoa do Bộ trưởng Bộ Y tế quyết định.  
+d) Cơ quan thường trực Hội đồng giám định y khoa phúc quyết lần cuối là cơ quan thường trực Hội đồng giám định y khoa cấp trung ương đã khám đối với đối tượng.  
+4. Bộ Y tế quy định chi tiết về hoạt động và mối quan hệ công tác của  Hội  đồng Giám định y khoa các cấp.  
+Điều 162. Thẩm quyền khám giám định y khoa  
+1. Hội đồng giám định y khoa cấp tỉnh thực hiện khám giám định lần đầu, khám giám định lại.  
+2. Hội đồng giám định y khoa các bộ thực hiện khám giám định lần đầu, khám giám định lại, khám giám định phúc quyết đối với người khi bị thương, bị bệnh thuộc quân đội, công an quản lý hoặc đang tại ngũ, công tác trong quân đội, công an do Bộ trưởng các bộ quy định.  
+Trường hợp cần thiết cơ quan quản lý đối tượng thuộc Bộ Công an có văn bản đề nghị Hội đồng giám định y khoa các cấp thuộc ngành y tế để khám giám định.  
+3. Hội đồng giám định y khoa cấp trung ương thực hiện khám giám định phúc quyết theo quy định của Bộ Y tế đối với các đối tượng khám giám định.  
+4. Hội đồng khám giám định phúc quyết lần cuối khám giám định theo quy định của Bộ Y tế đối với trường hợp đối tượng khám giám định hoặc đại diện hợp pháp của đối tượng không đồng ý kết quả khám giám định của Hội đồng giám định y khoa cấp trung ương hoặc kết quả khám giám định phúc quyết của Hội đồng giám định y khoa các bộ.  
+Điều 163. Chi phí giám định y khoa  
+1. Cơ quan giới thiệu giám định y khoa có trách nhiệm trả chi phí giám định y khoa cho tổ chức thực hiện giám định theo quy định của pháp luật.  
+2. Phí dịch vụ giám định y khoa theo quy định của Bộ Tài chính.  
+3. Trường hợp Hội đồng giám định y khoa chưa khám giám định do vượt khả năng chuyên môn thì không thu phí giám định y khoa.  
+4. Trường hợp Hội đồng giám định y khoa đã thực hiện khám giám định, họp Hội đồng và kết luận vượt khả năng chuyên môn hoặc trường hợp Hội đồng giám định y khoa đang thực hiện khám giám định nhưng đối tượng bỏ ngang không tiếp tục tham gia quá trình khám giám định thì thu phí giám định những nội dung đã thực hiện.  
+5. Trường hợp khám giám định phúc quyết, khám giám định phúc quyết lần cuối theo đề nghị của đối tượng hoặc người đại diện hợp pháp của đối tượng thì phí giám định y khoa do người đề nghị chi trả.  
+Điều 164. Chính sách của nhà nước đối với hoạt động giám định y khoa  
+1. Nhà nước đầu tư, phát triển hệ thống giám định y khoa để đáp ứng yêu cầu của hoạt động giám định y khoa và tạo điều kiện thuận lợi cho hoạt động giám định y khoa phát triển.  
+2. Nhà nước có chính sách ưu tiên đào tạo, bồi dưỡng chuyên môn, nghiệp vụ kiến thức pháp luật đối với người giám định, có chính sách ưu đãi đối với cán bộ làm công tác giám định y khoa.  
+Mục 2. HỒ SƠ, THỦ TỤC KHÁM GIÁM ĐỊNH  
+Điều 165. Hồ sơ khám giám định do vượt khả năng chuyên môn của Hội đồng giám định y khoa và khám giám định theo đề nghị của cơ quan nhà nước có thẩm quyền  
+1. Hồ sơ khám giám định do vượt khả năng chuyên môn của Hội đồng giám định y khoa  
+a) Văn bản đề nghị khám giám định do vượt khả năng chuyên môn của cơ quan thường trực Hội đồng giám định y khoa kèm hồ sơ đề nghị khám giám định của cơ quan, đơn vị có thẩm quyền.  
+b) Biên bản họp hội chẩn chuyên môn trong trường hợp chưa khám giám định hoặc biên bản giám định y khoa trong trường hợp Hội đồng giám định y khoa đã khám giám định cho đối tượng.  
+2. Hồ sơ khám giám định theo đề nghị của cơ quan nhà nước có thẩm quyền  
+a) Giấy giới thiệu khám giám định theo đề nghị của cơ quan quản lý nhà nước có thẩm quyền quy định tại Mẫu số 38 Phụ lục I  Nghị định này.  
+b) Bản sao các biên bản giám định y khoa (nếu có) hoặc bản sao hồ sơ đang hưởng chế độ  
+Điều 166. Hồ sơ, thủ tục đề nghị khám giám định phúc quyết của đối tượng hoặc người đại diện hợp pháp của đối tượng  
+1. Cá nhân trong thời gian 90 ngày kể từ ngày nhận được Biên bản giám định y khoa nếu không đồng ý phải có đơn đề nghị khám giám định phúc quyết kèm bản sao được chứng thực từ biên bản khám giám định y khoa gửi: Cơ quan thường trực Hội đồng giám định y khoa cấp tỉnh đã khám giám định cho đối tượng hoặc Cơ quan thường trực Hội đồng giám định y khoa các bộ đã khám giám định cho đối tượng. Quá thời gian trên nêu trên, cơ quan thường trực Hội đồng giám định y khoa các cấp và các cơ quan có thẩm quyền không xem xét, giải quyết.  
+2. Cơ quan thường trực Hội đồng giám định y khoa cấp tỉnh trong thời gian 12 ngày kể từ ngày nhận được đơn có văn bản đề nghị khám giám định phúc quyết kèm theo các giấy tờ quy định tại khoản 1 Điều này và hồ sơ đề nghị khám giám định của cơ quan, đơn vị có thẩm quyền gửi cơ quan thường trực Hội đồng giám định y khoa cấp trung ương.  
+3. Cơ quan thường trực và Hội đồng giám định y khoa cấp trung ương trong thời gian 60 ngày kể từ ngày nhận đủ giấy tờ, có trách nhiệm tổ chức khám giám định, ban hành biên bản giám định y khoa theo Mẫu số 78 Phụ lục I  Nghị định này và gửi biên bản giám định y khoa phúc quyết đến cá nhân có đơn đề nghị, cơ quan thường trực Hội đồng giám định y khoa cấp tỉnh và cơ quan thực hiện chế độ ưu đãi để xem xét, giải quyết chế độ. Trường hợp quá thời gian trên chưa ban hành biên bản phải có văn bản thông báo và nêu rõ lý do.  
+4. Cơ quan thường trực và Hội đồng giám định y khoa các bộ thực hiện khám giám định phúc quyết đối với trường hợp người khi bị thương, bị bệnh thuộc quân đội, công an quản lý hoặc đang tại ngũ, công tác trong quân đội, công an. Thời gian xem xét, giải quyết, tổ chức khám giám định, ban hành biên bản giám định y khoa không quá 60 ngày kể từ ngày nhận được đơn đề nghị.  
+Điều 167. Hồ sơ, thủ tục đề nghị khám giám định phúc quyết lần cuối của đối tượng hoặc người đại diện hợp pháp của đối tượng  
+1. Cá nhân trong thời gian 90 ngày kể từ ngày nhận được Biên bản giám định y khoa nếu không đồng ý phải có đơn đề nghị khám giám định phúc quyết lần cuối kèm bản sao được chứng thực từ biên bản khám giám định y khoa gửi: cơ quan thường trực Hội đồng giám định y khoa cấp trung ương đã khám giám định cho đối tượng hoặc cơ quan thường trực Hội đồng giám định y khoa các Bộ đã khám giám định phúc quyết cho đối tượng. Quá thời gian trên nêu trên, cơ quan thường trực Hội đồng giám định y khoa cấp trung ương, các bộ và các cơ quan có thẩm quyền không xem xét, giải quyết.  
+2. Cơ quan thường trực Hội đồng giám định y khoa đã khám cho đối tượng trong thời gian 12 ngày kể từ ngày nhận được đơn có văn bản đề nghị khám giám định phúc quyết lần cuối kèm theo các giấy tờ quy định tại khoản 1 Điều này và hồ sơ đề nghị khám giám định của cơ quan, đơn vị có thẩm quyền gửi Cục Quản lý khám, chữa bệnh, Bộ Y tế.  
+3. Cục Quản lý khám, chữa bệnh, Bộ Y tế trong thời gian 40 ngày kể từ ngày nhận được văn bản đề nghị khám giám định phúc quyết lần cuối báo cáo và trình Bộ trưởng Bộ Y tế thành lập Hội đồng giám định y khoa phúc quyết lần cuối.  
+4. Cơ quan thường trực và Hội đồng giám định y khoa phúc quyết lần cuối trong thời gian 60 ngày kể từ ngày Bộ trưởng Bộ Y tế ban hành quyết định thành lập Hội đồng giám định y khoa phúc quyết lần cuối tổ chức khám giám định, ban hành biên bản giám định y khoa theo Mẫu số 78 Phụ lục I Nghị định này và gửi biên bản giám định y khoa phúc quyết lần cuối đến cá nhân có đơn đề nghị, cơ quan thường trực Hội đồng giám định y khoa cấp tỉnh và cơ quan thực hiện chế độ ưu đãi để xem xét, giải quyết chế độ. Trường hợp chưa ban hành biên bản phải có văn bản thông báo và nêu rõ lý do.  
+5. Cá nhân trong thời gian 90 ngày kể từ ngày nhận được Biên bản giám định y khoa phúc quyết lần cuối, nếu không đồng ý với kết quả khám giám định phúc quyết lần cuối, thực hiện theo quy định tại khoản 2 Điều 80 Luật Khám bệnh, chữa bệnh.  
+Mục 3. NỘI DUNG KHÁM GIÁM ĐỊNH Y KHOA VÀ PHƯƠNG PHÁP TỔNG HỢP TỶ LỆ PHẦN TRĂM TỔN THƯƠNG CƠ THỂ  
+Điều 168. Nội dung khám giám định y khoa  
+1. Đối tượng quy định tại khoản 1 và khoản 2 Điều 39 (khám giám định lần đầu);  Hội đồng giám định y khoa khám giám định tất cả các vết thương ghi trong giấy giới thiệu do cơ quan, đơn vị có thẩm quyền chuyển đến và xác định tỷ lệ phần trăm tổn thương cơ thể.  
+2. Đối với đối tượng quy định tại khoản 1 Điều 40 Nghị định này (khám giám định vết thương tái phát): Hội đồng giám định y khoa khám giám định tất cả các vết thương ghi trong chứng nhận bị thương hoặc trích lục thương tật (bao gồm cả vết thương tái phát) được cơ quan đơn vị có thẩm quyền yêu cầu ghi trong giấy giới thiệu và xác định tỷ lệ phần trăm tổn thương cơ thể.  
+3. Đối với đối tượng quy định tại khoản 2 Điều 40 Nghị định này (khám giám định lại tỷ lệ tổn thương cơ thể tạm thời): Hội đồng giám định y khoa khám giám định tất cả các vết thương ghi trong giấy giới thiệu do cơ quan, đơn vị có thẩm quyền chuyển đến và xác định tỷ lệ phần trăm tổn thương cơ thể.  
+4. Đối với đối tượng quy định tại khoản 3 Điều 39 và khoản 3, khoản 4 Điều 40 Nghị định này (khám giám định vết thương hoặc mảnh kim khí còn sót, bổ sung vết thương): Hội đồng giám định y khoa khám đúng, đủ các vết thương hoặc mảnh kim khí còn sót, bổ sung vết thương ghi trong ghi trong giấy giới thiệu của cơ quan, đơn vị có thẩm quyền chuyển đến và xác định tỷ lệ phần trăm tổn thương cơ thể.  
+5. Đối với đối tượng quy định tại khoản 1 Điều 53 Nghị định này và con đẻ của họ, Hội đồng giám định y khoa khám giám định các bệnh, dị dạng, dị tật được ghi trong giấy giới thiệu của Sở Lao động - Thương binh và Xã hội. Không khám giám định biến chứng của bệnh đái tháo đường type 2.  
+6. Đối với đối tượng quy định tại khoản 4 Điều 121 Nghị định này : Hội đồng giám định y khoa khám giám định tình trạng khuyết tật được ghi trong giấy giới thiệu của Sở Lao động - Thương binh và Xã hội chuyển đến và xác định tỷ lệ phần trăm tổn thương cơ thể.  
+7. Đối với nội dung khám giám định “Sức ép” hoặc “Chấn thương do sóng nổ”:  
+a) Trường hợp giấy giới thiệu ghi “sức ép” hoặc “chấn thương do sóng nổ”, Hội đồng giám định y khoa chỉ khám giám định tổn thương tai, mắt, màng phổi và đánh giá chức năng tại thời điểm hiện tại, xác định tỷ lệ phần trăm tổn thương cơ thể.  
+b) Trường hợp giấy giới thiệu ghi cụ thể cơ quan, bộ phận bị ảnh hưởng bởi sức ép hoặc “chấn thương do sóng nổ” thì Hội đồng giám định y khoa khám giám định thêm tổn thương của cơ quan, bộ phận đó nếu không trùng với nội dung khám quy định tại điểm a khoản này để xác định tỷ lệ phần trăm tổn thương cơ thể.  
+8. Đối với đối tượng khám giám định theo đề nghị của cơ quan quản lý nhà nước có thẩm quyền: Hội đồng giám định y khoa khám giám định tình trạng hiện tại được ghi trong Giấy giới thiệu của Sở Lao động - Thương binh và Xã hội chuyển đến và xác định đúng hoặc chưa đúng với tình trạng được ghi trong hồ sơ hưởng chế độ ưu đãi người có công của đối tượng. Đề nghị khám giám định quy định tại khoản này chỉ áp dụng đối với trường hợp cơ quan quản lý nhà nước có thẩm quyền phát hiện hoặc nghi ngờ hồ sơ hưởng chế độ của đối tượng chưa đúng quy định.  
+9. Đối với đối tượng quy định tại khoản 3 Điều 39 và các khoản 1, 3, 4 Điều 40  Nghị định này khi tổng hợp tỷ lệ phần trăm tổn thương cơ thể thì lấy tỷ lệ phần trăm tổn thương cơ thể của vết thương bổ sung hoặc vết thương còn sót (lấy tỷ lệ phần trăm cao nhất trong khung tỷ lệ tương ứng) cộng với tỷ lệ phần trăm tổn thương cơ thể đã được xác định.  
+10. Trường hợp đối tượng là bệnh binh, nay mắc thêm bệnh có liên quan đến phơi nhiễm với chất độc hóa học theo quy định tại Nghị định này, khi tổng hợp tỷ lệ phần trăm tổn thương cơ thể thì lấy tỷ lệ phần trăm tổn thương cơ thể của bệnh (lấy tỷ lệ phần trăm cao nhất trong khung tỷ lệ tương ứng) cộng với tỷ lệ phần trăm tổn thương cơ thể bệnh binh đã được xác định.  
+10. Phương pháp tổng hợp tỷ lệ tổn thương cơ thể theo quy định của Bộ Y tế.

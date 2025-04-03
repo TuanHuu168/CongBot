@@ -1,0 +1,4 @@
+filename: Quy_định_một_số_chế_độ_đối_với_đối_tượng.txt
+total_chunks: 10
+method: hybrid
+first_line: QUY ĐỊNH MỘT SỐ CHẾ ĐỘ ĐỐI VỚI ĐỐI TƯỢNG THAM GIA CHIẾN TRANH BẢO VỆ TỔ QUỐC, LÀM NHIỆM VỤ QUỐC TẾ Ở CĂM-PU-CHI-A, GIÚP BẠN LÀO SAU NGÀY 30 THÁNG 4 NĂM 1975 CÓ TỪ ĐỦ 20 NĂM TRỞ LÊN PHỤC VỤ TRONG QUÂN ĐỘI, CÔNG AN ĐÃ PHỤC VIÊN, XUẤT NGŨ, THÔI VIỆC

@@ -1,0 +1,4 @@
+filename: Hướng_dẫn_thực_hiện_Quyết_định_số_222013QĐ-TTg_ngày_26.txt
+total_chunks: 4
+method: hybrid
+first_line: QUYẾT ĐỊNH

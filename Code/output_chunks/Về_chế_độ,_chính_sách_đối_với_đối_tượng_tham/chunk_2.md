@@ -1,0 +1,4 @@
+# VỀ CHẾ ĐỘ, CHÍNH SÁCH ĐỐI VỚI ĐỐI TƯỢNG THAM GIA CHIẾN TRANH BẢO VỆ TỔ QUỐC, LÀM NHIỆM VỤ QUỐC TẾ Ở CĂM-PU-CHI-A, GIÚP BẠN LÀO SAU NGÀY 30 THÁNG 4 NĂM 1975 ĐÃ PHỤC VIÊN, XUẤT NGŨ, THÔI VIỆC
+
+## Điều 1. Phạm vi điều chỉnh  
+Quyết định này quy định chế độ trợ cấp hàng tháng, trợ cấp một lần, chế độ bảo hiểm y tế, mai táng phí đối với một số đối tượng trực tiếp tham gia chiến tranh bảo vệ Tổ quốc ở biên giới Tây Nam, biên giới phía Bắc, làm nhiệm vụ quốc tế ở Căm-pu-chi-a, giúp bạn Lào (sau đây gọi chung là đối tượng trực tiếp tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế) sau ngày 30 tháng 4 năm 1975 đã phục viên, xuất ngũ, thôi việc.

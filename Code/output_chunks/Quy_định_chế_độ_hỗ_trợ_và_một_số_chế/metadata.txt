@@ -1,0 +1,4 @@
+filename: Quy_định_chế_độ_hỗ_trợ_và_một_số_chế.txt
+total_chunks: 16
+method: hybrid
+first_line: QUY ĐỊNH CHẾ ĐỘ HỖ TRỢ VÀ MỘT SỐ CHẾ ĐỘ ĐÃI NGỘ KHÁC ĐỐI VỚI NGƯỜI VIỆT NAM CÓ CÔNG VỚI CÁCH MẠNG, NGƯỜI THAM GIA KHÁNG CHIẾN, CHIẾN TRANH BẢO VỆ TỔ QUỐC VÀ LÀM NHIỆM VỤ QUỐC TẾ ĐANG ĐỊNH CƯ Ở NƯỚC NGOÀI

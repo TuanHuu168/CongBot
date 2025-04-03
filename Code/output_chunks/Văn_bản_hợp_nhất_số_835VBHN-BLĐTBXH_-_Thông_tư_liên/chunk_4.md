@@ -1,0 +1,8 @@
+# HƯỚNG DẪN THỰC HIỆN CHẾ ĐỘ TRỢ CẤP ĐỐI VỚI THANH NIÊN XUNG PHONG ĐÃ HOÀN THÀNH NHIỆM VỤ TRONG KHÁNG CHIẾN THEO QUYẾT ĐỊNH SỐ 40/2011/QĐ-TTG NGÀY 27 THÁNG 7 NĂM 2011 CỦA THỦ TƯỚNG CHÍNH PHỦ
+
+## Điều 3. Chế độ trợ cấp hàng tháng  
+1. Đối tượng được xét hưởng chế độ trợ cấp hàng tháng là TNXP tập trung tham gia kháng chiến hoàn thành nhiệm vụ trở về địa phương không còn khả năng lao động và sống cô đơn, không nơi nương tựa.  
+Đối tượng được xét hưởng chế độ trợ cấp hàng tháng thì không hưởng chế độ trợ cấp một lần quy định tại Điều 2 Thông tư này .  
+2. Mức trợ cấp hàng tháng bằng 360.000 đồng 2 . Mức trợ cấp này sẽ được điều chỉnh tương ứng khi Chính phủ điều chỉnh mức trợ cấp hàng tháng đối với đối tượng quy định tại Nghị định số 13/2010/NĐ-CP ngày 27/02/2010 của Chính phủ về sửa đổi, bổ sung một số điều của Nghị định số 67/2007/NĐ-CP ngày 13/4/2007 của Chính phủ về chính sách trợ giúp các đối tượng bảo trợ xã hội.  
+3. Thời điểm hưởng chế độ trợ cấp hàng tháng được thực hiện kể từ ngày Chủ tịch Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương (sau đây gọi là cấp tỉnh) ký Quyết định về giải quyết chế độ trợ cấp hàng tháng đối với TNXP.  
+4. Đối với đối tượng đang hưởng chế độ trợ cấp hàng tháng theo Quyết định số 104/1999/QĐ-TTg ngày 14/4/1999 của Thủ tướng Chính phủ về chế độ đối với TNXP đã hoàn thành nhiệm vụ trong kháng chiến được điều chỉnh để hưởng chế độ trợ cấp hàng tháng theo quy định tại khoản 2 Điều này, kể từ ngày 01/10/2011 (không phải làm lại hồ sơ xét hưởng chế độ trợ cấp).

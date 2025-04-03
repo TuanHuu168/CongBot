@@ -1,0 +1,4 @@
+filename: Văn_bản_hợp_nhất_số_5162VBHN-BLĐTBXH;_Nghị_định_quy_định.txt
+total_chunks: 47
+method: hybrid
+first_line: QUY ĐỊNH CHI TIẾT VÀ BIỆN PHÁP THI HÀNH PHÁP LỆNH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG
