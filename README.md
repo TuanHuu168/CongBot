@@ -4,7 +4,7 @@ Chatbot thông minh tư vấn chính sách người có công ứng dụng công
 
 ## Mô tả dự án
 
-NCC Chatbot là một hệ thống trí tuệ nhân tạo được xây dựng để:
+Chatbot là một hệ thống trí tuệ nhân tạo được xây dựng để:
 
 1. Truy xuất thông tin chính xác từ các văn bản pháp luật về chính sách người có công
 2. Tổng hợp và trình bày thông tin một cách dễ hiểu, phù hợp với người dùng không có chuyên môn pháp lý
