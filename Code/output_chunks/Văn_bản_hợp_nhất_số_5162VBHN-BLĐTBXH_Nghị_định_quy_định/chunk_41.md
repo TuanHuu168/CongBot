@@ -1,9 +1,0 @@
-# QUY ĐỊNH CHI TIẾT VÀ BIỆN PHÁP THI HÀNH PHÁP LỆNH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG
-
-g) Sở Lao động - Thương binh và Xã hội nơi đón nhận hài cốt liệt sĩ trong thời gian 02 ngày làm việc kể từ ngày tiếp nhận được phiếu báo di chuyển và biên bản bàn giao hài cốt liệt sĩ, có trách nhiệm cập nhật thông tin vào cơ sở dữ liệu quốc gia về liệt sĩ; cấp giấy báo tin mộ liệt sĩ theo Mẫu số 103 Phụ lục I Nghị định này.  
-h) Sở Lao động - Thương binh và Xã hội nơi quản lý hồ sơ gốc liệt sĩ trong thời gian 01 ngày làm việc kể từ ngày nhận đủ các giấy tờ theo quy định, có trách nhiệm lưu phiếu báo di chuyển hài cốt liệt sĩ và biên bản bàn giao hài cốt liệt sĩ vào hồ sơ liệt sĩ.  
-2. Trường hợp đã được hỗ trợ:  
-a) Đại diện thân nhân liệt sĩ hoặc người hưởng trợ cấp thờ cúng liệt sĩ thực hiện theo quy định tại điểm a khoản 1 Điều này.  
-b) Sở Lao động - Thương binh và Xã hội nơi quản lý hồ sơ gốc; đại diện thân nhân liệt sĩ hoặc người hưởng trợ cấp thờ cúng liệt sĩ; Phòng Lao động - Thương binh và Xã hội nơi quản lý mộ liệt sĩ; Ủy ban nhân dân cấp xã nơi đón nhận hài cốt liệt sĩ thực hiện theo trách nhiệm được quy định tại các điểm b, c, d, đ khoản 1 Điều này.  
-c) Phòng Lao động - Thương binh và Xã hội nơi đón nhận hài cốt liệt sĩ trong thời gian 01 ngày làm việc kể từ ngày nhận được văn bản báo cáo của Ủy ban nhân dân cấp xã kèm các giấy tờ có văn bản gửi Sở Lao động - Thương binh và Xã hội nơi đón nhận hài cốt liệt sĩ và nơi quản lý hồ sơ gốc liệt sĩ kèm biên bản bàn giao hài cốt liệt sĩ.  
-d) Sở Lao động - Thương binh và Xã hội nơi đón nhận hài cốt liệt sĩ; Sở Lao động - Thương binh và Xã hội nơi quản lý hồ sơ gốc liệt sĩ thực hiện theo trách nhiệm được quy định tại các điểm g, h khoản 1 Điều này.

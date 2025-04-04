@@ -1,4 +1,0 @@
-filename: Quy_định_chế_độ,_chính_sách_đối_với_gia_đình,.txt
-total_chunks: 7
-method: hybrid
-first_line: QUY ĐỊNH CHẾ ĐỘ, CHÍNH SÁCH ĐỐI VỚI GIA ĐÌNH, THÂN NHÂN HẠ SĨ QUAN, CHIẾN SĨ ĐANG PHỤC VỤ CÓ THỜI HẠN TRONG CÔNG AN NHÂN DÂN

@@ -1,4 +1,0 @@
-# QUY ĐỊNH CHẾ ĐỘ HỖ TRỢ VÀ MỘT SỐ CHẾ ĐỘ ĐÃI NGỘ KHÁC ĐỐI VỚI NGƯỜI VIỆT NAM CÓ CÔNG VỚI CÁCH MẠNG, NGƯỜI THAM GIA KHÁNG CHIẾN, CHIẾN TRANH BẢO VỆ TỔ QUỐC VÀ LÀM NHIỆM VỤ QUỐC TẾ ĐANG ĐỊNH CƯ Ở NƯỚC NGOÀI
-
-## Điều 8. Hồ sơ, quy trình, trách nhiệm cấp thẻ bảo hiểm y tế; giải quyết trợ cấp mai táng phí  
-Hồ sơ, quy trình, trách nhiệm cấp thẻ bảo hiểm y tế; giải quyết trợ cấp mai táng phí đối với đối tượng quy định tại khoản 2 Điều 5 Nghị định này , được thực hiện tương tự theo quy định của pháp luật về bảo hi ể m y tế, bảo hiểm xã hội hiện hành đối với người có công với cách mạng, người tham gia kháng chiến, chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế ở trong nước.

@@ -1,4 +1,0 @@
-filename: Quy_định_quản_lý_và_sử_dụng_kinh_phí_thực.txt
-total_chunks: 6
-method: hybrid
-first_line: QUY ĐỊNH QUẢN LÝ VÀ SỬ DỤNG KINH PHÍ THỰC HIỆN DỰ ÁN “GIÚP ĐỠ NẠN NHÂN CHẤT ĐỘC DA CAM CÁC TỈNH KHU VỰC TÂY NGUYÊN VÀ TÂY NINH GIAI ĐOẠN 2011 ĐẾN 2015”

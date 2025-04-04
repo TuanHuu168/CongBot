@@ -1,4 +1,0 @@
-filename: Văn_bản_hợp_nhất_số_5161VBHN-BLĐTBXH;_Thông_tư_hướng_dẫn.txt
-total_chunks: 10
-method: hybrid
-first_line: HƯỚNG DẪN VỀ THỦ TỤC LẬP HỒ SƠ, QUẢN LÝ HỒ SƠ, THỰC HIỆN CHẾ ĐỘ ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VÀ THÂN NHÂN

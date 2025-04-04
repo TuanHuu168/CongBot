@@ -1,6 +1,0 @@
-# QUY ĐỊNH VỀ CHẾ ĐỘ ĐỐI VỚI THANH NIÊN XUNG PHONG ĐÃ HOÀN THÀNH NHIỆM VỤ TRONG KHÁNG CHIẾN
-
-## Điều 3. Chế độ trợ cấp hàng tháng  
-1. Thanh niên xung phong tập trung tham gia kháng chiến hoàn thành nhiệm vụ trở về địa phương không còn khả năng lao động và sống cô đơn, không nơi nương tựa thì được xét trợ cấp hàng tháng mức 360.000 đồng. Mức trợ cấp này sẽ được điều chỉnh tương ứng khi Chính phủ điều chỉnh mức trợ cấp hàng tháng đối với đối tượng quy định tại Nghị định số 13/2010/NĐ-CP ngày 27 tháng 02 năm 2010 của Chính phủ về sửa đổi, bổ sung một số điều của Nghị định số 67/2007/NĐ-CP  ngày 13 tháng 4 năm 2007 của Chính phủ về chính sách trợ giúp các đối tượng bảo trợ xã hội.  
-2. Đối tượng đang hưởng trợ cấp hàng tháng theo Quyết định số 104/1999/QĐ-TTg  ngày 14 tháng 4 năm 1999 của Thủ tướng Chính phủ về một số chính sách đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến được điều chỉnh để hưởng chế độ trợ cấp hàng tháng theo quy định tại Quyết định này.  
-Đối tượng được xét hưởng trợ cấp hàng tháng thì không hưởng chế độ trợ cấp một lần quy định tại Điều 2 Quyết định này.

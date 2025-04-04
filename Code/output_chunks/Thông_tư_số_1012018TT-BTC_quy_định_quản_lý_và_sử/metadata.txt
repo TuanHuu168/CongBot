@@ -1,4 +1,0 @@
-filename: Thông_tư_số_1012018TT-BTC_quy_định_quản_lý_và_sử.txt
-total_chunks: 8
-method: hybrid
-first_line: QUY ĐỊNH QUẢN LÝ VÀ SỬ DỤNG KINH PHÍ THỰC HIỆN CHÍNH SÁCH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VÀ NGƯỜI TRỰC TIẾP THAM GIA KHÁNG CHIẾN DO NGÀNH LAO ĐỘNG - THƯƠNG BINH VÀ XÃ HỘI QUẢN LÝ

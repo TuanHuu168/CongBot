@@ -1,3 +1,0 @@
-# VỀ THỰC HIỆN CHẾ ĐỘ ĐỐI VỚI QUÂN NHÂN THAM GIA KHÁNG CHIẾN CHỐNG MỸ CỨU NƯỚC CÓ DƯỚI 20 NĂM CÔNG TÁC TRONG QUÂN ĐỘI ĐÃ PHỤC VIÊN, XUẤT NGŨ VỀ ĐỊA PHƯƠNG
-
-## Điều 4. Đối tượng quy định tại khoản 1 Điều 2 đã từ trần trước ngày 01 tháng 01 năm 2009, đối tượng quy định tại Điều 3 đã từ trần trước ngày Quyết định này có hiệu lực thi hành (bao gồm cả số từ trần khi tại ngũ) thì một trong những người sau đây: vợ hoặc chồng; bố đẻ, mẹ đẻ; con đẻ, con nuôi hoặc người nuôi dưỡng hợp pháp của người từ trần được hưởng chế độ trợ cấp một lần bằng 3.000.000 đồng.

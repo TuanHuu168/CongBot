@@ -1,4 +1,0 @@
-filename: Vv_trợ_cấp_một_lần_đối_với_người_có_thành.txt
-total_chunks: 1
-method: hybrid
-first_line: Kính gửi:

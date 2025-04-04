@@ -1,4 +1,0 @@
-filename: Về_việc_ban_hành_Quy_định_trình_tự,_thủ_tục.txt
-total_chunks: 5
-method: hybrid
-first_line: QUYẾT ĐỊNH

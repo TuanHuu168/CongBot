@@ -1,4 +1,0 @@
-filename: Hỗ_trợ_người_có_công_với_cách_mạng_về_nhà.txt
-total_chunks: 11
-method: hybrid
-first_line: HỖ TRỢ NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VỀ NHÀ Ở

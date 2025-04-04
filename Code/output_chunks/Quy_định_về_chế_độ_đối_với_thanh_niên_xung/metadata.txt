@@ -1,4 +1,0 @@
-filename: Quy_định_về_chế_độ_đối_với_thanh_niên_xung.txt
-total_chunks: 9
-method: hybrid
-first_line: QUY ĐỊNH VỀ CHẾ ĐỘ ĐỐI VỚI THANH NIÊN XUNG PHONG ĐÃ HOÀN THÀNH NHIỆM VỤ TRONG KHÁNG CHIẾN

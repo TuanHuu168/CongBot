@@ -1,4 +1,0 @@
-filename: Nghị_định_số_752021NĐ-CP_Quy_định_mức_hưởng_trợ_cấp,.txt
-total_chunks: 6
-method: hybrid
-first_line: SỬA ĐỔI, BỔ SUNG MỘT SỐ ĐIỀU CỦA NGHỊ ĐỊNH SỐ 75/2021/NĐ-CP NGÀY 24 THÁNG 7 NĂM 2021 CỦA CHÍNH PHỦ QUY ĐỊNH MỨC HƯỞNG TRỢ CẤP, PHỤ CẤP VÀ CÁC CHẾ ĐỘ ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG

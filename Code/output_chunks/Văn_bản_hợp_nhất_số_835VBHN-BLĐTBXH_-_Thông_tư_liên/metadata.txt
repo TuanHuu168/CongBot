@@ -1,4 +1,0 @@
-filename: Văn_bản_hợp_nhất_số_835VBHN-BLĐTBXH_-_Thông_tư_liên.txt
-total_chunks: 18
-method: hybrid
-first_line: HƯỚNG DẪN THỰC HIỆN CHẾ ĐỘ TRỢ CẤP ĐỐI VỚI THANH NIÊN XUNG PHONG ĐÃ HOÀN THÀNH NHIỆM VỤ TRONG KHÁNG CHIẾN THEO QUYẾT ĐỊNH SỐ 40/2011/QĐ-TTG NGÀY 27 THÁNG 7 NĂM 2011 CỦA THỦ TƯỚNG CHÍNH PHỦ

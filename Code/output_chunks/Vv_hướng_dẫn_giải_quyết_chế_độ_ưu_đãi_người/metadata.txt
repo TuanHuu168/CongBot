@@ -1,4 +1,0 @@
-filename: Vv_hướng_dẫn_giải_quyết_chế_độ_ưu_đãi_người.txt
-total_chunks: 1
-method: hybrid
-first_line: Kính gửi: Sở Lao động - Thương binh và Xã hội các tỉnh, thành phố trực thuộc Trung ương

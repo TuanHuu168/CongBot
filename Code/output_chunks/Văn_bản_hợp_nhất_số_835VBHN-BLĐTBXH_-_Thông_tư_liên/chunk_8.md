@@ -1,8 +1,0 @@
-# HƯỚNG DẪN THỰC HIỆN CHẾ ĐỘ TRỢ CẤP ĐỐI VỚI THANH NIÊN XUNG PHONG ĐÃ HOÀN THÀNH NHIỆM VỤ TRONG KHÁNG CHIẾN THEO QUYẾT ĐỊNH SỐ 40/2011/QĐ-TTG NGÀY 27 THÁNG 7 NĂM 2011 CỦA THỦ TƯỚNG CHÍNH PHỦ
-
-## Điều 7. Tổ chức thực hiện  
-1. Ủy ban nhân dân cấp tỉnh có trách nhiệm bố trí ngân sách địa phương để thực hiện chế độ trợ cấp hàng tháng theo quy định tại Thông tư này; chỉ đạo thực hiện và kiểm tra, giám sát việc thực hiện chế độ trợ cấp đối với TNXP đã hoàn thành nhiệm vụ trong kháng chiến.  
-2. Bộ Lao động - Thương binh và Xã hội: Trong thời gian không quá 05 ngày làm việc kể từ khi nhận được công văn đề nghị bổ sung dự toán kinh phí chi chế độ trợ cấp một lần của địa phương có trách nhiệm bổ sung dự toán để địa phương thực hiện chi trả trợ cấp và thanh quyết toán theo quy định.  
-3. Bộ Nội vụ có trách nhiệm chỉ đạo Sở Nội vụ chủ động phối hợp với các Sở, ngành liên quan giải quyết kịp thời những vướng mắc phát sinh trong việc lập hồ sơ, xác nhận hồ sơ, xét duyệt và thẩm định hồ sơ trình Chủ tịch Ủy ban nhân dân cấp tỉnh quyết định theo quy định tại Thông tư này.  
-4. Bộ Tài chính có trách nhiệm bố trí ngân sách nhà nước để thực hiện chế độ trợ cấp một lần cho TNXP theo quy định tại Thông tư này.  
-5. Đề nghị Hội Cựu TNXP Việt Nam: Tổ chức tuyên truyền phổ biến về chế độ, chính sách đối với TNXP theo quy định tại Thông tư này; hướng dẫn Hội cựu TNXP các cấp phối hợp với cơ quan, đoàn thể địa phương thực hiện việc xác nhận, cam kết đúng đối tượng được hưởng chính sách tránh hiện tượng man khai, lợi dụng để hưởng chế độ chính sách.

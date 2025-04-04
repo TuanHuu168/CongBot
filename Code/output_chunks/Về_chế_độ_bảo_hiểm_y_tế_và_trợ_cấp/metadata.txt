@@ -1,4 +1,0 @@
-filename: Về_chế_độ_bảo_hiểm_y_tế_và_trợ_cấp.txt
-total_chunks: 7
-method: hybrid
-first_line: VỀ CHẾ ĐỘ BẢO HIỂM Y TẾ VÀ TRỢ CẤP MAI TÁNG ĐỐI VỚI THANH NIÊN XUNG PHONG THỜI KỲ KHÁNG CHIẾN CHỐNG PHÁP

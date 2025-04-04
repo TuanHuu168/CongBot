@@ -1,5 +1,0 @@
-# VỀ CHẾ ĐỘ, CHÍNH SÁCH ĐỐI VỚI ĐỐI TƯỢNG THAM GIA CHIẾN TRANH BẢO VỆ TỔ QUỐC, LÀM NHIỆM VỤ QUỐC TẾ Ở CĂM-PU-CHI-A, GIÚP BẠN LÀO SAU NGÀY 30 THÁNG 4 NĂM 1975 ĐÃ PHỤC VIÊN, XUẤT NGŨ, THÔI VIỆC
-
-## Điều 4. Cách tính thời gian hưởng chế độ  
-1. Thời gian tính hưởng chế độ đối với đối tượng quy định tại điểm a khoản 1 Điều 2 Quyết định này là thời gian công tác thực tế trong quân đội, công an, cơ yếu. Đối với các đối tượng quy định tại điểm b, c, d và đ khoản 1 Điều 2 Quyết định này là thời gian trực tiếp tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế. Trường hợp, đối tượng có thời gian trực tiếp tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế thuộc các nhóm đối tượng khác nhau quy định tại khoản 1 Điều 2 Quyết định này hoặc có gián đoạn thì được cộng dồn.  
-2. Khi tính thời gian hưởng đối với chế độ trợ cấp một lần, nếu có tháng lẻ thì đủ 6 tháng trở lên được tính tròn một năm, dưới 6 tháng được tính bằng nửa (1/2) năm; đối với chế độ trợ cấp hàng tháng thì tính đủ năm (12 tháng).

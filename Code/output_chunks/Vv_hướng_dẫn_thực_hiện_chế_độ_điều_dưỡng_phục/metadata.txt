@@ -1,4 +1,0 @@
-filename: Vv_hướng_dẫn_thực_hiện_chế_độ_điều_dưỡng_phục.txt
-total_chunks: 1
-method: hybrid
-first_line: Kính gửi:

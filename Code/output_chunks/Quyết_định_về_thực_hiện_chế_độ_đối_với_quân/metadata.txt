@@ -1,4 +1,0 @@
-filename: Quyết_định_về_thực_hiện_chế_độ_đối_với_quân.txt
-total_chunks: 10
-method: hybrid
-first_line: VỀ THỰC HIỆN CHẾ ĐỘ ĐỐI VỚI QUÂN NHÂN THAM GIA KHÁNG CHIẾN CHỐNG MỸ CỨU NƯỚC CÓ DƯỚI 20 NĂM CÔNG TÁC TRONG QUÂN ĐỘI ĐÃ PHỤC VIÊN, XUẤT NGŨ VỀ ĐỊA PHƯƠNG

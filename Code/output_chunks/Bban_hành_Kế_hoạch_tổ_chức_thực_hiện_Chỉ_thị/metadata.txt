@@ -1,4 +1,0 @@
-filename: Bban_hành_Kế_hoạch_tổ_chức_thực_hiện_Chỉ_thị.txt
-total_chunks: 4
-method: hybrid
-first_line: BAN HÀNH KẾ HOẠCH TỔ CHỨC THỰC HIỆN CHỈ THỊ SỐ 14-CT/TW NGÀY 19 THÁNG 7 NĂM 2017 CỦA BAN BÍ THƯ TRUNG ƯƠNG ĐẢNG KHÓA XII VỀ TIẾP TỤC TĂNG CƯỜNG SỰ LÃNH ĐẠO CỦA ĐẢNG ĐỐI VỚI CÔNG TÁC NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG

@@ -1,4 +1,0 @@
-filename: Về_việc_phê_duyệt_miễn_giảm_tiền_sử_dụng_đất.txt
-total_chunks: 3
-method: hybrid
-first_line: QUYẾT ĐỊNH

@@ -1,4 +1,0 @@
-filename: Vv_hướng_dẫn_giải_quyết_chế_độ_người_HĐKC_bị.txt
-total_chunks: 1
-method: hybrid
-first_line: Kính gửi: Ủy ban nhân dân các tỉnh, thành phố trực thuộc Trung ương

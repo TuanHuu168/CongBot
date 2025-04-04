@@ -1,4 +1,0 @@
-filename: Hướng_dẫn_bổ_sung_việc_hỗ_trợ_người_tham_gia.txt
-total_chunks: 3
-method: hybrid
-first_line: CỦA BỘ XÂY DỰNG SỐ 04/2001/TT-BXD NGÀY 20 THÁNG 8 NĂM 2001 HƯỚNG DẪN BỔ SUNG VIỆC HỖ TRỢ NGƯỜI THAM GIA HOẠT ĐỘNG CÁCH MẠNG TỪ 31 THÁNG 12 NĂM 1944 VỀ TRƯỚC CẢI THIỆN NHÀ Ở THEO QUYẾT ĐỊNH SỐ 20/2000/QĐ-TTG NGÀY 3/2/2000 CỦA THỦ TƯỚNG CHÍNH PHỦ

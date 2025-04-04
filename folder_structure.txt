@@ -1,0 +1,75 @@
++-- backend
+¦   +-- api
+¦   ¦   +-- admin.py
+¦   ¦   +-- chat.py
+¦   +-- database
+¦   ¦   +-- chroma_client.py
+¦   ¦   +-- mongodb_client.py
+¦   +-- models
+¦   ¦   +-- cache.py
+¦   ¦   +-- conservation.py
+¦   ¦   +-- user.py
+¦   +-- scripts
+¦   ¦   +-- delete_collection.py
+¦   ¦   +-- load_documents.py
+¦   +-- services
+¦   ¦   +-- generation_service.py
+¦   ¦   +-- retrieval_service.py
+¦   +-- chromaDB.py
+¦   +-- config.py
+¦   +-- main.py
+¦   +-- mongodb_utils.py
+¦   +-- requirements.txt
++-- benchmark
+¦   +-- results
+¦   ¦   +-- benchmark_results_20250403_113027.csv
+¦   ¦   +-- benchmark_results_20250403_113615.csv
+¦   ¦   +-- ...
+¦   +-- benchmark.json
++-- data
+¦   +-- 101_2018_TT_BTC
+¦   ¦   +-- chunk_1.md
+¦   ¦   +-- chunk_2.md
+¦   ¦   +-- ...
+¦   ¦   +-- metadata.json
+¦   +-- 1766_QÐ_UBND
+¦   ¦   +-- chunk_1.md
+¦   ¦   +-- chunk_2.md
+¦   ¦   +-- ...
+¦   ¦   +-- metadata.json
+¦   +-- 47_2009_TTLT_BTC_BLÐTBXH
+¦   ¦   +-- chunk_1.md
+¦   ¦   +-- chunk_2.md
+¦   ¦   +-- ...
+¦   ¦   +-- metadata.json
+¦   +-- ...
++-- frontend
+¦   +-- public
+¦   ¦   +-- vite.svg
+¦   +-- src
+¦   ¦   +-- assets
+¦   ¦   ¦   +-- react.svg
+¦   ¦   +-- components
+¦   ¦   ¦   +-- PageTransition.jsx
+¦   ¦   +-- pages
+¦   ¦   ¦   +-- ChatHistoryPage.jsx
+¦   ¦   ¦   +-- ChatInterface.jsx
+¦   ¦   ¦   +-- LandingPage.jsx
+¦   ¦   ¦   +-- LoginPage.jsx
+¦   ¦   ¦   +-- ProfilePage.jsx
+¦   ¦   ¦   +-- RegisterPage.jsx
+¦   ¦   +-- apiService.js
+¦   ¦   +-- App.css
+¦   ¦   +-- App.jsx
+¦   ¦   +-- ChatContext.jsx
+¦   ¦   +-- index.css
+¦   ¦   +-- main.jsx
+¦   +-- eslint.config.js
+¦   +-- index.html
+¦   +-- package.json
+¦   +-- package-lock.json
+¦   +-- README.md
+¦   +-- tailwind.config.js
+¦   +-- vite.config.js
++-- create_tree.ps1
++-- README.md
