@@ -1,16 +1,52 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Depends
+from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 import time
 import functools
 import json
 import pandas as pd
+import numpy as np
 from datetime import datetime
 import os
 from google import genai
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 from fastapi.middleware.cors import CORSMiddleware
+from rouge_score import rouge_scorer
+from sklearn.metrics.pairwise import cosine_similarity
+import nltk
+from uuid import uuid4, UUID
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
+# Tải biến môi trường từ file .env
+load_dotenv()
+
+# === CONFIGURATION ===
+# MongoDB Configuration
+MONGODB_USERNAME = os.getenv("MONGODB_USERNAME")
+MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
+MONGODB_HOST = os.getenv("MONGODB_HOST")
+MONGODB_DATABASE = os.getenv("MONGODB_DATABASE")
+MONGODB_URI = f"mongodb+srv://{MONGODB_USERNAME}:{MONGODB_PASSWORD}{MONGODB_HOST}/{MONGODB_DATABASE}?retryWrites=true&w=majority"
+
+# ChromaDB Configuration
+CHROMA_HOST = os.getenv("CHROMA_HOST")
+CHROMA_PORT = int(os.getenv("CHROMA_PORT"))
+COLLECTION_NAME = os.getenv("COLLECTION_NAME")
+
+# Gemini API Configuration
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+# Model Configuration
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL")
+
+# Retrieval Configuration
+TOP_K = int(os.getenv("TOP_K", "5"))
+MAX_CONTEXT_LENGTH = int(os.getenv("MAX_CONTEXT_LENGTH"))
+
+nltk.download('punkt')
 
 # === DECORATOR BENCHMARK ===
 def benchmark(func):
@@ -37,16 +73,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# === CẤU HÌNH ===
-MODEL_NAME = "intfloat/multilingual-e5-base"
-COLLECTION_NAME = "law_data"
-TOP_K = 5  # Số lượng đoạn văn bản tương đồng nhất để lấy
-MAX_CHUNK_LENGTH_FOR_CONTEXT = 4000  # Giới hạn độ dài tối đa cho context
-
 # Khởi tạo embedding function cho ChromaDB
 embedding_function = SentenceTransformerEmbeddingFunction(
-    model_name=MODEL_NAME
+    model_name=EMBEDDING_MODEL
 )
+
+# Khởi tạo ROUGE scorer
+scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
 
 # === KHỞI TẠO CHROMADB CLIENT ===
 try:
@@ -72,19 +105,119 @@ except Exception as e:
     print(f"Không thể kết nối tới ChromaDB: {e}")
     raise Exception("Không thể kết nối tới cơ sở dữ liệu. Vui lòng kiểm tra kết nối ChromaDB.")
 
+# === KHỞI TẠO MONGODB CLIENT ===
+try:
+    mongo_client = MongoClient(MONGODB_URI)
+    db = mongo_client[MONGODB_DATABASE]
+    # Tạo các collections
+    users_collection = db.users
+    chat_history_collection = db.chat_history
+    feedback_collection = db.feedback
+    print("Đã kết nối tới MongoDB thành công")
+except Exception as e:
+    print(f"Không thể kết nối tới MongoDB: {e}")
+
 # === KHỞI TẠO GEMINI CLIENT ===
-client = genai.Client(api_key="AIzaSyBayTCsGKqfARlNRmlssmFfsUM8UvLjXCY")
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 # === INPUT SCHEMA ===
+class User(BaseModel):
+    username: str
+    email: Optional[str] = None
+
 class QueryInput(BaseModel):
     query: str
+    user_id: Optional[str] = None
+    session_id: Optional[str] = None
+
+class UserFeedback(BaseModel):
+    chat_id: str
+    rating: int = Field(..., ge=1, le=5)
+    comment: Optional[str] = None
 
 class SearchResult(BaseModel):
+    id: Optional[str] = None
     query: str
     answer: str
     retrieval_time: Optional[float] = None
     generation_time: Optional[float] = None
     total_time: Optional[float] = None
+
+# === MONGODB OPERATIONS ===
+def save_chat_history(user_id, query, answer, context_items, retrieved_chunks, metrics):
+    """Lưu lịch sử chat vào MongoDB"""
+    try:
+        if user_id:
+            chat_record = {
+                "user_id": user_id,
+                "query": query,
+                "answer": answer,
+                "context_items": context_items,
+                "retrieved_chunks": retrieved_chunks,
+                "metrics": metrics,
+                "timestamp": datetime.now()
+            }
+            result = chat_history_collection.insert_one(chat_record)
+            return str(result.inserted_id)
+        return None
+    except Exception as e:
+        print(f"Lỗi khi lưu lịch sử chat: {e}")
+        return None
+
+def save_user_feedback(chat_id, feedback_data):
+    """Lưu phản hồi người dùng vào MongoDB"""
+    try:
+        feedback_data["chat_id"] = chat_id
+        feedback_data["timestamp"] = datetime.now()
+        result = feedback_collection.insert_one(feedback_data)
+        return str(result.inserted_id)
+    except Exception as e:
+        print(f"Lỗi khi lưu phản hồi: {e}")
+        return None
+
+def get_user_history(user_id, limit=20):
+    """Lấy lịch sử chat của người dùng"""
+    try:
+        cursor = chat_history_collection.find(
+            {"user_id": user_id}
+        ).sort("timestamp", -1).limit(limit)
+        
+        history = []
+        for doc in cursor:
+            # Convert ObjectId to string for JSON serialization
+            doc["_id"] = str(doc["_id"])
+            history.append(doc)
+        
+        return history
+    except Exception as e:
+        print(f"Lỗi khi lấy lịch sử chat: {e}")
+        return []
+
+# === HÀM ĐÁNH GIÁ ĐỘ TƯƠNG ĐỒNG ===
+def calculate_similarity_scores(predicted_answer, reference_answer):
+    # 1. Tính ROUGE scores
+    rouge_scores = scorer.score(predicted_answer, reference_answer)
+    
+    # 2. Tính Cosine similarity
+    # Sử dụng embedding model đã có sẵn
+    pred_embedding = embedding_function([predicted_answer])
+    ref_embedding = embedding_function([reference_answer])
+    
+    # Chuyển đổi sang numpy array và tính cosine similarity
+    pred_embedding_np = np.array(pred_embedding)
+    ref_embedding_np = np.array(ref_embedding)
+    
+    cosine_sim = cosine_similarity(pred_embedding_np, ref_embedding_np)[0][0]
+    
+    # Tổng hợp kết quả
+    result = {
+        "rouge1_f1": rouge_scores["rouge1"].fmeasure,
+        "rouge2_f1": rouge_scores["rouge2"].fmeasure,
+        "rougeL_f1": rouge_scores["rougeL"].fmeasure,
+        "cosine_similarity": float(cosine_sim)
+    }
+    
+    return result
 
 # === HÀM TRUY XUẤT DỮ LIỆU TỪ CHROMADB ===
 @benchmark
@@ -175,7 +308,6 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
 {context_text}"""
 
     try:
-        # gemini-2.0-pro-exp-02-05
         response = client.models.generate_content(
             model="gemini-2.0-flash",
             contents=prompt
@@ -189,21 +321,65 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             "answer": "Xin lỗi, tôi đang gặp sự cố khi xử lý yêu cầu của bạn. Vui lòng thử lại sau."
         }
 
+# === ENDPOINT ĐĂNG KÝ NGƯỜI DÙNG ===
+@app.post("/users/register")
+async def register_user(user: User):
+    try:
+        # Kiểm tra xem username đã tồn tại chưa
+        existing_user = users_collection.find_one({"username": user.username})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Tên đăng nhập đã tồn tại")
+        
+        # Thêm thông tin người dùng mới
+        user_data = user.dict()
+        user_data["created_at"] = datetime.now()
+        
+        result = users_collection.insert_one(user_data)
+        user_id = str(result.inserted_id)
+        
+        return {
+            "status": "success",
+            "message": "Đăng ký thành công",
+            "user_id": user_id
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Lỗi khi đăng ký người dùng: {str(e)}")
+        raise HTTPException(status_code=500, detail="Lỗi máy chủ: " + str(e))
+
 # === ENDPOINT CHÍNH ===
 @app.post("/ask", response_model=SearchResult)
 async def ask(input: QueryInput):
     try:
         start_time = time.time()
         
+        # Tạo chat ID
+        chat_id = str(uuid4())
+        
         # 1. Retrieval
         retrieval_result = retrieve_from_chroma(input.query)
         context_items = retrieval_result['context_items']
+        retrieved_chunks = retrieval_result['retrieved_chunks']
         retrieval_time = retrieval_result.get('execution_time', 0)
         
         if not context_items:
+            answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu. Vui lòng thử cách diễn đạt khác hoặc hỏi một câu hỏi khác về chính sách người có công."
+            
+            # Lưu vào MongoDB nếu có user_id
+            metrics = {
+                "retrieval_time": retrieval_time,
+                "generation_time": 0,
+                "total_time": retrieval_time
+            }
+            
+            if input.user_id:
+                save_chat_history(input.user_id, input.query, answer, [], [], metrics)
+            
             return {
+                "id": chat_id,
                 "query": input.query,
-                "answer": "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu. Vui lòng thử cách diễn đạt khác hoặc hỏi một câu hỏi khác về chính sách người có công.",
+                "answer": answer,
                 "retrieval_time": retrieval_time,
                 "generation_time": 0,
                 "total_time": retrieval_time
@@ -217,7 +393,18 @@ async def ask(input: QueryInput):
         # 3. Tính tổng thời gian
         total_time = time.time() - start_time
         
+        # 4. Lưu vào MongoDB nếu có user_id
+        metrics = {
+            "retrieval_time": retrieval_time,
+            "generation_time": generation_time,
+            "total_time": total_time
+        }
+        
+        if input.user_id:
+            save_chat_history(input.user_id, input.query, answer, context_items, retrieved_chunks, metrics)
+        
         return {
+            "id": chat_id,
             "query": input.query,
             "answer": answer,
             "retrieval_time": retrieval_time,
@@ -281,18 +468,61 @@ async def run_benchmark(input: QueryInput):
         print(f"Error in /benchmark endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+# === ENDPOINT PHẢN HỒI NGƯỜI DÙNG ===
+@app.post("/feedback")
+async def submit_feedback(feedback: UserFeedback):
+    try:
+        feedback_id = save_user_feedback(feedback.chat_id, feedback.dict())
+        if not feedback_id:
+            raise HTTPException(status_code=500, detail="Không thể lưu phản hồi")
+        return {
+            "status": "success",
+            "message": "Cảm ơn bạn đã gửi phản hồi",
+            "feedback_id": feedback_id
+        }
+    except Exception as e:
+        print(f"Error in /feedback endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# === ENDPOINT LỊCH SỬ CHAT ===
+@app.get("/history/{user_id}")
+async def get_history(user_id: str, limit: int = 20):
+    try:
+        history = get_user_history(user_id, limit)
+        return {
+            "user_id": user_id,
+            "count": len(history),
+            "history": history
+        }
+    except Exception as e:
+        print(f"Error in /history endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 # === ENDPOINT KIỂM TRA TRẠNG THÁI ===
 @app.get("/status")
 async def status():
     try:
         collection_count = collection.count()
+        mongo_status = "connected"
+        
+        try:
+            # Kiểm tra kết nối MongoDB
+            mongo_client.admin.command('ping')
+        except Exception as e:
+            mongo_status = f"disconnected: {str(e)}"
+        
         return {
             "status": "ok", 
             "message": "API đang hoạt động bình thường",
             "database": {
-                "status": "connected",
-                "collection": COLLECTION_NAME,
-                "documents_count": collection_count
+                "chromadb": {
+                    "status": "connected",
+                    "collection": COLLECTION_NAME,
+                    "documents_count": collection_count
+                },
+                "mongodb": {
+                    "status": mongo_status
+                }
             }
         }
     except Exception as e:
@@ -300,7 +530,8 @@ async def status():
             "status": "error",
             "message": f"API gặp sự cố: {str(e)}",
             "database": {
-                "status": "disconnected" 
+                "chromadb": {"status": "disconnected"},
+                "mongodb": {"status": "disconnected"}
             }
         }
 
@@ -356,6 +587,9 @@ async def run_full_benchmark(file_path: str = "benchmark.json", output_dir: str 
                     print("Chunk mong đợi:", expected_contexts)
                     retrieval_score = len(matches) / len(expected_contexts) if expected_contexts else 0
                 
+                # Tính similarity scores
+                similarity_scores = calculate_similarity_scores(answer, expected_answer)
+                
                 # Lưu kết quả
                 result = {
                     'question_id': question_id,
@@ -368,6 +602,10 @@ async def run_full_benchmark(file_path: str = "benchmark.json", output_dir: str 
                     'total_time': total_time,
                     'expected_answer': expected_answer[:500],  # Giới hạn để không quá dài
                     'answer': answer[:500],  # Giới hạn để không quá dài
+                    'rouge1_f1': similarity_scores['rouge1_f1'],
+                    'rouge2_f1': similarity_scores['rouge2_f1'],
+                    'rougeL_f1': similarity_scores['rougeL_f1'],
+                    'cosine_similarity': similarity_scores['cosine_similarity'],
                     'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                 }
                 
@@ -380,6 +618,9 @@ async def run_full_benchmark(file_path: str = "benchmark.json", output_dir: str 
                 # In thông tin
                 print(f"  - Thời gian: Retrieval={retrieval_time:.2f}s, Generation={generation_time:.2f}s, Total={total_time:.2f}s")
                 print(f"  - Retrieval score: {retrieval_score:.2f}")
+                print(f"  - Rouge-1 F1: {similarity_scores['rouge1_f1']:.2f}")
+                print(f"  - Rouge-L F1: {similarity_scores['rougeL_f1']:.2f}")
+                print(f"  - Cosine Similarity: {similarity_scores['cosine_similarity']:.2f}")
                 
             except Exception as e:
                 print(f"Lỗi khi xử lý câu hỏi {question_id}: {str(e)}")
@@ -391,6 +632,10 @@ async def run_full_benchmark(file_path: str = "benchmark.json", output_dir: str 
             avg_generation_time = sum(r['generation_time'] for r in results) / len(results)
             avg_total_time = sum(r['total_time'] for r in results) / len(results)
             avg_retrieval_score = sum(r['retrieval_score'] for r in results) / len(results)
+            avg_rouge1_f1 = sum(r['rouge1_f1'] for r in results) / len(results)
+            avg_rouge2_f1 = sum(r['rouge2_f1'] for r in results) / len(results)
+            avg_rougeL_f1 = sum(r['rougeL_f1'] for r in results) / len(results)
+            avg_cosine_similarity = sum(r['cosine_similarity'] for r in results) / len(results)
             
             # Thêm hàng tổng kết vào DataFrame
             summary = {
@@ -404,6 +649,10 @@ async def run_full_benchmark(file_path: str = "benchmark.json", output_dir: str 
                 'total_time': avg_total_time,
                 'expected_answer': '',
                 'answer': '',
+                'rouge1_f1': avg_rouge1_f1,
+                'rouge2_f1': avg_rouge2_f1,
+                'rougeL_f1': avg_rougeL_f1,
+                'cosine_similarity': avg_cosine_similarity,
                 'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             }
             results.append(summary)
@@ -419,7 +668,11 @@ async def run_full_benchmark(file_path: str = "benchmark.json", output_dir: str 
                 "avg_retrieval_time": avg_retrieval_time,
                 "avg_generation_time": avg_generation_time,
                 "avg_total_time": avg_total_time,
-                "avg_retrieval_score": avg_retrieval_score
+                "avg_retrieval_score": avg_retrieval_score,
+                "avg_rouge1_f1": avg_rouge1_f1,
+                "avg_rouge2_f1": avg_rouge2_f1,
+                "avg_rougeL_f1": avg_rougeL_f1,
+                "avg_cosine_similarity": avg_cosine_similarity
             }
         }
     

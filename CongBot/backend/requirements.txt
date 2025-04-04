@@ -1,0 +1,23 @@
+# Core dependencies
+fastapi
+uvicorn
+pydantic
+python-dotenv
+google-generativeai
+
+# Database
+pymongo
+chromadb
+sentence-transformers
+torch
+
+# Utils
+pandas
+numpy
+python-multipart
+httpx
+rouge-score
+
+# Parsing and processing
+markdown
+python-dateutil
