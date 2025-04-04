@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import List, Dict, Any, Optional
 import time
 import functools
@@ -18,35 +18,48 @@ import nltk
 from uuid import uuid4, UUID
 from pymongo import MongoClient
 from dotenv import load_dotenv
+import bcrypt
 
-# Tải biến môi trường từ file .env
+# Load .env file
 load_dotenv()
 
-# === CONFIGURATION ===
-# MongoDB Configuration
+# Tải các biến môi trường
 MONGODB_USERNAME = os.getenv("MONGODB_USERNAME")
-MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
+MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD", "password")
 MONGODB_HOST = os.getenv("MONGODB_HOST")
-MONGODB_DATABASE = os.getenv("MONGODB_DATABASE")
+MONGODB_DATABASE = os.getenv("MONGODB_DATABASE", "chatbot_db")
 MONGODB_URI = f"mongodb+srv://{MONGODB_USERNAME}:{MONGODB_PASSWORD}{MONGODB_HOST}/{MONGODB_DATABASE}?retryWrites=true&w=majority"
 
-# ChromaDB Configuration
-CHROMA_HOST = os.getenv("CHROMA_HOST")
-CHROMA_PORT = int(os.getenv("CHROMA_PORT"))
-COLLECTION_NAME = os.getenv("COLLECTION_NAME")
+CHROMA_HOST = os.getenv("CHROMA_HOST", "localhost")
+CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
+COLLECTION_NAME = os.getenv("COLLECTION_NAME", "law_data")
 
-# Gemini API Configuration
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBayTCsGKqfARlNRmlssmFfsUM8UvLjXCY")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "intfloat/multilingual-e5-base")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.0-flash")
 
-# Model Configuration
-EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL")
-
-# Retrieval Configuration
 TOP_K = int(os.getenv("TOP_K", "5"))
-MAX_CONTEXT_LENGTH = int(os.getenv("MAX_CONTEXT_LENGTH"))
+MAX_CONTEXT_LENGTH = int(os.getenv("MAX_CONTEXT_LENGTH", "4000"))
 
-nltk.download('punkt')
+nltk.download('punkt', quiet=True)
+
+# === MONGODB SETUP ===
+try:
+    mongodb_client = MongoClient(MONGODB_URI)
+    db = mongodb_client.get_database()  # Hoặc mongodb_client[MONGODB_DATABASE]
+    
+    # Test connection
+    mongodb_client.admin.command('ping')
+    print("Kết nối MongoDB thành công")
+    
+    # Các collections
+    users_collection = db["users"]
+    chat_history_collection = db["chat_history"]
+    feedback_collection = db["feedback"]
+    
+except Exception as e:
+    print(f"Lỗi kết nối MongoDB: {str(e)}")
+    raise e
 
 # === DECORATOR BENCHMARK ===
 def benchmark(func):
@@ -83,7 +96,7 @@ scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=Tr
 
 # === KHỞI TẠO CHROMADB CLIENT ===
 try:
-    chroma_client = chromadb.HttpClient(host="localhost", port=8000)
+    chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
     
     # Kiểm tra xem collection đã tồn tại chưa
     try:
@@ -105,25 +118,32 @@ except Exception as e:
     print(f"Không thể kết nối tới ChromaDB: {e}")
     raise Exception("Không thể kết nối tới cơ sở dữ liệu. Vui lòng kiểm tra kết nối ChromaDB.")
 
-# === KHỞI TẠO MONGODB CLIENT ===
-try:
-    mongo_client = MongoClient(MONGODB_URI)
-    db = mongo_client[MONGODB_DATABASE]
-    # Tạo các collections
-    users_collection = db.users
-    chat_history_collection = db.chat_history
-    feedback_collection = db.feedback
-    print("Đã kết nối tới MongoDB thành công")
-except Exception as e:
-    print(f"Không thể kết nối tới MongoDB: {e}")
-
 # === KHỞI TẠO GEMINI CLIENT ===
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 # === INPUT SCHEMA ===
-class User(BaseModel):
+class UserCreate(BaseModel):
+    """Model cho việc tạo người dùng mới"""
     username: str
-    email: Optional[str] = None
+    email: EmailStr
+    password: str  # Password gốc, sẽ được hash trước khi lưu
+    fullName: str
+    phoneNumber: Optional[str] = None
+
+class UserLogin(BaseModel):
+    """Model cho việc đăng nhập"""
+    username: str
+    password: str
+
+class Token(BaseModel):
+    """Model cho token trả về sau khi đăng nhập"""
+    access_token: str
+    token_type: str = "bearer"
+    user_id: str
+
+class ChatUser(BaseModel):
+    user_id: Optional[str] = None
+    session_id: Optional[str] = None
 
 class QueryInput(BaseModel):
     query: str
@@ -134,6 +154,8 @@ class UserFeedback(BaseModel):
     chat_id: str
     rating: int = Field(..., ge=1, le=5)
     comment: Optional[str] = None
+    is_accurate: Optional[bool] = None
+    is_helpful: Optional[bool] = None
 
 class SearchResult(BaseModel):
     id: Optional[str] = None
@@ -143,55 +165,73 @@ class SearchResult(BaseModel):
     generation_time: Optional[float] = None
     total_time: Optional[float] = None
 
-# === MONGODB OPERATIONS ===
-def save_chat_history(user_id, query, answer, context_items, retrieved_chunks, metrics):
-    """Lưu lịch sử chat vào MongoDB"""
+# === MONGODB UTILITY FUNCTIONS ===
+def hash_password(password: str) -> str:
+    """Tạo hash password với bcrypt"""
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
+    return hashed.decode('utf-8')
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Kiểm tra password"""
+    return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
+
+def save_user(user_data: dict) -> str:
+    """Lưu thông tin người dùng vào MongoDB"""
+    # Hash password trước khi lưu
+    if 'password' in user_data:
+        user_data['password'] = hash_password(user_data['password'])
+    
+    user_data["created_at"] = datetime.now()
+    
+    result = users_collection.insert_one(user_data)
+    return str(result.inserted_id)
+
+def get_user_by_username(username: str):
+    """Lấy thông tin người dùng từ MongoDB theo tên đăng nhập"""
+    return users_collection.find_one({"username": username})
+
+def get_user_by_id(user_id: str):
+    """Lấy thông tin người dùng từ MongoDB theo ID"""
+    from bson.objectid import ObjectId
+    return users_collection.find_one({"_id": ObjectId(user_id)})
+
+def save_chat_message(user_id, query, answer, context_items=None, retrieved_chunks=None, performance_metrics=None):
+    """Lưu tin nhắn chat vào MongoDB"""
+    chat_data = {
+        "user_id": user_id,
+        "query": query,
+        "answer": answer,
+        "context_items": context_items or [],
+        "retrieved_chunks": retrieved_chunks or [],
+        "performance": performance_metrics or {},
+        "timestamp": datetime.now()
+    }
+    
+    result = chat_history_collection.insert_one(chat_data)
+    return str(result.inserted_id)
+
+def get_user_chat_history(user_id, limit=20):
+    """Lấy lịch sử chat của người dùng"""
+    from bson.objectid import ObjectId
+    
     try:
-        if user_id:
-            chat_record = {
-                "user_id": user_id,
-                "query": query,
-                "answer": answer,
-                "context_items": context_items,
-                "retrieved_chunks": retrieved_chunks,
-                "metrics": metrics,
-                "timestamp": datetime.now()
-            }
-            result = chat_history_collection.insert_one(chat_record)
-            return str(result.inserted_id)
-        return None
-    except Exception as e:
-        print(f"Lỗi khi lưu lịch sử chat: {e}")
-        return None
+        user_id_obj = ObjectId(user_id)
+    except:
+        return []
+    
+    return list(chat_history_collection.find(
+        {"user_id": user_id},
+        {"query": 1, "answer": 1, "timestamp": 1}
+    ).sort("timestamp", -1).limit(limit))
 
 def save_user_feedback(chat_id, feedback_data):
-    """Lưu phản hồi người dùng vào MongoDB"""
-    try:
-        feedback_data["chat_id"] = chat_id
-        feedback_data["timestamp"] = datetime.now()
-        result = feedback_collection.insert_one(feedback_data)
-        return str(result.inserted_id)
-    except Exception as e:
-        print(f"Lỗi khi lưu phản hồi: {e}")
-        return None
-
-def get_user_history(user_id, limit=20):
-    """Lấy lịch sử chat của người dùng"""
-    try:
-        cursor = chat_history_collection.find(
-            {"user_id": user_id}
-        ).sort("timestamp", -1).limit(limit)
-        
-        history = []
-        for doc in cursor:
-            # Convert ObjectId to string for JSON serialization
-            doc["_id"] = str(doc["_id"])
-            history.append(doc)
-        
-        return history
-    except Exception as e:
-        print(f"Lỗi khi lấy lịch sử chat: {e}")
-        return []
+    """Lưu phản hồi của người dùng về câu trả lời"""
+    feedback_data["chat_id"] = chat_id
+    feedback_data["timestamp"] = datetime.now()
+    
+    result = feedback_collection.insert_one(feedback_data)
+    return str(result.inserted_id)
 
 # === HÀM ĐÁNH GIÁ ĐỘ TƯƠNG ĐỒNG ===
 def calculate_similarity_scores(predicted_answer, reference_answer):
@@ -309,7 +349,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model=GEMINI_MODEL,
             contents=prompt
         )
         return {
@@ -321,41 +361,239 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             "answer": "Xin lỗi, tôi đang gặp sự cố khi xử lý yêu cầu của bạn. Vui lòng thử lại sau."
         }
 
-# === ENDPOINT ĐĂNG KÝ NGƯỜI DÙNG ===
+# === ENDPOINT NGƯỜI DÙNG ===
 @app.post("/users/register")
-async def register_user(user: User):
+async def register_user(user: UserCreate):
     try:
-        # Kiểm tra xem username đã tồn tại chưa
-        existing_user = users_collection.find_one({"username": user.username})
+        # Kiểm tra xem người dùng đã tồn tại chưa
+        existing_user = get_user_by_username(user.username)
         if existing_user:
-            raise HTTPException(status_code=400, detail="Tên đăng nhập đã tồn tại")
+            raise HTTPException(status_code=400, detail="Tên người dùng đã tồn tại")
         
-        # Thêm thông tin người dùng mới
+        # Kiểm tra email đã tồn tại chưa
+        existing_email = users_collection.find_one({"email": user.email})
+        if existing_email:
+            raise HTTPException(status_code=400, detail="Email đã được sử dụng")
+        
+        # Tạo người dùng mới
         user_data = user.dict()
-        user_data["created_at"] = datetime.now()
         
-        result = users_collection.insert_one(user_data)
-        user_id = str(result.inserted_id)
+        # Lưu vào MongoDB và lấy ID
+        user_id = save_user(user_data)
         
         return {
-            "status": "success",
             "message": "Đăng ký thành công",
             "user_id": user_id
         }
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Lỗi khi đăng ký người dùng: {str(e)}")
-        raise HTTPException(status_code=500, detail="Lỗi máy chủ: " + str(e))
+        print(f"Error in /users/register endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-# === ENDPOINT CHÍNH ===
+@app.post("/users/login")
+async def login_user(user_login: UserLogin):
+    try:
+        # Tìm user trong database
+        user = get_user_by_username(user_login.username)
+        if not user:
+            raise HTTPException(status_code=401, detail="Tên đăng nhập hoặc mật khẩu không đúng")
+        
+        # Kiểm tra mật khẩu
+        if not verify_password(user_login.password, user["password"]):
+            raise HTTPException(status_code=401, detail="Tên đăng nhập hoặc mật khẩu không đúng")
+        
+        # Tạo token đơn giản (trong thực tế nên dùng JWT)
+        token = str(uuid4())
+        
+        # Lưu token vào user (hoặc trong bảng sessions riêng)
+        users_collection.update_one(
+            {"_id": user["_id"]},
+            {"$set": {"token": token, "last_login": datetime.now()}}
+        )
+        
+        return {
+            "access_token": token,
+            "token_type": "bearer",
+            "user_id": str(user["_id"])
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in /users/login endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Thêm vào file main.py
+
+# === CHAT SCHEMAS AND MODELS ===
+class ChatCreate(BaseModel):
+    """Model cho việc tạo chat mới"""
+    user_id: str
+    title: str = "Cuộc trò chuyện mới"
+
+class ChatMessage(BaseModel):
+    """Model cho tin nhắn trong chat"""
+    id: Optional[str] = None
+    sender: str  # 'user' hoặc 'bot'
+    text: str
+    timestamp: Optional[datetime] = None
+
+class Chat(BaseModel):
+    """Model cho một cuộc trò chuyện hoàn chỉnh"""
+    id: Optional[str] = None
+    user_id: str
+    title: str
+    messages: List[ChatMessage] = []
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+# === CHAT DATABASE FUNCTIONS ===
+def create_new_chat(chat_data: dict) -> str:
+    """Tạo cuộc trò chuyện mới trong MongoDB"""
+    chat_data["created_at"] = datetime.now()
+    chat_data["updated_at"] = datetime.now()
+    chat_data["messages"] = []
+    
+    result = db["chats"].insert_one(chat_data)
+    return str(result.inserted_id)
+
+def get_chat_by_id(chat_id: str):
+    """Lấy thông tin cuộc trò chuyện theo ID"""
+    from bson.objectid import ObjectId
+    try:
+        return db["chats"].find_one({"_id": ObjectId(chat_id)})
+    except:
+        return None
+
+def get_user_chats(user_id: str, limit: int = 20):
+    """Lấy danh sách cuộc trò chuyện của người dùng"""
+    return list(db["chats"].find(
+        {"user_id": user_id},
+        {"title": 1, "created_at": 1, "updated_at": 1}
+    ).sort("updated_at", -1).limit(limit))
+
+def add_message_to_chat(chat_id: str, message: dict) -> bool:
+    """Thêm tin nhắn vào cuộc trò chuyện"""
+    from bson.objectid import ObjectId
+    try:
+        message["timestamp"] = datetime.now()
+        
+        result = db["chats"].update_one(
+            {"_id": ObjectId(chat_id)},
+            {
+                "$push": {"messages": message},
+                "$set": {"updated_at": datetime.now()}
+            }
+        )
+        
+        return result.modified_count > 0
+    except Exception as e:
+        print(f"Error adding message to chat: {str(e)}")
+        return False
+
+def update_chat_title(chat_id: str, title: str) -> bool:
+    """Cập nhật tiêu đề cuộc trò chuyện"""
+    from bson.objectid import ObjectId
+    try:
+        result = db["chats"].update_one(
+            {"_id": ObjectId(chat_id)},
+            {"$set": {"title": title, "updated_at": datetime.now()}}
+        )
+        return result.modified_count > 0
+    except:
+        return False
+
+# === CHAT ENDPOINTS ===
+@app.post("/chats/create", response_model=dict)
+async def create_chat(chat: ChatCreate):
+    try:
+        chat_id = create_new_chat(chat.dict())
+        return {
+            "id": chat_id,
+            "message": "Tạo cuộc trò chuyện mới thành công"
+        }
+    except Exception as e:
+        print(f"Error in /chats/create endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/chats/{user_id}", response_model=List[dict])
+async def get_chats(user_id: str, limit: int = 20):
+    try:
+        chats = get_user_chats(user_id, limit)
+        # Chuyển đổi ObjectId sang string
+        for chat in chats:
+            chat["id"] = str(chat.pop("_id"))
+        return chats
+    except Exception as e:
+        print(f"Error in /chats endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/chats/{chat_id}/messages", response_model=dict)
+async def get_chat_messages(chat_id: str):
+    try:
+        chat = get_chat_by_id(chat_id)
+        if not chat:
+            raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
+        
+        # Chuyển đổi ObjectId sang string
+        chat_data = {
+            "id": str(chat["_id"]),
+            "title": chat.get("title", "Cuộc trò chuyện"),
+            "messages": chat.get("messages", []),
+            "created_at": chat.get("created_at", datetime.now()),
+            "updated_at": chat.get("updated_at", datetime.now())
+        }
+        
+        return chat_data
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in /chats/{chat_id}/messages endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/chats/{chat_id}/messages", response_model=dict)
+async def add_chat_message(chat_id: str, message: ChatMessage):
+    try:
+        success = add_message_to_chat(chat_id, message.dict())
+        if not success:
+            raise HTTPException(status_code=404, detail="Không thể thêm tin nhắn vào cuộc trò chuyện")
+        
+        return {
+            "message": "Thêm tin nhắn thành công",
+            "chat_id": chat_id
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in add message endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.put("/chats/{chat_id}/title", response_model=dict)
+async def update_chat_title_endpoint(chat_id: str, title_data: dict):
+    try:
+        title = title_data.get("title", "")
+        if not title:
+            raise HTTPException(status_code=400, detail="Tiêu đề không được để trống")
+        
+        success = update_chat_title(chat_id, title)
+        if not success:
+            raise HTTPException(status_code=404, detail="Không thể cập nhật tiêu đề cuộc trò chuyện")
+        
+        return {
+            "message": "Cập nhật tiêu đề thành công",
+            "chat_id": chat_id
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in update title endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# === MODIFIED ASK ENDPOINT ===
 @app.post("/ask", response_model=SearchResult)
 async def ask(input: QueryInput):
     try:
         start_time = time.time()
-        
-        # Tạo chat ID
-        chat_id = str(uuid4())
         
         # 1. Retrieval
         retrieval_result = retrieve_from_chroma(input.query)
@@ -366,15 +604,47 @@ async def ask(input: QueryInput):
         if not context_items:
             answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu. Vui lòng thử cách diễn đạt khác hoặc hỏi một câu hỏi khác về chính sách người có công."
             
-            # Lưu vào MongoDB nếu có user_id
-            metrics = {
-                "retrieval_time": retrieval_time,
-                "generation_time": 0,
-                "total_time": retrieval_time
-            }
+            # Tạo ID cho cuộc trò chuyện
+            chat_id = str(uuid4())
             
+            # Lưu vào lịch sử nếu có thông tin người dùng
             if input.user_id:
-                save_chat_history(input.user_id, input.query, answer, [], [], metrics)
+                # Nếu có session_id (chat_id), thêm tin nhắn vào cuộc trò chuyện đó
+                if input.session_id:
+                    user_message = {
+                        "sender": "user",
+                        "text": input.query,
+                        "timestamp": datetime.now()
+                    }
+                    
+                    bot_message = {
+                        "sender": "bot",
+                        "text": answer,
+                        "timestamp": datetime.now()
+                    }
+                    
+                    add_message_to_chat(input.session_id, user_message)
+                    add_message_to_chat(input.session_id, bot_message)
+                    chat_id = input.session_id
+                else:
+                    # Tạo chat mới nếu không có session_id
+                    chat_data = {
+                        "user_id": input.user_id,
+                        "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
+                        "messages": [
+                            {
+                                "sender": "user",
+                                "text": input.query,
+                                "timestamp": datetime.now()
+                            },
+                            {
+                                "sender": "bot",
+                                "text": answer,
+                                "timestamp": datetime.now()
+                            }
+                        ]
+                    }
+                    chat_id = create_new_chat(chat_data)
             
             return {
                 "id": chat_id,
@@ -393,26 +663,89 @@ async def ask(input: QueryInput):
         # 3. Tính tổng thời gian
         total_time = time.time() - start_time
         
-        # 4. Lưu vào MongoDB nếu có user_id
-        metrics = {
-            "retrieval_time": retrieval_time,
-            "generation_time": generation_time,
-            "total_time": total_time
-        }
+        # 4. Tạo ID cho cuộc trò chuyện
+        chat_id = str(uuid4())
         
+        # 5. Lưu vào lịch sử nếu có thông tin người dùng
         if input.user_id:
-            save_chat_history(input.user_id, input.query, answer, context_items, retrieved_chunks, metrics)
+            # Nếu có session_id (chat_id), thêm tin nhắn vào cuộc trò chuyện đó
+            if input.session_id:
+                user_message = {
+                    "sender": "user",
+                    "text": input.query,
+                    "timestamp": datetime.now()
+                }
+                
+                bot_message = {
+                    "sender": "bot",
+                    "text": answer,
+                    "context": context_items,
+                    "retrieved_chunks": retrieved_chunks,
+                    "timestamp": datetime.now()
+                }
+                
+                add_message_to_chat(input.session_id, user_message)
+                add_message_to_chat(input.session_id, bot_message)
+                chat_id = input.session_id
+            else:
+                # Tạo chat mới nếu không có session_id
+                chat_data = {
+                    "user_id": input.user_id,
+                    "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
+                    "messages": [
+                        {
+                            "sender": "user",
+                            "text": input.query,
+                            "timestamp": datetime.now()
+                        },
+                        {
+                            "sender": "bot",
+                            "text": answer,
+                            "context": context_items,
+                            "retrieved_chunks": retrieved_chunks,
+                            "timestamp": datetime.now()
+                        }
+                    ]
+                }
+                chat_id = create_new_chat(chat_data)
         
         return {
             "id": chat_id,
             "query": input.query,
             "answer": answer,
+            "top_chunks": context_items[:3],  # Trả về 3 đoạn văn bản liên quan nhất
             "retrieval_time": retrieval_time,
             "generation_time": generation_time,
             "total_time": total_time
         }
     except Exception as e:
         print(f"Error in /ask endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+# === ENDPOINT PHẢN HỒI NGƯỜI DÙNG ===
+@app.post("/feedback")
+async def submit_feedback(feedback: UserFeedback):
+    try:
+        feedback_id = save_user_feedback(feedback.chat_id, feedback.dict())
+        return {
+            "message": "Cảm ơn bạn đã gửi phản hồi",
+            "feedback_id": feedback_id
+        }
+    except Exception as e:
+        print(f"Error in /feedback endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# === ENDPOINT LỊCH SỬ CHAT ===
+@app.get("/history/{user_id}")
+async def get_chat_history(user_id: str, limit: int = 20):
+    try:
+        history = get_user_chat_history(user_id, limit)
+        return {
+            "user_id": user_id,
+            "history": history
+        }
+    except Exception as e:
+        print(f"Error in /history endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # === ENDPOINT TRUY XUẤT DỮ LIỆU RIÊNG BIỆT ===
@@ -468,48 +801,18 @@ async def run_benchmark(input: QueryInput):
         print(f"Error in /benchmark endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-# === ENDPOINT PHẢN HỒI NGƯỜI DÙNG ===
-@app.post("/feedback")
-async def submit_feedback(feedback: UserFeedback):
-    try:
-        feedback_id = save_user_feedback(feedback.chat_id, feedback.dict())
-        if not feedback_id:
-            raise HTTPException(status_code=500, detail="Không thể lưu phản hồi")
-        return {
-            "status": "success",
-            "message": "Cảm ơn bạn đã gửi phản hồi",
-            "feedback_id": feedback_id
-        }
-    except Exception as e:
-        print(f"Error in /feedback endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-# === ENDPOINT LỊCH SỬ CHAT ===
-@app.get("/history/{user_id}")
-async def get_history(user_id: str, limit: int = 20):
-    try:
-        history = get_user_history(user_id, limit)
-        return {
-            "user_id": user_id,
-            "count": len(history),
-            "history": history
-        }
-    except Exception as e:
-        print(f"Error in /history endpoint: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
 # === ENDPOINT KIỂM TRA TRẠNG THÁI ===
 @app.get("/status")
 async def status():
     try:
         collection_count = collection.count()
-        mongo_status = "connected"
+        mongodb_status = "connected"
         
         try:
             # Kiểm tra kết nối MongoDB
-            mongo_client.admin.command('ping')
+            mongodb_client.admin.command('ping')
         except Exception as e:
-            mongo_status = f"disconnected: {str(e)}"
+            mongodb_status = f"disconnected: {str(e)}"
         
         return {
             "status": "ok", 
@@ -521,7 +824,7 @@ async def status():
                     "documents_count": collection_count
                 },
                 "mongodb": {
-                    "status": mongo_status
+                    "status": mongodb_status
                 }
             }
         }

@@ -181,7 +181,7 @@ const ChatInterface = () => {
               <div className="h-8 w-8 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center mr-2">
                 <MessageSquare size={16} className="text-white" />
               </div>
-              <h1 className="text-lg font-bold text-gray-800">NCC Chat</h1>
+              <h1 className="text-lg font-bold text-gray-800">CongBot Chat</h1>
             </div>
           </div>
           

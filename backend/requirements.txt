@@ -17,6 +17,7 @@ numpy
 python-multipart
 httpx
 rouge-score
+email-validator
 
 # Parsing and processing
 markdown

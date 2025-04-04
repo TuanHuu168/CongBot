@@ -3,6 +3,10 @@ import { Eye, EyeOff, User, Lock, ChevronRight, Mail, Phone } from 'lucide-react
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+
+// URL cơ sở của API backend
+const API_BASE_URL = 'http://localhost:8001';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -10,16 +14,18 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
+    username: '',
     fullName: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     password: '',
     confirmPassword: ''
   });
   const [errors, setErrors] = useState({
+    username: '',
     fullName: '',
     email: '',
-    phone: '',
+    phoneNumber: '',
     password: '',
     confirmPassword: ''
   });
@@ -56,12 +62,15 @@ const RegisterPage = () => {
 
   const validateField = (field, value) => {
     switch (field) {
+      case 'username':
+        return !value ? 'Vui lòng nhập tên đăng nhập' : 
+               value.length < 3 ? 'Tên đăng nhập phải có ít nhất 3 ký tự' : '';
       case 'fullName':
         return !value ? 'Vui lòng nhập họ và tên' : '';
       case 'email':
         return !value ? 'Vui lòng nhập email' : 
                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Email không hợp lệ' : '';
-      case 'phone':
+      case 'phoneNumber':
         return !value ? 'Vui lòng nhập số điện thoại' : '';
       case 'password':
         return !value ? 'Vui lòng nhập mật khẩu' : 
@@ -84,9 +93,10 @@ const RegisterPage = () => {
 
   const validateForm = () => {
     const newErrors = {
+      username: validateField('username', formData.username),
       fullName: validateField('fullName', formData.fullName),
       email: validateField('email', formData.email),
-      phone: validateField('phone', formData.phone),
+      phoneNumber: validateField('phoneNumber', formData.phoneNumber),
       password: validateField('password', formData.password),
       confirmPassword: validateField('confirmPassword', formData.confirmPassword)
     };
@@ -116,7 +126,7 @@ const RegisterPage = () => {
     navigate('/login');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -136,24 +146,55 @@ const RegisterPage = () => {
     // Begin registration process
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Chuẩn bị dữ liệu gửi lên server
+      const userData = {
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName,
+        phoneNumber: formData.phoneNumber
+      };
       
-      // Simulate successful registration
+      // Gửi request đăng ký đến API
+      const response = await axios.post(`${API_BASE_URL}/users/register`, userData);
+      
+      if (response.status === 200) {
+        // Đăng ký thành công
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng ký thành công',
+          text: 'Đang chuyển hướng đến trang đăng nhập...',
+          showConfirmButton: false,
+          timer: 1500,
+          background: '#fff',
+          iconColor: '#10b981'
+        }).then(() => {
+          // Redirect to login page
+          navigate('/login');
+        });
+      }
+    } catch (error) {
+      console.error('Đăng ký thất bại:', error);
+      
+      let errorMessage = 'Đã có lỗi xảy ra khi đăng ký';
+      
+      // Xử lý thông báo lỗi từ server
+      if (error.response) {
+        if (error.response.status === 400 && error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        }
+      }
+      
       Swal.fire({
-        icon: 'success',
-        title: 'Đăng ký thành công',
-        text: 'Đang chuyển hướng đến trang đăng nhập...',
-        showConfirmButton: false,
-        timer: 1500,
-        background: '#fff',
-        iconColor: '#10b981'
-      }).then(() => {
-        // Redirect to login page
-        navigate('/login');
+        icon: 'error',
+        title: 'Đăng ký thất bại',
+        text: errorMessage,
+        confirmButtonColor: '#10b981'
       });
-    }, 1500);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -213,6 +254,25 @@ const RegisterPage = () => {
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username field */}
+            <motion.div className="space-y-1" variants={itemVariants}>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
+                  <User size={18} />
+                </div>
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  onBlur={() => handleBlur('username')}
+                  placeholder="Tên đăng nhập"
+                  className={`w-full px-10 py-3 border ${errors.username ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.username ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
+                />
+              </div>
+              {errors.username && <p className="text-red-500 text-sm ml-1">{errors.username}</p>}
+            </motion.div>
+
             <motion.div className="space-y-1" variants={itemVariants}>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
@@ -256,15 +316,15 @@ const RegisterPage = () => {
                 </div>
                 <input
                   type="tel"
-                  name="phone"
-                  value={formData.phone}
+                  name="phoneNumber"
+                  value={formData.phoneNumber}
                   onChange={handleChange}
-                  onBlur={() => handleBlur('phone')}
+                  onBlur={() => handleBlur('phoneNumber')}
                   placeholder="Số điện thoại"
-                  className={`w-full px-10 py-3 border ${errors.phone ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.phone ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
+                  className={`w-full px-10 py-3 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.phoneNumber ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
                 />
               </div>
-              {errors.phone && <p className="text-red-500 text-sm ml-1">{errors.phone}</p>}
+              {errors.phoneNumber && <p className="text-red-500 text-sm ml-1">{errors.phoneNumber}</p>}
             </motion.div>
 
             <motion.div className="space-y-1" variants={itemVariants}>
@@ -376,8 +436,6 @@ const RegisterPage = () => {
           </motion.div>
         </motion.div>
       </div>
-
-
     </motion.div>
   );
 };

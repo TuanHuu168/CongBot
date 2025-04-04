@@ -3,16 +3,20 @@ import { Eye, EyeOff, User, Lock, ChevronRight, Mail } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import axios from 'axios';
+
+// URL cơ sở của API backend
+const API_BASE_URL = 'http://localhost:8001';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [emailError, setEmailError] = useState('');
+  const [usernameError, setUsernameError] = useState('');
   const [passwordError, setPasswordError] = useState('');
 
   // Animation variants
@@ -45,19 +49,12 @@ const LoginPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const validateEmail = (email) => {
-    setEmailError('');
-    if (!email) {
-      setEmailError('Vui lòng nhập địa chỉ email');
+  const validateUsername = (username) => {
+    setUsernameError('');
+    if (!username) {
+      setUsernameError('Vui lòng nhập tên đăng nhập');
       return false;
     }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError('Địa chỉ email không hợp lệ');
-      return false;
-    }
-    
     return true;
   };
 
@@ -71,38 +68,78 @@ const LoginPage = () => {
     return true;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     
-    const isEmailValid = validateEmail(email);
+    const isUsernameValid = validateUsername(username);
     const isPasswordValid = validatePassword(password);
     
-    if (!isEmailValid || !isPasswordValid) {
+    if (!isUsernameValid || !isPasswordValid) {
       return;
     }
     
     // Tiếp tục quá trình đăng nhập
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      // Gửi request đăng nhập đến API
+      const response = await axios.post(`${API_BASE_URL}/users/login`, {
+        username: username,
+        password: password
+      });
       
-      // Giả lập login thành công
+      if (response.status === 200) {
+        // Lấy token và thông tin người dùng từ response
+        const { access_token, user_id } = response.data;
+        
+        // Lưu thông tin đăng nhập vào localStorage (hoặc sessionStorage nếu không "remember me")
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem('auth_token', access_token);
+        storage.setItem('user_id', user_id);
+        
+        // Thông báo đăng nhập thành công
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng nhập thành công',
+          text: 'Chào mừng bạn quay trở lại hệ thống!',
+          showConfirmButton: false,
+          timer: 1500,
+          background: '#fff',
+          iconColor: '#10b981',
+          customClass: {
+            popup: 'rounded-xl shadow-2xl'
+          }
+        }).then(() => { 
+          navigate('/chat'); 
+        });
+      }
+    } catch (error) {
+      console.error('Đăng nhập thất bại:', error);
+      
+      let errorMessage = 'Đăng nhập thất bại, vui lòng thử lại';
+      
+      // Xử lý thông báo lỗi từ server
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = 'Tên đăng nhập hoặc mật khẩu không đúng';
+        } else if (error.response.data && error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        }
+      }
+      
       Swal.fire({
-        icon: 'success',
-        title: 'Đăng nhập thành công',
-        text: 'Chào mừng bạn quay trở lại hệ thống!',
-        showConfirmButton: false,
-        timer: 1500,
+        icon: 'error',
+        title: 'Đăng nhập thất bại',
+        text: errorMessage,
+        confirmButtonColor: '#10b981',
         background: '#fff',
-        iconColor: '#10b981',
         customClass: {
           popup: 'rounded-xl shadow-2xl'
         }
-      }).then(() => { navigate('/chat'); });
-      // Điều hướng hoặc logic sau đăng nhập thành công ở đây
-    }, 1500);
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotPassword = (e) => {
@@ -187,22 +224,22 @@ const LoginPage = () => {
             <motion.div className="space-y-1" variants={itemVariants}>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <Mail size={18} />
+                  <User size={18} />
                 </div>
                 <input
-                  type="email"
-                  value={email}
+                  type="text"
+                  value={username}
                   onChange={(e) => {
-                    setEmail(e.target.value);
-                    if (emailError) validateEmail(e.target.value);
+                    setUsername(e.target.value);
+                    if (usernameError) validateUsername(e.target.value);
                   }}
-                  onBlur={() => validateEmail(email)}
-                  placeholder="Email"
-                  className={`w-full px-10 py-3 border ${emailError ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${emailError ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white`}
+                  onBlur={() => validateUsername(username)}
+                  placeholder="Tên đăng nhập"
+                  className={`w-full px-10 py-3 border ${usernameError ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${usernameError ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white`}
                 />
               </div>
-              {emailError && (
-                <p className="text-red-500 text-sm ml-1">{emailError}</p>
+              {usernameError && (
+                <p className="text-red-500 text-sm ml-1">{usernameError}</p>
               )}
             </motion.div>
 
