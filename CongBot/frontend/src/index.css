@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+/* Ẩn thanh scrollbar cho Webkit (Chrome, Safari, etc.) */
+.scrollbar-hide::-webkit-scrollbar {
+display: none;
+}
+
+/* Ẩn thanh scrollbar cho Firefox */
+.scrollbar-hide {
+scrollbar-width: none;
+}
+
+/* Ẩn thanh scrollbar cho IE/Edge */
+.scrollbar-hide {
+-ms-overflow-style: none;
+}
