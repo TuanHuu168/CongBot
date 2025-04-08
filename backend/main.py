@@ -452,10 +452,43 @@ def create_new_chat(chat_data: dict) -> str:
     """Tạo cuộc trò chuyện mới trong MongoDB"""
     chat_data["created_at"] = datetime.now()
     chat_data["updated_at"] = datetime.now()
-    chat_data["messages"] = []
+    
+    # Đảm bảo title hợp lệ
+    if "title" not in chat_data or not chat_data["title"] or len(chat_data["title"].strip()) == 0:
+        chat_data["title"] = "Cuộc trò chuyện mới"
+        
+    if "messages" in chat_data:
+        # Chuyển đổi từ messages sang exchanges nếu cần
+        messages = chat_data.pop("messages", [])
+        if len(messages) >= 2 and messages[0].get("sender") == "user" and messages[1].get("sender") == "bot":
+            chat_data["exchanges"] = [{
+                "exchangeId": str(uuid4()),
+                "question": messages[0].get("text", ""),
+                "answer": messages[1].get("text", ""),
+                "timestamp": messages[1].get("timestamp", datetime.now()),
+                "sourceDocuments": messages[1].get("retrieved_chunks", []),
+                "processingTime": messages[1].get("processingTime", 0),
+                "clientInfo": {
+                    "platform": "web",
+                    "deviceType": "desktop"
+                }
+            }]
+        else:
+            chat_data["exchanges"] = []
+    else:
+        chat_data["exchanges"] = []
     
     result = db["chats"].insert_one(chat_data)
-    return str(result.inserted_id)
+    chat_id = str(result.inserted_id)
+    
+    # Kiểm tra xem title có trùng với ID không
+    if chat_data["title"] == chat_id:
+        db["chats"].update_one(
+            {"_id": result.inserted_id},
+            {"$set": {"title": "Cuộc trò chuyện mới"}}
+        )
+    
+    return chat_id
 
 def get_chat_by_id(chat_id: str):
     """Lấy thông tin cuộc trò chuyện theo ID"""
@@ -472,23 +505,36 @@ def get_user_chats(user_id: str, limit: int = 20):
         {"title": 1, "created_at": 1, "updated_at": 1}
     ).sort("updated_at", -1).limit(limit))
 
-def add_message_to_chat(chat_id: str, message: dict) -> bool:
-    """Thêm tin nhắn vào cuộc trò chuyện"""
+def add_message_to_chat(chat_id: str, user_message: dict, bot_message: dict = None) -> bool:
+    """Thêm cặp tin nhắn vào cuộc trò chuyện"""
     from bson.objectid import ObjectId
     try:
-        message["timestamp"] = datetime.now()
+        # Tạo một exchange thay vì thêm riêng lẻ tin nhắn
+        exchange = {
+            "exchangeId": str(uuid4()),
+            "question": user_message.get("text", ""),
+            "answer": bot_message.get("text", "") if bot_message else "",
+            "timestamp": datetime.now(),
+            "sourceDocuments": bot_message.get("retrieved_chunks", []) if bot_message else [],
+            "processingTime": bot_message.get("processingTime", 0) if bot_message else 0,
+            "clientInfo": {
+                "platform": "web",
+                "deviceType": "desktop"
+            }
+        }
         
+        # Cập nhật DB bằng cách thêm vào mảng exchanges
         result = db["chats"].update_one(
             {"_id": ObjectId(chat_id)},
             {
-                "$push": {"messages": message},
+                "$push": {"exchanges": exchange},
                 "$set": {"updated_at": datetime.now()}
             }
         )
         
         return result.modified_count > 0
     except Exception as e:
-        print(f"Error adding message to chat: {str(e)}")
+        print(f"Error adding exchange to chat: {str(e)}")
         return False
 
 def update_chat_title(chat_id: str, title: str) -> bool:
@@ -531,15 +577,49 @@ async def get_chats(user_id: str, limit: int = 20):
 @app.get("/chats/{chat_id}/messages", response_model=dict)
 async def get_chat_messages(chat_id: str):
     try:
+        print(f"Fetching messages for chat_id: {chat_id}")
         chat = get_chat_by_id(chat_id)
+        
         if not chat:
+            print(f"Chat with id {chat_id} not found")
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
+        
+        # Log cấu trúc dữ liệu để debug
+        print(f"Chat structure: {chat.keys()}")
+        if "exchanges" in chat:
+            print(f"Found {len(chat['exchanges'])} exchanges")
+        elif "messages" in chat:
+            print(f"Found {len(chat['messages'])} messages")
+        else:
+            print("No messages or exchanges found in chat")
+        
+        # Xử lý dữ liệu để trả về theo định dạng mong muốn
+        exchanges = chat.get("exchanges", [])
+        messages = []
+        
+        # Chuyển đổi từ exchanges sang messages phù hợp với giao diện
+        for exchange in exchanges:
+            # Thêm tin nhắn user
+            messages.append({
+                "sender": "user",
+                "text": exchange.get("question", ""),
+                "timestamp": exchange.get("timestamp")
+            })
+            
+            # Thêm tin nhắn bot
+            messages.append({
+                "sender": "bot",
+                "text": exchange.get("answer", ""),
+                "processingTime": exchange.get("processingTime", 0),
+                "sourceDocuments": exchange.get("sourceDocuments", []),
+                "timestamp": exchange.get("timestamp")
+            })
         
         # Chuyển đổi ObjectId sang string
         chat_data = {
             "id": str(chat["_id"]),
             "title": chat.get("title", "Cuộc trò chuyện"),
-            "messages": chat.get("messages", []),
+            "messages": messages,
             "created_at": chat.get("created_at", datetime.now()),
             "updated_at": chat.get("updated_at", datetime.now())
         }
@@ -594,6 +674,7 @@ async def update_chat_title_endpoint(chat_id: str, title_data: dict):
 async def ask(input: QueryInput):
     try:
         start_time = time.time()
+        print(f"Processing query: '{input.query}' with session_id: {input.session_id}")
         
         # 1. Retrieval
         retrieval_result = retrieve_from_chroma(input.query)
@@ -601,114 +682,62 @@ async def ask(input: QueryInput):
         retrieved_chunks = retrieval_result['retrieved_chunks']
         retrieval_time = retrieval_result.get('execution_time', 0)
         
-        if not context_items:
-            answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu. Vui lòng thử cách diễn đạt khác hoặc hỏi một câu hỏi khác về chính sách người có công."
-            
-            # Tạo ID cho cuộc trò chuyện
-            chat_id = str(uuid4())
-            
-            # Lưu vào lịch sử nếu có thông tin người dùng
-            if input.user_id:
-                # Nếu có session_id (chat_id), thêm tin nhắn vào cuộc trò chuyện đó
-                if input.session_id:
-                    user_message = {
-                        "sender": "user",
-                        "text": input.query,
-                        "timestamp": datetime.now()
-                    }
-                    
-                    bot_message = {
-                        "sender": "bot",
-                        "text": answer,
-                        "timestamp": datetime.now()
-                    }
-                    
-                    add_message_to_chat(input.session_id, user_message)
-                    add_message_to_chat(input.session_id, bot_message)
-                    chat_id = input.session_id
-                else:
-                    # Tạo chat mới nếu không có session_id
-                    chat_data = {
-                        "user_id": input.user_id,
-                        "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                        "messages": [
-                            {
-                                "sender": "user",
-                                "text": input.query,
-                                "timestamp": datetime.now()
-                            },
-                            {
-                                "sender": "bot",
-                                "text": answer,
-                                "timestamp": datetime.now()
-                            }
-                        ]
-                    }
-                    chat_id = create_new_chat(chat_data)
-            
-            return {
-                "id": chat_id,
-                "query": input.query,
-                "answer": answer,
-                "retrieval_time": retrieval_time,
-                "generation_time": 0,
-                "total_time": retrieval_time
-            }
-        
         # 2. Generation
-        generation_result = generate_response_with_gemini(input.query, context_items)
-        answer = generation_result['answer']
-        generation_time = generation_result.get('execution_time', 0)
+        if context_items:
+            generation_result = generate_response_with_gemini(input.query, context_items)
+            answer = generation_result['answer']
+            generation_time = generation_result.get('execution_time', 0)
+        else:
+            answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
+            generation_time = 0
         
         # 3. Tính tổng thời gian
         total_time = time.time() - start_time
         
-        # 4. Tạo ID cho cuộc trò chuyện
-        chat_id = str(uuid4())
+        # 4. Xử lý lưu trữ tin nhắn
+        chat_id = input.session_id
         
-        # 5. Lưu vào lịch sử nếu có thông tin người dùng
         if input.user_id:
-            # Nếu có session_id (chat_id), thêm tin nhắn vào cuộc trò chuyện đó
+            # Chuẩn bị tin nhắn user và bot
+            user_message = {
+                "text": input.query,
+                "timestamp": datetime.now()
+            }
+            
+            bot_message = {
+                "text": answer,
+                "retrieved_chunks": retrieved_chunks,
+                "context": context_items,
+                "processingTime": total_time,
+                "timestamp": datetime.now()
+            }
+            
+            # Nếu có session_id, thêm tin nhắn vào cuộc trò chuyện đó
             if input.session_id:
-                user_message = {
-                    "sender": "user",
-                    "text": input.query,
-                    "timestamp": datetime.now()
-                }
-                
-                bot_message = {
-                    "sender": "bot",
-                    "text": answer,
-                    "context": context_items,
-                    "retrieved_chunks": retrieved_chunks,
-                    "timestamp": datetime.now()
-                }
-                
-                add_message_to_chat(input.session_id, user_message)
-                add_message_to_chat(input.session_id, bot_message)
-                chat_id = input.session_id
+                print(f"Adding message to existing chat: {input.session_id}")
+                success = add_message_to_chat(input.session_id, user_message, bot_message)
+                if not success:
+                    print(f"Failed to add message to chat: {input.session_id}")
+                    # Nếu không thành công, có thể chat không tồn tại, tạo mới
+                    chat_data = {
+                        "user_id": input.user_id,
+                        "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
+                        "exchanges": []
+                    }
+                    chat_id = create_new_chat(chat_data)
+                    add_message_to_chat(chat_id, user_message, bot_message)
             else:
                 # Tạo chat mới nếu không có session_id
+                print("Creating new chat")
                 chat_data = {
                     "user_id": input.user_id,
                     "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                    "messages": [
-                        {
-                            "sender": "user",
-                            "text": input.query,
-                            "timestamp": datetime.now()
-                        },
-                        {
-                            "sender": "bot",
-                            "text": answer,
-                            "context": context_items,
-                            "retrieved_chunks": retrieved_chunks,
-                            "timestamp": datetime.now()
-                        }
-                    ]
+                    "exchanges": []
                 }
                 chat_id = create_new_chat(chat_data)
+                add_message_to_chat(chat_id, user_message, bot_message)
         
+        # 5. Trả về kết quả
         return {
             "id": chat_id,
             "query": input.query,
@@ -720,6 +749,8 @@ async def ask(input: QueryInput):
         }
     except Exception as e:
         print(f"Error in /ask endpoint: {str(e)}")
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
     
 # === ENDPOINT PHẢN HỒI NGƯỜI DÙNG ===
@@ -746,6 +777,30 @@ async def get_chat_history(user_id: str, limit: int = 20):
         }
     except Exception as e:
         print(f"Error in /history endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/users/{user_id}")
+async def get_user_info(user_id: str):
+    try:
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        # Tạo đối tượng trả về (loại bỏ password)
+        user_data = {
+            "id": str(user["_id"]),
+            "username": user.get("username", ""),
+            "email": user.get("email", ""),
+            "fullName": user.get("fullName", ""),
+            "phoneNumber": user.get("phoneNumber", ""),
+            "created_at": user.get("created_at", datetime.now())
+        }
+        
+        return user_data
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in get_user_info endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 # === ENDPOINT TRUY XUẤT DỮ LIỆU RIÊNG BIỆT ===

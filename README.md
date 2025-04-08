@@ -99,7 +99,6 @@ CongBot/
 │   ├── tailwind.config.js          # Cấu hình Tailwind CSS
 │   └── vite.config.js              # Cấu hình Vite
 │
-├── create_tree.ps1                 # Script tạo cây thư mục
 └── README.md                       # File hướng dẫn này
 ```
 

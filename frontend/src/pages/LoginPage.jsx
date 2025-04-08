@@ -64,39 +64,39 @@ const LoginPage = () => {
       setPasswordError('Vui lòng nhập mật khẩu');
       return false;
     }
-    
+
     return true;
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
+
     const isUsernameValid = validateUsername(username);
     const isPasswordValid = validatePassword(password);
-    
+
     if (!isUsernameValid || !isPasswordValid) {
       return;
     }
-    
+
     // Tiếp tục quá trình đăng nhập
     setIsLoading(true);
-    
+
     try {
       // Gửi request đăng nhập đến API
       const response = await axios.post(`${API_BASE_URL}/users/login`, {
         username: username,
         password: password
       });
-      
+
       if (response.status === 200) {
         // Lấy token và thông tin người dùng từ response
         const { access_token, user_id } = response.data;
-        
+
         // Lưu thông tin đăng nhập vào localStorage (hoặc sessionStorage nếu không "remember me")
         const storage = rememberMe ? localStorage : sessionStorage;
         storage.setItem('auth_token', access_token);
         storage.setItem('user_id', user_id);
-        
+
         // Thông báo đăng nhập thành công
         Swal.fire({
           icon: 'success',
@@ -109,15 +109,20 @@ const LoginPage = () => {
           customClass: {
             popup: 'rounded-xl shadow-2xl'
           }
-        }).then(() => { 
-          navigate('/chat'); 
+        }).then(() => {
+          navigate('/chat', {
+            state: {
+              freshLogin: true,
+              userId: user_id
+            }
+          });
         });
       }
     } catch (error) {
       console.error('Đăng nhập thất bại:', error);
-      
+
       let errorMessage = 'Đăng nhập thất bại, vui lòng thử lại';
-      
+
       // Xử lý thông báo lỗi từ server
       if (error.response) {
         if (error.response.status === 401) {
@@ -126,7 +131,7 @@ const LoginPage = () => {
           errorMessage = error.response.data.detail;
         }
       }
-      
+
       Swal.fire({
         icon: 'error',
         title: 'Đăng nhập thất bại',
@@ -144,7 +149,7 @@ const LoginPage = () => {
 
   const handleForgotPassword = (e) => {
     e.preventDefault();
-    
+
     Swal.fire({
       title: 'Khôi phục mật khẩu',
       text: 'Vui lòng nhập email để khôi phục mật khẩu',
@@ -192,7 +197,7 @@ const LoginPage = () => {
   };
 
   return (
-    <motion.div 
+    <motion.div
       className="flex min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -200,15 +205,15 @@ const LoginPage = () => {
       transition={{ duration: 0.3 }}
     >
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 relative z-10">
-        <motion.div 
+        <motion.div
           className="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -100, opacity: 0 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 260, 
-            damping: 20 
+          transition={{
+            type: "spring",
+            stiffness: 260,
+            damping: 20
           }}
           variants={containerVariants}
         >
@@ -274,8 +279,8 @@ const LoginPage = () => {
 
             <motion.div className="flex items-center justify-between" variants={itemVariants}>
               <label className="flex items-center group cursor-pointer">
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   checked={rememberMe}
                   onChange={toggleRememberMe}
                   className="opacity-0 absolute h-5 w-5 cursor-pointer"
@@ -290,9 +295,9 @@ const LoginPage = () => {
                 </div>
                 <span className="ml-2 text-sm text-gray-600 group-hover:text-green-600 transition-colors duration-300">Ghi nhớ đăng nhập</span>
               </label>
-              
-              <a 
-                href="#" 
+
+              <a
+                href="#"
                 onClick={handleForgotPassword}
                 className="text-sm text-green-600 hover:text-green-800 transition-colors duration-300 hover:underline px-2 py-1"
               >
@@ -325,8 +330,8 @@ const LoginPage = () => {
           <motion.div className="mt-8 text-center" variants={itemVariants}>
             <p className="text-gray-600">
               Chưa có tài khoản?{' '}
-              <a 
-                href="#" 
+              <a
+                href="#"
                 onClick={handleRegisterClick}
                 className="text-green-600 hover:text-green-800 font-medium transition-colors duration-300 hover:underline px-2 py-1"
               >
@@ -338,7 +343,7 @@ const LoginPage = () => {
       </div>
 
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
-        <motion.div 
+        <motion.div
           className="relative h-full flex flex-col justify-center z-10"
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -349,16 +354,16 @@ const LoginPage = () => {
               <User size={20} className="text-green-600" />
             </div>
           </div>
-          
+
           <h2 className="text-4xl font-bold text-white mb-6">Chào mừng đến với Chatbot Hỗ Trợ</h2>
-          
+
           <p className="text-white/80 text-lg mb-8 max-w-lg">
             Hệ thống trí tuệ nhân tạo tư vấn chính sách dành cho người có công tại Việt Nam.
             Công nghệ hiện đại kết hợp với dữ liệu đầy đủ sẽ giúp bạn dễ dàng tiếp cận thông tin.
           </p>
-          
+
           <div className="w-20 h-1 bg-gradient-to-r from-white/40 to-white/10 rounded mb-8"></div>
-          
+
           <p className="text-white/90 italic">
             "Đền ơn đáp nghĩa là truyền thống tốt đẹp của dân tộc Việt Nam."
           </p>
