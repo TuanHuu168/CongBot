@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from enum import Enum
 from pydantic import BaseModel, Field
+from pydantic.json_schema import JsonSchemaValue
 from typing import List, Dict, Optional, Any
 from bson import ObjectId
 import sys
@@ -23,8 +24,10 @@ class PyObjectId(ObjectId):
         return ObjectId(v)
 
     @classmethod
-    def __modify_schema__(cls, field_schema):
-        field_schema.update(type="string")
+    def __get_pydantic_json_schema__(cls, core_schema, handler) -> JsonSchemaValue:
+        schema = handler(core_schema)
+        schema.update(type="string")
+        return schema
 
 class CacheStatus(str, Enum):
     """Trạng thái của cache"""

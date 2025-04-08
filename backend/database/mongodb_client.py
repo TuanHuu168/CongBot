@@ -4,7 +4,7 @@ import sys
 import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import MONGO_URI, MONGO_DB_NAME
+from config import MONGO_URI, MONGODB_DATABASE
 
 class MongoDBClient:
     _instance = None  # Singleton instance
@@ -21,8 +21,8 @@ class MongoDBClient:
         """Khởi tạo kết nối tới MongoDB"""
         try:
             self.client = pymongo.MongoClient(MONGO_URI)
-            self.db = self.client[MONGO_DB_NAME]
-            print(f"Đã kết nối tới MongoDB: {MONGO_DB_NAME}")
+            self.db = self.client[MONGODB_DATABASE]
+            print(f"Đã kết nối tới MongoDB: {MONGODB_DATABASE}")
         except Exception as e:
             print(f"Lỗi kết nối MongoDB: {str(e)}")
             self.client = None
@@ -30,13 +30,13 @@ class MongoDBClient:
     
     def get_database(self):
         """Trả về đối tượng database"""
-        if not self.db:
+        if self.db is None:  # Thay vì if not self.db:
             self.initialize()
         return self.db
     
     def get_collection(self, collection_name: str):
         """Lấy collection từ MongoDB"""
-        if not self.db:
+        if self.db is None:  # Thay vì if not self.db:
             self.initialize()
         return self.db[collection_name]
 
@@ -58,6 +58,7 @@ class MongoDBClient:
         ])
         self.db.conversations.create_index([("totalTokens", pymongo.ASCENDING)])
         self.db.conversations.create_index([("exchanges.timestamp", pymongo.ASCENDING)])
+        self.db.conversations.create_index([("exchanges.exchangeId", 1)])
         
         # Indexes cho text_cache collection
         self.db.text_cache.create_index([("cacheId", pymongo.ASCENDING)], unique=True)
