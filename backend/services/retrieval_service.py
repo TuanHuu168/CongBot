@@ -79,31 +79,50 @@ class RetrievalService:
         """Kiểm tra cache cho câu hỏi hiện tại"""
         normalized_query = self._normalize_question(query)
         
-        # Tìm kiếm trong cache bằng cả so khớp chính xác và text search
-        cache_result = self.text_cache_collection.find_one({
-            "normalizedQuestion": normalized_query,
-            "validityStatus": "valid"
-        })
-        
-        if not cache_result:
-            # Thử tìm với text search
+        try:
+            # Kiểm tra xem collection text_cache đã tồn tại chưa
+            collections = self.db.list_collection_names()
+            if "text_cache" not in collections:
+                print("Collection text_cache chưa tồn tại, bỏ qua kiểm tra cache")
+                return None
+                
+            # Kiểm tra xem text index đã được tạo chưa
+            indexes = list(self.db.text_cache.list_indexes())
+            has_text_index = any("text" in idx.get("name", "") for idx in indexes)
+            
+            if not has_text_index:
+                # Tạo text index nếu chưa có
+                self.db.text_cache.create_index([("normalizedQuestion", "text")])
+                print("Đã tạo text index cho collection text_cache")
+            
+            # Tìm kiếm trong cache bằng cả so khớp chính xác và text search
             cache_result = self.text_cache_collection.find_one({
-                "$text": {"$search": normalized_query},
+                "normalizedQuestion": normalized_query,
                 "validityStatus": "valid"
             })
-        
-        if cache_result:
-            # Cập nhật hitCount và lastUsed
-            self.text_cache_collection.update_one(
-                {"_id": cache_result["_id"]},
-                {
-                    "$inc": {"hitCount": 1},
-                    "$set": {"lastUsed": time.time()}
-                }
-            )
             
-            # Chuyển từ BSON sang dict Python
-            return dict(cache_result)
+            if not cache_result:
+                # Thử tìm với text search
+                cache_result = self.text_cache_collection.find_one({
+                    "$text": {"$search": normalized_query},
+                    "validityStatus": "valid"
+                })
+            
+            if cache_result:
+                # Cập nhật hitCount và lastUsed
+                self.text_cache_collection.update_one(
+                    {"_id": cache_result["_id"]},
+                    {
+                        "$inc": {"hitCount": 1},
+                        "$set": {"lastUsed": time.time()}
+                    }
+                )
+                
+                # Chuyển từ BSON sang dict Python
+                return dict(cache_result)
+        except Exception as e:
+            print(f"Lỗi khi kiểm tra cache: {str(e)}")
+            # Tiếp tục xử lý thay vì tạm dừng
         
         return None
     
@@ -225,17 +244,20 @@ class RetrievalService:
         """Truy xuất thông tin cho câu hỏi"""
         start_time = time.time()
         
-        # Kiểm tra cache
+        # Kiểm tra cache nếu cần
         if use_cache:
-            cache_result = self._check_cache(query)
-            if cache_result:
-                return {
-                    "answer": cache_result["answer"],
-                    "context_items": [doc["chunkId"] for doc in cache_result.get("relevantDocuments", [])],
-                    "source": "cache",
-                    "cache_id": cache_result["cacheId"],
-                    "execution_time": time.time() - start_time
-                }
+            try:
+                cache_result = self._check_cache(query)
+                if cache_result:
+                    return {
+                        "answer": cache_result["answer"],
+                        "context_items": [doc["chunkId"] for doc in cache_result.get("relevantDocuments", [])],
+                        "source": "cache",
+                        "cache_id": cache_result["cacheId"],
+                        "execution_time": time.time() - start_time
+                    }
+            except Exception as e:
+                print(f"Lỗi khi kiểm tra cache, bỏ qua và tiếp tục tìm kiếm: {str(e)}")
         
         # Nếu không có trong cache, truy vấn từ ChromaDB
         try:

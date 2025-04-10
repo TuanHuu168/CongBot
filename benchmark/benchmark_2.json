@@ -1,0 +1,494 @@
+{
+    "benchmark": [
+        {
+            "id": "q1",
+            "question": "Ai chịu trách nhiệm chi trả tiền trợ cấp cho người có công ở xã, phường?",
+            "answer": "Ủy ban nhân dân cấp xã, phường, thị trấn chịu trách nhiệm trực tiếp chi trả các khoản trợ cấp, phụ cấp ưu đãi cho người có công với cách mạng trên địa bàn. Trong văn bản cũ (Thông tư 47/2009), việc chi trả được giao cho cơ quan Lao động – Thương binh và Xã hội phối hợp với Kho bạc Nhà nước, nhưng không nêu rõ vai trò của UBND cấp xã. Đến văn bản mới (dựa trên các quy định hiện hành), trách nhiệm này được xác định rõ là của UBND cấp xã, với cán bộ được giao nhiệm vụ chi trả và nhận thù lao hàng tháng theo quy định.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art3",
+                "49_2012_QD_UBND_regulation_ch2_art8"
+            ],
+            "ground_truth": "Theo Điều 3 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, cơ quan Lao động – Thương binh và Xã hội chủ trì, phối hợp với Kho bạc Nhà nước để chi trả kịp thời, đúng chế độ cho người có công. Tuy nhiên, Điều 8 Quyết định số 49/2012/QĐ-UBND quy định rõ Ủy ban nhân dân phường-xã, thị trấn trực tiếp quản lý và chi trả các khoản trợ cấp, phụ cấp ưu đãi, đảm bảo đúng đối tượng, kịp thời, và cán bộ thực hiện được hưởng thù lao chi trả hàng tháng."
+        },
+        {
+            "id": "q2",
+            "question": "Kinh phí để trả trợ cấp cho người có công lấy từ đâu?",
+            "answer": "Ngân sách Trung ương đảm bảo nguồn kinh phí để thực hiện chính sách ưu đãi người có công với cách mạng. Theo Thông tư 47/2009, Bộ Tài chính và Kho bạc Nhà nước bảo đảm đầy đủ, kịp thời kinh phí cho cơ quan Lao động – Thương binh và Xã hội. Các quy định sau này không thay đổi nguồn kinh phí, vẫn giữ nguyên từ ngân sách Trung ương, nhưng việc quản lý và phân bổ được điều chỉnh rõ hơn qua các cấp hành chính.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 1 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH quy định kinh phí thực hiện chính sách ưu đãi người có công với cách mạng được đảm bảo từ ngân sách Trung ương, do Bộ Tài chính và Kho bạc Nhà nước cung cấp kịp thời. Thông tư số 101/2018/TT-BTC không thay đổi nguồn kinh phí mà tập trung vào mức chi cụ thể cho các phương tiện trợ giúp, dụng cụ chỉnh hình, nhưng vẫn dựa trên ngân sách Trung ương."
+        },
+        {
+            "id": "q3",
+            "question": "Người có công được cấp xe lăn tay thì bao lâu được cấp lại?",
+            "answer": "Người có công được cấp xe lăn tay sẽ được cấp lại sau 4 năm theo Thông tư 101/2018/TT-BTC. Trước đó, Thông tư 47/2009 không quy định cụ thể niên hạn cấp lại mà chỉ đề cập chung đến việc cấp phương tiện trợ giúp, dụng cụ chỉnh hình theo các văn bản hiện hành, nên niên hạn không rõ ràng.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi hỗ trợ phương tiện trợ giúp, dụng cụ chỉnh hình nhưng không nêu niên hạn cụ thể. Phụ lục Thông tư 101/2018/TT-BTC xác định rõ xe lăn tay có niên hạn cấp là 4 năm với mức cấp 2.500.000 đồng."
+        },
+        {
+            "id": "q4",
+            "question": "Muốn chứng thực bản sao giấy tờ thì mất bao nhiêu tiền?",
+            "answer": "Phí chứng thực bản sao từ bản chính là 2.000 đồng/trang, từ trang thứ 3 trở lên thu 1.000 đồng/trang, tối đa không quá 200.000 đồng/bản. Quy định này được cập nhật trong Quyết định 1766/2020/QĐ-UBND, dựa trên Thông tư 226/2016/TT-BTC, trong khi Thông tư 47/2009 không đề cập đến phí chứng thực cụ thể mà chỉ nói chung về chi phí quản lý.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art6",
+                "1766_2020_QD-UBND_Appendix_I.1"
+            ],
+            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý chung (1,7% tổng kinh phí) mà không nêu rõ phí chứng thực. Phụ lục I.1 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực bản sao là 2.000 đồng/trang, từ trang thứ 3 trở lên là 1.000 đồng/trang, tối đa 200.000 đồng/bản theo Thông tư 226/2016/TT-BTC."
+        },
+        {
+            "id": "q5",
+            "question": "Tôi muốn làm giấy xác nhận là người gốc Việt Nam thì mất bao lâu?",
+            "answer": "Thủ tục cấp Giấy xác nhận là người gốc Việt Nam mất 5 ngày làm việc theo Quyết định 1766/2020/QĐ-UBND. Trước đó, Thông tư 47/2009 không đề cập đến thủ tục này vì nó thuộc lĩnh vực quốc tịch, không liên quan trực tiếp đến chính sách ưu đãi người có công.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_II.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 tập trung vào kinh phí ưu đãi người có công, không quy định về thủ tục quốc tịch. Phụ lục II.1 Quyết định 1766/2020/QĐ-UBND quy định rõ thời hạn cấp Giấy xác nhận là người gốc Việt Nam là 5 ngày làm việc, theo Nghị định 16/2020/NĐ-CP."
+        },
+        {
+            "id": "q6",
+            "question": "Người có công được hỗ trợ tiền đi khám bệnh không?",
+            "answer": "Người có công được hỗ trợ tiền tàu, xe để đi khám chữa bệnh theo Thông tư 47/2009, cụ thể là khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi mà tiếp tục duy trì hỗ trợ này, nhưng không nêu mức chi cụ thể, chỉ quy định chi tiết hơn về phương tiện trợ giúp như xe lăn, nạng.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 liệt kê hỗ trợ tiền tàu, xe đi khám chữa bệnh trong các khoản chi ưu đãi khác. Phụ lục Thông tư 101/2018/TT-BTC không quy định mức chi này mà tập trung vào mức cấp phương tiện trợ giúp, dụng cụ chỉnh hình, nhưng vẫn dựa trên chính sách ưu đãi từ văn bản cũ."
+        },
+        {
+            "id": "q7",
+            "question": "Thương binh được cấp chân giả dưới gối thì bao nhiêu tiền?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, thương binh được cấp chân giả dưới gối có bao da đùi với mức 3.600.000 đồng, niên hạn 2 năm. Trước đó, Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền cụ thể.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi phương tiện trợ giúp, dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định chân giả dưới gối có bao da đùi được cấp 3.600.000 đồng, niên hạn 2 năm."
+        },
+        {
+            "id": "q8",
+            "question": "Muốn đăng ký thế chấp quyền sử dụng đất thì mất bao lâu?",
+            "answer": "Thủ tục đăng ký thế chấp quyền sử dụng đất được giải quyết trong ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND, nếu nhận sau 15 giờ thì trả kết quả ngày làm việc tiếp theo, tối đa không quá 3 ngày. Thông tư 47/2009 không quy định về thủ tục này vì không liên quan đến chính sách ưu đãi người có công.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_V.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp quyền sử dụng đất. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND quy định thời hạn giải quyết đăng ký thế chấp quyền sử dụng đất là trong ngày, tối đa 3 ngày nếu kéo dài, theo Nghị định 102/2017/NĐ-CP."
+        },
+        {
+            "id": "q9",
+            "question": "Người có công được cấp máy trợ thính không? Bao lâu thì cấp lại?",
+            "answer": "Người có công được cấp máy trợ thính với mức 450.000 đồng và niên hạn cấp lại là 1 năm theo Thông tư 101/2018/TT-BTC. Trước đó, Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không nêu cụ thể về máy trợ thính.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nhắc đến máy trợ thính. Phụ lục Thông tư 101/2018/TT-BTC xác định máy trợ thính được cấp 450.000 đồng, niên hạn 1 năm."
+        },
+        {
+            "id": "q11",
+            "question": "Thương binh được cấp nạng thì bao lâu thay cái mới?",
+            "answer": "Thương binh được cấp nạng cho người bị cứng khớp gối với niên hạn 1 năm theo Thông tư 101/2018/TT-BTC, mức cấp là 200.000 đồng. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn cụ thể.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định nạng cho người cứng khớp gối có niên hạn 1 năm, mức cấp 200.000 đồng."
+        },
+        {
+            "id": "q12",
+            "question": "Muốn nhập quốc tịch Việt Nam thì mất bao lâu để giải quyết?",
+            "answer": "Thủ tục nhập quốc tịch Việt Nam mất 115 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không đề cập đến thủ tục này vì chỉ tập trung vào chính sách ưu đãi người có công, không liên quan đến quốc tịch.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_II.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không quy định về quốc tịch. Phụ lục II.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn giải quyết thủ tục nhập quốc tịch Việt Nam là 115 ngày theo Nghị định 16/2020/NĐ-CP."
+        },
+        {
+            "id": "q13",
+            "question": "Người có công được hỗ trợ sửa nhà không?",
+            "answer": "Người có công được hỗ trợ sửa chữa, nâng cấp nhà cửa nếu đang ở các cơ sở nuôi dưỡng, điều dưỡng, theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào mức chi phương tiện trợ giúp, nên vẫn giữ nguyên hỗ trợ sửa nhà từ văn bản cũ.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art5",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 5 Thông tư 47/2009 quy định chi hỗ trợ sửa chữa, nâng cấp nhà cửa cho cơ sở nuôi dưỡng, điều dưỡng người có công. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 5 Thông tư 47/2009."
+        },
+        {
+            "id": "q14",
+            "question": "Thủ tục chứng thực hợp đồng thì mất bao nhiêu tiền?",
+            "answer": "Phí chứng thực hợp đồng, giao dịch là 50.000 đồng/trường hợp theo Quyết định 1766/2020/QĐ-UBND, áp dụng cho hợp đồng liên quan đến động sản, quyền sử dụng đất, nhà ở. Thông tư 47/2009 không quy định phí này vì không liên quan đến chứng thực.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art6",
+                "1766_2020_QD-UBND_Appendix_I.3"
+            ],
+            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực hợp đồng là 50.000 đồng/trường hợp theo Thông tư 226/2016/TT-BTC."
+        },
+        {
+            "id": "q15",
+            "question": "Thương binh được cấp áo chỉnh hình bao lâu một lần?",
+            "answer": "Thương binh được cấp áo chỉnh hình với niên hạn 5 năm, mức cấp 3.120.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn cụ thể.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định áo chỉnh hình có niên hạn 5 năm, mức cấp 3.120.000 đồng."
+        },
+        {
+            "id": "q16",
+            "question": "Muốn thôi quốc tịch Việt Nam thì mất bao lâu?",
+            "answer": "Thủ tục thôi quốc tịch Việt Nam mất 75 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không đề cập đến thủ tục này vì chỉ tập trung vào chính sách ưu đãi người có công.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_II.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không quy định về quốc tịch. Phụ lục II.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn giải quyết thủ tục thôi quốc tịch Việt Nam là 75 ngày theo Nghị định 16/2020/NĐ-CP."
+        },
+        {
+            "id": "q17",
+            "question": "Người có công được hỗ trợ bảo hiểm y tế không?",
+            "answer": "Người có công được hỗ trợ bảo hiểm y tế theo Thông tư 47/2009, là một trong các khoản chi ưu đãi khác. Quyết định 1766/2020/QĐ-UBND không thay đổi chính sách này mà tập trung vào thủ tục hành chính, nên hỗ trợ bảo hiểm y tế vẫn được duy trì từ văn bản cũ.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "1766_2020_QD-UBND_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi bảo hiểm y tế trong các khoản ưu đãi khác cho người có công. Quyết định 1766/2020/QĐ-UBND không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Thông tư 47/2009."
+        },
+        {
+            "id": "q18",
+            "question": "Thủ tục đăng ký hoạt động trung tâm tư vấn pháp luật mất bao lâu?",
+            "answer": "Thủ tục đăng ký hoạt động Trung tâm tư vấn pháp luật mất 4 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không đề cập đến thủ tục này vì không liên quan đến chính sách ưu đãi người có công.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_IV.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không quy định về tư vấn pháp luật. Phụ lục IV.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn đăng ký hoạt động Trung tâm tư vấn pháp luật là 4 ngày theo Nghị định 77/2008/NĐ-CP."
+        },
+        {
+            "id": "q19",
+            "question": "Thương binh được cấp giầy chỉnh hình thì bao nhiêu tiền?",
+            "answer": "Thương binh được cấp giầy chỉnh hình với mức 1.450.000 đồng, niên hạn 1 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền cụ thể.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định giầy chỉnh hình được cấp 1.450.000 đồng, niên hạn 1 năm."
+        },
+        {
+            "id": "q20",
+            "question": "Muốn sửa sai sót trong hợp đồng đã chứng thực thì mất bao nhiêu tiền?",
+            "answer": "Phí sửa sai sót trong hợp đồng đã chứng thực là 25.000 đồng/hợp đồng theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến chứng thực.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art6",
+                "1766_2020_QD-UBND_Appendix_I.1"
+            ],
+            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.1 Quyết định 1766/2020/QĐ-UBND xác định phí sửa sai sót hợp đồng là 25.000 đồng/hợp đồng theo Thông tư 226/2016/TT-BTC."
+        },
+        {
+            "id": "q21",
+            "question": "Người có công được cấp quà Tết không?",
+            "answer": "Người có công được cấp quà tặng của Chủ tịch nước và chi ăn thêm ngày lễ, Tết theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào phương tiện trợ giúp, nên vẫn giữ nguyên từ văn bản cũ.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi quà tặng của Chủ tịch nước và ăn thêm ngày lễ, Tết trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+        },
+        {
+            "id": "q22",
+            "question": "Thủ tục đăng ký thế chấp nhà ở tương lai mất bao lâu?",
+            "answer": "Thủ tục đăng ký thế chấp nhà ở hình thành trong tương lai được giải quyết trong ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND, tối đa không quá 3 ngày nếu kéo dài. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_V.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND quy định thời hạn giải quyết đăng ký thế chấp nhà ở tương lai là trong ngày, tối đa 3 ngày theo Nghị định 102/2017/NĐ-CP."
+        },
+        {
+            "id": "q23",
+            "question": "Thương binh được cấp xe lắc tay thì bao lâu thay mới?",
+            "answer": "Thương binh được cấp xe lắc tay với niên hạn 4 năm, mức 4.550.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi phương tiện trợ giúp mà không quy định niên hạn.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi phương tiện trợ giúp nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định xe lắc tay có niên hạn 4 năm, mức cấp 4.550.000 đồng."
+        },
+        {
+            "id": "q24",
+            "question": "Muốn đăng ký hoạt động công ty luật thì mất bao nhiêu tiền?",
+            "answer": "Phí đăng ký hoạt động tổ chức hành nghề luật sư là 50.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến lĩnh vực luật sư.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_III.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định phí đăng ký hoạt động tổ chức hành nghề luật sư là 50.000 đồng/hồ sơ theo Thông tư 47/2019/TT-BTC."
+        },
+        {
+            "id": "q25",
+            "question": "Người có công được hỗ trợ chi phí mai táng không?",
+            "answer": "Người có công được hỗ trợ trợ cấp mai táng phí theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào mức chi phương tiện trợ giúp.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định trợ cấp mai táng phí trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+        },
+        {
+            "id": "q26",
+            "question": "Thủ tục cấp lại thẻ tư vấn viên pháp luật mất bao lâu?",
+            "answer": "Thủ tục cấp lại thẻ tư vấn viên pháp luật mất 7 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này vì không liên quan đến tư vấn pháp luật.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_IV.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến tư vấn pháp luật. Phụ lục IV.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn cấp lại thẻ tư vấn viên pháp luật là 7 ngày theo Thông tư 01/2010/TT-BTP."
+        },
+        {
+            "id": "q27",
+            "question": "Thương binh được cấp tay giả dưới khuỷu bao nhiêu tiền?",
+            "answer": "Thương binh được cấp tay giả dưới khuỷu với mức 2.220.000 đồng, niên hạn 3 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định tay giả dưới khuỷu được cấp 2.220.000 đồng, niên hạn 3 năm."
+        },
+        {
+            "id": "q28",
+            "question": "Muốn xóa đăng ký thế chấp đất thì mất bao nhiêu tiền?",
+            "answer": "Phí xóa đăng ký biện pháp bảo đảm bằng quyền sử dụng đất là 20.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến đăng ký thế chấp.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_V.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND xác định phí xóa đăng ký thế chấp là 20.000 đồng/hồ sơ theo Nghị quyết 24/2017/NQ-HĐND."
+        },
+        {
+            "id": "q29",
+            "question": "Người có công được hỗ trợ tiền thăm viếng mộ liệt sỹ không?",
+            "answer": "Thân nhân liệt sỹ được hỗ trợ tiền tàu, xe thăm viếng mộ theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào mức chi phương tiện trợ giúp.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định hỗ trợ tiền tàu, xe thăm viếng mộ liệt sỹ trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+        },
+        {
+            "id": "q30",
+            "question": "Thủ tục chứng thực văn bản từ chối nhận di sản mất bao lâu?",
+            "answer": "Thủ tục chứng thực văn bản từ chối nhận di sản được giải quyết không quá 2 ngày kể từ ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_I.3"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến chứng thực di sản. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND quy định thời hạn chứng thực văn bản từ chối nhận di sản là không quá 2 ngày theo Nghị định 23/2015/NĐ-CP."
+        },
+        {
+            "id": "q31",
+            "question": "Thương binh được cấp nẹp đùi thì bao lâu thay mới?",
+            "answer": "Thương binh được cấp nẹp đùi với niên hạn 3 năm, mức 2.750.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định nẹp đùi có niên hạn 3 năm, mức cấp 2.750.000 đồng."
+        },
+        {
+            "id": "q32",
+            "question": "Muốn thay đổi nội dung đăng ký công ty luật thì mất bao lâu?",
+            "answer": "Thủ tục thay đổi nội dung đăng ký hoạt động của tổ chức hành nghề luật sư mất 4 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_III.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn thay đổi nội dung đăng ký hoạt động công ty luật là 4 ngày theo Nghị định 123/2013/NĐ-CP."
+        },
+        {
+            "id": "q33",
+            "question": "Người có công được hỗ trợ giám định y khoa không?",
+            "answer": "Người có công được hỗ trợ giám định y khoa cho thương binh, bệnh binh theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi giám định y khoa trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+        },
+        {
+            "id": "q34",
+            "question": "Thủ tục chứng thực di chúc mất bao nhiêu tiền?",
+            "answer": "Phí chứng thực di chúc là 50.000 đồng/trường hợp theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến chứng thực.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art6",
+                "1766_2020_QD-UBND_Appendix_I.3"
+            ],
+            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực di chúc là 50.000 đồng/trường hợp theo Thông tư 226/2016/TT-BTC."
+        },
+        {
+            "id": "q35",
+            "question": "Thương binh được cấp hàm giả thì bao nhiêu tiền?",
+            "answer": "Thương binh được cấp hàm giả với mức 4.450.000 đồng, niên hạn 5 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định hàm giả được cấp 4.450.000 đồng, niên hạn 5 năm."
+        },
+        {
+            "id": "q36",
+            "question": "Muốn đăng ký thế chấp dự án xây nhà thì mất bao nhiêu tiền?",
+            "answer": "Phí đăng ký thế chấp dự án đầu tư xây dựng nhà ở là 80.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến đăng ký thế chấp.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_V.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND xác định phí đăng ký thế chấp dự án xây nhà là 80.000 đồng/hồ sơ theo Nghị quyết 24/2017/NQ-HĐND."
+        },
+        {
+            "id": "q37",
+            "question": "Người có công được hỗ trợ sửa chữa mộ liệt sỹ không?",
+            "answer": "Người có công được hỗ trợ chi sửa chữa, nâng cấp mộ liệt sỹ theo Thông tư 47/2009, nằm trong chi công tác mộ liệt sỹ. Thông tư 101/2018 không thay đổi chính sách này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi sửa chữa, nâng cấp mộ liệt sỹ trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+        },
+        {
+            "id": "q38",
+            "question": "Thủ tục sửa sai sót đăng ký thế chấp đất mất bao lâu?",
+            "answer": "Thủ tục sửa sai sót đăng ký thế chấp đất do lỗi cơ quan đăng ký mất 1 ngày làm việc theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_V.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND quy định thời hạn sửa sai sót đăng ký thế chấp đất là 1 ngày theo Nghị định 102/2017/NĐ-CP."
+        },
+        {
+            "id": "q39",
+            "question": "Thương binh được cấp dép chỉnh hình thì bao lâu thay mới?",
+            "answer": "Thương binh được cấp dép chỉnh hình với niên hạn 1 năm, mức 850.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định dép chỉnh hình có niên hạn 1 năm, mức cấp 850.000 đồng."
+        },
+        {
+            "id": "q40",
+            "question": "Muốn cấp lại Giấy đăng ký hoạt động công ty luật nước ngoài thì mất bao nhiêu tiền?",
+            "answer": "Phí cấp lại Giấy đăng ký hoạt động của chi nhánh, công ty luật nước ngoài là 2.000.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_III.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định phí cấp lại Giấy đăng ký hoạt động công ty luật nước ngoài là 2.000.000 đồng/hồ sơ theo Thông tư 220/2016/TT-BTC."
+        },
+        {
+            "id": "q41",
+            "question": "Người có công được hỗ trợ tiền điều dưỡng không?",
+            "answer": "Người có công được hỗ trợ chi điều trị, điều dưỡng phục hồi sức khỏe theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi điều trị, điều dưỡng phục hồi sức khỏe trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+        },
+        {
+            "id": "q42",
+            "question": "Thủ tục chứng thực văn bản khai nhận di sản mất bao lâu?",
+            "answer": "Thủ tục chứng thực văn bản khai nhận di sản được giải quyết không quá 2 ngày kể từ ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_I.3"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến chứng thực di sản. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND quy định thời hạn chứng thực văn bản khai nhận di sản là không quá 2 ngày theo Nghị định 23/2015/NĐ-CP."
+        },
+        {
+            "id": "q43",
+            "question": "Thương binh được cấp chân giả trên gối thì bao nhiêu tiền?",
+            "answer": "Thương binh được cấp chân giả trên gối với mức 3.800.000 đồng, niên hạn 2 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định chân giả trên gối được cấp 3.800.000 đồng, niên hạn 2 năm."
+        },
+        {
+            "id": "q44",
+            "question": "Muốn thay đổi nội dung biện pháp bảo đảm đất thì mất bao nhiêu tiền?",
+            "answer": "Phí đăng ký thay đổi nội dung biện pháp bảo đảm bằng quyền sử dụng đất là 60.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_V.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND xác định phí thay đổi nội dung biện pháp bảo đảm là 60.000 đồng/hồ sơ theo Nghị quyết 24/2017/NQ-HĐND."
+        },
+        {
+            "id": "q45",
+            "question": "Người có công được hỗ trợ sinh hoạt văn hóa không?",
+            "answer": "Người có công ở cơ sở nuôi dưỡng, điều dưỡng được hỗ trợ chi sách báo, sinh hoạt văn hóa, thể thao theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art5",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 5 Thông tư 47/2009 quy định chi sách báo, sinh hoạt văn hóa, thể thao cho cơ sở nuôi dưỡng, điều dưỡng người có công. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 5 Thông tư 47/2009."
+        },
+        {
+            "id": "q46",
+            "question": "Thủ tục cấp thẻ tư vấn viên pháp luật mất bao lâu?",
+            "answer": "Thủ tục cấp thẻ tư vấn viên pháp luật mất 5 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_IV.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến tư vấn pháp luật. Phụ lục IV.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn cấp thẻ tư vấn viên pháp luật là 5 ngày theo Thông tư 01/2010/TT-BTP."
+        },
+        {
+            "id": "q47",
+            "question": "Thương binh được cấp kính râm thì bao lâu thay mới?",
+            "answer": "Thương binh được cấp kính râm và gậy dò đường với niên hạn 1 năm, mức 150.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 không quy định cụ thể về khoản chi này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art4",
+                "101_2018_TT-BTC_Appendix"
+            ],
+            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình chung nhưng không nêu kính râm. Phụ lục Thông tư 101/2018/TT-BTC xác định kính râm và gậy dò đường có niên hạn 1 năm, mức cấp 150.000 đồng."
+        },
+        {
+            "id": "q48",
+            "question": "Muốn chứng thực chữ ký người dịch thì mất bao nhiêu tiền?",
+            "answer": "Phí chứng thực chữ ký người dịch là 10.000 đồng/trường hợp theo Quyết định 1766/2020/QĐ-UBND, áp dụng cho cả cộng tác viên và không phải cộng tác viên của Phòng Tư pháp. Thông tư 47/2009 không quy định phí này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art6",
+                "1766_2020_QD-UBND_Appendix_I.2"
+            ],
+            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.2 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực chữ ký người dịch là 10.000 đồng/trường hợp theo Thông tư 226/2016/TT-BTC."
+        },
+        {
+            "id": "q49",
+            "question": "Người có công được hỗ trợ tiền thuê nhân công không?",
+            "answer": "Người có công ở cơ sở nuôi dưỡng, điều dưỡng được hỗ trợ chi thuê mướn nhân công theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art5",
+                "101_2018_TT-BTC_Section1"
+            ],
+            "ground_truth": "Điều 5 Thông tư 47/2009 quy định chi thuê mướn nhân công cho cơ sở nuôi dưỡng, điều dưỡng người có công. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 5 Thông tư 47/2009."
+        },
+        {
+            "id": "q50",
+            "question": "Thủ tục đăng ký hoạt động chi nhánh công ty luật nước ngoài mất bao lâu?",
+            "answer": "Thủ tục đăng ký hoạt động chi nhánh của công ty luật nước ngoài mất 7 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "contexts": [
+                "47_2009_TTLT-BTC-BLDTBXH_Art1",
+                "1766_2020_QD-UBND_Appendix_III.1"
+            ],
+            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn đăng ký hoạt động chi nhánh công ty luật nước ngoài là 7 ngày theo Nghị định 123/2013/NĐ-CP."
+        }
+    ]
+}

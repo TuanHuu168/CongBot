@@ -1,6 +1,3 @@
-"""
-API endpoints cho chức năng quản trị
-"""
 from fastapi import APIRouter, HTTPException, Depends, Body, UploadFile, File
 from fastapi.responses import FileResponse
 from typing import List, Dict, Optional, Any
@@ -12,17 +9,20 @@ import pandas as pd
 from datetime import datetime
 import shutil
 from pathlib import Path
+import numpy as np
 
 # Import services
 from services.retrieval_service import retrieval_service
+from services.generation_service import generation_service
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
 
 # Import config
-from config import DATA_DIR, BENCHMARK_DIR, BENCHMARK_RESULTS_DIR
+from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR
 
+# Khởi tạo router
 router = APIRouter(
-    prefix="/admin",
+    prefix="",
     tags=["admin"],
     responses={404: {"description": "Not found"}},
 )
@@ -33,13 +33,6 @@ class BenchmarkConfig(BaseModel):
     file_path: str = "benchmark.json"
     output_dir: str = "benchmark_results"
 
-class SystemStatus(BaseModel):
-    """Model trạng thái hệ thống"""
-    status: str
-    message: str
-    database: Dict[str, Any]
-    cache_stats: Optional[Dict[str, Any]] = None
-
 class DocumentUpload(BaseModel):
     """Model cho việc tải lên metadata văn bản"""
     doc_id: str
@@ -47,11 +40,19 @@ class DocumentUpload(BaseModel):
     doc_title: str
     effective_date: str
     status: str = "active"
+    document_scope: str = "Quốc gia"
+
+class SystemStatus(BaseModel):
+    """Model trạng thái hệ thống"""
+    status: str
+    message: str
+    database: Dict[str, Any]
+    cache_stats: Optional[Dict[str, Any]] = None
 
 # === ENDPOINTS ===
 @router.get("/status", response_model=SystemStatus)
-async def get_status():
-    """Kiểm tra trạng thái hệ thống"""
+async def get_admin_status():
+    """Kiểm tra trạng thái chi tiết hệ thống"""
     try:
         # Kiểm tra ChromaDB
         collection = chroma_client.get_collection()
@@ -61,7 +62,8 @@ async def get_status():
         db = mongodb_client.get_database()
         cache_count = db.text_cache.count_documents({})
         valid_cache_count = db.text_cache.count_documents({"validityStatus": "valid"})
-        conversation_count = db.conversations.count_documents({})
+        conversation_count = db.chats.count_documents({})
+        user_count = db.users.count_documents({})
         
         # Tính tổng dung lượng cache
         cache_stats = {
@@ -75,12 +77,16 @@ async def get_status():
             "status": "ok", 
             "message": "Hệ thống đang hoạt động bình thường",
             "database": {
-                "status": "connected",
-                "chroma_status": "connected",
-                "mongo_status": "connected",
-                "chroma_collection": collection.name,
-                "chroma_documents_count": collection_count,
-                "mongo_conversations_count": conversation_count
+                "chromadb": {
+                    "status": "connected",
+                    "collection": collection.name,
+                    "documents_count": collection_count
+                },
+                "mongodb": {
+                    "status": "connected",
+                    "chat_count": conversation_count,
+                    "user_count": user_count
+                }
             },
             "cache_stats": cache_stats
         }
@@ -89,9 +95,10 @@ async def get_status():
             "status": "error",
             "message": f"Hệ thống gặp sự cố: {str(e)}",
             "database": {
-                "status": "error",
-                "error": str(e)
-            }
+                "chromadb": {"status": "error"},
+                "mongodb": {"status": "error"}
+            },
+            "cache_stats": None
         }
 
 @router.post("/run-benchmark")
@@ -130,14 +137,23 @@ async def run_benchmark(config: BenchmarkConfig):
             
             # Gọi service để lấy câu trả lời
             try:
-                response = generation_service.generate_answer(question, use_cache=False)
+                # Retrieval
+                retrieval_result = retrieval_service.retrieve(question, use_cache=False)
+                context_items = retrieval_result.get('context_items', [])
+                retrieved_chunks = retrieval_result.get('retrieved_chunks', [])
+                retrieval_time = retrieval_result.get('execution_time', 0)
                 
-                # Xử lý kết quả
-                retrieval_time = response.get('retrieval_time', 0)
-                generation_time = response.get('generation_time', 0)
-                total_time = response.get('total_time', 0)
-                answer = response.get('answer', '')
-                retrieved_chunks = response.get('retrieved_chunks', [])
+                # Generation
+                generation_start = time.time()
+                if context_items:
+                    generation_result = generation_service.generate_answer(question)
+                    answer = generation_result.get('answer', '')
+                    generation_time = time.time() - generation_start
+                else:
+                    answer = "Không tìm thấy thông tin liên quan."
+                    generation_time = 0
+                
+                total_time = retrieval_time + generation_time
                 
                 # Tính retrieval score
                 retrieval_score = 0
@@ -344,7 +360,7 @@ async def upload_document(
             "effective_date": metadata.effective_date,
             "expiry_date": None,
             "status": metadata.status,
-            "document_scope": "Quốc gia",
+            "document_scope": metadata.document_scope,
             "replaces": [],
             "replaced_by": None,
             "amends": None,
@@ -359,7 +375,8 @@ async def upload_document(
             json.dump(full_metadata, f, ensure_ascii=False, indent=2)
         
         # Tải văn bản vào ChromaDB
-        # (Có thể gọi script để làm việc này thay vì viết lại code)
+        # Bạn có thể thêm mã để tải văn bản vào ChromaDB ở đây
+        # hoặc gọi một script riêng để thực hiện việc này
         
         return {
             "message": f"Đã tải lên văn bản {metadata.doc_id} thành công với {len(saved_chunks)} chunks",
@@ -372,4 +389,187 @@ async def upload_document(
         if os.path.exists(doc_dir):
             shutil.rmtree(doc_dir)
             
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/documents")
+async def list_documents():
+    """Liệt kê tất cả văn bản trong hệ thống"""
+    try:
+        if not os.path.exists(DATA_DIR):
+            return {"documents": []}
+        
+        documents = []
+        for doc_dir in os.listdir(DATA_DIR):
+            doc_path = os.path.join(DATA_DIR, doc_dir)
+            metadata_path = os.path.join(doc_path, "metadata.json")
+            
+            if os.path.isdir(doc_path) and os.path.exists(metadata_path):
+                try:
+                    with open(metadata_path, 'r', encoding='utf-8') as f:
+                        metadata = json.load(f)
+                        
+                    # Đếm số lượng chunk
+                    chunks_count = len(metadata.get("chunks", []))
+                    
+                    # Thêm thông tin cơ bản
+                    doc_info = {
+                        "doc_id": metadata.get("doc_id", doc_dir),
+                        "doc_type": metadata.get("doc_type", "Unknown"),
+                        "doc_title": metadata.get("doc_title", "Unknown"),
+                        "effective_date": metadata.get("effective_date", "Unknown"),
+                        "status": metadata.get("status", "active"),
+                        "chunks_count": chunks_count
+                    }
+                    
+                    documents.append(doc_info)
+                except Exception as e:
+                    print(f"Lỗi khi đọc metadata của {doc_dir}: {str(e)}")
+        
+        # Sắp xếp theo ID văn bản
+        documents.sort(key=lambda x: x["doc_id"])
+        
+        return {"documents": documents}
+    except Exception as e:
+        print(f"Error in list_documents: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/documents/{doc_id}")
+async def get_document(doc_id: str):
+    """Lấy thông tin chi tiết của một văn bản"""
+    doc_dir = os.path.join(DATA_DIR, doc_id)
+    metadata_path = os.path.join(doc_dir, "metadata.json")
+    
+    if not os.path.exists(doc_dir) or not os.path.exists(metadata_path):
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
+    
+    try:
+        with open(metadata_path, 'r', encoding='utf-8') as f:
+            metadata = json.load(f)
+        
+        # Đọc nội dung chunks
+        chunks = []
+        for chunk_info in metadata.get("chunks", []):
+            chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
+            if os.path.exists(chunk_path):
+                with open(chunk_path, 'r', encoding='utf-8') as f:
+                    chunk_content = f.read()
+                
+                chunks.append({
+                    "chunk_id": chunk_info.get("chunk_id"),
+                    "chunk_type": chunk_info.get("chunk_type"),
+                    "content_summary": chunk_info.get("content_summary"),
+                    "content": chunk_content[:500] + "..." if len(chunk_content) > 500 else chunk_content
+                })
+        
+        metadata["chunks"] = chunks
+        
+        return metadata
+    except Exception as e:
+        print(f"Error in get_document: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/documents/{doc_id}")
+async def delete_document(doc_id: str, confirm: bool = False):
+    """Xóa văn bản khỏi hệ thống"""
+    if not confirm:
+        return {"message": f"Vui lòng xác nhận việc xóa văn bản {doc_id} bằng cách gửi 'confirm: true'"}
+    
+    doc_dir = os.path.join(DATA_DIR, doc_id)
+    
+    if not os.path.exists(doc_dir):
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
+    
+    try:
+        # Vô hiệu hóa cache trước
+        try:
+            retrieval_service.invalidate_document_cache(doc_id)
+        except Exception as e:
+            print(f"Cảnh báo: Không thể vô hiệu hóa cache cho {doc_id}: {str(e)}")
+        
+        # Xóa thư mục văn bản
+        shutil.rmtree(doc_dir)
+        
+        # Xóa trong ChromaDB
+        # Triển khai logic để xóa văn bản trong ChromaDB
+        
+        return {"message": f"Đã xóa văn bản {doc_id} thành công"}
+    except Exception as e:
+        print(f"Error in delete_document: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/statistics")
+async def get_system_statistics():
+    """Lấy thống kê của hệ thống"""
+    try:
+        db = mongodb_client.get_database()
+        
+        # Thống kê cơ bản
+        total_users = db.users.count_documents({})
+        total_chats = db.chats.count_documents({})
+        total_exchanges = 0
+        
+        # Đếm tổng số exchanges
+        pipeline = [
+            {"$project": {"exchange_count": {"$size": {"$ifNull": ["$exchanges", []]}}}},
+            {"$group": {"_id": None, "total": {"$sum": "$exchange_count"}}}
+        ]
+        result = list(db.chats.aggregate(pipeline))
+        if result:
+            total_exchanges = result[0]["total"]
+        
+        # Thống kê cache
+        total_cache = db.text_cache.count_documents({})
+        valid_cache = db.text_cache.count_documents({"validityStatus": "valid"})
+        
+        # Thống kê tài liệu
+        document_count = 0
+        chunk_count = 0
+        
+        if os.path.exists(DATA_DIR):
+            document_count = sum(1 for item in os.listdir(DATA_DIR) if os.path.isdir(os.path.join(DATA_DIR, item)))
+            
+            # Đếm số lượng chunk
+            for doc_dir in os.listdir(DATA_DIR):
+                doc_path = os.path.join(DATA_DIR, doc_dir)
+                metadata_path = os.path.join(doc_path, "metadata.json")
+                
+                if os.path.isdir(doc_path) and os.path.exists(metadata_path):
+                    try:
+                        with open(metadata_path, 'r', encoding='utf-8') as f:
+                            metadata = json.load(f)
+                            chunk_count += len(metadata.get("chunks", []))
+                    except:
+                        pass
+        
+        # Thống kê ChromaDB
+        chroma_count = 0
+        try:
+            collection = chroma_client.get_collection()
+            chroma_count = collection.count()
+        except Exception as e:
+            print(f"Lỗi khi lấy thông tin ChromaDB: {str(e)}")
+        
+        # Trả về thống kê
+        return {
+            "users": {
+                "total": total_users
+            },
+            "chats": {
+                "total": total_chats,
+                "exchanges": total_exchanges
+            },
+            "cache": {
+                "total": total_cache,
+                "valid": valid_cache,
+                "invalid": total_cache - valid_cache
+            },
+            "documents": {
+                "total": document_count,
+                "chunks": chunk_count,
+                "indexed_in_chroma": chroma_count
+            },
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+    except Exception as e:
+        print(f"Error in get_system_statistics: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

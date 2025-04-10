@@ -29,8 +29,7 @@ class MongoDBClient:
             self.db = None
     
     def get_database(self):
-        """Trả về đối tượng database"""
-        if not self.db:
+        if self.db is None:  # Thay vì if not self.db:
             self.initialize()
         return self.db
     
@@ -42,30 +41,30 @@ class MongoDBClient:
 
     def create_indexes(self):
         """Tạo các index cho collections"""
-        if not self.db:
+        if self.db is None:
             self.initialize()
         
-        # Indexes cho users collection
-        self.db.users.create_index([("username", pymongo.ASCENDING)], unique=True)
-        self.db.users.create_index([("email", pymongo.ASCENDING)], unique=True)
-        self.db.users.create_index([("status", pymongo.ASCENDING)])
-        
-        # Indexes cho conversations collection
-        self.db.conversations.create_index([("userId", pymongo.ASCENDING)])
-        self.db.conversations.create_index([
-            ("userId", pymongo.ASCENDING), 
-            ("updatedAt", pymongo.DESCENDING)
-        ])
-        self.db.conversations.create_index([("totalTokens", pymongo.ASCENDING)])
-        self.db.conversations.create_index([("exchanges.timestamp", pymongo.ASCENDING)])
+        # Kiểm tra và tạo collection text_cache nếu chưa tồn tại
+        collections = self.db.list_collection_names()
+        if "text_cache" not in collections:
+            self.db.create_collection("text_cache")
+            print("Đã tạo collection text_cache")
         
         # Indexes cho text_cache collection
-        self.db.text_cache.create_index([("cacheId", pymongo.ASCENDING)], unique=True)
+        self.db.text_cache.create_index([("cacheId", 1)], unique=True)
         self.db.text_cache.create_index([("normalizedQuestion", "text")])
-        self.db.text_cache.create_index([("keywords", pymongo.ASCENDING)])
-        self.db.text_cache.create_index([("relatedDocIds", pymongo.ASCENDING)])
-        self.db.text_cache.create_index([("validityStatus", pymongo.ASCENDING)])
-        self.db.text_cache.create_index([("expiresAt", pymongo.ASCENDING)], expireAfterSeconds=0)  # TTL index
+        self.db.text_cache.create_index([("keywords", 1)])
+        self.db.text_cache.create_index([("relatedDocIds", 1)])
+        self.db.text_cache.create_index([("validityStatus", 1)])
+        self.db.text_cache.create_index([("expiresAt", 1)], expireAfterSeconds=0)  # TTL index
+        
+        # Indexes cho users collection
+        self.db.users.create_index([("username", 1)], unique=True)
+        self.db.users.create_index([("email", 1)], unique=True)
+        
+        # Indexes cho chats collection
+        self.db.chats.create_index([("user_id", 1)])
+        self.db.chats.create_index([("user_id", 1), ("updated_at", -1)])
         
         print("Đã tạo tất cả indexes cho MongoDB")
 

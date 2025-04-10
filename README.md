@@ -46,21 +46,20 @@ CongBot/
 │
 ├── backend/                        # Phần xử lý backend
 │   ├── api/                        # API routes
+|   |   |── __init__.py
 │   │   ├── admin.py                # Các endpoint quản trị
 │   │   └── chat.py                 # Các endpoint chat
+|   |   └── user.py                 # Các endpoint về tài khoản người dùng
 │   ├── database/                   # Kết nối và quản lý cơ sở dữ liệu
 │   │   ├── chroma_client.py        # Client kết nối ChromaDB
 │   │   └── mongodb_client.py       # Client kết nối MongoDB
 │   ├── models/                     # Định nghĩa models
 │   │   ├── cache.py                # Model cache
-│   │   ├── conservation.py         # Model cuộc hội thoại
+│   │   ├── conversation.py         # Model cuộc hội thoại
 │   │   └── user.py                 # Model người dùng
-│   ├── scripts/                    # Scripts chạy các tác vụ
-│   │   ├── delete_collection.py    # Xóa collection
-│   │   └── load_documents.py       # Tải văn bản
-│   ├── services/                   # Các dịch vụ logic nghiệp vụ
-│   │   ├── generation_service.py   # Dịch vụ sinh câu trả lời
-│   │   └── retrieval_service.py    # Dịch vụ truy xuất thông tin
+│   ├── services/                   
+│   │   ├── generation_service.py   # Sinh câu trả lời
+│   │   └── retrieval_service.py    # Truy xuất thông tin
 │   ├── chromaDB.py                 # Quản lý ChromaDB
 │   ├── config.py                   # Cấu hình hệ thống
 │   ├── main.py                     # Entry point của API
@@ -70,7 +69,7 @@ CongBot/
 ├── benchmark/                      # Thư mục benchmark
 │   ├── results/                    # Kết quả benchmark
 │   │   └── benchmark_results_*.csv # Các file kết quả
-│   └── benchmark.json              # Cấu hình benchmark
+│   └── benchmark.json              # Benchmark
 │
 ├── data/                           # Thư mục chứa dữ liệu văn bản
 │   ├── 101_2018_TT_BTC/            # Thư mục cho mỗi văn bản
@@ -106,8 +105,8 @@ CongBot/
 
 ### Yêu cầu
 
-- Python 3.9+
-- Node.js 16+
+- Python 3.9
+- Node.js 23.7.0
 - MongoDB
 - ChromaDB
 - Gemini API key

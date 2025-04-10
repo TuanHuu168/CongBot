@@ -10,8 +10,11 @@ DATA_DIR = os.path.join(ROOT_DIR, "data")
 BENCHMARK_DIR = os.path.join(ROOT_DIR, "benchmark")
 BENCHMARK_RESULTS_DIR = os.path.join(BENCHMARK_DIR, "results")
 
-MONGO_URI = os.environ["MONGODB_URI"]
-MONGO_DB_NAME = os.environ["MONGODB_DATABASE"]
+MONGODB_USERNAME = os.getenv("MONGODB_USERNAME")
+MONGODB_PASSWORD = os.getenv("MONGODB_PASSWORD")
+MONGODB_HOST = os.getenv("MONGODB_HOST")
+MONGO_DB_NAME = os.getenv("MONGODB_DATABASE", "chatbot_db")
+MONGO_URI = f"mongodb+srv://{MONGODB_USERNAME}:{MONGODB_PASSWORD}{MONGODB_HOST}/{MONGO_DB_NAME}?retryWrites=true&w=majority"
 
 CHROMA_HOST = os.environ["CHROMA_HOST"]
 CHROMA_PORT = int(os.environ["CHROMA_PORT"])
