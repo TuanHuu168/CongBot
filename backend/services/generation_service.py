@@ -1,27 +1,21 @@
-"""
-Dịch vụ tạo câu trả lời từ câu hỏi và context
-"""
 import time
 import sys
 import os
 from typing import List, Dict, Any, Optional
 from google import genai
 
-# Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import GEMINI_API_KEY, GEMINI_MODEL
 from services.retrieval_service import retrieval_service
 
 class GenerationService:
-    """Dịch vụ tạo câu trả lời sử dụng Gemini"""
-    
     def __init__(self):
-        """Khởi tạo dịch vụ generation"""
+        # Khởi tạo dịch vụ generation
         self.retrieval = retrieval_service
         self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
     
     def _create_prompt(self, query: str, context_items: List[str]) -> str:
-        """Tạo prompt để gửi đến Gemini"""
+        T# Tạo prompt để gửi đến Gemini
         context_text = "\n\n".join([f"[Đoạn văn bản {i+1}]\n{item}" for i, item in enumerate(context_items)])
         
         prompt = f"""[SYSTEM INSTRUCTION]
@@ -58,7 +52,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
         return prompt
     
     def generate_answer(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        """Tạo câu trả lời cho câu hỏi sử dụng RAG"""
+        # Tạo câu trả lời cho câu hỏi sử dụng RAG
         start_time = time.time()
         
         # Bước 1: Retrieval - lấy thông tin liên quan
@@ -136,5 +130,4 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                 "total_time": time.time() - start_time
             }
 
-# Singleton instance
 generation_service = GenerationService()

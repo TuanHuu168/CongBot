@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 from api.chat import router as chat_router
 from api.admin import router as admin_router
 from api.user import router as user_router
+from database.mongodb_client import mongodb_client
 
 # Load .env file
 load_dotenv()
@@ -21,7 +22,7 @@ app = FastAPI(
 # Thêm CORS để frontend có thể gọi API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Vite mặc định chạy trên port 5173
+    allow_origins=["http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -44,7 +45,6 @@ async def root():
 # Endpoint kiểm tra trạng thái
 @app.get("/status")
 async def status():
-    """Kiểm tra trạng thái hệ thống"""
     try:
         from database.chroma_client import chroma_client
         from database.mongodb_client import mongodb_client
@@ -87,8 +87,6 @@ async def status():
         }
 
 if __name__ == "__main__":
-    # Đảm bảo indexes được tạo khi khởi động ứng dụng
-    from database.mongodb_client import mongodb_client
     mongodb_client.create_indexes()
     
     import uvicorn

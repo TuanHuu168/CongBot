@@ -1,6 +1,3 @@
-"""
-Dịch vụ truy xuất và tìm kiếm thông tin từ các văn bản
-"""
 import time
 import json
 import sys
@@ -8,7 +5,6 @@ import os
 import re
 from typing import List, Dict, Tuple, Optional, Any
 
-# Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import TOP_K, MAX_TOKENS_PER_DOC
 from database.chroma_client import chroma_client
@@ -16,8 +12,6 @@ from database.mongodb_client import mongodb_client
 from models.cache import CacheModel, CacheCreate, CacheStatus
 
 class RetrievalService:
-    """Dịch vụ truy xuất thông tin từ các văn bản pháp luật"""
-    
     def __init__(self):
         """Khởi tạo dịch vụ retrieval"""
         self.chroma = chroma_client
@@ -25,7 +19,6 @@ class RetrievalService:
         self.text_cache_collection = self.db.text_cache
     
     def _normalize_question(self, query: str) -> str:
-        """Chuẩn hóa câu hỏi để tìm kiếm và so sánh tốt hơn"""
         # Loại bỏ dấu câu
         normalized = re.sub(r'[.,;:!?()"\']', '', query.lower())
         # Loại bỏ các từ stopwords (có thể mở rộng danh sách này)
@@ -37,7 +30,6 @@ class RetrievalService:
         return normalized
     
     def _extract_keywords(self, query: str) -> List[str]:
-        """Trích xuất từ khóa từ câu hỏi"""
         # Đây là bản triển khai đơn giản, có thể cải thiện bằng NLP
         normalized = self._normalize_question(query)
         # Chỉ lấy các từ có độ dài >= 3
@@ -46,7 +38,6 @@ class RetrievalService:
         return list(set(keywords))
     
     def _format_context(self, results: Dict[str, Any]) -> Tuple[List[str], List[str]]:
-        """Định dạng kết quả truy vấn để sử dụng trong context"""
         context_items = []
         retrieved_chunks = []
         
@@ -76,7 +67,6 @@ class RetrievalService:
         return context_items, retrieved_chunks
     
     def _check_cache(self, query: str) -> Optional[Dict[str, Any]]:
-        """Kiểm tra cache cho câu hỏi hiện tại"""
         normalized_query = self._normalize_question(query)
         
         try:
@@ -127,7 +117,6 @@ class RetrievalService:
         return None
     
     def _extract_document_ids(self, chunk_ids: List[str]) -> List[str]:
-        """Trích xuất ID của các văn bản từ chunk IDs"""
         doc_ids = []
         for chunk_id in chunk_ids:
             # Định dạng chunk_id: {doc_id}_{chunk_specific_part}
@@ -143,7 +132,6 @@ class RetrievalService:
         return doc_ids
     
     def _create_cache_entry(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
-        """Tạo cache mới cho câu hỏi và câu trả lời"""
         # Tạo cache ID ngẫu nhiên
         cache_id = f"cache_{int(time.time() * 1000)}"
         
@@ -179,7 +167,6 @@ class RetrievalService:
         return cache_id
     
     def _add_to_chroma_cache(self, cache_id: str, query: str, related_doc_ids: List[str]) -> bool:
-        """Thêm câu hỏi vào ChromaDB cache"""
         query_text = f"query: {query}"
         metadata = {
             "validityStatus": "valid",
@@ -204,7 +191,6 @@ class RetrievalService:
             return False
     
     def _invalidate_cache_for_document(self, doc_id: str) -> int:
-        """Vô hiệu hóa tất cả cache liên quan đến văn bản có ID cụ thể"""
         result = self.text_cache_collection.update_many(
             {"relatedDocIds": doc_id},
             {"$set": {"validityStatus": CacheStatus.INVALID}}
@@ -241,7 +227,6 @@ class RetrievalService:
         return result.modified_count
     
     def retrieve(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        """Truy xuất thông tin cho câu hỏi"""
         start_time = time.time()
         
         # Kiểm tra cache nếu cần
@@ -304,7 +289,6 @@ class RetrievalService:
             }
     
     def search_keyword(self, keyword: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Tìm kiếm văn bản dựa trên từ khóa"""
         try:
             # Tìm kiếm trong text_cache
             results = self.text_cache_collection.find(
@@ -318,11 +302,9 @@ class RetrievalService:
             return []
     
     def add_to_cache(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
-        """Thêm kết quả vào cache"""
         return self._create_cache_entry(query, answer, chunks, relevance_scores)
     
     def invalidate_document_cache(self, doc_id: str) -> int:
-        """Vô hiệu hóa cache cho văn bản cụ thể"""
         return self._invalidate_cache_for_document(doc_id)
 
 # Singleton instance

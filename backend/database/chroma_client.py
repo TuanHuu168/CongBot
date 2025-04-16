@@ -4,12 +4,11 @@ import sys
 import os
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
-# Add parent directory to path for imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION, EMBEDDING_MODEL_NAME, USE_GPU
 
 class ChromaDBClient:
-    _instance = None  # Singleton instance
+    _instance = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -21,7 +20,6 @@ class ChromaDBClient:
         return cls._instance
 
     def initialize(self):
-        """Khởi tạo kết nối tới ChromaDB"""
         try:
             # Khởi tạo embedding function
             device = "cuda" if USE_GPU and torch.cuda.is_available() else "cpu"
@@ -54,19 +52,16 @@ class ChromaDBClient:
             self.collection = None
     
     def get_client(self):
-        """Trả về đối tượng ChromaDB client"""
         if not self.client:
             self.initialize()
         return self.client
     
     def get_collection(self):
-        """Trả về đối tượng ChromaDB collection"""
         if not self.collection:
             self.initialize()
         return self.collection
     
     def add_documents(self, ids, documents, metadatas=None):
-        """Thêm documents vào ChromaDB"""
         if not self.collection:
             self.initialize()
         
@@ -82,7 +77,6 @@ class ChromaDBClient:
             return False
     
     def search(self, query_text, n_results=5, include=None):
-        """Tìm kiếm trong ChromaDB"""
         if not self.collection:
             self.initialize()
         
@@ -106,7 +100,6 @@ class ChromaDBClient:
             return None
     
     def delete_collection(self, name=None):
-        """Xóa collection trong ChromaDB"""
         if not self.client:
             self.initialize()
         
@@ -123,7 +116,6 @@ class ChromaDBClient:
             return False
     
     def list_collections(self):
-        """Liệt kê tất cả collections trong ChromaDB"""
         if not self.client:
             self.initialize()
             
@@ -133,7 +125,6 @@ class ChromaDBClient:
             print(f"Lỗi khi liệt kê collections: {str(e)}")
             return []
 
-# Singleton instance
 chroma_client = ChromaDBClient()
 
 # Lấy collection instance để sử dụng trong các modules khác

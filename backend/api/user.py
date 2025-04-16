@@ -17,7 +17,6 @@ router = APIRouter(
 
 # === MODELS ===
 class UserCreate(BaseModel):
-    """Model cho việc tạo người dùng mới"""
     username: str
     email: EmailStr
     password: str  # Password gốc, sẽ được hash trước khi lưu
@@ -25,29 +24,24 @@ class UserCreate(BaseModel):
     phoneNumber: Optional[str] = None
 
 class UserLogin(BaseModel):
-    """Model cho việc đăng nhập"""
     username: str
     password: str
 
 class Token(BaseModel):
-    """Model cho token trả về sau khi đăng nhập"""
     access_token: str
     token_type: str = "bearer"
     user_id: str
 
 # === UTILITY FUNCTIONS ===
 def hash_password(password: str) -> str:
-    """Tạo hash password với bcrypt"""
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed.decode('utf-8')
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Kiểm tra password"""
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def save_user(user_data: dict) -> str:
-    """Lưu thông tin người dùng vào MongoDB"""
     # Hash password trước khi lưu
     if 'password' in user_data:
         user_data['password'] = hash_password(user_data['password'])
@@ -59,12 +53,10 @@ def save_user(user_data: dict) -> str:
     return str(result.inserted_id)
 
 def get_user_by_username(username: str):
-    """Lấy thông tin người dùng từ MongoDB theo tên đăng nhập"""
     db = mongodb_client.get_database()
     return db.users.find_one({"username": username})
 
 def get_user_by_id(user_id: str):
-    """Lấy thông tin người dùng từ MongoDB theo ID"""
     db = mongodb_client.get_database()
     try:
         return db.users.find_one({"_id": ObjectId(user_id)})
@@ -74,7 +66,6 @@ def get_user_by_id(user_id: str):
 # === ENDPOINTS ===
 @router.post("/register", response_model=dict)
 async def register_user(user: UserCreate):
-    """Đăng ký người dùng mới"""
     try:
         db = mongodb_client.get_database()
         
@@ -106,7 +97,6 @@ async def register_user(user: UserCreate):
 
 @router.post("/login", response_model=Token)
 async def login_user(user_login: UserLogin):
-    """Đăng nhập và lấy token"""
     try:
         # Tìm user trong database
         user = get_user_by_username(user_login.username)
@@ -140,7 +130,6 @@ async def login_user(user_login: UserLogin):
 
 @router.get("/{user_id}", response_model=dict)
 async def get_user_info(user_id: str):
-    """Lấy thông tin người dùng theo ID"""
     try:
         user = get_user_by_id(user_id)
         if not user:

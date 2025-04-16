@@ -1,6 +1,3 @@
-"""
-API endpoints cho chức năng chat
-"""
 from fastapi import APIRouter, HTTPException, Depends, Body
 from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field
@@ -21,35 +18,37 @@ router = APIRouter(
 
 # === MODELS ===
 class QueryInput(BaseModel):
-    """Input model cho việc gửi câu hỏi"""
     query: str
     user_id: Optional[str] = None
     session_id: Optional[str] = None
     client_info: Optional[Dict[str, str]] = None
 
 class ChatMessage(BaseModel):
-    """Model cho tin nhắn trong chat"""
     sender: str  # 'user' hoặc 'bot'
     text: str
     timestamp: Optional[datetime] = None
 
 class ChatCreate(BaseModel):
-    """Model cho việc tạo chat mới"""
     user_id: str
     title: str = "Cuộc trò chuyện mới"
 
 class UserFeedback(BaseModel):
-    """Model cho phản hồi người dùng"""
     chat_id: str
     rating: int = Field(..., ge=1, le=5)
     comment: Optional[str] = None
     is_accurate: Optional[bool] = None
     is_helpful: Optional[bool] = None
 
+class DeleteChatRequest(BaseModel):
+    user_id: str
+
+class BatchDeleteRequest(BaseModel):
+    user_id: str
+    chat_ids: List[str]
+
 # === ENDPOINTS ===
 @router.post("/ask")
 async def ask(input: QueryInput):
-    """Endpoint chính xử lý câu hỏi"""
     try:
         start_time = time.time()
         print(f"Processing query: '{input.query}' with session_id: {input.session_id}")
@@ -194,7 +193,6 @@ async def ask(input: QueryInput):
 
 @router.post("/retrieve")
 async def retrieve(input: QueryInput):
-    """Endpoint riêng để truy xuất ngữ cảnh từ các văn bản"""
     try:
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=False)
         
@@ -211,7 +209,6 @@ async def retrieve(input: QueryInput):
 
 @router.post("/feedback")
 async def submit_feedback(feedback: UserFeedback):
-    """Gửi phản hồi về chất lượng câu trả lời"""
     try:
         db = mongodb_client.get_database()
         
@@ -230,7 +227,6 @@ async def submit_feedback(feedback: UserFeedback):
 
 @router.post("/chats/create")
 async def create_chat(chat: ChatCreate):
-    """Tạo cuộc trò chuyện mới"""
     try:
         db = mongodb_client.get_database()
         
@@ -255,7 +251,6 @@ async def create_chat(chat: ChatCreate):
 
 @router.get("/chats/{chat_id}/messages")
 async def get_chat_messages(chat_id: str):
-    """Lấy tin nhắn của một cuộc trò chuyện cụ thể"""
     try:
         db = mongodb_client.get_database()
         
@@ -309,7 +304,6 @@ async def get_chat_messages(chat_id: str):
 
 @router.post("/chats/{chat_id}/messages")
 async def add_chat_message(chat_id: str, message: ChatMessage):
-    """Thêm tin nhắn vào cuộc trò chuyện"""
     try:
         db = mongodb_client.get_database()
         
@@ -378,7 +372,6 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
 
 @router.get("/chats/{user_id}")
 async def get_chats(user_id: str, limit: int = 20):
-    """Lấy danh sách cuộc trò chuyện của người dùng"""
     try:
         db = mongodb_client.get_database()
         
@@ -398,7 +391,6 @@ async def get_chats(user_id: str, limit: int = 20):
     
 @router.put("/chats/{chat_id}/title")
 async def update_chat_title(chat_id: str, title_data: dict = Body(...)):
-    """Cập nhật tiêu đề cuộc trò chuyện"""
     try:
         db = mongodb_client.get_database()
         
@@ -420,4 +412,84 @@ async def update_chat_title(chat_id: str, title_data: dict = Body(...)):
         }
     except Exception as e:
         print(f"Error in update title endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/chats/{chat_id}")
+async def delete_chat(chat_id: str, request: DeleteChatRequest):
+    """Xóa một cuộc trò chuyện"""
+    try:
+        db = mongodb_client.get_database()
+        
+        # Kiểm tra quyền xóa (người dùng chỉ được xóa chat của họ)
+        chat = db.chats.find_one({"_id": ObjectId(chat_id)})
+        if not chat:
+            raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
+            
+        if chat.get("user_id") != request.user_id:
+            raise HTTPException(status_code=403, detail="Bạn không có quyền xóa cuộc trò chuyện này")
+        
+        # Thực hiện xóa (hoặc có thể chỉ đánh dấu là đã xóa bằng cách cập nhật status)
+        result = db.chats.update_one(
+            {"_id": ObjectId(chat_id)},
+            {"$set": {"status": "deleted", "updated_at": datetime.now()}}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Không thể xóa cuộc trò chuyện")
+        
+        return {
+            "message": "Xóa cuộc trò chuyện thành công",
+            "chat_id": chat_id
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in delete_chat endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/chats/delete-batch")
+async def delete_chats_batch(request: BatchDeleteRequest):
+    try:
+        db = mongodb_client.get_database()
+        
+        if not request.chat_ids or len(request.chat_ids) == 0:
+            raise HTTPException(status_code=400, detail="Danh sách chat_ids không được để trống")
+        
+        # Chuyển đổi các id thành ObjectId
+        chat_object_ids = []
+        for chat_id in request.chat_ids:
+            try:
+                chat_object_ids.append(ObjectId(chat_id))
+            except:
+                # Bỏ qua ID không hợp lệ
+                continue
+        
+        if len(chat_object_ids) == 0:
+            raise HTTPException(status_code=400, detail="Không có chat_id hợp lệ trong danh sách")
+        
+        # Tìm tất cả chat thuộc về người dùng
+        user_chats = list(db.chats.find(
+            {"user_id": request.user_id, "_id": {"$in": chat_object_ids}},
+            {"_id": 1}
+        ))
+        
+        user_chat_ids = [chat["_id"] for chat in user_chats]
+        
+        if len(user_chat_ids) == 0:
+            raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện nào thuộc về người dùng này")
+        
+        # Cập nhật status thành "deleted" cho tất cả chat được tìm thấy
+        result = db.chats.update_many(
+            {"_id": {"$in": user_chat_ids}},
+            {"$set": {"status": "deleted", "updated_at": datetime.now()}}
+        )
+        
+        return {
+            "message": f"Đã xóa {result.modified_count} cuộc trò chuyện",
+            "deleted_count": result.modified_count
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error in delete_chats_batch endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import MONGO_URI, MONGO_DB_NAME
 
 class MongoDBClient:
-    _instance = None  # Singleton instance
+    _instance = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -18,7 +18,6 @@ class MongoDBClient:
         return cls._instance
 
     def initialize(self):
-        """Khởi tạo kết nối tới MongoDB"""
         try:
             self.client = pymongo.MongoClient(MONGO_URI)
             self.db = self.client[MONGO_DB_NAME]
@@ -29,18 +28,16 @@ class MongoDBClient:
             self.db = None
     
     def get_database(self):
-        if self.db is None:  # Thay vì if not self.db:
+        if self.db is None:
             self.initialize()
         return self.db
     
     def get_collection(self, collection_name: str):
-        """Lấy collection từ MongoDB"""
         if not self.db:
             self.initialize()
         return self.db[collection_name]
 
     def create_indexes(self):
-        """Tạo các index cho collections"""
         if self.db is None:
             self.initialize()
         
@@ -69,13 +66,11 @@ class MongoDBClient:
         print("Đã tạo tất cả indexes cho MongoDB")
 
     def close(self):
-        """Đóng kết nối tới MongoDB"""
         if self.client:
             self.client.close()
             self.client = None
             self.db = None
 
-# Singleton instance
 mongodb_client = MongoDBClient()
 
 # Lấy database instance để sử dụng trong các modules khác

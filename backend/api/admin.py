@@ -29,12 +29,10 @@ router = APIRouter(
 
 # === MODELS ===
 class BenchmarkConfig(BaseModel):
-    """Model cấu hình cho việc chạy benchmark"""
     file_path: str = "benchmark.json"
     output_dir: str = "benchmark_results"
 
 class DocumentUpload(BaseModel):
-    """Model cho việc tải lên metadata văn bản"""
     doc_id: str
     doc_type: str
     doc_title: str
@@ -43,7 +41,6 @@ class DocumentUpload(BaseModel):
     document_scope: str = "Quốc gia"
 
 class SystemStatus(BaseModel):
-    """Model trạng thái hệ thống"""
     status: str
     message: str
     database: Dict[str, Any]
@@ -52,7 +49,6 @@ class SystemStatus(BaseModel):
 # === ENDPOINTS ===
 @router.get("/status", response_model=SystemStatus)
 async def get_admin_status():
-    """Kiểm tra trạng thái chi tiết hệ thống"""
     try:
         # Kiểm tra ChromaDB
         collection = chroma_client.get_collection()
@@ -103,7 +99,6 @@ async def get_admin_status():
 
 @router.post("/run-benchmark")
 async def run_benchmark(config: BenchmarkConfig):
-    """Chạy benchmark với tập dữ liệu"""
     try:
         # Tạo thư mục kết quả nếu chưa tồn tại
         os.makedirs(BENCHMARK_RESULTS_DIR, exist_ok=True)
@@ -235,7 +230,6 @@ async def run_benchmark(config: BenchmarkConfig):
 
 @router.get("/benchmark-results")
 async def list_benchmark_results():
-    """Liệt kê các kết quả benchmark đã chạy"""
     try:
         # Kiểm tra thư mục kết quả tồn tại
         if not os.path.exists(BENCHMARK_RESULTS_DIR):
@@ -277,7 +271,6 @@ async def list_benchmark_results():
 
 @router.get("/benchmark-results/{file_name}")
 async def download_benchmark_result(file_name: str):
-    """Tải xuống kết quả benchmark"""
     file_path = os.path.join(BENCHMARK_RESULTS_DIR, file_name)
     
     if not os.path.exists(file_path):
@@ -287,7 +280,6 @@ async def download_benchmark_result(file_name: str):
 
 @router.post("/clear-cache")
 async def clear_cache(confirm: bool = False):
-    """Xóa tất cả cache"""
     if not confirm:
         return {"message": "Vui lòng xác nhận việc xóa cache bằng cách gửi 'confirm: true'"}
     
@@ -311,7 +303,6 @@ async def clear_cache(confirm: bool = False):
 
 @router.post("/invalidate-cache/{doc_id}")
 async def invalidate_cache(doc_id: str):
-    """Vô hiệu hóa cache liên quan đến văn bản cụ thể"""
     try:
         count = retrieval_service.invalidate_document_cache(doc_id)
         
@@ -328,7 +319,6 @@ async def upload_document(
     metadata: DocumentUpload = Body(...),
     chunks: List[UploadFile] = File(...)
 ):
-    """Tải lên một văn bản mới"""
     try:
         # Tạo thư mục cho văn bản mới
         doc_dir = os.path.join(DATA_DIR, metadata.doc_id)
@@ -375,8 +365,7 @@ async def upload_document(
             json.dump(full_metadata, f, ensure_ascii=False, indent=2)
         
         # Tải văn bản vào ChromaDB
-        # Bạn có thể thêm mã để tải văn bản vào ChromaDB ở đây
-        # hoặc gọi một script riêng để thực hiện việc này
+        # Bổ sung sau phần này
         
         return {
             "message": f"Đã tải lên văn bản {metadata.doc_id} thành công với {len(saved_chunks)} chunks",
@@ -393,7 +382,6 @@ async def upload_document(
 
 @router.get("/documents")
 async def list_documents():
-    """Liệt kê tất cả văn bản trong hệ thống"""
     try:
         if not os.path.exists(DATA_DIR):
             return {"documents": []}
@@ -435,7 +423,6 @@ async def list_documents():
 
 @router.get("/documents/{doc_id}")
 async def get_document(doc_id: str):
-    """Lấy thông tin chi tiết của một văn bản"""
     doc_dir = os.path.join(DATA_DIR, doc_id)
     metadata_path = os.path.join(doc_dir, "metadata.json")
     
@@ -470,7 +457,6 @@ async def get_document(doc_id: str):
 
 @router.delete("/documents/{doc_id}")
 async def delete_document(doc_id: str, confirm: bool = False):
-    """Xóa văn bản khỏi hệ thống"""
     if not confirm:
         return {"message": f"Vui lòng xác nhận việc xóa văn bản {doc_id} bằng cách gửi 'confirm: true'"}
     
@@ -499,7 +485,6 @@ async def delete_document(doc_id: str, confirm: bool = False):
 
 @router.get("/statistics")
 async def get_system_statistics():
-    """Lấy thống kê của hệ thống"""
     try:
         db = mongodb_client.get_database()
         

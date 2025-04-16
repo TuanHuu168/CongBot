@@ -21,7 +21,6 @@ except Exception as e:
 # Các hàm tiện ích MongoDB
 
 def save_user(user_data):
-    """Lưu thông tin người dùng vào MongoDB"""
     user_data["created_at"] = datetime.now()
     user_data["updated_at"] = datetime.now()
     
@@ -29,11 +28,9 @@ def save_user(user_data):
     return result.inserted_id
 
 def get_user(user_id):
-    """Lấy thông tin người dùng từ MongoDB"""
     return users_collection.find_one({"_id": user_id})
 
 def save_chat_message(user_id, query, answer, context_items=None, retrieved_chunks=None, performance_metrics=None):
-    """Lưu tin nhắn chat vào MongoDB"""
     chat_data = {
         "user_id": user_id,
         "query": query,
@@ -48,14 +45,12 @@ def save_chat_message(user_id, query, answer, context_items=None, retrieved_chun
     return result.inserted_id
 
 def get_user_chat_history(user_id, limit=20):
-    """Lấy lịch sử chat của người dùng"""
     return list(chat_history_collection.find(
         {"user_id": user_id},
         {"query": 1, "answer": 1, "timestamp": 1}
     ).sort("timestamp", -1).limit(limit))
 
 def save_user_feedback(chat_id, feedback_data):
-    """Lưu phản hồi của người dùng về câu trả lời"""
     feedback_data["chat_id"] = chat_id
     feedback_data["timestamp"] = datetime.now()
     

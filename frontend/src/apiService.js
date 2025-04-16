@@ -120,6 +120,39 @@ export const addMessageToChat = async (chatId, message) => {
   }
 };
 
+// Xóa một cuộc trò chuyện
+export const deleteChat = async (chatId) => {
+  try {
+    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+    
+    const response = await apiClient.delete(`/chats/${chatId}`, {
+      data: { user_id: userId }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting chat:', error);
+    throw error.response?.data || { detail: 'Lỗi xóa cuộc trò chuyện' };
+  }
+};
+
+// Xóa nhiều cuộc trò chuyện cùng lúc
+export const deleteChatsBatch = async (chatIds) => {
+  try {
+    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+    
+    const response = await apiClient.post('/chats/delete-batch', {
+      user_id: userId,
+      chat_ids: chatIds
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting multiple chats:', error);
+    throw error.response?.data || { detail: 'Lỗi xóa cuộc trò chuyện' };
+  }
+};
+
 // Gửi phản hồi về chất lượng câu trả lời
 export const submitFeedback = async (chatId, rating, comment = '', isAccurate = null, isHelpful = null) => {
   try {
@@ -144,5 +177,7 @@ export default {
   getChatMessages,
   updateChatTitle,
   addMessageToChat,
+  deleteChat,
+  deleteChatsBatch,
   submitFeedback
 };
