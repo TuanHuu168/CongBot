@@ -2,493 +2,325 @@
     "benchmark": [
         {
             "id": "q1",
-            "question": "Ai chịu trách nhiệm chi trả tiền trợ cấp cho người có công ở xã, phường?",
-            "answer": "Ủy ban nhân dân cấp xã, phường, thị trấn chịu trách nhiệm trực tiếp chi trả các khoản trợ cấp, phụ cấp ưu đãi cho người có công với cách mạng trên địa bàn. Trong văn bản cũ (Thông tư 47/2009), việc chi trả được giao cho cơ quan Lao động – Thương binh và Xã hội phối hợp với Kho bạc Nhà nước, nhưng không nêu rõ vai trò của UBND cấp xã. Đến văn bản mới (dựa trên các quy định hiện hành), trách nhiệm này được xác định rõ là của UBND cấp xã, với cán bộ được giao nhiệm vụ chi trả và nhận thù lao hàng tháng theo quy định.",
+            "question": "Sao mấy văn bản chả hiểu gì cả, rốt cuộc con bác bây giờ được trợ cấp hàng tháng như nào hở?",
+            "answer": "Chào bạn! Dựa trên các văn bản được cung cấp, hiện các quy định về mức trợ cấp hàng tháng cho người có công được áp dụng theo Nghị định số 31/2013/NĐ-CP ngày 09/4/2013:\n\n- Điều 6, 7: Mức chuẩn trợ cấp hàng tháng cho thương binh, bệnh binh là 1.479.000đ/tháng. Mức chuẩn trợ cấp hàng tháng cho người có công khác là 1.015.000đ/tháng.\n- Điều 11: Các trường hợp mang huyết tính bệnh Tan được hưởng mức trợ cấp hàng tháng ưu đãi. \n\nTại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH cũng có nêu các quy định về trợ cấp hàng tháng cho các đối tượng ưu đãi nhưng đã hết hiệu lực và được thay thế bởi Thông tư 101/2018/TT-BTC.\n\nNhư vậy, mức trợ cấp hàng tháng cho con của bạn sẽ tùy vào xác định con bạn thuộc diện đối tượng nào trong các nhóm đối tượng người có công được hưởng chính sách ưu đãi theo Nghị định 31/2013/NĐ-CP nêu trên.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art3",
-                "49_2012_QD_UBND_regulation_ch2_art8"
+                "47_2009_TTLT_BTC_BLĐTBXH_art3",
+                "101_2018_TT_BTC_ch2_art4"
             ],
-            "ground_truth": "Theo Điều 3 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, cơ quan Lao động – Thương binh và Xã hội chủ trì, phối hợp với Kho bạc Nhà nước để chi trả kịp thời, đúng chế độ cho người có công. Tuy nhiên, Điều 8 Quyết định số 49/2012/QĐ-UBND quy định rõ Ủy ban nhân dân phường-xã, thị trấn trực tiếp quản lý và chi trả các khoản trợ cấp, phụ cấp ưu đãi, đảm bảo đúng đối tượng, kịp thời, và cán bộ thực hiện được hưởng thù lao chi trả hàng tháng."
+            "ground_truth": "Chào bạn! Dựa trên các văn bản được cung cấp, hiện các quy định về mức trợ cấp hàng tháng cho người có công được áp dụng theo Nghị định số 31/2013/NĐ-CP ngày 09/4/2013:\n\n- Điều 6, 7: Mức chuẩn trợ cấp hàng tháng cho thương binh, bệnh binh là 1.479.000đ/tháng. Mức chuẩn trợ cấp hàng tháng cho người có công khác là 1.015.000đ/tháng.\n- Điều 11: Các trường hợp mang huyết tính bệnh Tan được hưởng mức trợ cấp hàng tháng ưu đãi. \n\nTại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH cũng có nêu các quy định về trợ cấp hàng tháng cho các đối tượng ưu đãi nhưng đã hết hiệu lực và được thay thế bởi Thông tư 101/2018/TT-BTC.\n\nNhư vậy, mức trợ cấp hàng tháng cho con của bạn sẽ tùy vào xác định con bạn thuộc diện đối tượng nào trong các nhóm đối tượng người có công được hưởng chính sách ưu đãi theo Nghị định 31/2013/NĐ-CP nêu trên."
         },
         {
             "id": "q2",
-            "question": "Kinh phí để trả trợ cấp cho người có công lấy từ đâu?",
-            "answer": "Ngân sách Trung ương đảm bảo nguồn kinh phí để thực hiện chính sách ưu đãi người có công với cách mạng. Theo Thông tư 47/2009, Bộ Tài chính và Kho bạc Nhà nước bảo đảm đầy đủ, kịp thời kinh phí cho cơ quan Lao động – Thương binh và Xã hội. Các quy định sau này không thay đổi nguồn kinh phí, vẫn giữ nguyên từ ngân sách Trung ương, nhưng việc quản lý và phân bổ được điều chỉnh rõ hơn qua các cấp hành chính.",
+            "question": "Điều dưỡng tại nhà, tiền ăn cho bệnh binh bây giờ là bao nhiêu? Tui nghe nói có sửa đổi đấy.",
+            "answer": "Chào bạn! Theo quy định tại khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP, mức chi điều dưỡng tại nhà đối với bệnh binh như sau: \n\n'Điểm b: Mức chi điều dưỡng tại nhà là 25% mức chuẩn trợ cấp hàng tháng cho bệnh binh tại Điều 6 Nghị định này tương ứng với số ngày điều dưỡng.'\n\nTheo Điều 6, mức chuẩn trợ cấp hàng tháng cho bệnh binh là 1.479.000 đồng/tháng.  \n\nNhư vậy, mức chi điều dưỡng tại nhà cho bệnh binh hiện nay theo Nghị định 31/2013/NĐ-CP là 25% x 1.479.000 đ/tháng x số ngày điều dưỡng.\n\nQuy định này đã thay thế cho các mức chi đã quy định trước đó tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH và các văn bản trước. Nên có thể nói hiện nay mức chi điều dưỡng tại nhà cho bệnh binh được áp dụng theo quy định mới tại Nghị định 31/2013/NĐ-CP.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "101_2018_TT-BTC_Section1"
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art6"
             ],
-            "ground_truth": "Điều 1 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH quy định kinh phí thực hiện chính sách ưu đãi người có công với cách mạng được đảm bảo từ ngân sách Trung ương, do Bộ Tài chính và Kho bạc Nhà nước cung cấp kịp thời. Thông tư số 101/2018/TT-BTC không thay đổi nguồn kinh phí mà tập trung vào mức chi cụ thể cho các phương tiện trợ giúp, dụng cụ chỉnh hình, nhưng vẫn dựa trên ngân sách Trung ương."
+            "ground_truth": "Chào bạn! Theo quy định tại khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP, mức chi điều dưỡng tại nhà đối với bệnh binh như sau: \n\n'Điểm b: Mức chi điều dưỡng tại nhà là 25% mức chuẩn trợ cấp hàng tháng cho bệnh binh tại Điều 6 Nghị định này tương ứng với số ngày điều dưỡng.'\n\nTheo Điều 6, mức chuẩn trợ cấp hàng tháng cho bệnh binh là 1.479.000 đồng/tháng.  \n\nNhư vậy, mức chi điều dưỡng tại nhà cho bệnh binh hiện nay theo Nghị định 31/2013/NĐ-CP là 25% x 1.479.000 đ/tháng x số ngày điều dưỡng.\n\nQuy định này đã thay thế cho các mức chi đã quy định trước đó tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH và các văn bản trước. Nên có thể nói hiện nay mức chi điều dưỡng tại nhà cho bệnh binh được áp dụng theo quy định mới tại Nghị định 31/2013/NĐ-CP."
         },
         {
             "id": "q3",
-            "question": "Người có công được cấp xe lăn tay thì bao lâu được cấp lại?",
-            "answer": "Người có công được cấp xe lăn tay sẽ được cấp lại sau 4 năm theo Thông tư 101/2018/TT-BTC. Trước đó, Thông tư 47/2009 không quy định cụ thể niên hạn cấp lại mà chỉ đề cập chung đến việc cấp phương tiện trợ giúp, dụng cụ chỉnh hình theo các văn bản hiện hành, nên niên hạn không rõ ràng.",
+            "question": "Xưa thằng bạn tui Thanh niên xung phong chống Pháp được trợ cấp mai táng phí khi mất, giờ tui nghe nói có sửa đổi hay sao ấy?",
+            "answer": "Chào bạn! Theo quy định tại Thông tư 101/2018/TT-BTC ngày 14/11/2018, đối với thanh niên xung phong thời kỳ kháng chiến chống Pháp:\n\n'Khoản 2 Điều 1: Thông tư này không áp dụng đối với kinh phí thực hiện các khoản chi do ngân sách địa phương đảm bảo hoặc ngân sách trung ương bổ sung có mục tiêu cho ngân sách địa phương:\nĐiểm đ: Kinh phí thực hiện chế độ bảo hiểm y tế và mai táng phí đối với các đối tượng theo quy định tại Quyết định số 170/2008/QĐ-TTg ngày 18 tháng 12 năm 2008 của Thủ tướng Chính phủ về chế độ bảo hiểm y tế và trợ cấp mai táng đối với thanh niên xung phong thời kỳ kháng chiến chống Pháp.'\n\nNhư vậy, theo quy định mới tại Thông tư 101/2018, chế độ mai táng phí đối với thanh niên xung phong thời kỳ kháng chiến chống Pháp sẽ do ngân sách địa phương chi trả, không do ngân sách trung ương đảm bảo như trước đây.\n\nTrước đó, tại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, chế độ trợ cấp mai táng phí cho thanh niên xung phong thời kỳ kháng chiến chống Pháp được áp dụng theo Quyết định 170/2008/QĐ-TTg, nhưng không nêu rõ nguồn kinh phí chi trả.\n\nVậy có thể thấy đã có sự điều chỉnh về nguồn chi trả chế độ mai táng phí cho nhóm đối tượng này từ ngân sách trung ương sang ngân sách địa phương.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "47_2009_TTLT_BTC_BLĐTBXH_art3",
+                "101_2018_TT_BTC_ch1_art1_3"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi hỗ trợ phương tiện trợ giúp, dụng cụ chỉnh hình nhưng không nêu niên hạn cụ thể. Phụ lục Thông tư 101/2018/TT-BTC xác định rõ xe lăn tay có niên hạn cấp là 4 năm với mức cấp 2.500.000 đồng."
+            "ground_truth": "Chào bạn! Theo quy định tại Thông tư 101/2018/TT-BTC ngày 14/11/2018, đối với thanh niên xung phong thời kỳ kháng chiến chống Pháp:\n\n'Khoản 2 Điều 1: Thông tư này không áp dụng đối với kinh phí thực hiện các khoản chi do ngân sách địa phương đảm bảo hoặc ngân sách trung ương bổ sung có mục tiêu cho ngân sách địa phương:\nĐiểm đ: Kinh phí thực hiện chế độ bảo hiểm y tế và mai táng phí đối với các đối tượng theo quy định tại Quyết định số 170/2008/QĐ-TTg ngày 18 tháng 12 năm 2008 của Thủ tướng Chính phủ về chế độ bảo hiểm y tế và trợ cấp mai táng đối với thanh niên xung phong thời kỳ kháng chiến chống Pháp.'\n\nNhư vậy, theo quy định mới tại Thông tư 101/2018, chế độ mai táng phí đối với thanh niên xung phong thời kỳ kháng chiến chống Pháp sẽ do ngân sách địa phương chi trả, không do ngân sách trung ương đảm bảo như trước đây.\n\nTrước đó, tại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, chế độ trợ cấp mai táng phí cho thanh niên xung phong thời kỳ kháng chiến chống Pháp được áp dụng theo Quyết định 170/2008/QĐ-TTg, nhưng không nêu rõ nguồn kinh phí chi trả.\n\nVậy có thể thấy đã có sự điều chỉnh về nguồn chi trả chế độ mai táng phí cho nhóm đối tượng này từ ngân sách trung ương sang ngân sách địa phương."
         },
         {
             "id": "q4",
-            "question": "Muốn chứng thực bản sao giấy tờ thì mất bao nhiêu tiền?",
-            "answer": "Phí chứng thực bản sao từ bản chính là 2.000 đồng/trang, từ trang thứ 3 trở lên thu 1.000 đồng/trang, tối đa không quá 200.000 đồng/bản. Quy định này được cập nhật trong Quyết định 1766/2020/QĐ-UBND, dựa trên Thông tư 226/2016/TT-BTC, trong khi Thông tư 47/2009 không đề cập đến phí chứng thực cụ thể mà chỉ nói chung về chi phí quản lý.",
+            "question": "Tôi được biết là họ bắt phải công bố thủ tục hành chính theo cái Nghị định 63 gì gì đó. Rồi có TT 47 hướng dẫn. Vậy giờ là phải công bố thế nào mới đúng đấy?",
+            "answer": "Chào bạn! Để công bố thủ tục hành chính về người có công đúng quy định hiện nay, ta cần căn cứ vào một số văn bản sau: \n\n1. Nghị định 63/2010/NĐ-CP về kiểm soát thủ tục hành chính: \nĐiều 13 quy định việc công bố thủ tục hành chính như sau:\n- Thủ tục hành chính phải được công bố dưới hình thức quyết định của Bộ trưởng, Thủ trưởng cơ quan ngang Bộ (đối với thủ tục thuộc phạm vi quản lý) hoặc Chủ tịch UBND tỉnh, thành phố (đối với thủ tục thuộc thẩm quyền giải quyết của chính quyền địa phương).\n\nĐiều 14, 15 nêu rõ phạm vi và nội dung quyết định công bố thủ tục hành chính. \n\n2. Thông tư 47/2009/TTLT-BTC-BLĐTBXH đã bị thay thế bởi Thông tư 101/2018/TT-BTC. Do đó, Thông tư 47 không còn là căn cứ hiện hành để hướng dẫn công bố thủ tục hành chính.\n\n3. Nghị định 48/2013/NĐ-CP sửa đổi Nghị định 63/2010/NĐ-CP có điều chỉnh một số quy định về công bố, như:\n- Thời hạn ban hành quyết định công bố chậm nhất 20 ngày làm việc (đối với văn bản do Chính phủ, Thủ tướng ban hành) hoặc 5 ngày làm việc (đối với các văn bản khác) trước khi văn bản có hiệu lực (Điều 1, sửa Điều 15). \n\nNhư vậy, để công bố thủ tục hành chính về người có công, các Bộ, UBND tỉnh cần ban hành Quyết định công bố đảm bảo các nội dung theo Nghị định 63/2010/NĐ-CP (đã được sửa đổi, bổ sung) và trong thời hạn tại Nghị định 48/2013/NĐ-CP.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art6",
-                "1766_2020_QD-UBND_Appendix_I.1"
+                "63_2010_NĐ_CP_ch3_art12_15",
+                "48_2013_NĐ_CP_art1_part2"
             ],
-            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý chung (1,7% tổng kinh phí) mà không nêu rõ phí chứng thực. Phụ lục I.1 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực bản sao là 2.000 đồng/trang, từ trang thứ 3 trở lên là 1.000 đồng/trang, tối đa 200.000 đồng/bản theo Thông tư 226/2016/TT-BTC."
+            "ground_truth": "Chào bạn! Để công bố thủ tục hành chính về người có công đúng quy định hiện nay, ta cần căn cứ vào một số văn bản sau: \n\n1. Nghị định 63/2010/NĐ-CP về kiểm soát thủ tục hành chính: \nĐiều 13 quy định việc công bố thủ tục hành chính như sau:\n- Thủ tục hành chính phải được công bố dưới hình thức quyết định của Bộ trưởng, Thủ trưởng cơ quan ngang Bộ (đối với thủ tục thuộc phạm vi quản lý) hoặc Chủ tịch UBND tỉnh, thành phố (đối với thủ tục thuộc thẩm quyền giải quyết của chính quyền địa phương).\n\nĐiều 14, 15 nêu rõ phạm vi và nội dung quyết định công bố thủ tục hành chính. \n\n2. Thông tư 47/2009/TTLT-BTC-BLĐTBXH đã bị thay thế bởi Thông tư 101/2018/TT-BTC. Do đó, Thông tư 47 không còn là căn cứ hiện hành để hướng dẫn công bố thủ tục hành chính.\n\n3. Nghị định 48/2013/NĐ-CP sửa đổi Nghị định 63/2010/NĐ-CP có điều chỉnh một số quy định về công bố, như:\n- Thời hạn ban hành quyết định công bố chậm nhất 20 ngày làm việc (đối với văn bản do Chính phủ, Thủ tướng ban hành) hoặc 5 ngày làm việc (đối với các văn bản khác) trước khi văn bản có hiệu lực (Điều 1, sửa Điều 15). \n\nNhư vậy, để công bố thủ tục hành chính về người có công, các Bộ, UBND tỉnh cần ban hành Quyết định công bố đảm bảo các nội dung theo Nghị định 63/2010/NĐ-CP (đã được sửa đổi, bổ sung) và trong thời hạn tại Nghị định 48/2013/NĐ-CP."
         },
         {
             "id": "q5",
-            "question": "Tôi muốn làm giấy xác nhận là người gốc Việt Nam thì mất bao lâu?",
-            "answer": "Thủ tục cấp Giấy xác nhận là người gốc Việt Nam mất 5 ngày làm việc theo Quyết định 1766/2020/QĐ-UBND. Trước đó, Thông tư 47/2009 không đề cập đến thủ tục này vì nó thuộc lĩnh vực quốc tịch, không liên quan trực tiếp đến chính sách ưu đãi người có công.",
+            "question": "Đọc mấy cái văn bản của mấy ông ấy về xử lý vi phạm rối quá. Thế rốt cuộc là người vi phạm trong việc thực hiện chính sách này thì bị xử lý ra sao?",
+            "answer": "Chào bạn! Việc xử lý vi phạm trong thực hiện chính sách ưu đãi người có công được quy định tại một số văn bản như sau:\n\n1. Điều 10, Quyết định 49/2012/QĐ-UBND TP HCM:\n'Cơ quan, tổ chức, cá nhân nếu vi phạm, gây thiệt hại, thất thoát kinh phí thì tùy theo mức độ sẽ xử lý kỷ luật hoặc truy cứu trách nhiệm hình sự theo quy định của pháp luật.\n\n2. Điều 33, Nghị định 63/2010/NĐ-CP:\n'Cơ quan, tổ chức, cá nhân vi phạm các quy định của Nghị định này, thì tùy theo tính chất, mức độ vi phạm mà bị xử lý theo quy định của pháp luật.'\n\n3. Điều 6 Thông tư 47/2009/TTLT-BTC-BLĐTBXH (đã hết hiệu lực):\n'Đối với các khoản lĩnh trùng, cấp trùng, chi sai chế độ: Ngành Lao động - Thương binh và Xã hội phối hợp với Kho bạc Nhà nước nơi đơn vị giao dịch thực hiện thu hồi, nộp ngân sách nhà nước theo quy định.'\n\nNhư vậy, căn cứ mức độ vi phạm, cơ quan, tổ chức, cá nhân vi phạm có thể bị:\n- Xử lý kỷ luật \n- Truy cứu trách nhiệm hình sự\n- Buộc hoàn trả kinh phí đã lĩnh sai, lĩnh trùng vào ngân sách nhà nước\n- Xử lý theo các quy định khác của pháp luật có liên quan\n\nTrách nhiệm xử lý thuộc về cơ quan LĐTBXH, phối hợp với Kho bạc nhà nước và các cơ quan chức năng khác.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_II.1"
+                "49_2012_QĐ_UBND_regulation_ch3",
+                "63_2010_NĐ_CP_ch6_art32_35",
+                "47_2009_TTLT_BTC_BLĐTBXH_art1_2"
             ],
-            "ground_truth": "Thông tư 47/2009 tập trung vào kinh phí ưu đãi người có công, không quy định về thủ tục quốc tịch. Phụ lục II.1 Quyết định 1766/2020/QĐ-UBND quy định rõ thời hạn cấp Giấy xác nhận là người gốc Việt Nam là 5 ngày làm việc, theo Nghị định 16/2020/NĐ-CP."
+            "ground_truth": "Chào bạn! Việc xử lý vi phạm trong thực hiện chính sách ưu đãi người có công được quy định tại một số văn bản như sau:\n\n1. Điều 10, Quyết định 49/2012/QĐ-UBND TP HCM:\n'Cơ quan, tổ chức, cá nhân nếu vi phạm, gây thiệt hại, thất thoát kinh phí thì tùy theo mức độ sẽ xử lý kỷ luật hoặc truy cứu trách nhiệm hình sự theo quy định của pháp luật.'\n\n2. Điều 33, Nghị định 63/2010/NĐ-CP:\n'Cơ quan, tổ chức, cá nhân vi phạm các quy định của Nghị định này, thì tùy theo tính chất, mức độ vi phạm mà bị xử lý theo quy định của pháp luật.'\n\n3. Điều 6 Thông tư 47/2009/TTLT-BTC-BLĐTBXH (đã hết hiệu lực):\n'Đối với các khoản lĩnh trùng, cấp trùng, chi sai chế độ: Ngành Lao động - Thương binh và Xã hội phối hợp với Kho bạc Nhà nước nơi đơn vị giao dịch thực hiện thu hồi, nộp ngân sách nhà nước theo quy định.'\n\nNhư vậy, căn cứ mức độ vi phạm, cơ quan, tổ chức, cá nhân vi phạm có thể bị:\n- Xử lý kỷ luật \n- Truy cứu trách nhiệm hình sự\n- Buộc hoàn trả kinh phí đã lĩnh sai, lĩnh trùng vào ngân sách nhà nước\n- Xử lý theo các quy định khác của pháp luật có liên quan\n\nTrách nhiệm xử lý thuộc về cơ quan LĐTBXH, phối hợp với Kho bạc nhà nước và các cơ quan chức năng khác."
         },
         {
             "id": "q6",
-            "question": "Người có công được hỗ trợ tiền đi khám bệnh không?",
-            "answer": "Người có công được hỗ trợ tiền tàu, xe để đi khám chữa bệnh theo Thông tư 47/2009, cụ thể là khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi mà tiếp tục duy trì hỗ trợ này, nhưng không nêu mức chi cụ thể, chỉ quy định chi tiết hơn về phương tiện trợ giúp như xe lăn, nạng.",
+            "question": "Em trai tui đi bộ đội có 19 năm rưỡi, về phục viên trước năm 75 thì chế độ hưởng như thế nào hở cán bộ? Nghe nói có sự thay đổi mà tui cũng chưa rõ lắm.",
+            "answer": "Chào bạn! Theo quy định tại Thông tư 101/2018/TT-BTC, đối với quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội, đã phục viên, xuất ngũ về địa phương, chế độ hưởng như sau:\n\n'Điều 4. Khoản 2: Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm:\na) Trợ cấp hàng tháng đối với:\n- Quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội, đã phục viên, xuất ngũ về địa phương theo Quyết định số 142/2008/QĐ-TTg và Quyết định số 38/2010/QĐ-TTg;'\n\nNhư vậy, quân nhân phục viên, xuất ngũ trước năm 1975 có thời gian công tác trong quân đội dưới 20 năm sẽ được hưởng trợ cấp hàng tháng.\n\nQuy định này được nêu cụ thể trong Thông tư 101/2018, trong khi trước đây tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH chỉ nhắc chung về 'Các đối tượng chính sách khác theo quy định của pháp luật' tại Điều 3 Khoản 7.\n\nNhư vậy, em trai của bạn với 19,5 năm công tác và phục viên trước năm 1975 đủ điều kiện hưởng trợ cấp hàng tháng dành cho quân nhân có dưới 20 năm công tác theo chính sách hiện hành.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "47_2009_TTLT_BTC_BLĐTBXH_art3",
+                "101_2018_TT_BTC_ch2_art4"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 liệt kê hỗ trợ tiền tàu, xe đi khám chữa bệnh trong các khoản chi ưu đãi khác. Phụ lục Thông tư 101/2018/TT-BTC không quy định mức chi này mà tập trung vào mức cấp phương tiện trợ giúp, dụng cụ chỉnh hình, nhưng vẫn dựa trên chính sách ưu đãi từ văn bản cũ."
+            "ground_truth": "Chào bạn! Theo quy định tại Thông tư 101/2018/TT-BTC, đối với quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội, đã phục viên, xuất ngũ về địa phương, chế độ hưởng như sau:\n\n'Điều 4. Khoản 2: Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm:\na) Trợ cấp hàng tháng đối với:\n- Quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội, đã phục viên, xuất ngũ về địa phương theo Quyết định số 142/2008/QĐ-TTg và Quyết định số 38/2010/QĐ-TTg;'\n\nNhư vậy, quân nhân phục viên, xuất ngũ trước năm 1975 có thời gian công tác trong quân đội dưới 20 năm sẽ được hưởng trợ cấp hàng tháng.\n\nQuy định này được nêu cụ thể trong Thông tư 101/2018, trong khi trước đây tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH chỉ nhắc chung về 'Các đối tượng chính sách khác theo quy định của pháp luật' tại Điều 3 Khoản 7.\n\nNhư vậy, em trai của bạn với 19,5 năm công tác và phục viên trước năm 1975 đủ điều kiện hưởng trợ cấp hàng tháng dành cho quân nhân có dưới 20 năm công tác theo chính sách hiện hành."
         },
         {
             "id": "q7",
-            "question": "Thương binh được cấp chân giả dưới gối thì bao nhiêu tiền?",
-            "answer": "Theo Thông tư 101/2018/TT-BTC, thương binh được cấp chân giả dưới gối có bao da đùi với mức 3.600.000 đồng, niên hạn 2 năm. Trước đó, Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền cụ thể.",
+            "question": "Cháu là thương binh hạng 1/4 bị thương ở mắt, không nhìn thấy cái gì luôn á. Vậy cháu có những chế độ gì vậy chú? Nghe nói giờ có chính sách mới nên cháu hơi bối rối.",
+            "answer": "Chào cháu! Với tình trạng là thương binh hạng 1/4 bị tổn thương mắt nặng, cháu được hưởng các chế độ sau đây:\n\n1. Trợ cấp hàng tháng, hiện nay theo mức quy định tại Nghị định 31/2013/NĐ-CP (được đề cập trong Thông tư 101/2018/TT-BTC) như sau:\n'Điều 6:\n1. Mức chuẩn để xác định các mức trợ cấp, phụ cấp ưu đãi đối với người có công với cách mạng:\nb) Mức chuẩn trợ cấp hàng tháng đối với thương binh, người hưởng chính sách như thương binh là 1.479.000 đồng.'\n\n2. Trợ cấp, phụ cấp khác theo Điều 4, 9 Thông tư 101/2018 như: bảo hiểm y tế hàng tháng, trợ cấp một lần, phương tiện trợ giúp (kính râm và gậy dò đường 150.000đ/năm - Phụ lục), điều dưỡng phục hồi sức khỏe định kỳ 1 lần/năm...\n\n3. Hỗ trợ ăn thêm ngày lễ, tết 200.000đ/ngày (khoản 1c Điều 9) \n\n4. Được miễn giảm học phí, hỗ trợ giáo dục đào tạo (Điều 9 khoản 1d)\n\nDo bị tổn thương mắt nghiêm trọng, cháu có thể được xét thêm:\n- Phụ cấp đặc biệt hàng tháng (Điều 19 Nghị định 31/2013)\n- Trợ cấp người phục vụ thương binh nếu tỷ lệ tổn thương 81% trở lên (Điều 21 NĐ 31/2013)\n\nCác chế độ này được quy định chi tiết, rõ ràng hơn so với trước đây tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH. Nếu cháu cần hỗ trợ thêm, hãy liên hệ cơ quan LĐTBXH để hưởng đầy đủ các quyền lợi nhé.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art4",
+                "101_2018_TT_BTC_ch2_art9"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi phương tiện trợ giúp, dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định chân giả dưới gối có bao da đùi được cấp 3.600.000 đồng, niên hạn 2 năm."
+            "ground_truth": "Chào cháu! Với tình trạng là thương binh hạng 1/4 bị tổn thương mắt nặng, cháu được hưởng các chế độ sau đây:\n\n1. Trợ cấp hàng tháng, hiện nay theo mức quy định tại Nghị định 31/2013/NĐ-CP (được đề cập trong Thông tư 101/2018/TT-BTC) như sau:\n'Điều 6:\n1. Mức chuẩn để xác định các mức trợ cấp, phụ cấp ưu đãi đối với người có công với cách mạng:\nb) Mức chuẩn trợ cấp hàng tháng đối với thương binh, người hưởng chính sách như thương binh là 1.479.000 đồng.'\n\n2. Trợ cấp, phụ cấp khác theo Điều 4, 9 Thông tư 101/2018 như: bảo hiểm y tế hàng tháng, trợ cấp một lần, phương tiện trợ giúp (kính râm và gậy dò đường 150.000đ/năm - Phụ lục), điều dưỡng phục hồi sức khỏe định kỳ 1 lần/năm...\n\n3. Hỗ trợ ăn thêm ngày lễ, tết 200.000đ/ngày (khoản 1c Điều 9) \n\n4. Được miễn giảm học phí, hỗ trợ giáo dục đào tạo (Điều 9 khoản 1d)\n\nDo bị tổn thương mắt nghiêm trọng, cháu có thể được xét thêm:\n- Phụ cấp đặc biệt hàng tháng (Điều 19 Nghị định 31/2013)\n- Trợ cấp người phục vụ thương binh nếu tỷ lệ tổn thương 81% trở lên (Điều 21 NĐ 31/2013)\n\nCác chế độ này được quy định chi tiết, rõ ràng hơn so với trước đây tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH. Nếu cháu cần hỗ trợ thêm, hãy liên hệ cơ quan LĐTBXH để hưởng đầy đủ các quyền lợi nhé."
         },
         {
             "id": "q8",
-            "question": "Muốn đăng ký thế chấp quyền sử dụng đất thì mất bao lâu?",
-            "answer": "Thủ tục đăng ký thế chấp quyền sử dụng đất được giải quyết trong ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND, nếu nhận sau 15 giờ thì trả kết quả ngày làm việc tiếp theo, tối đa không quá 3 ngày. Thông tư 47/2009 không quy định về thủ tục này vì không liên quan đến chính sách ưu đãi người có công.",
+            "question": "Con trai tôi là công an đã chuyển ngành, năm nay 40 tuổi. Với gần 20 năm công tác trong ngành công an trước đây, con tôi được hưởng chế độ gì không cán bộ? Trước nghe có chính sách gì đó mà giờ tôi không rõ.",
+            "answer": "Chào bạn! Theo Thông tư 101/2018/TT-BTC, con trai bạn với gần 20 năm công tác trong Công an nhân dân trước khi chuyển ngành sẽ được hưởng chế độ như sau:\n\n'Điều 4. Khoản 2: Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm:\na) Trợ cấp hàng tháng đối với:\n- Cán bộ, chiến sĩ Công an nhân dân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong Công an nhân dân đã thôi việc, xuất ngũ về địa phương theo Quyết định số 53/2010/QĐ-TTg;'\n\nNhư vậy, cán bộ công an có dưới 20 năm công tác trong CAND tham gia kháng chiến chống Mỹ sau đó thôi việc, xuất ngũ sẽ được hưởng trợ cấp hàng tháng.\n\nQuy định này được bổ sung cụ thể trong Thông tư 101/2018, trong khi trước đó tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH chưa đề cập chi tiết nhóm đối tượng này.\n\nCon trai bạn với gần 20 năm công tác rồi chuyển ngành theo đó sẽ thuộc diện hưởng trợ cấp hàng tháng theo chính sách hiện nay. Nếu cần thêm thông tin cụ thể, bạn nên liên hệ cơ quan LĐTBXH địa phương để được hướng dẫn chi tiết.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_V.1"
+                "47_2009_TTLT_BTC_BLĐTBXH_art3",
+                "101_2018_TT_BTC_ch2_art4"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp quyền sử dụng đất. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND quy định thời hạn giải quyết đăng ký thế chấp quyền sử dụng đất là trong ngày, tối đa 3 ngày nếu kéo dài, theo Nghị định 102/2017/NĐ-CP."
+            "ground_truth": "Chào bạn! Theo Thông tư 101/2018/TT-BTC, con trai bạn với gần 20 năm công tác trong Công an nhân dân trước khi chuyển ngành sẽ được hưởng chế độ như sau:\n\n'Điều 4. Khoản 2: Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm:\na) Trợ cấp hàng tháng đối với:\n- cán bộ công an có dưới 20 năm công tác trong CAND tham gia kháng chiến chống Mỹ sau đó thôi việc, xuất ngũ sẽ được hưởng trợ cấp hàng tháng.\n\nQuy định này được bổ sung cụ thể trong Thông tư 101/2018, trong khi trước đó tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH chưa đề cập chi tiết nhóm đối tượng này.\n\nCon trai bạn với gần 20 năm công tác rồi chuyển ngành theo đó sẽ thuộc diện hưởng trợ cấp hàng tháng theo chính sách hiện nay. Nếu cần thêm thông tin cụ thể, bạn nên liên hệ cơ quan LĐTBXH địa phương để được hướng dẫn chi tiết."
         },
         {
             "id": "q9",
-            "question": "Người có công được cấp máy trợ thính không? Bao lâu thì cấp lại?",
-            "answer": "Người có công được cấp máy trợ thính với mức 450.000 đồng và niên hạn cấp lại là 1 năm theo Thông tư 101/2018/TT-BTC. Trước đó, Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không nêu cụ thể về máy trợ thính.",
+            "question": "Mẹ già của tôi là thương binh hạng 1/4, bị suy giảm khả năng lao động 90%. Bây giờ vào dịp lễ, Tết thì mẹ tôi được hưởng trợ cấp ăn thêm không? Theo quy định ở văn bản nào?",
+            "answer": "Mẹ của bạn được hưởng trợ cấp ăn thêm vào các ngày lễ, tết. Theo Thông tư 101/2018/TT-BTC, tại Điều 9, khoản 1, điểm c quy định rõ: 'Hỗ trợ ăn thêm ngày lễ, tết đối với thương binh, bệnh binh, người hưởng chính sách như thương binh, thương binh loại B bị suy giảm khả năng lao động do thương tích, thương tật (tổn thương cơ thể), bệnh tật từ 81% trở lên: Mức chi 200.000 đồng/người/ngày; số ngày được hỗ trợ theo số ngày lễ, tết được cấp có thẩm quyền quyết định'. So với quy định cũ tại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, có những thay đổi sau:\n\nThông tư 101/2018/TT-BTC quy định cụ thể mức chi là 200.000 đồng/người/ngày\n\nThông tư 101/2018/TT-BTC nêu rõ các đối tượng được hưởng, bao gồm cả thương binh loại B và mức suy giảm khả năng lao động cụ thể là từ 81% trở lên\n\nTrong khi đó, tại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, tại Điều 4, khoản 6 chỉ đề cập chung chung là 'Quà tặng của Chủ tịch nước, chi ăn thêm ngày lễ, tết' mà không nêu cụ thể mức chi\n\nVới mẹ của bạn là thương binh hạng 1/4, suy giảm khả năng lao động 90%, theo quy định mới, mẹ bạn được hưởng mức hỗ trợ ăn thêm ngày lễ, tết là 200.000 đồng/người/ngày.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "101_2018_TT_BTC_ch2_art9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nhắc đến máy trợ thính. Phụ lục Thông tư 101/2018/TT-BTC xác định máy trợ thính được cấp 450.000 đồng, niên hạn 1 năm."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, Điều 9, khoản 1, điểm c, thương binh hạng 1/4 có suy giảm khả năng lao động từ 81% trở lên (như mẹ của người hỏi - 90%) được hỗ trợ ăn thêm ngày lễ, tết với mức 200.000 đồng/người/ngày. So với Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH tại Điều 4, khoản 6, quy định mới đã cụ thể hóa mức chi, đối tượng được hưởng và điều kiện áp dụng."
+        },
+        {
+            "id": "q10",
+            "question": "Tôi là con của một liệt sĩ, tôi đang học đại học. Xin hỏi theo quy định mới nhất thì tiền trợ cấp ưu đãi giáo dục được tính như thế nào? Có khác gì so với quy định trước đây không?",
+            "answer": "Theo quy định mới nhất tại Thông tư số 101/2018/TT-BTC, Điều 9, khoản 1, điểm d quy định về trợ cấp ưu đãi trong giáo dục, đào tạo như sau:\n\n'Thời gian hưởng trợ cấp hàng tháng được cấp đủ 12 tháng cho một năm học. Đối với thời gian học năm cuối không đủ 12 tháng được trợ cấp theo số tháng thực học của năm học đó. Trường hợp học theo mô-đun, tín chỉ thì thời gian hưởng trợ cấp theo thời gian đào tạo quy đổi nhưng không vượt quá thời gian đào tạo của ngành, nghề học và trình độ đào tạo tương đương đối với chương trình đào tạo theo niên chế.'\n\nSo với quy định tại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, Điều 4, khoản 16 chỉ đề cập ngắn gọn là 'Trợ cấp ưu đãi trong giáo dục, đào tạo' mà không nêu chi tiết về thời gian hưởng trợ cấp.\n\nNhư vậy, Thông tư 101/2018/TT-BTC đã:\n\nQuy định rõ ràng hơn về thời gian hưởng trợ cấp hàng tháng (12 tháng/năm học)\n\nBổ sung quy định về trường hợp học năm cuối không đủ 12 tháng\n\nQuy định mới về trường hợp học theo mô-đun, tín chỉ.\n\nNhững quy định này giúp việc áp dụng chế độ trợ cấp ưu đãi giáo dục được cụ thể và đầy đủ hơn cho đối tượng là con liệt sĩ đang học đại học như bạn.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ],
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, Điều 9, khoản 1, điểm d, thời gian hưởng trợ cấp ưu đãi giáo dục được cấp đủ 12 tháng cho một năm học; năm cuối không đủ 12 tháng được trợ cấp theo số tháng thực học; và quy định mới về trường hợp học theo mô-đun, tín chỉ. So với Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH chỉ đề cập chung về trợ cấp ưu đãi trong giáo dục, đào tạo, quy định mới đã chi tiết và cụ thể hơn nhiều."
         },
         {
             "id": "q11",
-            "question": "Thương binh được cấp nạng thì bao lâu thay cái mới?",
-            "answer": "Thương binh được cấp nạng cho người bị cứng khớp gối với niên hạn 1 năm theo Thông tư 101/2018/TT-BTC, mức cấp là 200.000 đồng. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn cụ thể.",
+            "question": "Tôi bị cắt một chân do tai nạn chiến đấu và đang chuẩn bị đi làm chân giả. Theo quy định nào thì tôi được hỗ trợ tiền ăn, tiền tàu xe khi đi làm chân giả? Mức hỗ trợ là bao nhiêu?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, Điều 7, khoản 2, điểm a quy định rõ về chế độ hỗ trợ khi đi làm phương tiện trợ giúp, dụng cụ chỉnh hình như sau:\n\n'Đối tượng được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình khi đi làm dụng cụ chỉnh hình, phương tiện trợ giúp được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về), mỗi niên hạn 01 lần. Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người.'\n\nThông tư còn có ví dụ cụ thể: 'Ông Nguyễn Văn A là thương binh khi đi làm chân giả được hỗ trợ một lần tiền ăn và tiền tàu xe. Khoảng cách từ nhà Ông Nguyễn Văn A đến Trung tâm Chỉnh hình Phục hồi chức năng gần nhất là 175 km. Ông Nguyễn Văn A được hỗ trợ một lần tiền ăn và tiền tàu xe cho cả lượt đi và về là: 5.000 đồng x 175 km = 875.000 đồng.'\n\nSo với Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, tại Điều 4, khoản 11 chỉ đề cập chung chung là 'Hỗ trợ tiền tàu, xe, lưu trú làm dụng cụ chỉnh hình, phục hồi chức năng...' mà không đưa ra mức hỗ trợ cụ thể.\n\nThông tư 101/2018/TT-BTC đã:\n\nQuy định rõ mức hỗ trợ là 5.000 đồng/km\n\nĐặt mức hỗ trợ tối đa không quá 1.400.000 đồng/người\n\nNêu rõ được hỗ trợ mỗi niên hạn 01 lần\n\nCó ví dụ cụ thể để người thụ hưởng dễ hiểu\n\nVới trường hợp của bạn, khi đi làm chân giả, bạn sẽ được hỗ trợ một lần tiền ăn và tiền tàu xe theo mức 5.000 đồng/km nhân với khoảng cách từ nơi bạn cư trú đến cơ sở y tế gần nhất có khả năng cung cấp chân giả, và mức hỗ trợ tối đa không quá 1.400.000 đồng.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "101_2018_TT_BTC_ch2_art7",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định nạng cho người cứng khớp gối có niên hạn 1 năm, mức cấp 200.000 đồng."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, Điều 7, khoản 2, điểm a, người đi làm chân giả được hỗ trợ một lần tiền ăn và tiền tàu xe mỗi niên hạn với mức 5.000 đồng/km (tối đa 1.400.000 đồng/người). So với Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH chỉ đề cập chung về hỗ trợ tiền tàu xe, lưu trú, quy định mới đã nêu rõ mức hỗ trợ cụ thể, tần suất được hỗ trợ và có cả ví dụ minh họa."
         },
         {
             "id": "q12",
-            "question": "Muốn nhập quốc tịch Việt Nam thì mất bao lâu để giải quyết?",
-            "answer": "Thủ tục nhập quốc tịch Việt Nam mất 115 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không đề cập đến thủ tục này vì chỉ tập trung vào chính sách ưu đãi người có công, không liên quan đến quốc tịch.",
+            "question": "Cha tôi là thương binh đang nằm điều dưỡng ở Trung tâm Điều dưỡng Thương binh, các con được đến thăm nom thì chi phí đón tiếp có được cơ quan nhà nước hỗ trợ không?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, Điều 9, khoản 2, điểm c quy định rõ về việc chi đón tiếp thân nhân đến thăm người có công đang điều dưỡng tại cơ sở như sau:\n\n'Chi đón tiếp thân nhân của người có công với cách mạng (không quá 3 người, một năm không quá 02 lần) đến thăm người có công với cách mạng đang nuôi dưỡng tại cơ sở: Mức chi thực hiện theo mức chi tiếp khách trong nước quy định tại Thông tư số 71/2018/TT-BTC ngày 10 tháng 8 năm 2018 của Bộ Tài chính quy định chế độ tiếp khách nước ngoài vào làm việc tại Việt Nam, chế độ chi tổ chức hội nghị, hội thảo quốc tế tại Việt Nam và chế độ tiếp khách trong nước.'\n\nSo sánh với quy định cũ tại Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, tại Điều 5, khoản 5 chỉ đề cập chung chung là 'Chi tàu, xe cho thương binh, bệnh binh về thăm gia đình; chi phí đón tiếp thân nhân người có công với cách mạng đến thăm người có công với cách mạng tại cơ sở nuôi dưỡng, điều dưỡng' mà không nêu rõ số lượng người được đón tiếp, số lần đón tiếp trong năm, và mức chi cụ thể.\n\nThông tư 101/2018/TT-BTC đã:\n\nQuy định cụ thể số lượng thân nhân được đón tiếp (không quá 3 người)\n\nQuy định rõ tần suất đón tiếp (một năm không quá 02 lần)\n\nNêu rõ mức chi theo Thông tư 71/2018/TT-BTC về chế độ tiếp khách trong nước\n\nNhư vậy, khi bạn đến thăm cha tại Trung tâm Điều dưỡng Thương binh, chi phí đón tiếp sẽ được hỗ trợ theo quy định trên, với điều kiện số người thăm không quá 3 người và tần suất không quá 2 lần/năm.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_II.1"
+                "101_2018_TT_BTC_ch2_art9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art5"
             ],
-            "ground_truth": "Thông tư 47/2009 không quy định về quốc tịch. Phụ lục II.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn giải quyết thủ tục nhập quốc tịch Việt Nam là 115 ngày theo Nghị định 16/2020/NĐ-CP."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, Điều 9, khoản 2, điểm c, chi phí đón tiếp thân nhân đến thăm người có công tại cơ sở nuôi dưỡng được nhà nước hỗ trợ với mức tối đa không quá 3 người, một năm không quá 02 lần. Mức chi thực hiện theo quy định về chế độ tiếp khách trong nước tại Thông tư 71/2018/TT-BTC. So với Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH chỉ đề cập chung, quy định mới đã cụ thể hóa về số lượng người, số lần và mức chi."
         },
         {
             "id": "q13",
-            "question": "Người có công được hỗ trợ sửa nhà không?",
-            "answer": "Người có công được hỗ trợ sửa chữa, nâng cấp nhà cửa nếu đang ở các cơ sở nuôi dưỡng, điều dưỡng, theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào mức chi phương tiện trợ giúp, nên vẫn giữ nguyên hỗ trợ sửa nhà từ văn bản cũ.",
+            "question": "Cơ quan nào có nhiệm vụ kiểm soát thủ tục hành chính đối với các chính sách người có công theo Nghị định 48/2013/NĐ-CP? Trước đây cơ quan nào làm nhiệm vụ này?",
+            "answer": "Theo Nghị định 48/2013/NĐ-CP, tại Điều 1, khoản 1 đã sửa đổi Điều 5 của Nghị định 63/2010/NĐ-CP về cơ quan, đơn vị kiểm soát thủ tục hành chính, trong đó quy định:\n\nBộ Tư pháp giúp Chính phủ thống nhất quản lý nhà nước về công tác kiểm soát thủ tục hành chính. Cục Kiểm soát thủ tục hành chính thuộc Bộ Tư pháp có chức năng tham mưu, giúp Bộ trưởng Bộ Tư pháp thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính.\n\nTổ chức pháp chế ở Bộ, cơ quan ngang Bộ (trong trường hợp này là Bộ Lao động - Thương binh và Xã hội) có chức năng tham mưu, giúp Bộ trưởng thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính trong phạm vi ngành, lĩnh vực quản lý.\n\nSở Tư pháp có chức năng tham mưu, giúp Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính tại địa phương.\n\nTrước khi Nghị định 48/2013/NĐ-CP có hiệu lực, theo Nghị định 63/2010/NĐ-CP cũ, nhiệm vụ kiểm soát thủ tục hành chính thuộc về:\n\nCơ quan kiểm soát thủ tục hành chính trực thuộc Văn phòng Chính phủ\n\nVăn phòng Bộ, cơ quan ngang Bộ (thay vì Tổ chức pháp chế như hiện nay)\n\nVăn phòng Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương (thay vì Sở Tư pháp như hiện nay)\n\nNhư vậy, Nghị định 48/2013/NĐ-CP đã chuyển nhiệm vụ kiểm soát thủ tục hành chính từ Văn phòng Chính phủ sang Bộ Tư pháp ở cấp Trung ương, từ Văn phòng Bộ sang Tổ chức pháp chế ở cấp Bộ, và từ Văn phòng UBND tỉnh sang Sở Tư pháp ở cấp tỉnh.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art5",
-                "101_2018_TT-BTC_Section1"
+                "48_2013_NĐ_CP_art1_part1",
+                "63_2010_NĐ_CP_ch1_art1_6"
             ],
-            "ground_truth": "Điều 5 Thông tư 47/2009 quy định chi hỗ trợ sửa chữa, nâng cấp nhà cửa cho cơ sở nuôi dưỡng, điều dưỡng người có công. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 5 Thông tư 47/2009."
+            "ground_truth": "Theo Nghị định 48/2013/NĐ-CP (sửa đổi Điều 5 của Nghị định 63/2010/NĐ-CP), cơ quan kiểm soát thủ tục hành chính đối với chính sách người có công là: Bộ Tư pháp (cấp trung ương), Tổ chức pháp chế của Bộ Lao động - Thương binh và Xã hội (cấp bộ), và Sở Tư pháp (cấp tỉnh). Trước đây theo Nghị định 63/2010/NĐ-CP, nhiệm vụ này thuộc về: Cơ quan kiểm soát thủ tục hành chính trực thuộc Văn phòng Chính phủ, Văn phòng Bộ/cơ quan ngang Bộ, và Văn phòng UBND tỉnh."
         },
         {
             "id": "q14",
-            "question": "Thủ tục chứng thực hợp đồng thì mất bao nhiêu tiền?",
-            "answer": "Phí chứng thực hợp đồng, giao dịch là 50.000 đồng/trường hợp theo Quyết định 1766/2020/QĐ-UBND, áp dụng cho hợp đồng liên quan đến động sản, quyền sử dụng đất, nhà ở. Thông tư 47/2009 không quy định phí này vì không liên quan đến chứng thực.",
+            "question": "Tôi làm cán bộ Phòng Lao động Thương binh và Xã hội cấp huyện. Muốn hỏi theo quy định của Thành phố Hồ Chí Minh, thời hạn thanh toán kinh phí chi trả trợ cấp tại phường xã là ngày nào trong tháng?",
+            "answer": "Theo Quyết định số 49/2012/QĐ-UBND của UBND Thành phố Hồ Chí Minh ban hành Quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng, tại Điều 8, khoản 4, tiết cuối quy định: 'Kinh phí chi trợ cấp ưu đãi người có công cấp trong tháng phải thanh toán với Phòng Lao động - Thương binh và Xã hội quận - huyện chậm nhất là ngày 18 hàng tháng'.\n\nĐồng thời, tại Điều 7, khoản 7 quy định: Phòng LĐ-TB&XH quận-huyện phải rút dự toán chuyển kinh phí cho các phường-xã, thị trấn chi tạm ứng các khoản trợ cấp ưu đãi người có công với cách mạng chậm nhất là ngày 10 hàng tháng.\n\nQuyết định 49/2012/QĐ-UBND là văn bản cụ thể hóa Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH tại địa phương Thành phố Hồ Chí Minh, nên không có quy định cũ tại địa phương để so sánh trực tiếp.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art6",
-                "1766_2020_QD-UBND_Appendix_I.3"
+                "49_2012_QĐ_UBND_regulation_ch2_art8",
+                "49_2012_QĐ_UBND_regulation_ch2_art7"
             ],
-            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực hợp đồng là 50.000 đồng/trường hợp theo Thông tư 226/2016/TT-BTC."
+            "ground_truth": "Theo Quyết định 49/2012/QĐ-UBND của UBND Thành phố Hồ Chí Minh, phường xã phải thanh toán kinh phí chi trả trợ cấp với Phòng LĐ-TB&XH quận huyện chậm nhất là ngày 18 hàng tháng, trong khi Phòng LĐ-TB&XH quận-huyện phải rút dự toán chuyển kinh phí cho phường-xã, thị trấn chậm nhất là ngày 10 hàng tháng."
         },
         {
             "id": "q15",
-            "question": "Thương binh được cấp áo chỉnh hình bao lâu một lần?",
-            "answer": "Thương binh được cấp áo chỉnh hình với niên hạn 5 năm, mức cấp 3.120.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn cụ thể.",
+            "question": "Theo quy định hiện hành, nếu tôi cần chứng thực bản sao từ bản chính giấy tờ về thương binh do cơ quan nhà nước cấp thì thời hạn giải quyết là bao lâu?",
+            "answer": "Theo Quyết định 1766/QĐ-UBND ban hành kèm theo Thông tư số 01/2020/TT-BTP ngày 03/3/2020 của Bộ Tư pháp, thời hạn giải quyết thủ tục chứng thực bản sao từ bản chính giấy tờ, văn bản do cơ quan tổ chức có thẩm quyền của Việt Nam cấp (bao gồm cả giấy tờ về thương binh) như sau:\n\nTrong ngày tiếp nhận yêu cầu hoặc trong ngày làm việc tiếp theo, nếu tiếp nhận yêu cầu sau 15 giờ.\n\nKhông quá 02 ngày làm việc đối với trường hợp cùng một lúc yêu cầu chứng thực bản sao từ nhiều loại bản chính giấy tờ, văn bản; bản chính có nhiều trang; yêu cầu số lượng nhiều bản sao; nội dung giấy tờ, văn bản phức tạp khó kiểm tra, đối chiếu mà cơ quan, tổ chức thực hiện chứng thực không thể đáp ứng được thời hạn quy định.\n\nCó thể dài hơn theo thỏa thuận bằng văn bản với người yêu cầu chứng thực.\n\nSo với quy định trước đây, thời hạn giải quyết không thay đổi, nhưng đã được quy định cụ thể và chi tiết hơn, đặc biệt là trường hợp có thể kéo dài thời gian giải quyết theo thỏa thuận với người yêu cầu chứng thực.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "1766_QĐ_UBND_annex_chung_thuc_chung",
+                "1766_QĐ_UBND_preamble"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định áo chỉnh hình có niên hạn 5 năm, mức cấp 3.120.000 đồng."
+            "ground_truth": "Theo Quyết định 1766/QĐ-UBND, thời hạn giải quyết thủ tục chứng thực bản sao từ bản chính là: trong ngày tiếp nhận yêu cầu (hoặc ngày làm việc tiếp theo nếu tiếp nhận sau 15 giờ); không quá 02 ngày làm việc đối với trường hợp phức tạp; hoặc có thể dài hơn theo thỏa thuận bằng văn bản với người yêu cầu."
         },
         {
             "id": "q16",
-            "question": "Muốn thôi quốc tịch Việt Nam thì mất bao lâu?",
-            "answer": "Thủ tục thôi quốc tịch Việt Nam mất 75 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không đề cập đến thủ tục này vì chỉ tập trung vào chính sách ưu đãi người có công.",
+            "question": "Tôi có người thân là liệt sĩ ở tỉnh Bình Thuận. Tôi muốn hỏi theo quy định hiện nay về thủ tục hành chính thì Quyết định nào đang được áp dụng ở Bình Thuận liên quan đến thủ tục hành chính cho người có công? Quyết định này dựa trên văn bản pháp lý nào?",
+            "answer": "Theo thông tin từ các văn bản bạn cung cấp, tại tỉnh Bình Thuận, Quyết định số 1766/QĐ-UBND ngày 3 tháng 8 năm 2020 của Chủ tịch UBND tỉnh Bình Thuận là văn bản hiện hành về công bố danh mục thủ tục hành chính được sửa đổi, bổ sung, bãi bỏ thuộc phạm vi chức năng quản lý của ngành Tư pháp trên địa bàn tỉnh.\n\nQuyết định này dựa trên các căn cứ pháp lý sau:\n\nLuật Tổ chức chính quyền địa phương năm 2015 và Luật sửa đổi, bổ sung năm 2019\n\nNghị định số 63/2010/NĐ-CP ngày 08/6/2010 của Chính phủ về Kiểm soát thủ tục hành chính\n\nNghị định số 48/2013/NĐ-CP ngày 14/5/2013 và Nghị định số 92/2017/NĐ-CP ngày 07/8/2017 của Chính phủ sửa đổi, bổ sung một số điều của các Nghị định liên quan đến kiểm soát thủ tục hành chính\n\nThông tư số 02/2017/TT-VPCP ngày 31/10/2017 của Văn phòng Chính phủ\n\nCác Quyết định của Bộ Tư pháp: Quyết định số 1217/QĐ-BTP, Quyết định số 1183/QĐ-BTP, Quyết định số 1472/QĐ-BTP, Quyết định số 1329/QĐ-BTP, Quyết định số 1565/QĐ-BTP, Quyết định số 1566/QĐ-BTP\n\nNhững thủ tục hành chính liên quan đến người có công, trong đó có thân nhân liệt sĩ, sẽ được thực hiện theo quy định tại Quyết định này và các văn bản pháp lý nêu trên.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_II.1"
+                "1766_QĐ_UBND_preamble",
+                "1766_QĐ_UBND_art1_3"
             ],
-            "ground_truth": "Thông tư 47/2009 không quy định về quốc tịch. Phụ lục II.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn giải quyết thủ tục thôi quốc tịch Việt Nam là 75 ngày theo Nghị định 16/2020/NĐ-CP."
+            "ground_truth": "Ở tỉnh Bình Thuận, Quyết định số 1766/QĐ-UBND ngày 3/8/2020 của Chủ tịch UBND tỉnh Bình Thuận là văn bản hiện hành về công bố danh mục thủ tục hành chính. Quyết định này dựa trên các căn cứ pháp lý: Luật Tổ chức chính quyền địa phương, Nghị định 63/2010/NĐ-CP, Nghị định 48/2013/NĐ-CP, Nghị định 92/2017/NĐ-CP, Thông tư 02/2017/TT-VPCP và các Quyết định của Bộ Tư pháp."
         },
         {
             "id": "q17",
-            "question": "Người có công được hỗ trợ bảo hiểm y tế không?",
-            "answer": "Người có công được hỗ trợ bảo hiểm y tế theo Thông tư 47/2009, là một trong các khoản chi ưu đãi khác. Quyết định 1766/2020/QĐ-UBND không thay đổi chính sách này mà tập trung vào thủ tục hành chính, nên hỗ trợ bảo hiểm y tế vẫn được duy trì từ văn bản cũ.",
+            "question": "Cháu tôi bị bệnh hiểm nghèo, cần làm hồ sơ xin hỗ trợ từ chính sách cho người có công vì ông nội cháu là liệt sĩ. Chúng tôi ở TPHCM. Quy trình để đăng ký lên UBND phường, xã, thị trấn được quy định như thế nào?",
+            "answer": "Theo Quyết định số 49/2012/QĐ-UBND của UBND Thành phố Hồ Chí Minh, tại Điều 8 quy định nhiệm vụ của UBND phường-xã, thị trấn, trong đó:\n\nUBND phường-xã, thị trấn có trách nhiệm tiếp nhận hồ sơ, thực hiện thủ tục và quản lý đối tượng người có công trên địa bàn.\n\nCán bộ Lao động - Thương binh và Xã hội của phường-xã, thị trấn sẽ:\n\nMở sổ theo dõi và quản lý từng loại đối tượng\n\nTiếp nhận hồ sơ và thực hiện các thủ tục liên quan\n\nChuyển hồ sơ lên Phòng Lao động - Thương binh và Xã hội cấp quận-huyện\n\nSau khi tiếp nhận, hồ sơ sẽ được chuyển từ UBND phường-xã, thị trấn lên Phòng Lao động - Thương binh và Xã hội quận-huyện để thẩm định.\n\nPhường-xã, thị trấn cũng là nơi chi trả các khoản trợ cấp ưu đãi cho người có công và thân nhân sau khi được phê duyệt.\n\nQuyết định 49/2012/QĐ-UBND là văn bản cụ thể hóa Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH tại địa phương Thành phố Hồ Chí Minh. Trước khi có Quyết định này, quy trình tiếp nhận và xử lý hồ sơ vẫn được thực hiện theo quy định chung của Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, nhưng không có quy định chi tiết ở cấp địa phương như hiện nay.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "1766_2020_QD-UBND_Appendix"
+                "49_2012_QĐ_UBND_regulation_ch2_art8",
+                "49_2012_QĐ_UBND_regulation_ch2_art7"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi bảo hiểm y tế trong các khoản ưu đãi khác cho người có công. Quyết định 1766/2020/QĐ-UBND không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Thông tư 47/2009."
+            "ground_truth": "Theo Quyết định 49/2012/QĐ-UBND của TPHCM, quy trình đăng ký hỗ trợ cho thân nhân liệt sĩ tại UBND phường-xã, thị trấn gồm: tiếp nhận hồ sơ bởi cán bộ LĐTBXH của phường-xã; mở sổ theo dõi và quản lý đối tượng; chuyển hồ sơ lên Phòng LĐTBXH quận-huyện để thẩm định; sau khi phê duyệt, phường-xã, thị trấn sẽ chi trả trợ cấp. Trước Quyết định này, quy trình theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH nhưng không chi tiết ở cấp địa phương."
         },
         {
             "id": "q18",
-            "question": "Thủ tục đăng ký hoạt động trung tâm tư vấn pháp luật mất bao lâu?",
-            "answer": "Thủ tục đăng ký hoạt động Trung tâm tư vấn pháp luật mất 4 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không đề cập đến thủ tục này vì không liên quan đến chính sách ưu đãi người có công.",
+            "question": "Bà nội cháu trước đây là thanh niên xung phong được cử sang Lào và Căm-pu-chia làm nhiệm vụ, giờ bà đã mất thì cháu có được hưởng gì không hả chú?",
+            "answer": "Chào cháu! Theo Thông tư 101/2018/TT-BTC, đối với trường hợp bà nội cháu là người được cử làm chuyên gia sang giúp Lào và Căm-pu-chia, được hưởng chế độ trợ cấp một lần.\n\n'Điều 4. Khoản 2: Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm: \nc) Trợ cấp một lần đối với:\n- Người được cử làm chuyên gia sang giúp Lào và Căm-pu-chi-a theo Quyết định số 57/2013/QĐ-TTg và Quyết định số 62/2015/QĐ-TTg;'\n\nTuy nhiên, trợ cấp này được chi trả một lần trực tiếp cho đối tượng chứ không phải là trợ cấp cho thân nhân. Do bà nội cháu đã mất, nên gia đình cháu sẽ không còn được hưởng khoản trợ cấp này.\n\nVề các chế độ ưu đãi khác cho thân nhân, cháu có thể tìm hiểu thêm tại Điều 4 của Thông tư 101/2018 về trợ cấp mai táng, trợ cấp một lần đối với thân nhân người có công từ trần.\n\nTrước đây, nhóm đối tượng này chưa được đề cập cụ thể trong Thông tư 47/2009/TTLT-BTC-BLĐTBXH. Do đó, quyền lợi của họ chỉ được làm rõ trong các văn bản mới hiện nay.\n\nNếu cháu cần tìm hiểu thêm về các chế độ ưu đãi cho thân nhân người có công, hãy liên hệ với cơ quan LĐTBXH gần nhất để nhận được hỗ trợ thêm nhé!",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_IV.1"
+                "47_2009_TTLT_BTC_BLĐTBXH_art3",
+                "101_2018_TT_BTC_ch2_art4"
             ],
-            "ground_truth": "Thông tư 47/2009 không quy định về tư vấn pháp luật. Phụ lục IV.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn đăng ký hoạt động Trung tâm tư vấn pháp luật là 4 ngày theo Nghị định 77/2008/NĐ-CP."
+            "ground_truth": "Chào cháu! Theo Thông tư 101/2018/TT-BTC, đối với trường hợp bà nội cháu là người được cử làm chuyên gia sang giúp Lào và Căm-pu-chia, được hưởng chế độ trợ cấp một lần.\n\n'Điều 4. Khoản 2: Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm: \nc) Trợ cấp một lần đối với:\n- Người được cử làm chuyên gia sang giúp Lào và Căm-pu-chi-a theo Quyết định số 57/2013/QĐ-TTg và Quyết định số 62/2015/QĐ-TTg;'\n\nTuy nhiên, trợ cấp này được chi trả một lần trực tiếp cho đối tượng chứ không phải là trợ cấp cho thân nhân. Do bà nội cháu đã mất, nên gia đình cháu sẽ không còn được hưởng khoản trợ cấp này.\n\nVề các chế độ ưu đãi khác cho thân nhân, cháu có thể tìm hiểu thêm tại Điều 4 của Thông tư 101/2018 về trợ cấp mai táng, trợ cấp một lần đối với thân nhân người có công từ trần.\n\nTrước đây, nhóm đối tượng này chưa được đề cập cụ thể trong Thông tư 47/2009/TTLT-BTC-BLĐTBXH. Do đó, quyền lợi của họ chỉ được làm rõ trong các văn bản mới hiện nay.\n\nNếu cháu cần tìm hiểu thêm về các chế độ ưu đãi cho thân nhân người có công, hãy liên hệ với cơ quan LĐTBXH gần nhất để nhận được hỗ trợ thêm nhé!"
         },
         {
             "id": "q19",
-            "question": "Thương binh được cấp giầy chỉnh hình thì bao nhiêu tiền?",
-            "answer": "Thương binh được cấp giầy chỉnh hình với mức 1.450.000 đồng, niên hạn 1 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền cụ thể.",
+            "question": "Con tui ngày xưa là thanh niên xung phong nay muốn xin trợ cấp một lần. Trước nghe nói con nít của họ sẽ được hỗ trợ học hành đến hết cấp 3. Vậy giờ chính sách có gì thay đổi không hở cậu?",
+            "answer": "Chào cô/chú! Về chế độ ưu đãi cho thanh niên xung phong (TNXP) đã hoàn thành nhiệm vụ trong kháng chiến, theo quy định hiện hành tại Thông tư 101/2018/TT-BTC:\n\n'Điều 4. Khoản 2. Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm:\nc) Trợ cấp một lần đối với: \n- Thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến theo Quyết định số 40/2011/QĐ-TTg;'\n\nNhư vậy, con của cô/chú với tư cách là TNXP hoàn thành nhiệm vụ sẽ được nhận trợ cấp một lần theo Quyết định 40/2011/QĐ-TTg.\n\nTuy nhiên, văn bản không đề cập đến chế độ hỗ trợ con em TNXP được học hết cấp 3 như trước đây. \n\nTrong khi đó, trước đây Thông tư 47/2009/TTLT-BTC-BLĐTBXH cũng không có quy định nào liên quan đến hỗ trợ giáo dục cho con em TNXP.\n\nNhư vậy, nếu chỉ căn cứ riêng vào hai văn bản về tài chính này thì không thể khẳng định được con em TNXP có được hưởng hỗ trợ học hành hay không. Cô/chú nên tìm hiểu thêm các văn bản chuyên biệt về chính sách với TNXP để biết chính xác về vấn đề này.\n\nĐể biết thêm thông tin, cô/chú hãy liên hệ cơ quan LĐTBXH địa phương nhé. Họ sẽ tư vấn rõ hơn về các chế độ ưu đãi cụ thể dành cho TNXP hiện nay.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art4"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định giầy chỉnh hình được cấp 1.450.000 đồng, niên hạn 1 năm."
+            "ground_truth": "Chào cô/chú! Về chế độ ưu đãi cho thanh niên xung phong (TNXP) đã hoàn thành nhiệm vụ trong kháng chiến, theo quy định hiện hành tại Thông tư 101/2018/TT-BTC:\n\n'Điều 4. Khoản 2. Chi chế độ trợ cấp hàng tháng, trợ cấp một lần đối với người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý, gồm:\nc) Trợ cấp một lần đối với: \n- Thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến theo Quyết định số 40/2011/QĐ-TTg;'\n\nNhư vậy, con của cô/chú với tư cách là TNXP hoàn thành nhiệm vụ sẽ được nhận trợ cấp một lần theo Quyết định 40/2011/QĐ-TTg.\n\nTuy nhiên, văn bản không đề cập đến chế độ hỗ trợ con em TNXP được học hết cấp 3 như trước đây. \n\nTrong khi đó, trước đây Thông tư 47/2009/TTLT-BTC-BLĐTBXH cũng không có quy định nào liên quan đến hỗ trợ giáo dục cho con em TNXP.\n\nNhư vậy, nếu chỉ căn cứ riêng vào hai văn bản về tài chính này thì không thể khẳng định được con em TNXP có được hưởng hỗ trợ học hành hay không. Cô/chú nên tìm hiểu thêm các văn bản chuyên biệt về chính sách với TNXP để biết chính xác về vấn đề này.\n\nĐể biết thêm thông tin, cô/chú hãy liên hệ cơ quan LĐTBXH địa phương nhé. Họ sẽ tư vấn rõ hơn về các chế độ ưu đãi cụ thể dành cho TNXP hiện nay."
         },
         {
             "id": "q20",
-            "question": "Muốn sửa sai sót trong hợp đồng đã chứng thực thì mất bao nhiêu tiền?",
-            "answer": "Phí sửa sai sót trong hợp đồng đã chứng thực là 25.000 đồng/hợp đồng theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến chứng thực.",
+            "question": "Tôi nghe bảo các cơ quan trung ương, tỉnh với huyện đều phải lập dự toán chi cho chính sách người có công vào giữa năm. Rốt cuộc là thế nào, có đúng không ạ?",
+            "answer": "Chào bạn! Việc lập dự toán kinh phí hàng năm cho chính sách ưu đãi người có công được quy định cụ thể tại Điều 16 Thông tư 101/2018/TT-BTC, theo đó:\n\n'2. Việc lập dự toán kinh phí hằng năm được thực hiện theo quy định của Luật ngân sách nhà nước và các văn bản hướng dẫn Luật. Ngoài ra, Thông tư này hướng dẫn cụ thể quy trình và trình tự thời gian lập dự toán như sau:\n\na) Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng trực thuộc Sở LĐTBXH lập dự toán của năm kế hoạch gửi Sở LĐTBXH trước ngày 20 tháng 6 hằng năm;\n\nb) Sở LĐTBXH lập dự toán phần chi tại Sở LĐTBXH thực hiện, xem xét dự toán của các Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng; tổng hợp dự toán của toàn tỉnh, thành phố gửi Bộ LĐTBXH trước ngày 05 tháng 7 hằng năm;\n\nc) Bộ LĐTBXH xem xét dự toán của các Sở LĐTBXH; tổng hợp dự toán của cả nước gửi Bộ Tài chính trước ngày 20 tháng 7 hằng năm;'\n\nNhư vậy, các đơn vị từ trung ương tới cấp huyện đều phải lập dự toán kinh phí cho chính sách người có công và gửi về cấp trên trước thời hạn sau:\n- Cấp huyện gửi dự toán về Sở trước 20/6\n- Sở tổng hợp gửi Bộ trước 05/7\n- Bộ tổng hợp gửi Bộ Tài chính trước 20/7\n\nThời hạn này thống nhất cho cả nước và đã được cụ thể hóa so với quy định trước đây tại Điều 7 Thông tư 47/2009/TTLT-BTC-BLĐTBXH.\n\nNếu bạn cần thêm thông tin về quy trình lập dự toán kinh phí cho chính sách người có công, có thể tham khảo Luật Ngân sách nhà nước và liên hệ với Phòng Kế hoạch - Tài chính của Sở LĐTBXH để được hướng dẫn chi tiết.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art6",
-                "1766_2020_QD-UBND_Appendix_I.1"
+                "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+                "101_2018_TT_BTC_ch3_art16"
             ],
-            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.1 Quyết định 1766/2020/QĐ-UBND xác định phí sửa sai sót hợp đồng là 25.000 đồng/hợp đồng theo Thông tư 226/2016/TT-BTC."
+            "ground_truth": "Chào bạn! Việc lập dự toán kinh phí hàng năm cho chính sách ưu đãi người có công được quy định cụ thể tại Điều 16 Thông tư 101/2018/TT-BTC, theo đó:\n\n'2. Việc lập dự toán kinh phí hằng năm được thực hiện theo quy định của Luật ngân sách nhà nước và các văn bản hướng dẫn Luật. Ngoài ra, Thông tư này hướng dẫn cụ thể quy trình và trình tự thời gian lập dự toán như sau:\n\na) Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng trực thuộc Sở LĐTBXH lập dự toán của năm kế hoạch gửi Sở LĐTBXH trước ngày 20 tháng 6 hằng năm;\n\nb) Sở LĐTBXH lập dự toán phần chi tại Sở LĐTBXH thực hiện, xem xét dự toán của các Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng; tổng hợp dự toán của toàn tỉnh, thành phố gửi Bộ LĐTBXH trước ngày 05 tháng 7 hằng năm;\n\nc) Bộ LĐTBXH xem xét dự toán của các Sở LĐTBXH; tổng hợp dự toán của cả nước gửi Bộ Tài chính trước ngày 20 tháng 7 hằng năm;'\n\nNhư vậy, các đơn vị từ trung ương tới cấp huyện đều phải lập dự toán kinh phí cho chính sách người có công và gửi về cấp trên trước thời hạn sau:\n- Cấp huyện gửi dự toán về Sở trước 20/6\n- Sở tổng hợp gửi Bộ trước 05/7\n- Bộ tổng hợp gửi Bộ Tài chính trước 20/7\n\nThời hạn này thống nhất cho cả nước và đã được cụ thể hóa so với quy định trước đây tại Điều 7 Thông tư 47/2009/TTLT-BTC-BLĐTBXH.\n\nNếu bạn cần thêm thông tin về quy trình lập dự toán kinh phí cho chính sách người có công, có thể tham khảo Luật Ngân sách nhà nước và liên hệ với Phòng Kế hoạch - Tài chính của Sở LĐTBXH để được hướng dẫn chi tiết."
         },
         {
             "id": "q21",
-            "question": "Người có công được cấp quà Tết không?",
-            "answer": "Người có công được cấp quà tặng của Chủ tịch nước và chi ăn thêm ngày lễ, Tết theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào phương tiện trợ giúp, nên vẫn giữ nguyên từ văn bản cũ.",
+            "question": "Trước tôi nghe nói Bộ Tài chính với Bộ Lao động Thương binh Xã hội quy định sau khi chi trả các chế độ phải được thanh quyết toán trước tháng 4 năm sau là xong. Giờ tôi nghe lại có vẻ phức tạp hơn, rốt cuộc là phải làm sao?",
+            "answer": "Chào bạn! Hiện nay, việc thanh quyết toán kinh phí thực hiện chính sách người có công được quy định chi tiết tại Điều 19 Thông tư 101/2018/TT-BTC, cụ thể:\n\n'4. Việc xét duyệt, thẩm định và thông báo quyết toán năm thực hiện theo Thông tư số 137/2017/TT-BTC ngày 25 tháng 12 năm 2017 của Bộ Tài chính quy định xét duyệt, thẩm định, thông báo và tổng hợp quyết toán năm. Ngoài ra, Thông tư này hướng dẫn cụ thể quy trình và trình tự thời gian gửi báo cáo quyết toán năm như sau:\n\na) Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng lập báo cáo quyết toán theo quy định gửi Sở LĐTBXH trước ngày 30 tháng 4 hàng năm;\n\nb) Sở LĐTBXH xét duyệt và thông báo kết quả xét duyệt quyết toán cho các Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng và phần kinh phí chi tại Sở; tổng hợp báo cáo quyết toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng của tỉnh (kèm theo thông báo xét duyệt quyết toán cho các đơn vị trực thuộc, các mẫu biểu báo cáo quyết toán theo quy định và giấy nộp tiền vào ngân sách nhà nước (nếu có)) gửi Bộ LĐTBXH trước ngày 05 tháng 7 hàng năm;\n\nc) Bộ LĐTBXH thẩm định và thông báo kết quả thẩm định quyết toán cho các Sở LĐTBXH; tổng hợp báo cáo quyết toán theo kết quả thẩm định gửi Bộ Tài chính trước ngày 01 tháng 10 hằng năm;'\n\nTheo đó, quy trình gồm các bước:\n- Phòng LĐTBXH, cơ sở nuôi dưỡng điều dưỡng NCC gửi báo cáo quyết toán cho Sở trước 30/4\n- Sở xét duyệt, tổng hợp gửi Bộ LĐTBXH trước 05/7\n- Bộ LĐTBXH thẩm định, tổng hợp gửi Bộ Tài chính trước 01/10\n\nNhư vậy, trình tự thời gian đã được gia hạn và nới rộng hơn so với quy định trước đây tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH, trong đó quy định:\n'4. Quy trình, thủ tục, nội dung xét duyệt, thẩm định và thông báo kết quả xét duyệt, thẩm định quyết toán thực hiện theo quy định hiện hành của Bộ Tài chính về hướng dẫn xét duyệt, thẩm định và thông báo quyết toán năm đối với các cơ quan hành chính, đơn vị sự nghiệp, tổ chức được ngân sách nhà nước hỗ trợ và ngân sách các cấp.'\n\nVà không quy định cụ thể về thời hạn gửi báo cáo của từng cấp như hiện nay.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Section1"
+                "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+                "101_2018_TT_BTC_ch3_art19"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi quà tặng của Chủ tịch nước và ăn thêm ngày lễ, Tết trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+            "ground_truth": "Chào bạn! Hiện nay, việc thanh quyết toán kinh phí thực hiện chính sách người có công được quy định chi tiết tại Điều 19 Thông tư 101/2018/TT-BTC, cụ thể:\n\n'4. Việc xét duyệt, thẩm định và thông báo quyết toán năm thực hiện theo Thông tư số 137/2017/TT-BTC ngày 25 tháng 12 năm 2017 của Bộ Tài chính quy định xét duyệt, thẩm định, thông báo và tổng hợp quyết toán năm. Ngoài ra, Thông tư này hướng dẫn cụ thể quy trình và trình tự thời gian gửi báo cáo quyết toán năm như sau:\n\na) Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng lập báo cáo quyết toán theo quy định gửi Sở LĐTBXH trước ngày 30 tháng 4 hàng năm;\n\nb) Sở LĐTBXH xét duyệt và thông báo kết quả xét duyệt quyết toán cho các Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng và phần kinh phí chi tại Sở; tổng hợp báo cáo quyết toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng của tỉnh (kèm theo thông báo xét duyệt quyết toán cho các đơn vị trực thuộc, các mẫu biểu báo cáo quyết toán theo quy định và giấy nộp tiền vào ngân sách nhà nước (nếu có)) gửi Bộ LĐTBXH trước ngày 05 tháng 7 hàng năm;\n\nc) Bộ LĐTBXH thẩm định và thông báo kết quả thẩm định quyết toán cho các Sở LĐTBXH; tổng hợp báo cáo quyết toán theo kết quả thẩm định gửi Bộ Tài chính trước ngày 01 tháng 10 hằng năm;'\n\nTheo đó, quy trình gồm các bước:\n- Phòng LĐTBXH, cơ sở nuôi dưỡng điều dưỡng NCC gửi báo cáo quyết toán cho Sở trước 30/4\n- Sở xét duyệt, tổng hợp gửi Bộ LĐTBXH trước 05/7\n- Bộ LĐTBXH thẩm định, tổng hợp gửi Bộ Tài chính trước 01/10\n\nNhư vậy, trình tự thời gian đã được gia hạn và nới rộng hơn so với quy định trước đây tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH, trong đó quy định:\n'4. Quy trình, thủ tục, nội dung xét duyệt, thẩm định và thông báo kết quả xét duyệt, thẩm định quyết toán thực hiện theo quy định hiện hành của Bộ Tài chính về hướng dẫn xét duyệt, thẩm định và thông báo quyết toán năm đối với các cơ quan hành chính, đơn vị sự nghiệp, tổ chức được ngân sách nhà nước hỗ trợ và ngân sách các cấp.'\n\nVà không quy định cụ thể về thời hạn gửi báo cáo của từng cấp như hiện nay."
         },
         {
             "id": "q22",
-            "question": "Thủ tục đăng ký thế chấp nhà ở tương lai mất bao lâu?",
-            "answer": "Thủ tục đăng ký thế chấp nhà ở hình thành trong tương lai được giải quyết trong ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND, tối đa không quá 3 ngày nếu kéo dài. Thông tư 47/2009 không quy định về thủ tục này.",
+            "question": "Cháu tôi đang hưởng trợ cấp ưu đãi giáo dục con liệt sĩ thì cứ 12 tháng một lần cháu được nhận tiền phải không ạ? Trước đây là nhận 10 tháng, giờ có thay đổi gì không?",
+            "answer": "Chào bạn! Theo quy định mới tại Thông tư 101/2018/TT-BTC, thời gian hưởng trợ cấp ưu đãi trong giáo dục, đào tạo hiện nay đã được thay đổi. Cụ thể, thời gian hưởng trợ cấp hàng tháng được cấp đủ 12 tháng cho một năm học, không còn là 10 tháng như trước đây. Riêng đối với thời gian học năm cuối không đủ 12 tháng, cháu bạn sẽ được trợ cấp theo số tháng thực học của năm học đó. Trường hợp cháu bạn học theo mô-đun, tín chỉ thì thời gian hưởng trợ cấp theo thời gian đào tạo quy đổi nhưng không vượt quá thời gian đào tạo của ngành, nghề học và trình độ đào tạo tương đương đối với chương trình đào tạo theo niên chế.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_V.1"
+                "101_2018_TT_BTC_ch2_art9"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND quy định thời hạn giải quyết đăng ký thế chấp nhà ở tương lai là trong ngày, tối đa 3 ngày theo Nghị định 102/2017/NĐ-CP."
+            "ground_truth": "Trước đây theo Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, thời gian hưởng trợ cấp ưu đãi giáo dục đào tạo không quy định rõ số tháng, nhưng thực tế chỉ được hưởng trong thời gian đi học (thường là 10 tháng/năm). Theo Thông tư 101/2018/TT-BTC đã thay đổi, quy định rõ 'Thời gian hưởng trợ cấp hàng tháng được cấp đủ 12 tháng cho một năm học'."
         },
         {
             "id": "q23",
-            "question": "Thương binh được cấp xe lắc tay thì bao lâu thay mới?",
-            "answer": "Thương binh được cấp xe lắc tay với niên hạn 4 năm, mức 4.550.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi phương tiện trợ giúp mà không quy định niên hạn.",
+            "question": "Mẹ em là liệt sỹ, em đang hưởng trợ cấp tiền ăn thêm vào dịp lễ, tết. Nghe nói mức trợ cấp này đã tăng lên, vậy hiện tại mức hỗ trợ là bao nhiêu ạ?",
+            "answer": "Chào bạn! Theo quy định tại điểm c khoản 1 Điều 9 Thông tư 101/2018/TT-BTC, đối với thương binh, bệnh binh, người hưởng chính sách như thương binh, thương binh loại B bị suy giảm khả năng lao động do thương tích, thương tật (tổn thương cơ thể), bệnh tật từ 81% trở lên, mức hỗ trợ ăn thêm ngày lễ, tết hiện nay là 200.000 đồng/người/ngày. Số ngày được hỗ trợ sẽ theo số ngày lễ, tết được cấp có thẩm quyền quyết định. Mức hỗ trợ này đã được điều chỉnh tăng so với quy định trước đây.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "101_2018_TT_BTC_ch2_art9"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi phương tiện trợ giúp nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định xe lắc tay có niên hạn 4 năm, mức cấp 4.550.000 đồng."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, mức hỗ trợ ăn thêm ngày lễ, tết là 200.000 đồng/người/ngày, cao hơn so với quy định cũ. Thông tư 47/2009/TTLT-BTC-BLĐTBXH trước đây chỉ quy định chung về 'Quà tặng của Chủ tịch nước, chi ăn thêm ngày lễ, tết' mà không nêu cụ thể mức chi."
         },
         {
             "id": "q24",
-            "question": "Muốn đăng ký hoạt động công ty luật thì mất bao nhiêu tiền?",
-            "answer": "Phí đăng ký hoạt động tổ chức hành nghề luật sư là 50.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến lĩnh vực luật sư.",
+            "question": "Ông nội tôi là thương binh hạng 2/4, sắp tới ông định đi làm chân giả ở Trung tâm Chỉnh hình, nhà tôi cách Trung tâm 165km. Theo quy định mới thì ông tôi sẽ được hỗ trợ tiền ăn và tiền tàu xe như thế nào thưa anh?",
+            "answer": "Chào bạn! Theo quy định mới tại điểm a khoản 2, Điều 7 Thông tư 101/2018/TT-BTC, khi đi làm dụng cụ chỉnh hình (chân giả), ông của bạn sẽ được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về) với mức hỗ trợ 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến Trung tâm Chỉnh hình. Với khoảng cách 165km, ông bạn sẽ được hưởng số tiền hỗ trợ là: 5.000 đồng x 165km = 825.000 đồng. Lưu ý, mức hỗ trợ tối đa không quá 1.400.000 đồng/người.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_III.1"
+                "101_2018_TT_BTC_ch2_art7"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định phí đăng ký hoạt động tổ chức hành nghề luật sư là 50.000 đồng/hồ sơ theo Thông tư 47/2019/TT-BTC."
+            "ground_truth": "Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH trước đây, chỉ quy định chung về 'Hỗ trợ tiền tàu, xe, lưu trú làm dụng cụ chỉnh hình, phục hồi chức năng' mà không có mức cụ thể. Quy định mới tại Thông tư 101/2018/TT-BTC đã cụ thể hóa mức hỗ trợ là 5.000 đồng/km và tối đa không quá 1.400.000 đồng/người."
         },
         {
             "id": "q25",
-            "question": "Người có công được hỗ trợ chi phí mai táng không?",
-            "answer": "Người có công được hỗ trợ trợ cấp mai táng phí theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào mức chi phương tiện trợ giúp.",
+            "question": "Tôi đang là cán bộ xã phụ trách chi trả trợ cấp người có công. Theo quy định mới thì cán bộ trực tiếp chi trả có được hưởng thù lao không? Ai quy định mức chi thù lao này?",
+            "answer": "Chào bạn! Theo quy định tại điểm a khoản 1 Điều 6 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, cán bộ trực tiếp chi trả trợ cấp vẫn được hưởng thù lao. Mức chi cụ thể do Giám đốc Sở Lao động - Thương binh và Xã hội quy định phù hợp với điều kiện thực tế tại địa phương và hướng dẫn của Bộ Lao động - Thương binh và Xã hội. Lưu ý, kinh phí chi trả thù lao này được trích từ khoản chi phí quản lý là 1,7% tổng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Section1"
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định trợ cấp mai táng phí trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+            "ground_truth": "Theo Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, cán bộ trực tiếp chi trả trợ cấp được hưởng thù lao, với mức chi do Giám đốc Sở LĐTBXH quy định từ nguồn kinh phí 1,7% tổng kinh phí thực hiện chính sách ưu đãi người có công. Thông tư 101/2018/TT-BTC không đề cập trực tiếp đến vấn đề này."
         },
         {
             "id": "q26",
-            "question": "Thủ tục cấp lại thẻ tư vấn viên pháp luật mất bao lâu?",
-            "answer": "Thủ tục cấp lại thẻ tư vấn viên pháp luật mất 7 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này vì không liên quan đến tư vấn pháp luật.",
+            "question": "Mình được nghe nói là quy định về quản lý và sử dụng kinh phí chính sách ưu đãi người có công với cách mạng đã thay đổi từ năm 2019, vậy hiện nay quy định này do văn bản nào quy định và thay thế cho văn bản nào?",
+            "answer": "Chào bạn! Hiện nay, việc quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng được quy định tại Thông tư số 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính, có hiệu lực từ ngày 01/01/2019. Thông tư này đã thay thế cho Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/03/2009 của Bộ Tài chính và Bộ Lao động - Thương binh và Xã hội về hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_IV.1"
+                "101_2018_TT_BTC_preamble"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến tư vấn pháp luật. Phụ lục IV.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn cấp lại thẻ tư vấn viên pháp luật là 7 ngày theo Thông tư 01/2010/TT-BTP."
+            "ground_truth": "Thông tư 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính (hiệu lực từ 01/01/2019) thay thế cho Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH ngày 11/03/2009 về hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng."
         },
         {
             "id": "q27",
-            "question": "Thương binh được cấp tay giả dưới khuỷu bao nhiêu tiền?",
-            "answer": "Thương binh được cấp tay giả dưới khuỷu với mức 2.220.000 đồng, niên hạn 3 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền.",
+            "question": "Quyết định số 49/2012/QĐ-UBND của TPHCM có đề cập tới việc công bố thủ tục hành chính được sửa đổi, vậy hiện nay thời hạn ban hành quyết định công bố thủ tục hành chính được quy định như thế nào?",
+            "answer": "Chào bạn! Theo quy định hiện hành tại Điều 15 Nghị định số 63/2010/NĐ-CP đã được sửa đổi bởi Nghị định số 48/2013/NĐ-CP, thời hạn ban hành quyết định công bố thủ tục hành chính được quy định như sau:\n\n1. Đối với cấp Trung ương: Quyết định công bố phải được ban hành chậm nhất trước 20 ngày làm việc tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành.\n\n2. Đối với UBND cấp tỉnh (như TP.HCM): Quyết định công bố phải được ban hành chậm nhất trước 05 ngày làm việc tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "48_2013_NĐ_CP_art1_part2"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định tay giả dưới khuỷu được cấp 2.220.000 đồng, niên hạn 3 năm."
+            "ground_truth": "Theo Nghị định 48/2013/NĐ-CP (sửa đổi Nghị định 63/2010/NĐ-CP), thời hạn ban hành quyết định công bố thủ tục hành chính của cấp Trung ương phải ban hành trước 20 ngày làm việc, và đối với UBND cấp tỉnh phải ban hành trước 05 ngày làm việc tính đến ngày văn bản có hiệu lực thi hành."
         },
         {
             "id": "q28",
-            "question": "Muốn xóa đăng ký thế chấp đất thì mất bao nhiêu tiền?",
-            "answer": "Phí xóa đăng ký biện pháp bảo đảm bằng quyền sử dụng đất là 20.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến đăng ký thế chấp.",
+            "question": "Chồng tôi là thương binh loại B với tỷ lệ thương tật 82%, đang được điều dưỡng tập trung tại trung tâm. Nay do sức khỏe yếu, ổng chỉ điều dưỡng được 5 ngày rồi xin về sớm. Vậy tiền điều dưỡng tính sao hả cô?",
+            "answer": "Chào bạn! Trường hợp chồng bạn phải về sớm vì lý do sức khỏe yếu (lý do khách quan), theo quy định tại điểm d khoản 2 Điều 6 Thông tư 101/2018/TT-BTC, cơ quan LĐTBXH sẽ thanh quyết toán cho cơ sở điều dưỡng:\n\n1. Tiền ăn theo số ngày thực tế đã điều dưỡng (5 ngày)\n2. Các khoản chi phí điện, nước, vệ sinh môi trường theo số ngày thực tế\n3. Chi phí văn hóa, thể thao phục vụ điều dưỡng\n4. Tiền thuốc, quà tặng (được hưởng đầy đủ như đi cả đợt)\n5. Các khoản chi phục vụ trực tiếp khác trong thời gian điều dưỡng\n\nTrường hợp chồng bạn đã điều dưỡng dưới 30% thời gian một đợt, thì Giám đốc Sở LĐTBXH sẽ xem xét quyết định hoặc phân cấp cho Phòng LĐTBXH quyết định cho chồng bạn đi điều dưỡng vào đợt kế tiếp.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_V.1"
+                "101_2018_TT_BTC_ch2_art6"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND xác định phí xóa đăng ký thế chấp là 20.000 đồng/hồ sơ theo Nghị quyết 24/2017/NQ-HĐND."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, khi người có công phải ngừng điều dưỡng sớm vì lý do khách quan, được thanh toán tiền ăn, chi phí theo số ngày thực tế, nhưng vẫn được hưởng đầy đủ tiền thuốc, quà tặng. Nếu điều dưỡng dưới 30% thời gian một đợt, có thể được xem xét đi điều dưỡng đợt kế tiếp. Quy định này đã được chi tiết hóa so với Thông tư 47/2009/TTLT-BTC-BLĐTBXH."
         },
         {
             "id": "q29",
-            "question": "Người có công được hỗ trợ tiền thăm viếng mộ liệt sỹ không?",
-            "answer": "Thân nhân liệt sỹ được hỗ trợ tiền tàu, xe thăm viếng mộ theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này mà tập trung vào mức chi phương tiện trợ giúp.",
+            "question": "Bố tôi là thương binh, nay đang ở trung tâm điều dưỡng thương binh. Ba tôi muốn được thăm gia đình, vậy tiền tàu xe về thăm gia đình cho ba tôi thì ai chi trả?",
+            "answer": "Chào bạn! Theo quy định tại khoản 3 Điều 6 Thông tư 101/2018/TT-BTC, các khoản chi phí đưa đón người có công với cách mạng đi điều dưỡng tập trung, chi phí ăn, ở (nếu có) phát sinh trong thời gian đi đường (đi và về) của người có công với cách mạng đi điều dưỡng tập trung do ngân sách địa phương đảm bảo theo phân cấp ngân sách hiện hành.\n\nĐồng thời, theo điểm b khoản 2 Điều 9 của Thông tư này, đối với người có công đang được nuôi dưỡng tại cơ sở như trường hợp của bố bạn, cơ sở nuôi dưỡng sẽ hỗ trợ tiền ăn và tiền tàu xe khi về thăm gia đình. Mức chi thực hiện theo quy định tại khoản 1 Điều 12 của Thông tư.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Section1"
+                "101_2018_TT_BTC_ch2_art6",
+                "101_2018_TT_BTC_ch2_art9"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định hỗ trợ tiền tàu, xe thăm viếng mộ liệt sỹ trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, đối với người có công đang ở trung tâm điều dưỡng, khi về thăm gia đình sẽ được hỗ trợ tiền ăn và tiền tàu xe từ cơ sở nuôi dưỡng. Thông tư 47/2009/TTLT-BTC-BLĐTBXH trước đây chỉ nêu chung về 'Chi tàu, xe cho thương binh, bệnh binh về thăm gia đình' nhưng không chi tiết rõ nguồn chi trả."
         },
         {
             "id": "q30",
-            "question": "Thủ tục chứng thực văn bản từ chối nhận di sản mất bao lâu?",
-            "answer": "Thủ tục chứng thực văn bản từ chối nhận di sản được giải quyết không quá 2 ngày kể từ ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "question": "Mình là người giám định y khoa cho thương binh. Trước đây thì Văn phòng Chính phủ phụ trách quản lý thủ tục hành chính về người có công, nhưng nghe nói giờ đã thay đổi. Vậy hiện nay cơ quan nào đảm nhiệm vai trò này?",
+            "answer": "Chào bạn! Theo quy định tại Điều 5 Nghị định số 63/2010/NĐ-CP đã được sửa đổi bởi Nghị định số 48/2013/NĐ-CP, hiện nay Bộ Tư pháp (thay vì Văn phòng Chính phủ như trước đây) là cơ quan giúp Chính phủ thống nhất quản lý nhà nước về công tác kiểm soát thủ tục hành chính, bao gồm cả thủ tục hành chính liên quan đến người có công.\n\nCụ thể, Cục Kiểm soát thủ tục hành chính thuộc Bộ Tư pháp có chức năng tham mưu, giúp Bộ trưởng Bộ Tư pháp thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_I.3"
+                "48_2013_NĐ_CP_art1_part1"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến chứng thực di sản. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND quy định thời hạn chứng thực văn bản từ chối nhận di sản là không quá 2 ngày theo Nghị định 23/2015/NĐ-CP."
+            "ground_truth": "Theo Nghị định 48/2013/NĐ-CP sửa đổi Nghị định 63/2010/NĐ-CP, Bộ Tư pháp (thay thế Văn phòng Chính phủ) là cơ quan giúp Chính phủ thống nhất quản lý nhà nước về công tác kiểm soát thủ tục hành chính, với Cục Kiểm soát thủ tục hành chính thuộc Bộ Tư pháp đảm nhiệm vai trò tham mưu."
         },
         {
             "id": "q31",
-            "question": "Thương binh được cấp nẹp đùi thì bao lâu thay mới?",
-            "answer": "Thương binh được cấp nẹp đùi với niên hạn 3 năm, mức 2.750.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn.",
+            "question": "Tại thành phố Hồ Chí Minh, cơ quan nào có trách nhiệm xây dựng báo cáo về tình hình và kết quả thực hiện hoạt động kiểm soát thủ tục hành chính liên quan đến người có công với cách mạng?",
+            "answer": "Chào bạn! Theo quy định tại khoản 3 Điều 5 Nghị định số 63/2010/NĐ-CP đã được sửa đổi bởi Nghị định số 48/2013/NĐ-CP, tại TP.HCM, Sở Tư pháp là cơ quan có chức năng tham mưu, giúp Ủy ban nhân dân thành phố thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính tại địa phương, bao gồm cả thủ tục hành chính liên quan đến người có công.\n\nPhòng Kiểm soát thủ tục hành chính thuộc Sở Tư pháp có chức năng tham mưu, giúp Giám đốc Sở Tư pháp tổ chức thực hiện công tác kiểm soát thủ tục hành chính và xây dựng báo cáo về tình hình, kết quả thực hiện.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
+                "48_2013_NĐ_CP_art1_part1",
+                "48_2013_NĐ_CP_art1_part4"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định nẹp đùi có niên hạn 3 năm, mức cấp 2.750.000 đồng."
+            "ground_truth": "Theo Nghị định 48/2013/NĐ-CP sửa đổi Nghị định 63/2010/NĐ-CP, tại TP.HCM, Sở Tư pháp (thay vì Văn phòng UBND thành phố như trước đây) là cơ quan có trách nhiệm tham mưu, giúp UBND thành phố thực hiện quản lý và báo cáo về kiểm soát thủ tục hành chính, với Phòng Kiểm soát TTHC thuộc Sở Tư pháp đảm nhiệm việc tham mưu."
         },
         {
             "id": "q32",
-            "question": "Muốn thay đổi nội dung đăng ký công ty luật thì mất bao lâu?",
-            "answer": "Thủ tục thay đổi nội dung đăng ký hoạt động của tổ chức hành nghề luật sư mất 4 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
+            "question": "Gia đình tôi chuẩn bị giấy tờ làm mộ cho ông nội là liệt sĩ tại nghĩa trang liệt sĩ. Chúng tôi nghe nói mức hỗ trợ xây mộ cho liệt sĩ đã thay đổi, vậy hiện tại mức hỗ trợ tối đa cho việc xây mới vỏ mộ liệt sĩ là bao nhiêu?",
+            "answer": "Chào bạn! Theo quy định tại khoản 2 Điều 11 Thông tư 101/2018/TT-BTC, mức chi hỗ trợ xây mới vỏ mộ liệt sĩ hiện nay được quy định theo dự toán được cấp có thẩm quyền phê duyệt, nhưng tối đa không quá 7 triệu đồng/mộ đối với xây mới vỏ mộ (cả bia). \n\nTrong trường hợp sửa chữa, nâng cấp vỏ mộ (cả bia), mức hỗ trợ tối đa là 70% mức xây mới vỏ mộ, tức là không quá 4,9 triệu đồng/mộ.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_III.1"
+                "101_2018_TT_BTC_ch2_art11"
             ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn thay đổi nội dung đăng ký hoạt động công ty luật là 4 ngày theo Nghị định 123/2013/NĐ-CP."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, mức hỗ trợ tối đa cho việc xây mới vỏ mộ liệt sĩ là 7 triệu đồng/mộ (cả bia), còn sửa chữa, nâng cấp là tối đa 70% mức xây mới (khoảng 4,9 triệu đồng). Thông tư 47/2009/TTLT-BTC-BLĐTBXH trước đó chỉ quy định chung về 'hỗ trợ sửa chữa nâng cấp, xây mới mộ liệt sỹ' mà không nêu cụ thể mức hỗ trợ tối đa."
         },
         {
             "id": "q33",
-            "question": "Người có công được hỗ trợ giám định y khoa không?",
-            "answer": "Người có công được hỗ trợ giám định y khoa cho thương binh, bệnh binh theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này.",
+            "question": "Hiện nay khi thân nhân đến thăm người có công đang điều dưỡng tại Trung tâm điều dưỡng thương binh thì được hỗ trợ tiếp đón như thế nào? Tôi định đưa 2 con đến thăm anh trai là thương binh có tỷ lệ thương tật 85%.",
+            "answer": "Chào bạn! Theo quy định tại điểm c khoản 2 Điều 9 Thông tư 101/2018/TT-BTC, khi thân nhân đến thăm người có công đang được nuôi dưỡng tại cơ sở, Trung tâm điều dưỡng sẽ chi đón tiếp thân nhân với những điều kiện sau:\n\n1. Số lượng thân nhân được đón tiếp không quá 3 người (trường hợp của bạn là 3 người gồm bạn và 2 con đủ điều kiện)\n2. Tần suất thăm không quá 02 lần/năm\n3. Mức chi thực hiện theo mức chi tiếp khách trong nước quy định tại Thông tư số 71/2018/TT-BTC ngày 10/8/2018 của Bộ Tài chính\n\nĐây là quy định mới đã được cụ thể hóa so với trước đây.",
             "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Section1"
+                "101_2018_TT_BTC_ch2_art9"
             ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi giám định y khoa trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
-        },
-        {
-            "id": "q34",
-            "question": "Thủ tục chứng thực di chúc mất bao nhiêu tiền?",
-            "answer": "Phí chứng thực di chúc là 50.000 đồng/trường hợp theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến chứng thực.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art6",
-                "1766_2020_QD-UBND_Appendix_I.3"
-            ],
-            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực di chúc là 50.000 đồng/trường hợp theo Thông tư 226/2016/TT-BTC."
-        },
-        {
-            "id": "q35",
-            "question": "Thương binh được cấp hàm giả thì bao nhiêu tiền?",
-            "answer": "Thương binh được cấp hàm giả với mức 4.450.000 đồng, niên hạn 5 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
-            ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định hàm giả được cấp 4.450.000 đồng, niên hạn 5 năm."
-        },
-        {
-            "id": "q36",
-            "question": "Muốn đăng ký thế chấp dự án xây nhà thì mất bao nhiêu tiền?",
-            "answer": "Phí đăng ký thế chấp dự án đầu tư xây dựng nhà ở là 80.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này vì không liên quan đến đăng ký thế chấp.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_V.1"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND xác định phí đăng ký thế chấp dự án xây nhà là 80.000 đồng/hồ sơ theo Nghị quyết 24/2017/NQ-HĐND."
-        },
-        {
-            "id": "q37",
-            "question": "Người có công được hỗ trợ sửa chữa mộ liệt sỹ không?",
-            "answer": "Người có công được hỗ trợ chi sửa chữa, nâng cấp mộ liệt sỹ theo Thông tư 47/2009, nằm trong chi công tác mộ liệt sỹ. Thông tư 101/2018 không thay đổi chính sách này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Section1"
-            ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi sửa chữa, nâng cấp mộ liệt sỹ trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
-        },
-        {
-            "id": "q38",
-            "question": "Thủ tục sửa sai sót đăng ký thế chấp đất mất bao lâu?",
-            "answer": "Thủ tục sửa sai sót đăng ký thế chấp đất do lỗi cơ quan đăng ký mất 1 ngày làm việc theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_V.1"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND quy định thời hạn sửa sai sót đăng ký thế chấp đất là 1 ngày theo Nghị định 102/2017/NĐ-CP."
-        },
-        {
-            "id": "q39",
-            "question": "Thương binh được cấp dép chỉnh hình thì bao lâu thay mới?",
-            "answer": "Thương binh được cấp dép chỉnh hình với niên hạn 1 năm, mức 850.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định niên hạn.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
-            ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu niên hạn. Phụ lục Thông tư 101/2018/TT-BTC xác định dép chỉnh hình có niên hạn 1 năm, mức cấp 850.000 đồng."
-        },
-        {
-            "id": "q40",
-            "question": "Muốn cấp lại Giấy đăng ký hoạt động công ty luật nước ngoài thì mất bao nhiêu tiền?",
-            "answer": "Phí cấp lại Giấy đăng ký hoạt động của chi nhánh, công ty luật nước ngoài là 2.000.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_III.1"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định phí cấp lại Giấy đăng ký hoạt động công ty luật nước ngoài là 2.000.000 đồng/hồ sơ theo Thông tư 220/2016/TT-BTC."
-        },
-        {
-            "id": "q41",
-            "question": "Người có công được hỗ trợ tiền điều dưỡng không?",
-            "answer": "Người có công được hỗ trợ chi điều trị, điều dưỡng phục hồi sức khỏe theo Thông tư 47/2009, nằm trong các khoản chi ưu đãi khác. Thông tư 101/2018 không thay đổi chính sách này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Section1"
-            ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi điều trị, điều dưỡng phục hồi sức khỏe trong các khoản ưu đãi khác. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 4 Thông tư 47/2009."
-        },
-        {
-            "id": "q42",
-            "question": "Thủ tục chứng thực văn bản khai nhận di sản mất bao lâu?",
-            "answer": "Thủ tục chứng thực văn bản khai nhận di sản được giải quyết không quá 2 ngày kể từ ngày nhận hồ sơ hợp lệ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_I.3"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến chứng thực di sản. Phụ lục I.3 Quyết định 1766/2020/QĐ-UBND quy định thời hạn chứng thực văn bản khai nhận di sản là không quá 2 ngày theo Nghị định 23/2015/NĐ-CP."
-        },
-        {
-            "id": "q43",
-            "question": "Thương binh được cấp chân giả trên gối thì bao nhiêu tiền?",
-            "answer": "Thương binh được cấp chân giả trên gối với mức 3.800.000 đồng, niên hạn 2 năm theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 chỉ đề cập chung đến chi dụng cụ chỉnh hình mà không quy định mức tiền.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
-            ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình nhưng không nêu mức chi. Phụ lục Thông tư 101/2018/TT-BTC xác định chân giả trên gối được cấp 3.800.000 đồng, niên hạn 2 năm."
-        },
-        {
-            "id": "q44",
-            "question": "Muốn thay đổi nội dung biện pháp bảo đảm đất thì mất bao nhiêu tiền?",
-            "answer": "Phí đăng ký thay đổi nội dung biện pháp bảo đảm bằng quyền sử dụng đất là 60.000 đồng/hồ sơ theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định phí này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_V.1"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký thế chấp. Phụ lục V.1 Quyết định 1766/2020/QĐ-UBND xác định phí thay đổi nội dung biện pháp bảo đảm là 60.000 đồng/hồ sơ theo Nghị quyết 24/2017/NQ-HĐND."
-        },
-        {
-            "id": "q45",
-            "question": "Người có công được hỗ trợ sinh hoạt văn hóa không?",
-            "answer": "Người có công ở cơ sở nuôi dưỡng, điều dưỡng được hỗ trợ chi sách báo, sinh hoạt văn hóa, thể thao theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art5",
-                "101_2018_TT-BTC_Section1"
-            ],
-            "ground_truth": "Điều 5 Thông tư 47/2009 quy định chi sách báo, sinh hoạt văn hóa, thể thao cho cơ sở nuôi dưỡng, điều dưỡng người có công. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 5 Thông tư 47/2009."
-        },
-        {
-            "id": "q46",
-            "question": "Thủ tục cấp thẻ tư vấn viên pháp luật mất bao lâu?",
-            "answer": "Thủ tục cấp thẻ tư vấn viên pháp luật mất 5 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_IV.1"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến tư vấn pháp luật. Phụ lục IV.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn cấp thẻ tư vấn viên pháp luật là 5 ngày theo Thông tư 01/2010/TT-BTP."
-        },
-        {
-            "id": "q47",
-            "question": "Thương binh được cấp kính râm thì bao lâu thay mới?",
-            "answer": "Thương binh được cấp kính râm và gậy dò đường với niên hạn 1 năm, mức 150.000 đồng theo Thông tư 101/2018/TT-BTC. Thông tư 47/2009 không quy định cụ thể về khoản chi này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art4",
-                "101_2018_TT-BTC_Appendix"
-            ],
-            "ground_truth": "Điều 4 Thông tư 47/2009 quy định chi dụng cụ chỉnh hình chung nhưng không nêu kính râm. Phụ lục Thông tư 101/2018/TT-BTC xác định kính râm và gậy dò đường có niên hạn 1 năm, mức cấp 150.000 đồng."
-        },
-        {
-            "id": "q48",
-            "question": "Muốn chứng thực chữ ký người dịch thì mất bao nhiêu tiền?",
-            "answer": "Phí chứng thực chữ ký người dịch là 10.000 đồng/trường hợp theo Quyết định 1766/2020/QĐ-UBND, áp dụng cho cả cộng tác viên và không phải cộng tác viên của Phòng Tư pháp. Thông tư 47/2009 không quy định phí này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art6",
-                "1766_2020_QD-UBND_Appendix_I.2"
-            ],
-            "ground_truth": "Điều 6 Thông tư 47/2009 chỉ quy định chi phí quản lý, không đề cập phí chứng thực. Phụ lục I.2 Quyết định 1766/2020/QĐ-UBND xác định phí chứng thực chữ ký người dịch là 10.000 đồng/trường hợp theo Thông tư 226/2016/TT-BTC."
-        },
-        {
-            "id": "q49",
-            "question": "Người có công được hỗ trợ tiền thuê nhân công không?",
-            "answer": "Người có công ở cơ sở nuôi dưỡng, điều dưỡng được hỗ trợ chi thuê mướn nhân công theo Thông tư 47/2009. Thông tư 101/2018 không thay đổi chính sách này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art5",
-                "101_2018_TT-BTC_Section1"
-            ],
-            "ground_truth": "Điều 5 Thông tư 47/2009 quy định chi thuê mướn nhân công cho cơ sở nuôi dưỡng, điều dưỡng người có công. Thông tư 101/2018/TT-BTC không đề cập thay đổi, vẫn dựa trên chính sách cũ từ Điều 5 Thông tư 47/2009."
-        },
-        {
-            "id": "q50",
-            "question": "Thủ tục đăng ký hoạt động chi nhánh công ty luật nước ngoài mất bao lâu?",
-            "answer": "Thủ tục đăng ký hoạt động chi nhánh của công ty luật nước ngoài mất 7 ngày theo Quyết định 1766/2020/QĐ-UBND. Thông tư 47/2009 không quy định về thủ tục này.",
-            "contexts": [
-                "47_2009_TTLT-BTC-BLDTBXH_Art1",
-                "1766_2020_QD-UBND_Appendix_III.1"
-            ],
-            "ground_truth": "Thông tư 47/2009 không đề cập đến đăng ký luật sư. Phụ lục III.1 Quyết định 1766/2020/QĐ-UBND xác định thời hạn đăng ký hoạt động chi nhánh công ty luật nước ngoài là 7 ngày theo Nghị định 123/2013/NĐ-CP."
+            "ground_truth": "Theo Thông tư 101/2018/TT-BTC, khi thân nhân đến thăm người có công tại Trung tâm điều dưỡng, được chi đón tiếp không quá 3 người, không quá 2 lần/năm, theo mức chi tiếp khách trong nước quy định tại Thông tư 71/2018/TT-BTC. Thông tư 47/2009/TTLT-BTC-BLĐTBXH trước đây chỉ đề cập đến 'chi phí đón tiếp thân nhân' nhưng không quy định rõ số người, số lần và mức chi cụ thể."
         }
     ]
 }
