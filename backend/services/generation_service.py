@@ -15,7 +15,7 @@ class GenerationService:
         self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
     
     def _create_prompt(self, query: str, context_items: List[str]) -> str:
-        T# Tạo prompt để gửi đến Gemini
+        # Tạo prompt để gửi đến Gemini
         context_text = "\n\n".join([f"[Đoạn văn bản {i+1}]\n{item}" for i, item in enumerate(context_items)])
         
         prompt = f"""[SYSTEM INSTRUCTION]
