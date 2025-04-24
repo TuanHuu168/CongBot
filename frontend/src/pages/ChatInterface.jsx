@@ -361,8 +361,8 @@ const ChatInterface = () => {
                     <button
                       key={chat.id}
                       className={`flex items-center w-full py-2.5 px-3.5 rounded-lg transition-all duration-200 ${currentChatId === chat.id
-                          ? 'bg-green-50 text-green-700 border-l-4 border-green-600 shadow-sm'
-                          : 'hover:bg-gray-100 text-gray-700'
+                        ? 'bg-green-50 text-green-700 border-l-4 border-green-600 shadow-sm'
+                        : 'hover:bg-gray-100 text-gray-700'
                         }`}
                       onClick={() => {
                         switchChat(chat.id);
@@ -477,8 +477,8 @@ const ChatInterface = () => {
                   )}
                   <div
                     className={`rounded-2xl px-4 py-3 max-w-[80%] ${message.sender === 'user'
-                        ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
-                        : 'bg-white text-gray-800 border border-gray-100 shadow-md'
+                      ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
+                      : 'bg-white text-gray-800 border border-gray-100 shadow-md'
                       }`}
                   >
                     {message.sender === 'user' ? (
@@ -569,7 +569,7 @@ const ChatInterface = () => {
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Nhập câu hỏi của bạn về chính sách người có công..."
-                    className="w-full border-0 focus:ring-0 text-sm rounded-[20px] my-1 py-3.5 px-3 resize-none"
+                    className="w-full border border-gray-200 focus:border-green-600 focus:ring-1 focus:ring-green-600 focus:outline-none text-sm rounded-[20px] my-1 py-3.5 px-3 resize-none transition-all duration-200"
                     style={{
                       height: `${textareaHeight}px`,
                       maxHeight: '200px',
@@ -587,8 +587,8 @@ const ChatInterface = () => {
                   <motion.button
                     type="submit"
                     className={`p-2.5 h-[46px] min-w-[46px] flex items-center justify-center rounded-full ${input.trim() === '' || isLoading
-                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                        : 'bg-gradient-to-r from-green-600 to-teal-600 text-white hover:shadow-md'
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-green-600 to-teal-600 text-white hover:shadow-md'
                       } transition-all`}
                     disabled={input.trim() === '' || isLoading}
                     whileHover={{ scale: input.trim() === '' || isLoading ? 1 : 1.05 }}
