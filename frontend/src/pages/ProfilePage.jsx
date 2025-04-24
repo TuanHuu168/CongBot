@@ -82,7 +82,7 @@ const ProfilePage = () => {
       const sortedChats = [...chatHistory].sort((a, b) => {
         return new Date(b.updated_at || b.date) - new Date(a.updated_at || a.date);
       });
-      
+
       const latest = sortedChats.slice(0, 3);
       setRecentChats(latest);
 
@@ -331,23 +331,23 @@ const ProfilePage = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
-    
+
     // Kiểm tra xem có phải là hôm nay không
     if (date.toDateString() === now.toDateString()) {
       return `Hôm nay, ${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
     }
-    
+
     // Kiểm tra xem có phải là hôm qua không
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     if (date.toDateString() === yesterday.toDateString()) {
       return `Hôm qua, ${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
     }
-    
+
     // Trường hợp khác
-    return date.toLocaleDateString('vi-VN', { 
-      day: '2-digit', 
-      month: '2-digit', 
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
@@ -414,7 +414,7 @@ const ProfilePage = () => {
       variants={pageVariants}
     >
       {/* Header with curved design */}
-      <div className="relative bg-gradient-to-r from-green-600 to-teal-600 text-white py-16 pb-24 rounded-b-[40px] shadow-lg">
+      <div className="relative bg-gradient-to-r from-green-600 to-teal-600 text-white py-4 rounded-b-[40px] shadow-lg">
         <div className="container mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center relative z-10">
             <button
@@ -433,162 +433,161 @@ const ProfilePage = () => {
               <span>Đăng xuất</span>
             </button>
           </div>
-
-          {/* Profile card - positioned to overflow the header */}
-          <motion.div
-            className="absolute left-1/2 transform -translate-x-1/2 bottom-0 translate-y-1/2 w-full max-w-3xl"
-            variants={slideUpVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            <div className="bg-white rounded-2xl shadow-xl mx-4 overflow-hidden border border-gray-100">
-              <div className="p-6 relative">
-                <div className="flex flex-col sm:flex-row items-center gap-6">
-                  {/* Avatar section */}
-                  <div className="relative">
-                    <div className="w-28 h-28 rounded-full border-4 border-green-100 shadow-md overflow-hidden bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
-                      {user?.avatar ? (
-                        <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        <User size={42} className="text-white" />
-                      )}
-                    </div>
-                    <button
-                      onClick={handleAvatarChange}
-                      className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all"
-                    >
-                      <Camera size={16} className="text-green-600" />
-                    </button>
-                  </div>
-
-                  {/* User info section */}
-                  <div className="text-center sm:text-left flex-1">
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-                      {formData.fullName}
-                    </h1>
-                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                      <div className="flex items-center justify-center sm:justify-start text-gray-500">
-                        <Mail size={14} className="mr-1 text-gray-400" />
-                        <span className="text-sm">{formData.email || 'email@example.com'}</span>
-                      </div>
-                      <div className="hidden sm:block text-gray-300">•</div>
-                      <div className="flex items-center justify-center sm:justify-start text-gray-500">
-                        <Phone size={14} className="mr-1 text-gray-400" />
-                        <span className="text-sm">{formData.phoneNumber || 'Chưa cập nhật'}</span>
-                      </div>
-                    </div>
-
-                    {/* Membership badge */}
-                    <div className="mt-3 flex items-center justify-center sm:justify-start">
-                      <div className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center">
-                        <Award size={14} className="mr-1" />
-                        Thành viên chính thức
-                      </div>
-                      <button
-                        onClick={() => setEditMode(!editMode)}
-                        className="ml-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium px-3 py-1 rounded-full flex items-center transition-all"
-                      >
-                        <Settings size={14} className="mr-1" />
-                        {editMode ? 'Hủy chỉnh sửa' : 'Chỉnh sửa'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Edit form */}
-                {editMode && (
-                  <motion.div
-                    className="mt-6 border-t border-gray-100 pt-6"
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: 'auto' }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                      <div>
-                        <label htmlFor="fullName" className="block text-xs font-medium text-gray-700 mb-1">
-                          Họ và tên
-                        </label>
-                        <input
-                          type="text"
-                          id="fullName"
-                          name="fullName"
-                          value={formData.fullName}
-                          onChange={handleChange}
-                          disabled={isLoading}
-                          className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                          placeholder="Nhập họ và tên"
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            disabled={isLoading}
-                            className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                            placeholder="Nhập email"
-                          />
-                        </div>
-
-                        <div>
-                          <label htmlFor="phoneNumber" className="block text-xs font-medium text-gray-700 mb-1">
-                            Số điện thoại
-                          </label>
-                          <input
-                            type="tel"
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            value={formData.phoneNumber}
-                            onChange={handleChange}
-                            disabled={isLoading}
-                            className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                            placeholder="Nhập số điện thoại"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="flex justify-end">
-                        <button
-                          type="submit"
-                          className="flex items-center bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md transition-all"
-                          disabled={isLoading}
-                        >
-                          {isLoading ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
-                              <span>Đang lưu...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Save size={16} className="mr-1.5" />
-                              <span>Lưu thay đổi</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </form>
-                  </motion.div>
-                )}
-              </div>
-            </div>
-          </motion.div>
         </div>
 
         {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
+        <div className="absolute top-0 right-0 w-64 h-16 bg-white opacity-5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full transform -translate-x-1/3 translate-y-1/3"></div>
       </div>
 
+      {/* Profile card - positioned to overflow the header */}
+      <motion.div
+        className="container mx-auto px-4 sm:px-6 pt-4 pb-2"
+        variants={slideUpVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+          <div className="p-6 relative">
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              {/* Avatar section */}
+              <div className="relative">
+                <div className="w-28 h-28 rounded-full border-4 border-green-100 shadow-md overflow-hidden bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={42} className="text-white" />
+                  )}
+                </div>
+                <button
+                  onClick={handleAvatarChange}
+                  className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all"
+                >
+                  <Camera size={16} className="text-green-600" />
+                </button>
+              </div>
+
+              {/* User info section */}
+              <div className="text-center sm:text-left flex-1">
+                <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
+                  {formData.fullName}
+                </h1>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
+                  <div className="flex items-center justify-center sm:justify-start text-gray-500">
+                    <Mail size={14} className="mr-1 text-gray-400" />
+                    <span className="text-sm">{formData.email || 'email@example.com'}</span>
+                  </div>
+                  <div className="hidden sm:block text-gray-300">•</div>
+                  <div className="flex items-center justify-center sm:justify-start text-gray-500">
+                    <Phone size={14} className="mr-1 text-gray-400" />
+                    <span className="text-sm">{formData.phoneNumber || 'Chưa cập nhật'}</span>
+                  </div>
+                </div>
+
+                {/* Membership badge */}
+                <div className="mt-3 flex items-center justify-center sm:justify-start">
+                  <div className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center">
+                    <Award size={14} className="mr-1" />
+                    Thành viên chính thức
+                  </div>
+                  <button
+                    onClick={() => setEditMode(!editMode)}
+                    className="ml-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium px-3 py-1 rounded-full flex items-center transition-all"
+                  >
+                    <Settings size={14} className="mr-1" />
+                    {editMode ? 'Hủy chỉnh sửa' : 'Chỉnh sửa'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Edit form */}
+            {editMode && (
+              <motion.div
+                className="mt-6 border-t border-gray-100 pt-6"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label htmlFor="fullName" className="block text-xs font-medium text-gray-700 mb-1">
+                      Họ và tên
+                    </label>
+                    <input
+                      type="text"
+                      id="fullName"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      placeholder="Nhập họ và tên"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Nhập email"
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="phoneNumber" className="block text-xs font-medium text-gray-700 mb-1">
+                        Số điện thoại
+                      </label>
+                      <input
+                        type="tel"
+                        id="phoneNumber"
+                        name="phoneNumber"
+                        value={formData.phoneNumber}
+                        onChange={handleChange}
+                        disabled={isLoading}
+                        className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Nhập số điện thoại"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="submit"
+                      className="flex items-center bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md transition-all"
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></div>
+                          <span>Đang lưu...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Save size={16} className="mr-1.5" />
+                          <span>Lưu thay đổi</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              </motion.div>
+            )}
+          </div>
+        </div>
+      </motion.div>
       {/* Main content with grid layout */}
-      <div className="container mx-auto px-4 sm:px-6 pt-32 pb-16">
+      <div className="container mx-auto px-4 sm:px-6 pt-4 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left column */}
           <div className="lg:col-span-1">

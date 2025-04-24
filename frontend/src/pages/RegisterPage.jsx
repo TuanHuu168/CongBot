@@ -234,7 +234,7 @@ const RegisterPage = () => {
 
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 relative z-10">
         <motion.div 
-          className="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl"
+          className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
           initial={{ x: -100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 100, opacity: 0 }}
@@ -249,8 +249,8 @@ const RegisterPage = () => {
             <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl mx-auto mb-4 shadow-lg flex items-center justify-center">
               <User size={32} className="text-white" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">Đăng Ký</h1>
-            <p className="text-gray-600 mt-2">Chatbot Hỗ Trợ Chính Sách Người Có Công</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">ĐĂNG KÝ</h1>
+            <p className="text-gray-600 mt-2">Chatbot hỗ trợ chính sách người có công</p>
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -415,14 +415,14 @@ const RegisterPage = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
-                  <span>Đăng Ký</span>
+                  <span>ĐĂNG KÝ</span>
                   <ChevronRight size={18} className="ml-2" />
                 </div>
               )}
             </motion.button>
           </form>
 
-          <motion.div className="mt-8 text-center" variants={itemVariants}>
+          <motion.div className="mt-2 text-center" variants={itemVariants}>
             <p className="text-gray-600">
               Đã có tài khoản?{' '}
               <a 

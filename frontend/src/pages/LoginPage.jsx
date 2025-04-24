@@ -204,9 +204,38 @@ const LoginPage = () => {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
+
+      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
+        <motion.div
+          className="relative h-full flex flex-col justify-center z-10"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+        >
+          <div className="w-20 h-20 bg-white/10 rounded-2xl mb-8 backdrop-blur-sm flex items-center justify-center shadow-xl">
+            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+              <User size={20} className="text-green-600" />
+            </div>
+          </div>
+
+          <h2 className="text-4xl font-bold text-white mb-6">Chào mừng đến với Chatbot</h2>
+
+          <p className="text-white/80 text-lg mb-8 max-w-lg">
+            Hệ thống trí tuệ nhân tạo tư vấn chính sách dành cho người có công tại Việt Nam.
+            Công nghệ hiện đại kết hợp với dữ liệu đầy đủ sẽ giúp bạn dễ dàng tiếp cận thông tin.
+          </p>
+
+          <div className="w-20 h-1 bg-gradient-to-r from-white/40 to-white/10 rounded mb-8"></div>
+
+          <p className="text-white/90 italic">
+            "Đền ơn đáp nghĩa là truyền thống tốt đẹp của dân tộc Việt Nam."
+          </p>
+        </motion.div>
+      </div>
+
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 relative z-10">
         <motion.div
-          className="bg-white w-full max-w-md p-8 rounded-2xl shadow-2xl"
+          className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
           initial={{ x: 100, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -100, opacity: 0 }}
@@ -221,8 +250,8 @@ const LoginPage = () => {
             <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl mx-auto mb-4 shadow-lg flex items-center justify-center">
               <User size={32} className="text-white" />
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">Đăng Nhập</h1>
-            <p className="text-gray-600 mt-2">Chatbot Hỗ Trợ Chính Sách Người Có Công</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">ĐĂNG NHẬP</h1>
+            <p className="text-gray-600 mt-2">Chatbot hỗ trợ chính sách người có công</p>
           </motion.div>
 
           <form onSubmit={handleLogin} className="space-y-6">
@@ -320,14 +349,14 @@ const LoginPage = () => {
                 </div>
               ) : (
                 <div className="flex items-center justify-center">
-                  <span>Đăng Nhập</span>
+                  <span>ĐĂNG NHẬP</span>
                   <ChevronRight size={18} className="ml-2" />
                 </div>
               )}
             </motion.button>
           </form>
 
-          <motion.div className="mt-8 text-center" variants={itemVariants}>
+          <motion.div className="mt-2 text-center" variants={itemVariants}>
             <p className="text-gray-600">
               Chưa có tài khoản?{' '}
               <a
@@ -342,33 +371,6 @@ const LoginPage = () => {
         </motion.div>
       </div>
 
-      <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
-        <motion.div
-          className="relative h-full flex flex-col justify-center z-10"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <div className="w-20 h-20 bg-white/10 rounded-2xl mb-8 backdrop-blur-sm flex items-center justify-center shadow-xl">
-            <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-              <User size={20} className="text-green-600" />
-            </div>
-          </div>
-
-          <h2 className="text-4xl font-bold text-white mb-6">Chào mừng đến với Chatbot Hỗ Trợ</h2>
-
-          <p className="text-white/80 text-lg mb-8 max-w-lg">
-            Hệ thống trí tuệ nhân tạo tư vấn chính sách dành cho người có công tại Việt Nam.
-            Công nghệ hiện đại kết hợp với dữ liệu đầy đủ sẽ giúp bạn dễ dàng tiếp cận thông tin.
-          </p>
-
-          <div className="w-20 h-1 bg-gradient-to-r from-white/40 to-white/10 rounded mb-8"></div>
-
-          <p className="text-white/90 italic">
-            "Đền ơn đáp nghĩa là truyền thống tốt đẹp của dân tộc Việt Nam."
-          </p>
-        </motion.div>
-      </div>
     </motion.div>
   );
 };
