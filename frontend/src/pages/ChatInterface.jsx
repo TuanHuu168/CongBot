@@ -286,10 +286,12 @@ const ChatInterface = () => {
           {/* Header with logo and user info */}
           <div className="bg-green-600 text-white py-3 px-4">
             <div className="flex items-center mb-3">
-              <div className="h-9 w-9 bg-green-500 rounded-lg flex items-center justify-center mr-2">
-                <MessageSquare size={20} className="text-white" />
-              </div>
-              <h1 className="text-lg font-bold text-white">CongBot Chat</h1>
+              <button onClick={() => navigate('/')} className="flex items-center">
+                <div className="h-9 w-9 bg-green-500 rounded-lg flex items-center justify-center mr-2">
+                  <MessageSquare size={20} className="text-white" />
+                </div>
+                <h1 className="text-lg font-bold text-white">CongBot Chat</h1>
+              </button>
 
               <div className="ml-auto flex items-center">
                 <button className="text-white hover:bg-green-500 p-1.5 rounded-full transition-colors">

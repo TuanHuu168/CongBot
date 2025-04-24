@@ -170,6 +170,28 @@ export const submitFeedback = async (chatId, rating, comment = '', isAccurate = 
   }
 };
 
+// Cập nhật thông tin người dùng
+export const updateUserInfo = async (userId, userData) => {
+  try {
+    const response = await apiClient.put(`/users/${userId}`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating user info:', error);
+    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+  }
+};
+
+// Thay đổi mật khẩu
+export const changePassword = async (userId, passwordData) => {
+  try {
+    const response = await apiClient.put(`/users/${userId}/password`, passwordData);
+    return response.data;
+  } catch (error) {
+    console.error('Error changing password:', error);
+    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+  }
+};
+
 export default {
   askQuestion,
   createNewChat,
@@ -179,5 +201,7 @@ export default {
   addMessageToChat,
   deleteChat,
   deleteChatsBatch,
-  submitFeedback
+  submitFeedback,
+  updateUserInfo,
+  changePassword
 };

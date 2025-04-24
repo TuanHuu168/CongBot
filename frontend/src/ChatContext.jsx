@@ -42,14 +42,14 @@ export const ChatProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
       if (!userId) {
         throw new Error('Không tìm thấy ID người dùng');
       }
-      
+
       const chats = await getUserChats(userId);
-      
+
       // Format data cho UI
       const formattedChats = chats.map(chat => ({
         id: chat.id,
@@ -58,12 +58,12 @@ export const ChatProvider = ({ children }) => {
         updated_at: chat.updated_at,
         status: 'active' // Giả sử tất cả đều active
       }));
-      
+
       setChatHistory(formattedChats);
     } catch (error) {
       console.error('Error fetching chat history:', error);
       setError('Không thể tải lịch sử trò chuyện');
-      
+
       Swal.fire({
         icon: 'error',
         title: 'Lỗi',
@@ -79,7 +79,7 @@ export const ChatProvider = ({ children }) => {
   useEffect(() => {
     const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
     const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-    
+
     if (userId && token) {
       fetchUserInfo(userId);
       fetchChatHistory();
@@ -91,16 +91,16 @@ export const ChatProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      
+
       if (!userId) {
         throw new Error('Bạn cần đăng nhập để tạo cuộc trò chuyện mới');
       }
-      
+
       const response = await apiCreateNewChat(userId, initialTitle);
       const newChatId = response.id;
-      
+
       // Thêm chat mới vào danh sách
       const newChat = {
         id: newChatId,
@@ -109,23 +109,23 @@ export const ChatProvider = ({ children }) => {
         updated_at: new Date().toISOString(),
         status: 'active'
       };
-      
+
       setChatHistory(prev => [newChat, ...prev]);
       setCurrentChatId(newChatId);
       setActiveChatMessages([]);
-      
+
       return newChatId;
     } catch (error) {
       console.error('Error creating new chat:', error);
       setError('Không thể tạo cuộc trò chuyện mới');
-      
+
       Swal.fire({
         icon: 'error',
         title: 'Lỗi',
         text: 'Không thể tạo cuộc trò chuyện mới',
         confirmButtonColor: '#10b981'
       });
-      
+
       throw error;
     } finally {
       setIsLoading(false);
@@ -137,13 +137,13 @@ export const ChatProvider = ({ children }) => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // Lấy tin nhắn của cuộc trò chuyện
       const chat = await getChatMessages(chatId);
-      
+
       // Xử lý cấu trúc dữ liệu từ backend
       const formattedMessages = [];
-      
+
       // Xử lý messages hoặc exchanges tùy theo cấu trúc backend trả về
       if (chat.messages && Array.isArray(chat.messages)) {
         // Tạo ID duy nhất cho từng tin nhắn
@@ -158,13 +158,13 @@ export const ChatProvider = ({ children }) => {
           });
         });
       }
-      
+
       setActiveChatMessages(formattedMessages);
       setCurrentChatId(chatId);
     } catch (error) {
       console.error('Error switching chat:', error);
       setError('Không thể tải tin nhắn của cuộc trò chuyện');
-      
+
       Swal.fire({
         icon: 'error',
         title: 'Lỗi',
@@ -185,7 +185,7 @@ export const ChatProvider = ({ children }) => {
       text: userMessage.text,
       timestamp: userMessage.timestamp
     };
-    
+
     // Tạo đối tượng tin nhắn bot
     const formattedBotMessage = {
       id: `bot_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
@@ -195,7 +195,7 @@ export const ChatProvider = ({ children }) => {
       processingTime: botMessage.processingTime || 0,
       context: botMessage.context || []
     };
-    
+
     // Cập nhật state
     setActiveChatMessages(prev => [...prev, formattedUserMessage, formattedBotMessage]);
   };
