@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import {
@@ -21,14 +21,14 @@ import {
   X,
   LogOut,
   MessageSquare,
-  BarChart4,
   Award,
   FileText,
   BookOpen,
   HeartHandshake,
   ArrowRight,
   Eye,
-  EyeOff
+  EyeOff,
+  ChevronDown
 } from 'lucide-react';
 import { useChat } from '../ChatContext';
 
@@ -37,7 +37,6 @@ const API_BASE_URL = 'http://localhost:8001';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { user, fetchUserInfo, chatHistory, switchChat, fetchChatHistory } = useChat();
 
   const [formData, setFormData] = useState({
@@ -60,17 +59,33 @@ const ProfilePage = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
-  // Lấy lịch sử trò chuyện khi component mount hoặc khi chuyển tab
+  // Lấy lịch sử trò chuyện và thông tin người dùng khi component mount
   useEffect(() => {
-    // Lấy userId từ localStorage hoặc sessionStorage
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-    if (userId) {
-      // Fetch dữ liệu người dùng và lịch sử chat
-      fetchUserInfo(userId);
-      fetchChatHistory();
+    // Đây là cờ để ngăn chặn vòng lặp vô hạn
+    if (!dataLoaded) {
+      // Lấy userId từ localStorage hoặc sessionStorage
+      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      if (userId) {
+        Promise.all([
+          fetchUserInfo(userId),
+          fetchChatHistory()
+        ]).then(() => {
+          setDataLoaded(true);
+        }).catch(error => {
+          console.error("Error loading data:", error);
+          setDataLoaded(true);
+        });
+      } else {
+        navigate('/login');
+      }
     }
-  }, [fetchUserInfo, fetchChatHistory, location.pathname]);
+  }, [fetchUserInfo, fetchChatHistory, navigate, dataLoaded]);
 
   // Cập nhật stats và recentChats khi chatHistory thay đổi
   useEffect(() => {
@@ -89,19 +104,14 @@ const ProfilePage = () => {
       // Cập nhật thống kê
       setStats({
         chatCount,
-        messageCount: 0, // Cần tính toán chi tiết từ API nếu muốn chính xác hơn
+        messageCount: 0,
         documentsAccessed: 0,
         savedItems: 0
       });
     }
   }, [chatHistory]);
 
-  const [editMode, setEditMode] = useState(false);
-  const [activeTab, setActiveTab] = useState('profile');
-  const [isLoading, setIsLoading] = useState(false);
-  const [passwordLoading, setPasswordLoading] = useState(false);
-
-  // Thiết lập formData từ thông tin user khi component mount hoặc khi user thay đổi
+  // Thiết lập formData từ thông tin user khi user thay đổi
   useEffect(() => {
     if (user) {
       setFormData(prevState => ({
@@ -110,17 +120,8 @@ const ProfilePage = () => {
         email: user.email || '',
         phoneNumber: user.phoneNumber || ''
       }));
-    } else {
-      // Nếu không có thông tin user, lấy từ API
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      if (userId) {
-        fetchUserInfo(userId);
-      } else {
-        // Nếu không có userId, chuyển hướng về trang đăng nhập
-        navigate('/login');
-      }
     }
-  }, [user, fetchUserInfo, navigate]);
+  }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -159,7 +160,7 @@ const ProfilePage = () => {
 
       if (response.status === 200) {
         // Cập nhật thông tin người dùng trong context
-        fetchUserInfo(userId);
+        await fetchUserInfo(userId);
 
         // Thông báo thành công
         Swal.fire({
@@ -354,6 +355,19 @@ const ProfilePage = () => {
     });
   };
 
+  // Hàm format tiêu đề chat
+  const formatChatTitle = (title) => {
+    if (!title || title.trim() === '') return "Cuộc trò chuyện mới";
+    const isMongoId = /^[0-9a-fA-F]{24}$/.test(title);
+    return isMongoId ? "Cuộc trò chuyện mới" : title;
+  };
+
+  // Toggle hiển thị mật khẩu
+  const toggleCurrentPasswordVisibility = () => setShowCurrentPassword(!showCurrentPassword);
+  const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
+  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleDropdown = () => setShowDropdown(!showDropdown);
+
   // Animation variants
   const pageVariants = {
     initial: { opacity: 0 },
@@ -385,24 +399,24 @@ const ProfilePage = () => {
     }
   };
 
-  // Hàm format tiêu đề chat
-  const formatChatTitle = (title) => {
-    if (!title || title.trim() === '') return "Cuộc trò chuyện mới";
-    const isMongoId = /^[0-9a-fA-F]{24}$/.test(title);
-    return isMongoId ? "Cuộc trò chuyện mới" : title;
-  };
-
-  // Toggle hiển thị mật khẩu
-  const toggleCurrentPasswordVisibility = () => {
-    setShowCurrentPassword(!showCurrentPassword);
-  };
-
-  const toggleNewPasswordVisibility = () => {
-    setShowNewPassword(!showNewPassword);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.9 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.9,
+      transition: {
+        duration: 0.2
+      }
+    }
   };
 
   return (
@@ -413,106 +427,145 @@ const ProfilePage = () => {
       exit="exit"
       variants={pageVariants}
     >
-      {/* Header with curved design */}
-      <div className="relative bg-gradient-to-r from-green-600 to-teal-600 text-white py-4 rounded-b-[40px] shadow-lg">
+      {/* Topnav - compact style */}
+      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 shadow-md sticky top-0 z-50">
         <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center relative z-10">
+          <div className="flex justify-between items-center">
+            {/* Back to chat button */}
             <button
               onClick={navigateToChat}
-              className="flex items-center text-white bg-white/10 px-4 py-2 rounded-full backdrop-blur-sm hover:bg-white/20 transition-all"
+              className="flex items-center text-white hover:text-green-100 transition-colors"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} />
               <span className="ml-1 font-medium">Quay lại chat</span>
             </button>
 
-            <button
-              onClick={handleLogout}
-              className="text-white bg-white/10 hover:bg-white/20 transition-all px-4 py-2 rounded-full backdrop-blur-sm flex items-center"
-            >
-              <LogOut size={16} className="mr-1" />
-              <span>Đăng xuất</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Background decoration */}
-        <div className="absolute top-0 right-0 w-64 h-16 bg-white opacity-5 rounded-full transform translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full transform -translate-x-1/3 translate-y-1/3"></div>
-      </div>
-
-      {/* Profile card - positioned to overflow the header */}
-      <motion.div
-        className="container mx-auto px-4 sm:px-6 pt-4 pb-2"
-        variants={slideUpVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-          <div className="p-6 relative">
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              {/* Avatar section */}
-              <div className="relative">
-                <div className="w-28 h-28 rounded-full border-4 border-green-100 shadow-md overflow-hidden bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+            {/* User dropdown */}
+            <div className="relative">
+              <button
+                onClick={toggleDropdown}
+                className="flex items-center space-x-2 hover:bg-white/10 py-1 px-2 rounded-lg transition-colors"
+              >
+                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
                   {user?.avatar ? (
                     <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <User size={42} className="text-white" />
+                    <User size={16} className="text-white" />
                   )}
                 </div>
-                <button
-                  onClick={handleAvatarChange}
-                  className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all"
-                >
-                  <Camera size={16} className="text-green-600" />
-                </button>
+                <span className="font-medium hidden sm:inline">{formData.fullName || 'Người dùng'}</span>
+                <ChevronDown size={16} className={`transform transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Dropdown menu */}
+              <AnimatePresence>
+                {showDropdown && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
+                  >
+                    <button
+                      onClick={() => {
+                        setShowDropdown(false);
+                        handleLogout();
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <LogOut size={16} className="mr-2" />
+                      <span>Đăng xuất</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* User profile info section */}
+      <div className="bg-white shadow-md border-b border-gray-200 mb-6">
+        <div className="container mx-auto px-4 sm:px-6 py-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            {/* Avatar section */}
+            <div className="relative">
+              <div className="w-24 h-24 rounded-full border-4 border-green-100 shadow-md overflow-hidden bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={36} className="text-white" />
+                )}
+              </div>
+              <button
+                onClick={handleAvatarChange}
+                className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-all"
+              >
+                <Camera size={14} className="text-green-600" />
+              </button>
+            </div>
+
+            {/* User info */}
+            <div className="flex-1 text-center sm:text-left">
+              <h1 className="text-2xl font-bold text-gray-900">{formData.fullName}</h1>
+
+              <div className="mt-2 space-y-1">
+                <div className="flex items-center justify-center sm:justify-start text-gray-600">
+                  <Mail size={16} className="mr-2 text-gray-400" />
+                  <span>{formData.email}</span>
+                </div>
+                <div className="flex items-center justify-center sm:justify-start text-gray-600">
+                  <Phone size={16} className="mr-2 text-gray-400" />
+                  <span>{formData.phoneNumber}</span>
+                </div>
               </div>
 
-              {/* User info section */}
-              <div className="text-center sm:text-left flex-1">
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">
-                  {formData.fullName}
-                </h1>
-                <div className="flex flex-col sm:flex-row sm:items-center gap-2 mt-1">
-                  <div className="flex items-center justify-center sm:justify-start text-gray-500">
-                    <Mail size={14} className="mr-1 text-gray-400" />
-                    <span className="text-sm">{formData.email || 'email@example.com'}</span>
-                  </div>
-                  <div className="hidden sm:block text-gray-300">•</div>
-                  <div className="flex items-center justify-center sm:justify-start text-gray-500">
-                    <Phone size={14} className="mr-1 text-gray-400" />
-                    <span className="text-sm">{formData.phoneNumber || 'Chưa cập nhật'}</span>
-                  </div>
+              <div className="mt-4 flex items-center justify-center sm:justify-start space-x-3">
+                <div className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center">
+                  <Award size={14} className="mr-1" />
+                  Thành viên chính thức
                 </div>
+                <button
+                  onClick={() => setEditMode(true)}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium px-3 py-1 rounded-full flex items-center transition-all"
+                >
+                  <Settings size={14} className="mr-1" />
+                  Chỉnh sửa
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-                {/* Membership badge */}
-                <div className="mt-3 flex items-center justify-center sm:justify-start">
-                  <div className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full border border-green-200 flex items-center">
-                    <Award size={14} className="mr-1" />
-                    Thành viên chính thức
-                  </div>
+      {/* Edit profile modal */}
+      <AnimatePresence>
+        {editMode && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <motion.div
+              variants={modalVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden"
+            >
+              <div className="p-5 border-b border-gray-200">
+                <div className="flex justify-between items-center">
+                  <h3 className="text-lg font-medium text-gray-900">Chỉnh sửa thông tin cá nhân</h3>
                   <button
-                    onClick={() => setEditMode(!editMode)}
-                    className="ml-3 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium px-3 py-1 rounded-full flex items-center transition-all"
+                    onClick={() => setEditMode(false)}
+                    className="text-gray-400 hover:text-gray-500"
                   >
-                    <Settings size={14} className="mr-1" />
-                    {editMode ? 'Hủy chỉnh sửa' : 'Chỉnh sửa'}
+                    <X size={20} />
                   </button>
                 </div>
               </div>
-            </div>
 
-            {/* Edit form */}
-            {editMode && (
-              <motion.div
-                className="mt-6 border-t border-gray-100 pt-6"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
+              <div className="p-5">
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label htmlFor="fullName" className="block text-xs font-medium text-gray-700 mb-1">
+                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
                       Họ và tên
                     </label>
                     <input
@@ -527,41 +580,47 @@ const ProfilePage = () => {
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
-                        Email
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        disabled={isLoading}
-                        className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                        placeholder="Nhập email"
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="phoneNumber" className="block text-xs font-medium text-gray-700 mb-1">
-                        Số điện thoại
-                      </label>
-                      <input
-                        type="tel"
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleChange}
-                        disabled={isLoading}
-                        className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                        placeholder="Nhập số điện thoại"
-                      />
-                    </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      placeholder="Nhập email"
+                    />
                   </div>
 
-                  <div className="flex justify-end">
+                  <div>
+                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                      Số điện thoại
+                    </label>
+                    <input
+                      type="tel"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      placeholder="Nhập số điện thoại"
+                    />
+                  </div>
+
+                  <div className="flex justify-end pt-4 space-x-3">
+                    <button
+                      type="button"
+                      onClick={() => setEditMode(false)}
+                      className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors"
+                      disabled={isLoading}
+                    >
+                      Hủy
+                    </button>
                     <button
                       type="submit"
                       className="flex items-center bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white text-sm font-medium py-2 px-4 rounded-lg shadow-md transition-all"
@@ -581,13 +640,14 @@ const ProfilePage = () => {
                     </button>
                   </div>
                 </form>
-              </motion.div>
-            )}
+              </div>
+            </motion.div>
           </div>
-        </div>
-      </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main content with grid layout */}
-      <div className="container mx-auto px-4 sm:px-6 pt-4 pb-16">
+      <div className="container mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Left column */}
           <div className="lg:col-span-1">
@@ -656,7 +716,7 @@ const ProfilePage = () => {
                           onChange={handleChange}
                           disabled={passwordLoading}
                           className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10"
-                          placeholder="Nhập mật khẩu mới"
+                          placeholder="●●●●●●●●"
                           required
                         />
                         <button
@@ -686,7 +746,7 @@ const ProfilePage = () => {
                           onChange={handleChange}
                           disabled={passwordLoading}
                           className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10"
-                          placeholder="Nhập lại mật khẩu"
+                          placeholder="●●●●●●●●"
                           required
                         />
                         <button
