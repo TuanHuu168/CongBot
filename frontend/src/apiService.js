@@ -2,12 +2,13 @@ import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:8001';
 
-// Tạo instance axios với cấu hình chung
+// Tạo instance axios với cấu hình chung và TIMEOUT dài hơn
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 30000, // Tăng timeout lên 30 giây
 });
 
 // Thêm interceptor để tự động gắn token vào mỗi request
@@ -22,13 +23,29 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Thêm interceptor xử lý lỗi response
+apiClient.interceptors.response.use(
+  response => response,
+  error => {
+    // Kiểm tra xem có phải là lỗi timeout hoặc kết nối không
+    if (error.code === 'ECONNABORTED' || !error.response) {
+      return Promise.reject({ 
+        detail: "Lỗi kết nối máy chủ. Vui lòng kiểm tra kết nối internet hoặc thử lại sau." 
+      });
+    }
+    
+    // Xử lý các lỗi khác
+    return Promise.reject(error.response?.data || { detail: 'Có lỗi xảy ra, vui lòng thử lại' });
+  }
+);
+
 export const getUserInfo = async (userId) => {
   try {
     const response = await apiClient.get(`/users/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching user info:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -53,7 +70,7 @@ export const askQuestion = async (query, sessionId = null) => {
     return response.data;
   } catch (error) {
     console.error('Error asking question:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -70,7 +87,7 @@ export const createNewChat = async (title = 'Cuộc trò chuyện mới') => {
     return response.data;
   } catch (error) {
     console.error('Error creating chat:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -78,12 +95,15 @@ export const createNewChat = async (title = 'Cuộc trò chuyện mới') => {
 export const getUserChats = async () => {
   try {
     const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+    if (!userId) {
+      throw new Error('Không tìm thấy ID người dùng');
+    }
 
     const response = await apiClient.get(`/chats/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Error fetching chats:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -94,7 +114,7 @@ export const getChatMessages = async (chatId) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching chat messages:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -105,7 +125,7 @@ export const updateChatTitle = async (chatId, title) => {
     return response.data;
   } catch (error) {
     console.error('Error updating chat title:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -116,7 +136,7 @@ export const addMessageToChat = async (chatId, message) => {
     return response.data;
   } catch (error) {
     console.error('Error adding message:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -132,7 +152,7 @@ export const deleteChat = async (chatId) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting chat:', error);
-    throw error.response?.data || { detail: 'Lỗi xóa cuộc trò chuyện' };
+    throw error;
   }
 };
 
@@ -149,7 +169,7 @@ export const deleteChatsBatch = async (chatIds) => {
     return response.data;
   } catch (error) {
     console.error('Error deleting multiple chats:', error);
-    throw error.response?.data || { detail: 'Lỗi xóa cuộc trò chuyện' };
+    throw error;
   }
 };
 
@@ -166,7 +186,7 @@ export const submitFeedback = async (chatId, rating, comment = '', isAccurate = 
     return response.data;
   } catch (error) {
     console.error('Error submitting feedback:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -177,7 +197,7 @@ export const updateUserInfo = async (userId, userData) => {
     return response.data;
   } catch (error) {
     console.error('Error updating user info:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 
@@ -188,7 +208,7 @@ export const changePassword = async (userId, passwordData) => {
     return response.data;
   } catch (error) {
     console.error('Error changing password:', error);
-    throw error.response?.data || { detail: 'Lỗi kết nối máy chủ' };
+    throw error;
   }
 };
 

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { getUserChats, getChatMessages, createNewChat as apiCreateNewChat, getUserInfo } from './apiService';
 import Swal from 'sweetalert2';
 
@@ -16,12 +16,16 @@ export const ChatProvider = ({ children }) => {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [initComplete, setInitComplete] = useState(false);
 
   // Lấy thông tin người dùng
-  const fetchUserInfo = async (userId) => {
+  const fetchUserInfo = useCallback(async (userId) => {
     try {
       setIsLoading(true);
+      setError(null);
+      
       const userInfo = await getUserInfo(userId);
+      
       setUser({
         id: userId,
         name: userInfo.fullName || userInfo.username,
@@ -29,62 +33,93 @@ export const ChatProvider = ({ children }) => {
         username: userInfo.username,
         phoneNumber: userInfo.phoneNumber
       });
+      
+      return userInfo;
     } catch (error) {
       console.error('Error fetching user info:', error);
       setError('Không thể tải thông tin người dùng');
+      
+      // Không hiển thị thông báo lỗi cho lỗi này vì có thể gây phiền phức khi khởi động
+      return null;
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  // Lấy lịch sử chat của người dùng
-  const fetchChatHistory = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  // Lấy lịch sử chat của người dùng với retry logic
+  const fetchChatHistory = useCallback(async () => {
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      if (!userId) {
-        throw new Error('Không tìm thấy ID người dùng');
+        const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+        if (!userId) {
+          throw new Error('Không tìm thấy ID người dùng');
+        }
+
+        const chats = await getUserChats(userId);
+
+        // Format data cho UI
+        const formattedChats = chats.map(chat => ({
+          id: chat.id,
+          title: chat.title,
+          date: new Date(chat.created_at).toLocaleDateString('vi-VN'),
+          updated_at: chat.updated_at,
+          status: 'active' // Giả sử tất cả đều active
+        }));
+
+        setChatHistory(formattedChats);
+        return formattedChats;
+      } catch (error) {
+        console.error(`Error fetching chat history (attempt ${retryCount+1}/${maxRetries}):`, error);
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          setError('Không thể tải lịch sử trò chuyện');
+          
+          // Chỉ hiển thị thông báo lỗi nếu đã là lần thử cuối cùng
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không thể tải lịch sử trò chuyện. Vui lòng thử lại sau.',
+            confirmButtonColor: '#10b981'
+          });
+          
+          return [];
+        }
+        
+        // Đợi trước khi retry (backoff tăng dần)
+        await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
+      } finally {
+        setIsLoading(false);
       }
-
-      const chats = await getUserChats(userId);
-
-      // Format data cho UI
-      const formattedChats = chats.map(chat => ({
-        id: chat.id,
-        title: chat.title,
-        date: new Date(chat.created_at).toLocaleDateString('vi-VN'),
-        updated_at: chat.updated_at,
-        status: 'active' // Giả sử tất cả đều active
-      }));
-
-      setChatHistory(formattedChats);
-    } catch (error) {
-      console.error('Error fetching chat history:', error);
-      setError('Không thể tải lịch sử trò chuyện');
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi',
-        text: 'Không thể tải lịch sử trò chuyện',
-        confirmButtonColor: '#10b981'
-      });
-    } finally {
-      setIsLoading(false);
     }
-  };
+  }, []);
 
   // Lấy thông tin người dùng và lịch sử chat khi component mount
   useEffect(() => {
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+    const initializeContext = async () => {
+      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
 
-    if (userId && token) {
-      fetchUserInfo(userId);
-      fetchChatHistory();
-    }
-  }, []);
+      if (userId && token && !initComplete) {
+        try {
+          await fetchUserInfo(userId);
+          await fetchChatHistory();
+        } catch (error) {
+          console.error('Error initializing context:', error);
+        } finally {
+          setInitComplete(true);
+        }
+      }
+    };
+
+    initializeContext();
+  }, [fetchUserInfo, fetchChatHistory, initComplete]);
 
   // Tạo cuộc trò chuyện mới
   const createNewChat = async (initialTitle = 'Cuộc trò chuyện mới') => {
@@ -122,7 +157,7 @@ export const ChatProvider = ({ children }) => {
       Swal.fire({
         icon: 'error',
         title: 'Lỗi',
-        text: 'Không thể tạo cuộc trò chuyện mới',
+        text: 'Không thể tạo cuộc trò chuyện mới. Vui lòng thử lại sau.',
         confirmButtonColor: '#10b981'
       });
 
@@ -132,47 +167,62 @@ export const ChatProvider = ({ children }) => {
     }
   };
 
-  // Chuyển đổi giữa các cuộc trò chuyện
+  // Chuyển đổi giữa các cuộc trò chuyện với retry logic
   const switchChat = async (chatId) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+    let retryCount = 0;
+    const maxRetries = 3;
+    
+    while (retryCount < maxRetries) {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // Lấy tin nhắn của cuộc trò chuyện
-      const chat = await getChatMessages(chatId);
+        // Lấy tin nhắn của cuộc trò chuyện
+        const chat = await getChatMessages(chatId);
 
-      // Xử lý cấu trúc dữ liệu từ backend
-      const formattedMessages = [];
+        // Xử lý cấu trúc dữ liệu từ backend
+        const formattedMessages = [];
 
-      // Xử lý messages hoặc exchanges tùy theo cấu trúc backend trả về
-      if (chat.messages && Array.isArray(chat.messages)) {
-        // Tạo ID duy nhất cho từng tin nhắn
-        chat.messages.forEach((msg, index) => {
-          formattedMessages.push({
-            id: `msg_${chatId}_${index}_${Date.now()}`, // Đảm bảo key duy nhất
-            sender: msg.sender,
-            text: msg.text,
-            timestamp: msg.timestamp,
-            processingTime: msg.processingTime || 0,
-            context: msg.context || []
+        // Xử lý messages hoặc exchanges tùy theo cấu trúc backend trả về
+        if (chat.messages && Array.isArray(chat.messages)) {
+          // Tạo ID duy nhất cho từng tin nhắn
+          chat.messages.forEach((msg, index) => {
+            formattedMessages.push({
+              id: `msg_${chatId}_${index}_${Date.now()}`, // Đảm bảo key duy nhất
+              sender: msg.sender,
+              text: msg.text,
+              timestamp: msg.timestamp,
+              processingTime: msg.processingTime || 0,
+              context: msg.context || []
+            });
           });
-        });
+        }
+
+        setActiveChatMessages(formattedMessages);
+        setCurrentChatId(chatId);
+        return true;
+      } catch (error) {
+        console.error(`Error switching chat (attempt ${retryCount+1}/${maxRetries}):`, error);
+        retryCount++;
+        
+        if (retryCount >= maxRetries) {
+          setError('Không thể tải tin nhắn của cuộc trò chuyện');
+          
+          Swal.fire({
+            icon: 'error',
+            title: 'Lỗi',
+            text: 'Không thể tải tin nhắn của cuộc trò chuyện. Vui lòng thử lại sau.',
+            confirmButtonColor: '#10b981'
+          });
+          
+          throw error;
+        }
+        
+        // Đợi trước khi retry (backoff tăng dần)
+        await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
+      } finally {
+        setIsLoading(false);
       }
-
-      setActiveChatMessages(formattedMessages);
-      setCurrentChatId(chatId);
-    } catch (error) {
-      console.error('Error switching chat:', error);
-      setError('Không thể tải tin nhắn của cuộc trò chuyện');
-
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi',
-        text: 'Không thể tải tin nhắn của cuộc trò chuyện',
-        confirmButtonColor: '#10b981'
-      });
-    } finally {
-      setIsLoading(false);
     }
   };
 
