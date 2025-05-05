@@ -48,12 +48,47 @@ class MongoDBClient:
             print("Đã tạo collection text_cache")
         
         # Indexes cho text_cache collection
-        self.db.text_cache.create_index([("cacheId", 1)], unique=True)
-        self.db.text_cache.create_index([("normalizedQuestion", "text")])
-        self.db.text_cache.create_index([("keywords", 1)])
-        self.db.text_cache.create_index([("relatedDocIds", 1)])
-        self.db.text_cache.create_index([("validityStatus", 1)])
-        self.db.text_cache.create_index([("expiresAt", 1)], expireAfterSeconds=0)  # TTL index
+        try:
+            self.db.text_cache.create_index([("cacheId", 1)], unique=True)
+            print("Đã tạo index cho cacheId")
+        except Exception as e:
+            print(f"Lỗi khi tạo index cho cacheId: {str(e)}")
+        
+        try:
+            self.db.text_cache.create_index([("normalizedQuestion", "text")])
+            print("Đã tạo text index cho normalizedQuestion")
+        except Exception as e:
+            print(f"Lỗi khi tạo text index: {str(e)}")
+        
+        try:
+            self.db.text_cache.create_index([("questionText", 1)])
+            print("Đã tạo index cho questionText")
+        except Exception as e:
+            print(f"Lỗi khi tạo index cho questionText: {str(e)}")
+        
+        try:
+            self.db.text_cache.create_index([("keywords", 1)])
+            print("Đã tạo index cho keywords")
+        except Exception as e:
+            print(f"Lỗi khi tạo index cho keywords: {str(e)}")
+        
+        try:
+            self.db.text_cache.create_index([("relatedDocIds", 1)])
+            print("Đã tạo index cho relatedDocIds")
+        except Exception as e:
+            print(f"Lỗi khi tạo index cho relatedDocIds: {str(e)}")
+        
+        try:
+            self.db.text_cache.create_index([("validityStatus", 1)])
+            print("Đã tạo index cho validityStatus")
+        except Exception as e:
+            print(f"Lỗi khi tạo index cho validityStatus: {str(e)}")
+        
+        try:
+            self.db.text_cache.create_index([("expiresAt", 1)], expireAfterSeconds=0)  # TTL index
+            print("Đã tạo TTL index cho expiresAt")
+        except Exception as e:
+            print(f"Lỗi khi tạo TTL index: {str(e)}")
         
         # Indexes cho users collection
         self.db.users.create_index([("username", 1)], unique=True)

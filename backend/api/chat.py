@@ -53,19 +53,27 @@ async def ask(input: QueryInput):
         start_time = time.time()
         print(f"Processing query: '{input.query}' with session_id: {input.session_id}")
         
-        # 1. Retrieval
-        retrieval_result = retrieval_service.retrieve(input.query)
-        context_items = retrieval_result['context_items']
-        retrieved_chunks = retrieval_result['retrieved_chunks']
-        retrieval_time = retrieval_result.get('execution_time', 0)
+        # 1. Retrieval - chỉ gọi một lần và lưu kết quả
+        retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
         
-        # 2. Generation
-        if context_items:
-            generation_result = generation_service.generate_answer(input.query)
-            answer = generation_result['answer']
-            generation_time = generation_result.get('generation_time', 0)
+        # Kiểm tra xem có các key cần thiết trong retrieval_result không
+        context_items = retrieval_result.get('context_items', [])
+        retrieved_chunks = retrieval_result.get('retrieved_chunks', [])
+        retrieval_time = retrieval_result.get('execution_time', 0)
+        source = retrieval_result.get('source', 'unknown')
+        
+        # 2. Generation chỉ khi không dùng cache
+        if source != 'cache':
+            if context_items:
+                generation_result = generation_service.generate_answer(input.query, use_cache=False)  # Bỏ kiểm tra cache trong generation
+                answer = generation_result['answer']
+                generation_time = generation_result.get('generation_time', 0)
+            else:
+                answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
+                generation_time = 0
         else:
-            answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
+            # Nếu dùng cache, lấy câu trả lời từ retrieval_result
+            answer = retrieval_result.get('answer', 'Không tìm thấy câu trả lời trong cache')
             generation_time = 0
         
         # 3. Tính tổng thời gian

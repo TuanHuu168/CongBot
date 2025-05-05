@@ -53,27 +53,35 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
         return prompt
     
     def generate_answer(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        # Tạo câu trả lời cho câu hỏi sử dụng RAG
         start_time = time.time()
         
         # Bước 1: Retrieval - lấy thông tin liên quan
-        retrieval_result = self.retrieval.retrieve(query, use_cache)
-        context_items = retrieval_result.get("context_items", [])
-        retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
-        source = retrieval_result.get("source", "unknown")
-        retrieval_time = retrieval_result.get("execution_time", 0)
-        
-        # Nếu đã có trong cache, trả về luôn
-        if source == "cache":
-            return {
-                "answer": retrieval_result["answer"],
-                "source": "cache",
-                "cache_id": retrieval_result.get("cache_id"),
-                "retrieved_chunks": retrieved_chunks,
-                "retrieval_time": retrieval_time,
-                "generation_time": 0,
-                "total_time": time.time() - start_time
-            }
+        if use_cache:
+            print(f"Generation service: gọi retrieve cho query '{query}' với use_cache={use_cache}")
+            retrieval_result = self.retrieval.retrieve(query, use_cache=True)
+            context_items = retrieval_result.get("context_items", [])
+            retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
+            source = retrieval_result.get("source", "unknown")
+            retrieval_time = retrieval_result.get("execution_time", 0)
+            
+            # Nếu đã có trong cache, trả về luôn
+            if source == "cache":
+                print(f"Tìm thấy trong cache, trả về kết quả cache")
+                return {
+                    "answer": retrieval_result["answer"],
+                    "source": "cache",
+                    "cache_id": retrieval_result.get("cache_id", ""),
+                    "retrieved_chunks": retrieved_chunks,
+                    "retrieval_time": retrieval_time,
+                    "generation_time": 0,
+                    "total_time": time.time() - start_time
+                }
+        else:
+            # Thực hiện retrieval mà không kiểm tra cache
+            retrieval_result = self.retrieval.retrieve(query, use_cache=False)
+            context_items = retrieval_result.get("context_items", [])
+            retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
+            retrieval_time = retrieval_result.get("execution_time", 0)
         
         # Nếu không có context nào được tìm thấy
         if not context_items:

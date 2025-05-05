@@ -429,7 +429,7 @@ const ChatPage = () => {
 
       {/* Unified Top Navbar */}
       <div className="fixed top-0 left-0 right-0 z-20 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md">
-        <div className="flex justify-between items-center px-5 py-4">
+        <div className="flex justify-between items-center px-5 py-3">
           {/* Left Section - Logo and menu button */}
           <div className="flex items-center">
             {/* Mobile menu button */}
