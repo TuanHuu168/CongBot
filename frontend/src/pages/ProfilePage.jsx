@@ -542,7 +542,7 @@ const ProfilePage = () => {
       {/* Edit profile modal */}
       <AnimatePresence>
         {editMode && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 p-4">
             <motion.div
               variants={modalVariants}
               initial="hidden"
@@ -575,7 +575,7 @@ const ProfilePage = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                       disabled={isLoading}
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                       placeholder="Nhập họ và tên"
                     />
                   </div>
@@ -591,7 +591,7 @@ const ProfilePage = () => {
                       value={formData.email}
                       onChange={handleChange}
                       disabled={isLoading}
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                       placeholder="Nhập email"
                     />
                   </div>
@@ -607,7 +607,7 @@ const ProfilePage = () => {
                       value={formData.phoneNumber}
                       onChange={handleChange}
                       disabled={isLoading}
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
                       placeholder="Nhập số điện thoại"
                     />
                   </div>
@@ -685,7 +685,7 @@ const ProfilePage = () => {
                           value={formData.currentPassword}
                           onChange={handleChange}
                           disabled={passwordLoading}
-                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10"
+                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
                           placeholder="●●●●●●●●"
                           required
                         />
@@ -715,7 +715,7 @@ const ProfilePage = () => {
                           value={formData.newPassword}
                           onChange={handleChange}
                           disabled={passwordLoading}
-                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10"
+                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
                           placeholder="●●●●●●●●"
                           required
                         />
@@ -745,7 +745,7 @@ const ProfilePage = () => {
                           value={formData.confirmPassword}
                           onChange={handleChange}
                           disabled={passwordLoading}
-                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10"
+                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
                           placeholder="●●●●●●●●"
                           required
                         />

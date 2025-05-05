@@ -10,7 +10,7 @@ import rehypeRaw from 'rehype-raw';
 import remarkGfm from 'remark-gfm';
 import Swal from 'sweetalert2';
 
-const ChatInterface = () => {
+const ChatPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { state } = location;
@@ -606,4 +606,4 @@ const ChatInterface = () => {
   );
 };
 
-export default ChatInterface;
+export default ChatPage;
