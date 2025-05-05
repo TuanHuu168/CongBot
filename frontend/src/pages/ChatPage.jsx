@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Menu, MessageSquare, History, Info, LogOut, User, X, FileText, Search, Plus, Settings } from 'lucide-react';
+import { Send, Menu, MessageSquare, History, LogOut, User, X, Search, Plus, ChevronDown, ChevronLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useChat } from '../ChatContext';
@@ -35,20 +35,29 @@ const ChatPage = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [localError, setLocalError] = useState(null);
   const [textareaHeight, setTextareaHeight] = useState(46);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const userDropdownRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const getDisplayTitle = (chat) => {
-    if (!chat.title) return "Cuộc trò chuyện mới";
+    if (!chat || !chat.title) return "Cuộc trò chuyện mới";
     const isIdTitle = chat.title.match(/^[0-9a-f]{24}$/i);
     return (isIdTitle || chat.title.trim() === "") ? "Cuộc trò chuyện mới" : chat.title;
+  };
+
+  // Lấy tiêu đề cuộc trò chuyện hiện tại
+  const getCurrentChatTitle = () => {
+    if (!currentChatId || !chatHistory) return "Cuộc trò chuyện mới";
+    const currentChat = chatHistory.find(chat => chat.id === currentChatId);
+    return getDisplayTitle(currentChat);
   };
 
   // Kiểm tra xem nếu đến từ trang đăng nhập
@@ -56,7 +65,12 @@ const ChatPage = () => {
     if (state?.freshLogin) {
       fetchChatHistory();
     }
-  }, [state]);
+
+    // Kiểm tra nếu có suggested question từ ProfilePage
+    if (state?.suggestedQuestion) {
+      setInput(state.suggestedQuestion);
+    }
+  }, [state, fetchChatHistory]);
 
   useEffect(() => {
     scrollToBottom();
@@ -72,6 +86,18 @@ const ChatPage = () => {
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Xử lý click bên ngoài dropdown để đóng dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   // Auto-resize textarea based on content
@@ -143,6 +169,8 @@ const ChatPage = () => {
         // Cập nhật tiêu đề thông qua API
         try {
           await updateChatTitle(response.id, newTitle);
+          // Cập nhật lại danh sách chat để hiển thị tiêu đề mới
+          fetchChatHistory();
         } catch (titleError) {
           console.error('Lỗi khi cập nhật tiêu đề:', titleError);
         }
@@ -175,7 +203,7 @@ const ChatPage = () => {
 
   // Lọc và sắp xếp lịch sử chat
   const sortedFilteredChats = [...(chatHistory?.filter(chat =>
-    chat.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    chat.title?.toLowerCase().includes(searchQuery.toLowerCase()) &&
     chat.status === 'active'
   ) || [])].sort((a, b) =>
     new Date(b.updated_at || b.date) - new Date(a.updated_at || a.date)
@@ -189,9 +217,28 @@ const ChatPage = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user_id');
-    navigate('/login');
+    Swal.fire({
+      title: 'Đăng xuất',
+      text: 'Bạn có chắc chắn muốn đăng xuất?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#9ca3af'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_id');
+        sessionStorage.removeItem('auth_token');
+        sessionStorage.removeItem('user_id');
+        navigate('/login');
+      }
+    });
+  };
+
+  const toggleUserDropdown = () => {
+    setShowUserDropdown(!showUserDropdown);
   };
 
   // Animation variants
@@ -214,7 +261,7 @@ const ChatPage = () => {
 
   return (
     <motion.div
-      className="flex h-screen w-screen overflow-hidden bg-gradient-to-br from-gray-50 to-green-50"
+      className="flex h-screen w-screen overflow-hidden bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50"
       initial="initial"
       animate="animate"
       exit="exit"
@@ -277,51 +324,132 @@ const ChatPage = () => {
         />
       )}
 
+      {/* Unified Top Navbar */}
+      <div className="fixed top-0 left-0 right-0 z-20 bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md">
+        <div className="flex justify-between items-center px-5 py-4">
+          {/* Left Section - Logo and menu button */}
+          <div className="flex items-center">
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden mr-3 text-white"
+              onClick={() => setIsSidebarOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+
+            {/* Logo */}
+            <button onClick={() => navigate('/')} className="flex items-center">
+              <div className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center mr-2 backdrop-blur-sm">
+                <MessageSquare size={20} className="text-white" />
+              </div>
+              <h1 className="text-lg font-bold text-white">CongBot</h1>
+            </button>
+          </div>
+
+          {/* Center - Current chat title */}
+          <div className="flex-1 text-center mx-4">
+            <h1 className="text-lg font-semibold text-white truncate max-w-xs mx-auto">
+              {getCurrentChatTitle()}
+            </h1>
+          </div>
+
+          {/* Right - User profile dropdown */}
+          <div className="relative" ref={userDropdownRef}>
+            <button
+              onClick={toggleUserDropdown}
+              className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 transition-colors rounded-lg py-1.5 px-3 backdrop-blur-sm"
+            >
+              <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-white/20">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="User" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={16} className="text-white" />
+                )}
+              </div>
+              <span className="text-sm font-medium text-white hidden sm:inline">
+                {user?.name || 'Người dùng'}
+              </span>
+              <ChevronDown size={16} className={`text-white/80 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`} />
+            </button>
+
+            {/* Dropdown menu */}
+            <AnimatePresence>
+              {showUserDropdown && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-1 z-50"
+                >
+                  <button
+                    className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={() => {
+                      setShowUserDropdown(false);
+                      navigate('/profile');
+                    }}
+                  >
+                    <User size={16} className="mr-2 text-gray-500" />
+                    <span>Hồ sơ cá nhân</span>
+                  </button>
+                  <button
+                    className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={() => {
+                      setShowUserDropdown(false);
+                      navigate('/history');
+                    }}
+                  >
+                    <History size={16} className="mr-2 text-gray-500" />
+                    <span>Lịch sử trò chuyện</span>
+                  </button>
+                  <button
+                    className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100 mt-1"
+                    onClick={() => {
+                      setShowUserDropdown(false);
+                      handleLogout();
+                    }}
+                  >
+                    <LogOut size={16} className="mr-2" />
+                    <span>Đăng xuất</span>
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+      </div>
+
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-xl transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } transition-transform duration-300 ease-in-out md:translate-x-0 md:relative md:z-0 md:border-r md:border-gray-200`}
+        className={`fixed inset-y-0 left-0 z-30 w-72 bg-white shadow-xl transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } transition-transform duration-300 ease-in-out md:translate-x-0 md:relative md:z-10 md:mt-[73px] md:h-[calc(100vh-73px)]`}
       >
         <div className="flex flex-col h-full">
-          {/* Header with logo and user info */}
-          <div className="bg-green-600 text-white py-3 px-4">
-            <div className="flex items-center mb-3">
+          {/* Mobile - Header */}
+          <div className="md:hidden bg-gradient-to-r from-green-600 to-teal-600 text-white py-4 px-4">
+            <div className="flex items-center justify-between">
               <button onClick={() => navigate('/')} className="flex items-center">
-                <div className="h-9 w-9 bg-green-500 rounded-lg flex items-center justify-center mr-2">
+                <div className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center mr-2 backdrop-blur-sm">
                   <MessageSquare size={20} className="text-white" />
                 </div>
-                <h1 className="text-lg font-bold text-white">CongBot Chat</h1>
+                <h1 className="text-lg font-bold text-white">CongBot</h1>
               </button>
 
-              <div className="ml-auto flex items-center">
-                <button className="text-white hover:bg-green-500 p-1.5 rounded-full transition-colors">
-                  <FileText size={16} />
-                </button>
-                <button className="text-white hover:bg-green-500 p-1.5 rounded-full transition-colors ml-1">
-                  <Settings size={16} />
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center bg-green-500 rounded-lg p-2">
-              <div className="w-8 h-8 rounded-full bg-green-400 flex items-center justify-center mr-2 overflow-hidden">
-                <img src="/src/assets/images/user-icon.png" alt="User" className="w-full h-full object-cover" onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
-                }} />
-              </div>
-              <div className="overflow-hidden">
-                <p className="font-medium text-white truncate">{user?.name || 'Người dùng'}</p>
-                <p className="text-xs text-white truncate">{user?.email || user?.username || 'user@example.com'}</p>
-              </div>
+              {/* Close button */}
+              <button
+                className="p-1.5 rounded-full bg-white/10 text-white hover:bg-white/20"
+                onClick={() => setIsSidebarOpen(false)}
+              >
+                <X size={18} />
+              </button>
             </div>
           </div>
 
           {/* New chat button and search */}
-          <div className="p-3">
+          <div className="p-4">
             <button
               onClick={handleNewChat}
-              className="flex items-center w-full py-2.5 px-3.5 bg-green-600 hover:bg-green-700 text-white rounded-lg mb-3 transition-colors duration-200 shadow-sm"
+              className="flex items-center justify-center w-full py-2.5 px-3.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-lg mb-4 transition-colors duration-200 shadow-sm hover:opacity-90"
             >
               <Plus size={18} className="mr-2" />
               <span className="font-medium">Cuộc trò chuyện mới</span>
@@ -333,16 +461,16 @@ const ChatPage = () => {
                 placeholder="Tìm kiếm cuộc trò chuyện..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full py-2.5 pl-9 pr-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                className="w-full py-2.5 pl-9 pr-3 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent bg-gray-50 focus:bg-white transition-all"
               />
               <Search size={16} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             </div>
           </div>
 
           {/* Chat history */}
-          <div className="px-3 flex-1 overflow-y-auto">
+          <div className="px-4 flex-1 overflow-y-auto">
             <div className="mb-3">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center">
                   <History size={16} className="mr-2 text-green-600" />
                   <h2 className="text-sm font-semibold text-gray-800">Lịch sử trò chuyện</h2>
@@ -356,13 +484,13 @@ const ChatPage = () => {
               </div>
 
               {sortedFilteredChats.length > 0 ? (
-                <div className="space-y-1.5">
+                <div className="space-y-2">
                   {sortedFilteredChats.map((chat) => (
                     <button
                       key={chat.id}
                       className={`flex items-center w-full py-2.5 px-3.5 rounded-lg transition-all duration-200 ${currentChatId === chat.id
                         ? 'bg-green-50 text-green-700 border-l-4 border-green-600 shadow-sm'
-                        : 'hover:bg-gray-100 text-gray-700'
+                        : 'hover:bg-gray-50 text-gray-700'
                         }`}
                       onClick={() => {
                         switchChat(chat.id);
@@ -379,7 +507,7 @@ const ChatPage = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-6 text-gray-500 text-sm bg-gray-50 rounded-lg">
+                <div className="text-center py-10 text-gray-500 text-sm bg-gray-50 rounded-xl">
                   {searchQuery
                     ? "Không tìm thấy cuộc trò chuyện nào"
                     : isLoading ? "Đang tải..." : "Chưa có lịch sử trò chuyện"}
@@ -387,61 +515,19 @@ const ChatPage = () => {
               )}
             </div>
           </div>
-
-          {/* Bottom menu */}
-          <div className="p-3 border-t border-gray-200 bg-gray-50">
-            <button
-              className="flex items-center w-full py-2 px-3 hover:bg-gray-100 rounded-lg transition-colors text-gray-700 text-sm mt-1"
-              onClick={() => navigate('/profile')}
-            >
-              <User size={16} className="mr-2" />
-              <span>Hồ sơ cá nhân</span>
-            </button>
-
-            <button
-              className="flex items-center w-full py-2 px-3 hover:bg-gray-100 rounded-lg transition-colors text-gray-700 text-sm mt-1"
-            >
-              <Info size={16} className="mr-2" />
-              <span>Hướng dẫn sử dụng</span>
-            </button>
-
-            <button
-              className="flex items-center w-full py-2 px-3 hover:bg-red-50 rounded-lg transition-colors text-red-600 text-sm mt-2"
-              onClick={handleLogout}
-            >
-              <LogOut size={16} className="mr-2" />
-              <span>Đăng xuất</span>
-            </button>
-          </div>
         </div>
-
-        {/* Mobile close button */}
-        <button
-          className="absolute top-3 right-3 p-1.5 rounded-full bg-white bg-opacity-20 text-white hover:bg-white hover:bg-opacity-30 md:hidden"
-          onClick={() => setIsSidebarOpen(false)}
-        >
-          <X size={18} />
-        </button>
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-        {/* Mobile menu button */}
-        <button
-          className="fixed top-4 left-4 z-30 md:hidden bg-white p-2 rounded-full shadow-lg text-green-600 hover:bg-green-50 transition-colors"
-          onClick={() => setIsSidebarOpen(true)}
-        >
-          <Menu size={24} />
-        </button>
-
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
         {/* Chat Area */}
         <div
           className="flex-1 overflow-y-auto p-4 pb-20 bg-transparent"
           ref={chatContainerRef}
         >
-          <div className="max-w-3xl mx-auto pt-12 md:pt-4">
-            {activeChatMessages.length === 0 && !isLoading && (
-              <div className="flex flex-col items-center justify-center h-[calc(100vh-200px)] text-center text-gray-600">
+          <div className="max-w-3xl mx-auto">
+            {activeChatMessages.length === 0 ? (
+              <div className="flex flex-col items-center justify-center h-[calc(100vh-280px)] text-center text-gray-600">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center mb-4 shadow-lg">
                   <MessageSquare size={28} className="text-white" />
                 </div>
@@ -450,92 +536,67 @@ const ChatPage = () => {
                   Hãy nhập câu hỏi của bạn về chính sách người có công vào ô bên dưới để bắt đầu trò chuyện với CongBot.
                 </p>
               </div>
-            )}
-
-            <AnimatePresence>
-              {activeChatMessages.map((message, index) => (
-                <motion.div
-                  key={message.id || `msg_${index}_${Date.now()}`}
-                  className={`mb-4 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                  variants={messageVariants}
-                  initial="initial"
-                  animate="animate"
-                  exit="initial"
-                >
-                  {message.sender === 'bot' && (
-                    <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md">
-                      <img
-                        src="/src/assets/images/chatbot-icon.png"
-                        alt="Bot"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2310b981' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zM6.023 15.416C7.491 17.606 9.695 19 12.16 19c2.464 0 4.669-1.393 6.136-3.584A8.968 8.968 0 0120 12.16c0-2.465-1.393-4.669-3.584-6.136A8.968 8.968 0 0112.16 4c-2.465 0-4.67 1.393-6.137 3.584A8.968 8.968 0 014 12.16c0 1.403.453 2.75 1.254 3.876l-.001.001c.244.349.477.685.77 1.379zM8 13a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2zm-4-3a1 1 0 110-2 1 1 0 010 2zm0 6a1 1 0 110-2 1 1 0 010 2z'/%3E%3C/svg%3E";
-                        }}
-                      />
-                    </div>
-                  )}
-                  <div
-                    className={`rounded-2xl px-4 py-3 max-w-[80%] ${message.sender === 'user'
-                      ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
-                      : 'bg-white text-gray-800 border border-gray-100 shadow-md'
-                      }`}
+            ) : (
+              <AnimatePresence mode="wait">
+                {activeChatMessages.map((message, index) => (
+                  <motion.div
+                    key={message.id || `msg_${index}`}
+                    className={`mb-4 flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                    variants={messageVariants}
+                    initial="initial"
+                    animate="animate"
                   >
-                    {message.sender === 'user' ? (
-                      <p className="whitespace-pre-wrap text-sm">{message.text}</p>
-                    ) : (
-                      <div className="text-sm markdown-content">
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          rehypePlugins={[rehypeSanitize, rehypeRaw]}
-                        >
-                          {message.text}
-                        </ReactMarkdown>
-
-                        {message.processingTime > 0 && (
-                          <div className="text-xs text-gray-400 mt-2 text-right">
-                            Thời gian xử lý: {message.processingTime.toFixed(2)}s
-                          </div>
-                        )}
+                    {message.sender === 'bot' && (
+                      <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                        <MessageSquare size={18} className="text-white" />
                       </div>
                     )}
-                  </div>
-                  {message.sender === 'user' && (
-                    <div className="w-10 h-10 rounded-full flex-shrink-0 ml-2 overflow-hidden shadow-md">
-                      <img
-                        src="/src/assets/images/user-icon.png"
-                        alt="User"
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23374151'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E";
-                        }}
-                      />
-                    </div>
-                  )}
-                </motion.div>
-              ))}
-            </AnimatePresence>
+                    <div
+                      className={`rounded-2xl px-4 py-3 max-w-[80%] ${message.sender === 'user'
+                        ? 'bg-gradient-to-r from-green-600 to-teal-600 text-white shadow-md'
+                        : 'bg-white text-gray-800 border border-gray-100 shadow-md'
+                        }`}
+                    >
+                      {message.sender === 'user' ? (
+                        <p className="whitespace-pre-wrap text-sm">{message.text}</p>
+                      ) : (
+                        <div className="text-sm markdown-content">
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeSanitize, rehypeRaw]}
+                          >
+                            {message.text}
+                          </ReactMarkdown>
 
-            {/* Loading animation */}
+                          {message.processingTime > 0 && (
+                            <div className="text-xs text-gray-400 mt-2 text-right">
+                              Thời gian xử lý: {message.processingTime.toFixed(2)}s
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {message.sender === 'user' && (
+                      <div className="w-10 h-10 rounded-full flex-shrink-0 ml-2 overflow-hidden shadow-md bg-gray-100 flex items-center justify-center">
+                        <User size={18} className="text-gray-600" />
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            )}
+
+            {/* Loading animation - Only show when isLoading is true AND we have messages */}
             <AnimatePresence>
-              {isLoading && (
+              {isLoading && activeChatMessages.length > 0 && (
                 <motion.div
                   className="flex justify-start mb-4"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                 >
-                  <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md">
-                    <img
-                      src="/src/assets/images/chatbot-icon.png"
-                      alt="Bot"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2310b981' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zM6.023 15.416C7.491 17.606 9.695 19 12.16 19c2.464 0 4.669-1.393 6.136-3.584A8.968 8.968 0 0120 12.16c0-2.465-1.393-4.669-3.584-6.136A8.968 8.968 0 0112.16 4c-2.465 0-4.67 1.393-6.137 3.584A8.968 8.968 0 014 12.16c0 1.403.453 2.75 1.254 3.876l-.001.001c.244.349.477.685.77 1.379zM8 13a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2zm-4-3a1 1 0 110-2 1 1 0 010 2zm0 6a1 1 0 110-2 1 1 0 010 2z'/%3E%3C/svg%3E";
-                      }}
-                    />
+                  <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                    <MessageSquare size={18} className="text-white" />
                   </div>
                   <div className="bg-white text-gray-800 rounded-2xl px-4 py-3.5 border border-gray-100 shadow-md">
                     <div className="flex space-x-2">
@@ -583,16 +644,17 @@ const ChatPage = () => {
                   ></textarea>
                 </div>
 
-                <div className="sflex items-center ml-2">
+                <div className="flex items-center ml-2">
                   <motion.button
                     type="submit"
                     className={`p-2.5 h-[46px] min-w-[46px] flex items-center justify-center rounded-full ${input.trim() === '' || isLoading
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-green-600 to-teal-600 text-white hover:shadow-md'
-                      } transition-all`}
+                        ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                        : 'bg-gradient-to-r from-green-600 to-teal-600 text-white hover:shadow-md'
+                      } transition-colors duration-200`}
                     disabled={input.trim() === '' || isLoading}
-                    whileHover={{ scale: input.trim() === '' || isLoading ? 1 : 1.05 }}
-                    whileTap={{ scale: input.trim() === '' || isLoading ? 1 : 0.95 }}
+                    whileHover={input.trim() !== '' && !isLoading ? { scale: 1.05 } : {}}
+                    whileTap={input.trim() !== '' && !isLoading ? { scale: 0.95 } : {}}
+                    transition={{ duration: 0.2 }}
                   >
                     <Send size={18} />
                   </motion.button>
@@ -606,4 +668,4 @@ const ChatPage = () => {
   );
 };
 
-export default ChatPage;
+export default ChatPage;  
