@@ -4,6 +4,7 @@ import sys
 import os
 import re
 from typing import List, Dict, Tuple, Optional, Any
+from datetime import datetime
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import TOP_K, MAX_TOKENS_PER_DOC
@@ -99,7 +100,7 @@ class RetrievalService:
         try:
             # 2. Kiểm tra exact match trong MongoDB (phương pháp 1)
             print(f"Đang kiểm tra exact match trong MongoDB (phương pháp 1)...")
-            # Thêm điều kiện validityStatus
+            # Thêm điều kiện validityStatus nếu có trong schema
             exact_match = self.text_cache_collection.find_one({
                 "normalizedQuestion": normalized_query,
                 "validityStatus": CacheStatus.VALID
@@ -113,7 +114,7 @@ class RetrievalService:
                         {"_id": exact_match["_id"]},
                         {
                             "$inc": {"hitCount": 1},
-                            "$set": {"lastUsed": time.time()}
+                            "$set": {"lastUsed": datetime.now()}
                         }
                     )
                 except Exception as e:
@@ -136,7 +137,7 @@ class RetrievalService:
                         {"_id": exact_match_raw["_id"]},
                         {
                             "$inc": {"hitCount": 1},
-                            "$set": {"lastUsed": time.time()}
+                            "$set": {"lastUsed": datetime.now()}
                         }
                     )
                 except Exception as e:
@@ -184,28 +185,32 @@ class RetrievalService:
                         
                         # Kiểm tra xem độ tương đồng có vượt ngưỡng không
                         if similarity_score >= SIMILARITY_THRESHOLD:
-                            # Lấy thông tin cache từ MongoDB - không kiểm tra validityStatus
-                            cache_result = self.text_cache_collection.find_one({
-                                "cacheId": cache_id
-                            })
-                            
-                            if cache_result:
-                                print(f"Tìm thấy semantic match trong cache với score {similarity_score:.4f}")
-                                # Cập nhật hitCount và lastUsed
-                                try:
-                                    self.text_cache_collection.update_one(
-                                        {"_id": cache_result["_id"]},
-                                        {
-                                            "$inc": {"hitCount": 1},
-                                            "$set": {"lastUsed": time.time()}
-                                        }
-                                    )
-                                except Exception as e:
-                                    print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
+                            # Kiểm tra metadata để đảm bảo cache hợp lệ
+                            metadata = cache_results["metadatas"][0][0] if cache_results["metadatas"] else {}
+                            if metadata.get("validityStatus", "") != "invalid":
+                                # Lấy thông tin cache từ MongoDB, thêm điều kiện validityStatus
+                                cache_result = self.text_cache_collection.find_one({
+                                    "cacheId": cache_id,
+                                    "validityStatus": CacheStatus.VALID
+                                })
                                 
-                                return dict(cache_result)
-                            else:
-                                print(f"Tìm thấy trong ChromaDB nhưng không tìm thấy trong MongoDB: {cache_id}")
+                                if cache_result:
+                                    print(f"Tìm thấy semantic match trong cache với score {similarity_score:.4f}")
+                                    # Cập nhật hitCount và lastUsed
+                                    try:
+                                        self.text_cache_collection.update_one(
+                                            {"_id": cache_result["_id"]},
+                                            {
+                                                "$inc": {"hitCount": 1},
+                                                "$set": {"lastUsed": datetime.now()}
+                                            }
+                                        )
+                                    except Exception as e:
+                                        print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
+                                    
+                                    return dict(cache_result)
+                                else:
+                                    print(f"Tìm thấy trong ChromaDB nhưng không tìm thấy trong MongoDB hoặc cache không hợp lệ: {cache_id}")
                     
                 except Exception as ce:
                     print(f"Lỗi khi truy vấn cache collection trong ChromaDB: {str(ce)}")
@@ -219,7 +224,6 @@ class RetrievalService:
             print(f"Lỗi khi kiểm tra cache: {str(e)}")
         
         return None
-    
     
     def _extract_document_ids(self, chunk_ids: List[str]) -> List[str]:
         doc_ids = []
@@ -261,9 +265,13 @@ class RetrievalService:
             "normalizedQuestion": self._normalize_question(query),
             "answer": answer,
             "relevantDocuments": relevant_documents,
-            "validityStatus": CacheStatus.VALID,  # Thêm trường này
+            "validityStatus": CacheStatus.VALID,  # Thêm trường validityStatus
             "relatedDocIds": doc_ids,
             "keywords": keywords,
+            "hitCount": 0,
+            "createdAt": datetime.now(),
+            "updatedAt": datetime.now(),
+            "lastUsed": datetime.now(),
             "expiresAt": None  # Hoặc có thể thêm thời gian hết hạn
         }
         
@@ -290,7 +298,7 @@ class RetrievalService:
         
         # Bao gồm validityStatus trong metadata
         metadata = {
-            "validityStatus": CacheStatus.VALID,  # Thêm trường này
+            "validityStatus": CacheStatus.VALID,  # Thêm trường validityStatus
             "relatedDocIds": related_docs_str  # Lưu dưới dạng chuỗi phân cách bằng dấu phẩy
         }
         
@@ -313,6 +321,7 @@ class RetrievalService:
             return False
     
     def _invalidate_cache_for_document(self, doc_id: str) -> int:
+        """Vô hiệu hóa cache liên quan đến một văn bản cụ thể"""
         result = self.text_cache_collection.update_many(
             {"relatedDocIds": doc_id},
             {"$set": {"validityStatus": CacheStatus.INVALID}}
@@ -338,7 +347,7 @@ class RetrievalService:
                 try:
                     cache_collection.update(
                         ids=[cache_id],
-                        metadatas=[{"validityStatus": "invalid"}]
+                        metadatas=[{"validityStatus": CacheStatus.INVALID}]
                     )
                 except Exception as e:
                     print(f"Lỗi khi cập nhật cache {cache_id} trong ChromaDB: {str(e)}")
@@ -349,6 +358,16 @@ class RetrievalService:
         return result.modified_count
     
     def retrieve(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
+        """
+        Thực hiện truy xuất thông tin từ ChromaDB với cache
+        
+        Args:
+            query: Câu hỏi của người dùng
+            use_cache: Sử dụng cache hay không
+            
+        Returns:
+            Dict chứa kết quả truy xuất (context_items, source, etc.)
+        """
         start_time = time.time()
         
         print(f"Thực hiện truy vấn: '{query}', use_cache={use_cache}")
@@ -427,10 +446,11 @@ class RetrievalService:
             }
     
     def search_keyword(self, keyword: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """Tìm kiếm cache bằng từ khóa"""
         try:
-            # Tìm kiếm trong text_cache
+            # Tìm kiếm trong text_cache với điều kiện validityStatus hợp lệ
             results = self.text_cache_collection.find(
-                {"$text": {"$search": keyword}, "validityStatus": "valid"},
+                {"$text": {"$search": keyword}, "validityStatus": CacheStatus.VALID},
                 {"score": {"$meta": "textScore"}}
             ).sort([("score", {"$meta": "textScore"})]).limit(limit)
             
@@ -440,6 +460,18 @@ class RetrievalService:
             return []
     
     def add_to_cache(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
+        """
+        Thêm kết quả mới vào cache
+        
+        Args:
+            query: Câu hỏi gốc
+            answer: Câu trả lời
+            chunks: Danh sách chunk_id đã truy xuất
+            relevance_scores: Điểm số liên quan của mỗi chunk
+            
+        Returns:
+            Cache ID mới hoặc chuỗi rỗng nếu có lỗi
+        """
         print(f"Đang thêm kết quả vào cache cho query: '{query}'")
         cache_id = self._create_cache_entry(query, answer, chunks, relevance_scores)
         if cache_id:
@@ -449,37 +481,95 @@ class RetrievalService:
         return cache_id
     
     def invalidate_document_cache(self, doc_id: str) -> int:
-        # Nếu không có trường validityStatus, thì có thể dùng phương pháp khác
-        # như thêm trường mới hoặc xóa cache
-        result = self.text_cache_collection.delete_many({"relatedDocIds": doc_id})
+        """
+        Vô hiệu hóa tất cả cache liên quan đến một văn bản
         
-        # Cập nhật hoặc xóa trong ChromaDB
+        Args:
+            doc_id: ID của văn bản
+            
+        Returns:
+            Số lượng cache entries đã vô hiệu hóa
+        """
+        print(f"Đang vô hiệu hóa cache cho văn bản: {doc_id}")
+        result = self._invalidate_cache_for_document(doc_id)
+        print(f"Đã vô hiệu hóa {result} cache entries")
+        return result
+    
+    def delete_expired_cache(self) -> int:
+        """
+        Xóa tất cả cache đã hết hạn
+        
+        Returns:
+            Số lượng cache entries đã xóa
+        """
+        now = datetime.now()
+        result = self.text_cache_collection.delete_many({
+            "expiresAt": {"$lt": now}
+        })
+        return result.deleted_count
+    
+    def clear_all_cache(self) -> int:
+        """
+        Xóa toàn bộ cache
+        
+        Returns:
+            Số lượng cache entries đã xóa
+        """
+        # Xóa trong MongoDB
+        result = self.text_cache_collection.delete_many({})
+        
+        # Xóa trong ChromaDB
         try:
-            # Lấy tất cả cache IDs bị ảnh hưởng trước khi xóa trong MongoDB
-            affected_caches = list(self.text_cache_collection.find(
-                {"relatedDocIds": doc_id},
-                {"cacheId": 1}
-            ))
-            
-            cache_ids = [cache["cacheId"] for cache in affected_caches]
-            
-            # Xóa trong ChromaDB
-            if cache_ids:
-                cache_collection = self.chroma.client.get_collection(
-                    name="cache_questions",
-                    embedding_function=self.chroma.embedding_function
-                )
-                
-                try:
-                    cache_collection.delete(ids=cache_ids)
-                    print(f"Đã xóa {len(cache_ids)} cache entries trong ChromaDB")
-                except Exception as e:
-                    print(f"Lỗi khi xóa cache trong ChromaDB: {str(e)}")
-        
+            self.chroma.delete_collection("cache_questions")
         except Exception as e:
-            print(f"Lỗi khi vô hiệu hóa cache: {str(e)}")
+            print(f"Lỗi khi xóa collection cache_questions: {str(e)}")
         
         return result.deleted_count
+    
+    def get_cache_stats(self) -> Dict[str, Any]:
+        """
+        Lấy thống kê về cache
+        
+        Returns:
+            Dict chứa thống kê về cache
+        """
+        try:
+            total_count = self.text_cache_collection.count_documents({})
+            valid_count = self.text_cache_collection.count_documents({"validityStatus": CacheStatus.VALID})
+            invalid_count = self.text_cache_collection.count_documents({"validityStatus": CacheStatus.INVALID})
+            
+            # Tính hit rate (nếu có trường hitCount)
+            hits_sum = 0
+            try:
+                pipeline = [
+                    {"$group": {"_id": None, "totalHits": {"$sum": "$hitCount"}}}
+                ]
+                result = list(self.text_cache_collection.aggregate(pipeline))
+                if result:
+                    hits_sum = result[0]["totalHits"]
+            except Exception as e:
+                print(f"Lỗi khi tính tổng hitCount: {str(e)}")
+            
+            # Tính hit rate dựa trên hitCount và tổng số truy vấn (nếu có)
+            hit_rate = 0
+            if total_count > 0 and hits_sum > 0:
+                hit_rate = hits_sum / (hits_sum + total_count)  # Công thức tạm thời
+            
+            return {
+                "total_count": total_count,
+                "valid_count": valid_count,
+                "invalid_count": invalid_count,
+                "hit_rate": hit_rate
+            }
+        except Exception as e:
+            print(f"Lỗi khi lấy thống kê cache: {str(e)}")
+            return {
+                "total_count": 0,
+                "valid_count": 0,
+                "invalid_count": 0,
+                "hit_rate": 0,
+                "error": str(e)
+            }
 
 # Singleton instance
 retrieval_service = RetrievalService()
