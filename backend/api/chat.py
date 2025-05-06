@@ -53,33 +53,34 @@ async def ask(input: QueryInput):
         start_time = time.time()
         print(f"Processing query: '{input.query}' with session_id: {input.session_id}")
         
-        # 1. Retrieval - chỉ gọi một lần và lưu kết quả
+        # 1. Retrieval - lấy thông tin liên quan với cache
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
+        source = retrieval_result.get("source", "unknown")
+        context_items = retrieval_result.get("context_items", [])
+        retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
+        retrieval_time = retrieval_result.get("execution_time", 0)
         
-        # Kiểm tra xem có các key cần thiết trong retrieval_result không
-        context_items = retrieval_result.get('context_items', [])
-        retrieved_chunks = retrieval_result.get('retrieved_chunks', [])
-        retrieval_time = retrieval_result.get('execution_time', 0)
-        source = retrieval_result.get('source', 'unknown')
+        # 2. Xử lý câu trả lời
+        generation_time = 0
         
-        # 2. Generation chỉ khi không dùng cache
-        if source != 'cache':
+        if source == "cache":
+            # Nếu từ cache, lấy trực tiếp câu trả lời
+            answer = retrieval_result.get("answer", "")
+            print(f"Sử dụng câu trả lời từ cache")
+        else:
+            # Nếu không phải từ cache, gọi generation_service
+            print(f"Không tìm thấy trong cache, gọi generation_service")
             if context_items:
-                generation_result = generation_service.generate_answer(input.query, use_cache=False)  # Bỏ kiểm tra cache trong generation
-                answer = generation_result['answer']
-                generation_time = generation_result.get('generation_time', 0)
+                generation_result = generation_service.generate_answer(input.query, use_cache=False)
+                answer = generation_result.get("answer", "")
+                generation_time = generation_result.get("generation_time", 0)
+                # Cập nhật retrieved_chunks nếu cần
+                if "retrieved_chunks" in generation_result:
+                    retrieved_chunks = generation_result.get("retrieved_chunks", retrieved_chunks)
             else:
                 answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
-                generation_time = 0
-        else:
-            # Nếu dùng cache, lấy câu trả lời từ retrieval_result
-            answer = retrieval_result.get('answer', 'Không tìm thấy câu trả lời trong cache')
-            generation_time = 0
         
-        # 3. Tính tổng thời gian
-        total_time = time.time() - start_time
-        
-        # 4. Xử lý lưu trữ tin nhắn
+        # 3. Xử lý lưu trữ tin nhắn
         chat_id = input.session_id
         
         if input.user_id:
@@ -93,7 +94,7 @@ async def ask(input: QueryInput):
                 "text": answer,
                 "retrieved_chunks": retrieved_chunks,
                 "context": context_items,
-                "processingTime": total_time,
+                "processingTime": retrieval_time + generation_time,
                 "timestamp": datetime.now()
             }
             
@@ -121,7 +122,7 @@ async def ask(input: QueryInput):
                                     "answer": answer,
                                     "timestamp": datetime.now(),
                                     "sourceDocuments": retrieved_chunks,
-                                    "processingTime": total_time,
+                                    "processingTime": retrieval_time + generation_time,
                                     "clientInfo": input.client_info
                                 }
                             },
@@ -137,7 +138,15 @@ async def ask(input: QueryInput):
                             "created_at": datetime.now(),
                             "updated_at": datetime.now(),
                             "status": "active",
-                            "exchanges": []
+                            "exchanges": [{
+                                "exchangeId": str(uuid.uuid4()),
+                                "question": input.query,
+                                "answer": answer,
+                                "timestamp": datetime.now(),
+                                "sourceDocuments": retrieved_chunks,
+                                "processingTime": retrieval_time + generation_time,
+                                "clientInfo": input.client_info
+                            }]
                         }
                         result = db.chats.insert_one(chat_data)
                         chat_id = str(result.inserted_id)
@@ -155,7 +164,7 @@ async def ask(input: QueryInput):
                             "answer": answer,
                             "timestamp": datetime.now(),
                             "sourceDocuments": retrieved_chunks,
-                            "processingTime": total_time,
+                            "processingTime": retrieval_time + generation_time,
                             "clientInfo": input.client_info
                         }]
                     }
@@ -176,14 +185,16 @@ async def ask(input: QueryInput):
                         "answer": answer,
                         "timestamp": datetime.now(),
                         "sourceDocuments": retrieved_chunks,
-                        "processingTime": total_time,
+                        "processingTime": retrieval_time + generation_time,
                         "clientInfo": input.client_info
                     }]
                 }
                 result = db.chats.insert_one(chat_data)
                 chat_id = str(result.inserted_id)
         
-        # 5. Trả về kết quả
+        # 4. Trả về kết quả
+        total_time = time.time() - start_time
+        
         return {
             "id": chat_id,
             "query": input.query,

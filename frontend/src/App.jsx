@@ -7,6 +7,7 @@ import ChatPage from './pages/ChatPage';
 import ChatHistoryPage from './pages/ChatHistoryPage';
 import ProfilePage from './pages/ProfilePage';
 import LandingPage from './pages/LandingPage';
+import AdminPage from './pages/AdminPage';
 
 // Tạo wrapper component để có thể sử dụng useLocation
 function AnimatedRoutes() {
@@ -21,6 +22,7 @@ function AnimatedRoutes() {
         <Route path="/chat" element={<ChatPage />} />
         <Route path="/history" element={<ChatHistoryPage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/admin" element={<AdminPage />} />
       </Routes>
     </AnimatePresence>
   );

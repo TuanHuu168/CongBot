@@ -44,10 +44,7 @@ class RetrievalService:
     def _normalize_question(self, query: str) -> str:
         # Loại bỏ dấu câu
         normalized = re.sub(r'[.,;:!?()"\']', '', query.lower())
-        # Loại bỏ các từ stopwords (có thể mở rộng danh sách này)
-        stopwords = ['là', 'và', 'của', 'có', 'được', 'trong', 'cho', 'tôi', 'tại', 'vì', 'từ', 'với']
-        for word in stopwords:
-            normalized = re.sub(r'\b' + word + r'\b', '', normalized)
+
         # Loại bỏ khoảng trắng thừa
         normalized = re.sub(r'\s+', ' ', normalized).strip()
         return normalized
@@ -216,41 +213,6 @@ class RetrievalService:
             except Exception as e:
                 print(f"Lỗi khi thực hiện semantic search: {str(e)}")
             
-            # 5. Thử text search trong MongoDB
-            print("Đang thực hiện text search...")
-            try:
-                # Kiểm tra xem text index đã được tạo chưa
-                indexes = list(self.text_cache_collection.list_indexes())
-                has_text_index = any("normalizedQuestion_text" in idx.get("name", "") for idx in indexes)
-                
-                if has_text_index:
-                    # Bỏ điều kiện validityStatus
-                    text_match = self.text_cache_collection.find_one({
-                        "$text": {"$search": normalized_query}
-                    })
-                    
-                    if text_match:
-                        print(f"Tìm thấy text search match trong cache cho query: '{query}'")
-                        # Cập nhật hitCount và lastUsed
-                        try:
-                            self.text_cache_collection.update_one(
-                                {"_id": text_match["_id"]},
-                                {
-                                    "$inc": {"hitCount": 1},
-                                    "$set": {"lastUsed": time.time()}
-                                }
-                            )
-                        except Exception as ue:
-                            print(f"Không thể cập nhật hitCount/lastUsed: {str(ue)}")
-                            
-                        return dict(text_match)
-                else:
-                    print("Text index chưa được tạo, bỏ qua text search")
-            except Exception as te:
-                print(f"Lỗi khi thực hiện text search: {str(te)}")
-            
-            print("Không tìm thấy trong cache, tiếp tục với truy vấn ChromaDB chính...")
-                
         except Exception as e:
             print(f"Lỗi khi kiểm tra cache: {str(e)}")
         
