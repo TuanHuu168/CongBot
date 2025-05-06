@@ -99,9 +99,10 @@ class RetrievalService:
         try:
             # 2. Kiểm tra exact match trong MongoDB (phương pháp 1)
             print(f"Đang kiểm tra exact match trong MongoDB (phương pháp 1)...")
-            # Bỏ điều kiện validityStatus nếu không có trong dữ liệu
+            # Thêm điều kiện validityStatus
             exact_match = self.text_cache_collection.find_one({
-                "normalizedQuestion": normalized_query
+                "normalizedQuestion": normalized_query,
+                "validityStatus": CacheStatus.VALID
             })
             
             if exact_match:
@@ -123,7 +124,8 @@ class RetrievalService:
             # 3. Kiểm tra exact match trong MongoDB (phương pháp 2 - chuỗi chính xác)
             print(f"Đang kiểm tra exact match (phương pháp 2)...")
             exact_match_raw = self.text_cache_collection.find_one({
-                "questionText": query
+                "questionText": query,
+                "validityStatus": CacheStatus.VALID
             })
             
             if exact_match_raw:
@@ -218,6 +220,7 @@ class RetrievalService:
         
         return None
     
+    
     def _extract_document_ids(self, chunk_ids: List[str]) -> List[str]:
         doc_ids = []
         for chunk_id in chunk_ids:
@@ -251,13 +254,14 @@ class RetrievalService:
         # Trích xuất từ khóa
         keywords = self._extract_keywords(query)
         
-        # Tạo cache entry - bỏ trường validityStatus nếu không cần
+        # Tạo cache entry - thêm trường validityStatus
         cache_data = {
             "cacheId": cache_id,
             "questionText": query,
             "normalizedQuestion": self._normalize_question(query),
             "answer": answer,
             "relevantDocuments": relevant_documents,
+            "validityStatus": CacheStatus.VALID,  # Thêm trường này
             "relatedDocIds": doc_ids,
             "keywords": keywords,
             "expiresAt": None  # Hoặc có thể thêm thời gian hết hạn
@@ -284,8 +288,9 @@ class RetrievalService:
         # Chuyển list thành string để tránh lỗi với ChromaDB
         related_docs_str = ",".join(related_doc_ids) if related_doc_ids else ""
         
-        # Không bao gồm validityStatus trong metadata nếu schema không có
+        # Bao gồm validityStatus trong metadata
         metadata = {
+            "validityStatus": CacheStatus.VALID,  # Thêm trường này
             "relatedDocIds": related_docs_str  # Lưu dưới dạng chuỗi phân cách bằng dấu phẩy
         }
         
