@@ -508,24 +508,69 @@ class RetrievalService:
         })
         return result.deleted_count
     
-    def clear_all_cache(self) -> int:
+    def clear_all_invalid_cache(self) -> int:
         """
-        Xóa toàn bộ cache
+        Xóa tất cả cache không hợp lệ (validityStatus = invalid)
         
         Returns:
             Số lượng cache entries đã xóa
         """
-        # Xóa trong MongoDB
-        result = self.text_cache_collection.delete_many({})
-        
-        # Xóa trong ChromaDB
         try:
-            self.chroma.delete_collection("cache_questions")
+            # Log thông tin trước khi xóa
+            print("Đang xóa cache không hợp lệ...")
+            print(f"Kết nối MongoDB: {self.db is not None}")
+            print(f"Collection: {self.text_cache_collection is not None}")
+            
+            # Đếm số lượng cache không hợp lệ trước khi xóa
+            invalid_count = self.text_cache_collection.count_documents({"validityStatus": "invalid"})
+            print(f"Tìm thấy {invalid_count} cache không hợp lệ")
+            
+            # Xóa trong MongoDB - chỉ xóa những entry có validityStatus = invalid
+            result = self.text_cache_collection.delete_many({"validityStatus": "invalid"})
+            deleted_count_mongo = result.deleted_count
+            print(f"Đã xóa {deleted_count_mongo} entries không hợp lệ trong MongoDB")
+            
+            # Báo cáo kết quả
+            return deleted_count_mongo
+            
         except Exception as e:
-            print(f"Lỗi khi xóa collection cache_questions: {str(e)}")
+            print(f"Lỗi khi xóa cache không hợp lệ: {str(e)}")
+            # Raise exception thay vì trả về 0 để FastAPI có thể xử lý lỗi
+            raise e
+
+    def clear_all_cache(self) -> int:
+        """
+        Xóa toàn bộ cache (cả trong MongoDB và ChromaDB)
         
-        return result.deleted_count
-    
+        Returns:
+            Số lượng cache entries đã xóa
+        """
+        try:
+            # In thông tin trước khi xóa
+            total_before = self.text_cache_collection.count_documents({})
+            print(f"Số lượng documents trước khi xóa: {total_before}")
+            
+            # Xóa trực tiếp từ MongoDB không dùng điều kiện
+            try:
+                db = mongodb_client.get_database()
+                result = db.text_cache.delete_many({})
+                deleted_count = result.deleted_count
+                print(f"Đã xóa {deleted_count} entries trong MongoDB")
+                
+                # Xác nhận số lượng sau khi xóa
+                total_after = self.text_cache_collection.count_documents({})
+                print(f"Số lượng documents sau khi xóa: {total_after}")
+                
+                return deleted_count
+                
+            except Exception as e:
+                print(f"Lỗi khi xóa documents trong MongoDB: {str(e)}")
+                raise e
+                
+        except Exception as e:
+            print(f"Lỗi khi xóa toàn bộ cache: {str(e)}")
+            raise e  # Raise exception thay vì trả về 0
+
     def get_cache_stats(self) -> Dict[str, Any]:
         """
         Lấy thống kê về cache
