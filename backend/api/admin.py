@@ -135,27 +135,28 @@ async def get_cache_detailed_stats():
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/clear-cache")
-async def clear_cache(confirm: bool = False):
-    if not confirm:
-        return {"message": "Vui lòng xác nhận việc xóa cache bằng cách gửi 'confirm: true'"}
-    
+async def clear_cache():
     try:
+        print("Bắt đầu xóa toàn bộ cache...")
         # Đếm số lượng trước khi xóa
         db = mongodb_client.get_database()
         before_count = db.text_cache.count_documents({})
+        print(f"Số lượng documents trước khi xóa: {before_count}")
         
-        # Sử dụng phương thức mới từ retrieval_service
+        # Gọi service để xóa
         deleted_count = retrieval_service.clear_all_cache()
         
         # Đếm lại sau khi xóa
         after_count = db.text_cache.count_documents({})
+        print(f"Số lượng documents sau khi xóa: {after_count}")
         
-        # Nếu không có gì thay đổi, thử xóa trực tiếp từ MongoDB
+        # Kiểm tra xem có xóa thành công không
         if before_count == after_count and before_count > 0:
             print("Xóa qua service không thành công, thử xóa trực tiếp từ MongoDB...")
             result = db.text_cache.delete_many({})
             direct_deleted = result.deleted_count
             after_direct = db.text_cache.count_documents({})
+            print(f"Đã xóa trực tiếp {direct_deleted} entries")
             
             return {
                 "message": f"Đã xóa {direct_deleted} cache entries bằng phương pháp trực tiếp",

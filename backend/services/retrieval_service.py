@@ -508,27 +508,93 @@ class RetrievalService:
         })
         return result.deleted_count
     
+    def clear_all_cache(self) -> int:
+        try:
+            # In thông tin trước khi xóa từ MongoDB
+            total_before = self.text_cache_collection.count_documents({})
+            
+            # Xóa cache từ MongoDB
+            result = self.text_cache_collection.delete_many({})
+            deleted_count = result.deleted_count
+            print(f"Đã xóa {deleted_count} entries trong MongoDB")
+            
+            # Xác nhận số lượng sau khi xóa
+            total_after = self.text_cache_collection.count_documents({})
+            
+            # Xóa cache từ ChromaDB
+            try:
+                print("Bắt đầu xóa cache từ ChromaDB...")
+                cache_collection = self.chroma.client.get_collection(
+                    name="cache_questions",
+                    embedding_function=self.chroma.embedding_function
+                )
+                
+                # Đếm số lượng cache trong ChromaDB trước khi xóa
+                chroma_count_before = cache_collection.count()
+                
+                # Xóa toàn bộ cache từ ChromaDB collection
+                # Lấy danh sách tất cả các cache ID
+                all_ids = cache_collection.get(include=[])["ids"]
+                if all_ids and len(all_ids) > 0:
+                    cache_collection.delete(ids=all_ids)
+                    print(f"Đã xóa {len(all_ids)} cache entries từ ChromaDB")
+                
+                # Kiểm tra số lượng sau khi xóa
+                chroma_count_after = cache_collection.count()
+                
+            except Exception as ce:
+                print(f"Lỗi khi xóa cache từ ChromaDB: {str(ce)}")
+            
+            return deleted_count
+            
+        except Exception as e:
+            print(f"Lỗi khi xóa toàn bộ cache: {str(e)}")
+            raise e
+
     def clear_all_invalid_cache(self) -> int:
-        """
-        Xóa tất cả cache không hợp lệ (validityStatus = invalid)
-        
-        Returns:
-            Số lượng cache entries đã xóa
-        """
         try:
             # Log thông tin trước khi xóa
             print("Đang xóa cache không hợp lệ...")
-            print(f"Kết nối MongoDB: {self.db is not None}")
             print(f"Collection: {self.text_cache_collection is not None}")
             
-            # Đếm số lượng cache không hợp lệ trước khi xóa
+            # Đếm số lượng cache không hợp lệ trước khi xóa trong MongoDB
             invalid_count = self.text_cache_collection.count_documents({"validityStatus": "invalid"})
-            print(f"Tìm thấy {invalid_count} cache không hợp lệ")
+            
+            # Lấy danh sách các cache ID không hợp lệ từ MongoDB
+            invalid_cache_ids = []
+            invalid_caches = self.text_cache_collection.find(
+                {"validityStatus": "invalid"}, 
+                {"cacheId": 1}
+            )
+            
+            for cache in invalid_caches:
+                if "cacheId" in cache:
+                    invalid_cache_ids.append(cache["cacheId"])
+            
+            print(f"Danh sách {len(invalid_cache_ids)} cache IDs không hợp lệ: {invalid_cache_ids}")
             
             # Xóa trong MongoDB - chỉ xóa những entry có validityStatus = invalid
             result = self.text_cache_collection.delete_many({"validityStatus": "invalid"})
             deleted_count_mongo = result.deleted_count
             print(f"Đã xóa {deleted_count_mongo} entries không hợp lệ trong MongoDB")
+            
+            # Xóa các cache không hợp lệ từ ChromaDB
+            try:
+                if invalid_cache_ids:
+                    print("Bắt đầu xóa cache không hợp lệ từ ChromaDB...")
+                    cache_collection = self.chroma.client.get_collection(
+                        name="cache_questions",
+                        embedding_function=self.chroma.embedding_function
+                    )
+                    
+                    # Xóa các cache không hợp lệ từ ChromaDB
+                    cache_collection.delete(ids=invalid_cache_ids)
+                    print(f"Đã xóa {len(invalid_cache_ids)} cache không hợp lệ từ ChromaDB")
+                else:
+                    print("Không có cache không hợp lệ để xóa từ ChromaDB")
+                    
+            except Exception as ce:
+                print(f"Lỗi khi xóa cache không hợp lệ từ ChromaDB: {str(ce)}")
             
             # Báo cáo kết quả
             return deleted_count_mongo
@@ -537,39 +603,6 @@ class RetrievalService:
             print(f"Lỗi khi xóa cache không hợp lệ: {str(e)}")
             # Raise exception thay vì trả về 0 để FastAPI có thể xử lý lỗi
             raise e
-
-    def clear_all_cache(self) -> int:
-        """
-        Xóa toàn bộ cache (cả trong MongoDB và ChromaDB)
-        
-        Returns:
-            Số lượng cache entries đã xóa
-        """
-        try:
-            # In thông tin trước khi xóa
-            total_before = self.text_cache_collection.count_documents({})
-            print(f"Số lượng documents trước khi xóa: {total_before}")
-            
-            # Xóa trực tiếp từ MongoDB không dùng điều kiện
-            try:
-                db = mongodb_client.get_database()
-                result = db.text_cache.delete_many({})
-                deleted_count = result.deleted_count
-                print(f"Đã xóa {deleted_count} entries trong MongoDB")
-                
-                # Xác nhận số lượng sau khi xóa
-                total_after = self.text_cache_collection.count_documents({})
-                print(f"Số lượng documents sau khi xóa: {total_after}")
-                
-                return deleted_count
-                
-            except Exception as e:
-                print(f"Lỗi khi xóa documents trong MongoDB: {str(e)}")
-                raise e
-                
-        except Exception as e:
-            print(f"Lỗi khi xóa toàn bộ cache: {str(e)}")
-            raise e  # Raise exception thay vì trả về 0
 
     def get_cache_stats(self) -> Dict[str, Any]:
         """

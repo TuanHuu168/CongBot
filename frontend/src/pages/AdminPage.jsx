@@ -335,7 +335,7 @@ const AdminPage = () => {
             if (result.isConfirmed) {
                 try {
                     setIsLoading(true);
-                    await axios.post(`${API_BASE_URL}/clear-cache`, { confirm: true }, {
+                    await axios.post(`${API_BASE_URL}/clear-cache`, {}, {
                         headers: getAuthHeaders()
                     });
 
