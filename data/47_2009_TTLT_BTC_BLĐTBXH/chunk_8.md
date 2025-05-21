@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_art12_13
 Điều 12. Bổ sung dự toán
 
 1. Sau khi điều chỉnh dự toán trợ cấp người có công với cách mạng giữa các đơn vị trực thuộc tỉnh mà vẫn còn thiếu kinh phí thực hiện, Sở Lao động – Thương binh và Xã hội có văn bản đề nghị Bộ Lao động – Thương binh và Xã hội để xem xét bổ sung kinh phí.

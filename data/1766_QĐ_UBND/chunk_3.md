@@ -1,3 +1,4 @@
+# 1766_2020_QĐ_UBND_annex_chung_thuc_chung
 PHỤ LỤC 01
 
 DANH MỤC THỦ TỤC HÀNH CHÍNH SỬA ĐỔI, BỔ SUNG, BÃI BỎ THUỘC PHẠM VI CHỨC NĂNG QUẢN LÝ CỦA NGÀNH TƯ PHÁP TRÊN ĐỊA BÀN TỈNH (Ban hành kèm theo Quyết định số 1766 /QĐ-UBND ngày 3 tháng 8 năm 2020 của Chủ tịch Ủy ban nhân dân tỉnh)

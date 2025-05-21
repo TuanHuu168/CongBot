@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_preamble
 # Thông tư số 101/2018/TT-BTC quy định quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý
 
 | BỘ TÀI CHÍNH -------- | CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM Độc lập - Tự do - Hạnh phúc --------------- |

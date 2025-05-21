@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch2_art11
 Điều 11. Chi hỗ trợ xây dựng, cải tạo, nâng cấp công trình ghi công liệt sĩ
 
 1. Chi đầu tư xây dựng, cải tạo, nâng cấp nghĩa trang liệt sĩ từ nguồn vốn sự nghiệp: Tổng mức đầu tư căn cứ số lượng mộ trong nghĩa trang liệt sĩ và nơi có chiến tích lịch sử tiêu biểu, căn cứ địa cách mạng theo dự án được cấp có thẩm quyền phê duyệt theo quy định của pháp luật về đầu tư, xây dựng sau khi có ý kiến thống nhất bằng văn bản của Bộ LĐTBXH về chủ trương đầu tư, quy hoạch, quy mô, mức vốn đầu tư, thời gian thực hiện dự án.

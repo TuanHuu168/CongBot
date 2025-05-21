@@ -1,3 +1,4 @@
+# 1766_2020_QĐ_UBND_annex_luat_su_2_tu_van
 | 8 | 1.002198 | Thay đổi nội dung Giấy đăng ký hoạt động của chi nhánh, công ty luật nước ngoài | 04 ngày | 3 | Có | - Tiếp nhận và trả kết quả tại Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - Cơ quan giải quyết: Sở Tư pháp | 1.000.000 đồng/hồ sơ | - Luật Luật sư năm 2006 - Nghị định số 123/2013/NĐ-CP ngày 14/10/2013 của Chính phủ - Thông tư số 220/2016/TT-BTC ngày 10/11/2016 của Bộ trưởng Bộ Tài chính |  |
 | 9 | 1.002218 | Hợp nhất công ty luật | 09 ngày | 3 | Có | - Tiếp nhận và trả kết quả tại Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - Cơ quan giải quyết: Sở Tư pháp | Không | Nghị định số 123/2013/NĐ-CP ngày 14/10/2013 của Chính phủ |  |
 | 10 | 1.002234 | Sáp nhập công ty luật | 09 ngày | 3 | Có | - Tiếp nhận và trả kết quả tại Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - Cơ quan giải quyết: Sở Tư pháp | Không | Nghị định số 123/2013/NĐ-CP ngày 14/10/2013 của Chính phủ |  |

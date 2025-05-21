@@ -1,3 +1,4 @@
+# 1766_2020_QĐ_UBND_preamble
 # Thực hiện chế độ bảo hiểm y tế đối với đối tượng trực tiếp tham gia kháng chiến chống mỹ theo quyết định sô 290/2005/QĐ-TTg ngày 08 tháng 11 năm 2005 của Thủ tướng Chính phủ trên địa bàn thị xã Ninh Hòa của UBND tỉnh Khánh Hòa
 
 | ỦY BAN NHÂN DÂN TỈNH BÌNH THUẬN -------- | CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM Độc lập - Tự do - Hạnh phúc -------------------- |

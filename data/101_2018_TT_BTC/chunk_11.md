@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch2_art14
 Điều 14. Chi phí quản lý
 
 1. Kinh phí thực hiện các hoạt động nghiệp vụ về quản lý đối tượng, hồ sơ, quản lý tài chính, kế toán và tổ chức thực hiện chi trả do ngân sách trung ương đảm bảo bố trí trong dự toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng hằng năm. Bộ LĐTBXH có trách nhiệm phân bổ kinh phí quản lý phù hợp với đặc thù của từng địa phương và hướng dẫn các cơ quan LĐTBXH địa phương quản lý, sử dụng, bảo đảm trong phạm vi dự toán được giao cho công tác quản lý của toàn ngành, trong đó chi phí phục vụ chi trả đến người thụ hưởng tối đa là 50% chi phí quản lý toàn ngành. Tỷ lệ phí chi trả cụ thể của từng tỉnh, thành phố trực thuộc Trung ương do Bộ trưởng Bộ LĐTBXH quyết định.

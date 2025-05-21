@@ -1,3 +1,4 @@
+# 63_2010_NĐ_CP_annex2
 PHỤ LỤC II
 
 BIỂU MẪU ĐÁNH GIÁ MẪU ĐƠN, MẪU TỜ KHAI HÀNH CHÍNH (Ban hành kèm theo Nghị định số 63/2010/NĐ-CP ngày 08 tháng 6 năm 2010 của Chính phủ)

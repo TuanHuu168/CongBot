@@ -1,3 +1,4 @@
+# 48_2013_NĐ_CP_art4
 Điều 4. Sửa đổi, bổ sung một số điều của Nghị định số 55/2011/NĐ-CP ngày 04 tháng 7 năm 2011 của Chính phủ quy định chức năng, nhiệm vụ, quyền hạn và tổ chức bộ máy của tổ chức pháp chế như sau:
 
 1. Bổ sung Khoản 3a vào Điều 3:

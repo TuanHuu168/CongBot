@@ -1,3 +1,4 @@
+# 48_2013_NĐ_CP_art2
 Điều 2. Sửa đổi một số điều của Nghị định số 20/2008/NĐ-CP ngày 14 tháng 02 năm 2008 của Chính phủ về tiếp nhận, xử lý phản ánh, kiến nghị của cá nhân, tổ chức về quy định hành chính như sau:
 
 1. Thay thế cụm từ “Văn phòng Chính phủ” bằng cụm từ “Bộ Tư pháp” tại Khoản 1 Điều 8, Khoản 1 Điều 13, Điều 20, Điều 26; bỏ cụm từ “Văn phòng Chính phủ tại Khoản 4 Điều 13.

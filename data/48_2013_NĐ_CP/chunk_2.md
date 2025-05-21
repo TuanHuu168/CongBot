@@ -1,3 +1,4 @@
+# 48_2013_NĐ_CP_art1_part1
 Điều 1. Sửa đổi, bổ sung, bãi bỏ một số điều, khoản của Nghị định số 63/2010/NĐ-CP ngày 08 tháng 6 năm 2010 của Chính phủ về kiểm soát thủ tục hành chính như sau:
 
 1. Sửa đổi Điều 5:

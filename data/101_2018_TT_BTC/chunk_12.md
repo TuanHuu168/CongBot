@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch2_art15
 Điều 15. Chi trả chế độ cho người thụ hưởng thông qua tổ chức dịch vụ chi trả
 
 1. Việc lựa chọn tổ chức dịch vụ chi trả có kinh nghiệm, có mạng lưới điểm giao dịch tại xã, phường, thị trấn, có thể đảm nhiệm việc chi trả tại nhà cho một số đối tượng đặc thù, bảo đảm kịp thời và an toàn trong việc chi trả theo quy định của Bộ trưởng Bộ LĐTBXH.

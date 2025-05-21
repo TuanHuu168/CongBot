@@ -1,3 +1,4 @@
+# 49_2012_QĐ_UBND_regulation_ch2_art8
 Điều 8. Ủy ban nhân dân phường - xã, thị trấn có nhiệm vụ
 
 1. Căn cứ Hợp đồng trách nhiệm chi trả trợ cấp ưu đãi người có công đã ký với Phòng Lao động - Thương binh và Xã hội quận - huyện, ban hành Quyết định giao nhiệm vụ cho cán bộ thực hiện chi trả trợ cấp ưu đãi người có công tại địa phương.

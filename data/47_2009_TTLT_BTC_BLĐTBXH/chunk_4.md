@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_art4
 Điều 4. Các khoản chi ưu đãi khác
 
 1. Chi cấp Báo Nhân dân cho người hoạt động cách mạng trước ngày 01/01/1945, người hoạt động cách mạng từ ngày 01/01/1945 đến trước tổng khởi nghĩa 19/8/1945.

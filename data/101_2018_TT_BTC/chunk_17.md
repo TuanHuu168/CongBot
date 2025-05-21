@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch3_art20_21
 Điều 20. Xử lý kinh phí cuối năm
 
 1. Việc xử lý số dư kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý cuối năm thực hiện theo quy định tại Điều 43 Nghị định số 163/2016/NĐ-CP ngày 21 tháng 12 năm 2016 của Chính phủ quy định chi tiết thi hành một số điều của Luật Ngân sách nhà nước.

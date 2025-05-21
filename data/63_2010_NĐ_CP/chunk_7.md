@@ -1,3 +1,4 @@
+# 63_2010_NĐ_CP_ch3_art20_22
 Điều 20. Trách nhiệm của cán bộ, công chức được phân công thực hiện thủ tục hành chính
 
 1. Thực hiện nghiêm túc, đầy đủ nhiệm vụ được giao trong quá trình thực hiện thủ tục hành chính.

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Menu, MessageSquare, History, LogOut, User, X, Search, Plus, ChevronDown, ChevronLeft } from 'lucide-react';
+import { Send, Menu, MessageSquare, History, LogOut, User, X, Search, Plus, ChevronDown, ChevronLeft, } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useChat } from '../ChatContext';
@@ -504,6 +504,16 @@ const ChatPage = () => {
                   >
                     <History size={16} className="mr-2 text-gray-500" />
                     <span>Lịch sử trò chuyện</span>
+                  </button>
+                  <button
+                    className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                    onClick={() => {
+                      setShowUserDropdown(false);
+                      navigate('/admin');
+                    }}
+                  >
+                    {/* <History size={16} className="mr-2 text-gray-500" /> */}
+                    <span>Trang quản trị</span>
                   </button>
                   <button
                     className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100 mt-1"

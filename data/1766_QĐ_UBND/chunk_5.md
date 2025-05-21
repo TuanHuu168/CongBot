@@ -1,3 +1,4 @@
+# 1766_2020_QĐ_UBND_annex_quoc_tich
 | II | LĨNH VỰC QUỐC TỊCH (05 TTHC) |  |  |  |  |  |  |  |  |
 | II.1 | Thủ tục hành chính cấp tỉnh (05 TTHC) |  |  |  |  |  |  |  |  |
 | 1 | 2.001895 | Thủ tục cấp Giấy xác nhận là người gốc Việt Nam | 05 ngày | 2 | Có | - Tiếp nhận và trả kết quả tại Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - Cơ quan giải quyết: Sở Tư pháp | 100.000 đồng/trường hợp | - Luật Quốc tịch Việt Nam 2008; - Nghị định số 16/2020/NĐ-CP ngày 03/02/2020 của Chính phủ; - Thông tư số 02/2020/TT-BTP ngày 08/4/2020 của Bộ Tư pháp; - Thông tư số 281/2016/TT-BTC ngày 14/11/2016 của Bộ Tài chính. |  |

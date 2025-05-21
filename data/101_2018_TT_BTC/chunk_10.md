@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch2_art12_13
 Điều 12. Chi hỗ trợ thăm viếng mộ liệt sĩ
 
 1. Thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ một lần tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ. Mức hỗ trợ theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh nhưng tối đa không quá 2.400.000 đồng/người;

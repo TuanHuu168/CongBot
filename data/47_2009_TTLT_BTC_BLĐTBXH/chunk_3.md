@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_art3
 MỤC II. NỘI DUNG VÀ MỨC CHI THỰC HIỆN CHÍNH SÁCH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG
 
 Điều 3. Chi trợ cấp ưu đãi hàng tháng và trợ cấp một lần theo quy định hiện hành cho các đối tượng sau:

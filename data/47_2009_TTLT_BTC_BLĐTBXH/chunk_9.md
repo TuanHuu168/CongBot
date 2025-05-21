@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_art14
 Điều 14. Kiểm soát chi của Kho bạc Nhà nước
 
 1. Kho bạc Nhà nước thực hiện kiểm soát kinh phí thực hiện chính sách ưu đãi người có công với cách mạng theo quy định hiện hành.

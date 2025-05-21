@@ -1,3 +1,4 @@
+# 49_2012_QĐ_UBND_regulation_ch2_art6_7
 Điều 6. Ủy ban nhân dân quận - huyện có nhiệm vụ
 
 1. Chỉ đạo Phòng Lao động - Thương binh và Xã hội quận - huyện, Ủy ban nhân dân phường - xã, thị trấn thực hiện tốt công tác quản lý đối tượng, quản lý kinh phí, tiền mặt, xây dựng dự toán hàng năm, chấp hành dự toán được Sở Lao động - Thương binh và Xã hội giao, báo cáo quyết toán đúng nội dung và thời gian quy định; xử lý nghiêm các trường hợp sai phạm theo quy định của Nhà nước.

@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_preamble
 # Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH của Bộ Tài chính, Bộ Lao động, Thương binh và Xã hội: Hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý
 
 | BỘ TÀI CHÍNH - BỘ LAO ĐỘNG - THƯƠNG BINH VÀ XÃ HỘI -------- | CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM Độc lập – Tự do – Hạnh phúc ------------ |

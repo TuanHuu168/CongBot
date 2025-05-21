@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch3_art19
 Điều 19. Hạch toán, quyết toán kinh phí
 
 1. Kinh phí thực hiện chính sách ưu đãi người có công với cách mạng được hạch toán và quyết toán vào Chương của Bộ LĐTBXH (mã số 024); cấp Chương ngân sách trung ương (mã số 01), loại 370 khoản 371. Đối với chi đóng bảo hiểm y tế, hạch toán loại 130 khoản 133 của Mục lục ngân sách nhà nước hiện hành.

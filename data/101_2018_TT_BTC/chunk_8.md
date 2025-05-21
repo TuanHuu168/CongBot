@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch2_art10
 Điều 10. Chi hỗ trợ hoạt động của cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng, cơ sở đón tiếp người có công với cách mạng và thân nhân do ngành LĐTBXH quản lý
 
 1. Ngoài các khoản chi quy định tại khoản 2 Điều 9 Thông tư này, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng, cơ sở đón tiếp người có công với cách mạng và thân nhân (sau đây gọi tắt là cơ sở) được hỗ trợ để chi các khoản phục vụ công tác nuôi dưỡng, điều dưỡng, đón tiếp, bao gồm:

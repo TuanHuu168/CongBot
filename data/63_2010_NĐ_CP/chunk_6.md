@@ -1,3 +1,4 @@
+# 63_2010_NĐ_CP_ch3_art16_19
 Điều 16. Công khai thủ tục hành chính
 
 Thông tin về thủ tục hành chính đã được người có thẩm quyền công bố theo quy định tại Điều 15 của Nghị định này phải được công khai đầy đủ, thường xuyên, rõ ràng, đúng địa chỉ, dễ tiếp cận, dễ khai thác, sử dụng và phải được đăng tải trên Cơ sở dữ liệu quốc gia về thủ tục hành chính.

@@ -1,3 +1,4 @@
+# 63_2010_NĐ_CP_ch2_art10_11
 Điều 10. Đánh giá tác động của thủ tục hành chính
 
 1. Cơ quan được phân công chủ trì soạn thảo văn bản quy phạm pháp luật có quy định về thủ tục hành chính phải tổ chức đánh giá tác động của quy định về thủ tục hành chính theo các tiêu chí sau đây:

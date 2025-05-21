@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_art9_11
 Điều 9. Rút dự toán ngân sách
 
 Căn cứ vào dự toán năm đã được cấp có thẩm quyền giao, đơn vị sử dụng ngân sách nhà nước (Sở Lao động – Thương binh và Xã hội, Phòng Lao động – Thương binh và Xã hội, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng) thực hiện rút dự toán tại Kho bạc Nhà nước nơi đơn vị mở tài khoản để thực hiện chính sách ưu đãi người có công với cách mạng theo quy định tại mục II Thông tư này.

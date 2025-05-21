@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch3_art17
 Điều 17. Phân bổ, giao dự toán
 
 1. Căn cứ dự toán ngân sách nhà nước được Thủ tướng Chính phủ giao, Bộ Tài chính giao dự toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng cho Bộ LĐTBXH.

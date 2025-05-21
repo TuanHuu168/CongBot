@@ -1,3 +1,4 @@
+# 49_2012_QĐ_UBND_art1_3
 QUYẾT ĐỊNH:
 
 Điều 1. Nay ban hành kèm theo Quyết định này Quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến trên địa bàn Thành phố Hồ Chí Minh.

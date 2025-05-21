@@ -1,3 +1,4 @@
+# 48_2013_NĐ_CP_art5
 Điều 5. Điều khoản thi hành
 
 1. Nghị định này có hiệu lực thi hành kể từ ngày 01 tháng 7 năm 2013.

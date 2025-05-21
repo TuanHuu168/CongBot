@@ -1,3 +1,4 @@
+# 49_2012_QĐ_UBND_regulation_ch2_art9
 Điều 9. Các đơn vị thuộc Sở Lao động - Thương binh và Xã hội có nhiệm vụ
 
 1. Quản lý kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến; Mở tài khoản dự toán tại Kho bạc Nhà nước nơi đơn vị đóng trụ sở để theo dõi nguồn kinh phí được giao; Mở sổ sách theo dõi kinh phí chi trả, lưu giữ chứng từ, hồ sơ sổ sách, thanh quyết toán tài chính theo quy định hiện hành của Nhà nước.

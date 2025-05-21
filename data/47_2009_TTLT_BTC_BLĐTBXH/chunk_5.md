@@ -1,3 +1,4 @@
+# 47_2009_TTLT_BTC_BLĐTBXH_art5_6
 Điều 5. Chi hỗ trợ hoạt động các cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng do ngành Lao động – Thương binh và Xã hội quản lý
 
 Ngoài các khoản chi trợ cấp và chi ưu đãi nêu tại Điều 3 và Điều 4 trên, các cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng được hỗ trợ để chi các khoản sau:

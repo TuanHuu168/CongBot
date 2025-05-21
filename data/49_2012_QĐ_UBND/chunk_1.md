@@ -1,3 +1,4 @@
+# 49_2012_QĐ_UBND_preamble
 # Ban hành quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến trên địa bàn Thành phố Hồ Chí Minh
 
 | ỦY BAN NHÂN DÂN THÀNH PHỐ HỒ CHÍ MINH -------- | CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM Độc lập - Tự do - Hạnh phúc --------------- |

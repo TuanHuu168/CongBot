@@ -1,3 +1,4 @@
+# 101_2018_TT_BTC_ch2_art8_9
 Điều 8. Chi thanh toán chi phí thẩm định cấp giấy giám định y khoa
 
 1. Đối tượng được thanh toán là các trường hợp có hồ sơ đủ điều kiện được giám định theo quy định và được Sở LĐTBXH giới thiệu đến Hội đồng giám định y khoa cấp tỉnh để yêu cầu giám định, gồm:

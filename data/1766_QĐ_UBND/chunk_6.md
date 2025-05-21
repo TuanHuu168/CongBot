@@ -1,3 +1,4 @@
+# 1766_2020_QĐ_UBND_annex_luat_su_1
 | III | LĨNH VỰC LUẬT SƯ (14 TTHC) |  |  |  |  |  |  |  |  |
 | III.1 | Thủ tục hành chính cấp tỉnh (14 TTHC) |  |  |  |  |  |  |  |  |
 | 1 | 1.002010 | Đăng ký hoạt động của tổ chức hành nghề luật sư | 09 ngày | 3 | Có | - Tiếp nhận và trả kết quả tại Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - Cơ quan giải quyết: Sở Tư pháp | 50.000 đồng/hồ sơ | - Luật Luật sư năm 2006 - Nghị định số 123/2013/NĐ-CP ngày 14/10/2013 của Chính phủ - Thông tư số 02/2015/TT-BTP ngày 16/01/2015 của Bộ Tư pháp - Thông tư số 47/2019/TT-BTC ngày 05/8/2019 của Bộ Tài chính |  |
