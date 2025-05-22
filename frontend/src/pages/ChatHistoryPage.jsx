@@ -1,19 +1,27 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronLeft, Search, Calendar, Trash2, MessageSquare, Filter, Check, X, AlertCircle, Download, Clock, Info, ArrowUpDown, SlidersHorizontal, BookOpen, RefreshCw, Grid } from 'lucide-react';
+import { ChevronLeft, Search, Calendar, Trash2, Filter, Download, Clock, ArrowUpDown, RefreshCw, Grid, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../ChatContext';
 import { getUserChats, getChatMessages, deleteChat, deleteChatsBatch } from '../apiService';
 import Swal from 'sweetalert2';
 
+// Import components
+import TopNavBar from '../components/common/TopNavBar';
+import ErrorMessage from '../components/common/ErrorMessage';
+import HistoryItem from '../components/history/HistoryItem';
+
+// Import utils
+import { formatDate, getDateLabel } from '../utils/formatUtils';
+
 const ChatHistoryPage = () => {
   const navigate = useNavigate();
-  const { 
-    chatHistory, 
+  const {
+    chatHistory,
     setChatHistory,
     switchChat,
-    isLoading: contextLoading, 
-    setIsLoading: setContextLoading 
+    isLoading: contextLoading,
+    setIsLoading: setContextLoading
   } = useChat();
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,9 +50,9 @@ const ChatHistoryPage = () => {
       if (!userId) {
         throw new Error('Bạn cần đăng nhập để xem lịch sử trò chuyện');
       }
-      
+
       const chatsData = await getUserChats(userId);
-      
+
       // Format dữ liệu cho UI
       const formattedChats = chatsData.map(chat => ({
         id: chat.id,
@@ -54,7 +62,7 @@ const ChatHistoryPage = () => {
         time: new Date(chat.updated_at || chat.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
         status: chat.status || 'active'
       }));
-      
+
       setChatHistory(formattedChats);
 
       // Load message counts for each chat
@@ -79,7 +87,7 @@ const ChatHistoryPage = () => {
         }
         setChatDetails(details);
       };
-      
+
       loadMessageCounts();
     } catch (error) {
       console.error('Error fetching chat history:', error);
@@ -102,19 +110,19 @@ const ChatHistoryPage = () => {
       // Filter by search term
       const title = chat.title || "";
       const matchSearch = searchTerm ? title.toLowerCase().includes(searchTerm.toLowerCase()) : true;
-      
+
       // Filter by time period
       const chatDate = new Date(chat.updated_at || chat.date);
       const today = new Date();
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-      
+
       const lastWeek = new Date(today);
       lastWeek.setDate(lastWeek.getDate() - 7);
-      
+
       const lastMonth = new Date(today);
       lastMonth.setMonth(lastMonth.getMonth() - 1);
-      
+
       let matchPeriod = true;
       if (selectedPeriod === 'today') {
         matchPeriod = chatDate.toDateString() === today.toDateString();
@@ -125,7 +133,7 @@ const ChatHistoryPage = () => {
       } else if (selectedPeriod === 'month') {
         matchPeriod = chatDate >= lastMonth;
       }
-      
+
       return matchSearch && matchPeriod;
     });
   }, [chatHistory, searchTerm, selectedPeriod]);
@@ -140,18 +148,18 @@ const ChatHistoryPage = () => {
       } else if (sortBy === 'title') {
         const titleA = a.title || "";
         const titleB = b.title || "";
-        return sortOrder === 'desc' 
+        return sortOrder === 'desc'
           ? titleB.localeCompare(titleA)
           : titleA.localeCompare(titleB);
       }
       return 0;
     });
-  }, [filteredChats, sortBy, sortOrder, chatDetails]);
+  }, [filteredChats, sortBy, sortOrder]);
 
   // Pagination
   const totalPages = Math.ceil(sortedFilteredChats.length / itemsPerPage);
   const currentChats = sortedFilteredChats.slice(
-    (currentPage - 1) * itemsPerPage, 
+    (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
@@ -199,12 +207,12 @@ const ChatHistoryPage = () => {
           setIsLoading(true);
           // Gọi API xóa hàng loạt
           await deleteChatsBatch(selectedChats);
-          
+
           // Cập nhật state chatHistory
-          setChatHistory(prevHistory => 
+          setChatHistory(prevHistory =>
             prevHistory.filter(chat => !selectedChats.includes(chat.id))
           );
-          
+
           Swal.fire({
             title: 'Đã xóa!',
             text: `Đã xóa ${selectedChats.length} cuộc trò chuyện`,
@@ -216,7 +224,7 @@ const ChatHistoryPage = () => {
               popup: 'rounded-xl shadow-xl'
             }
           });
-          
+
           // Reset selection
           setSelectedChats([]);
         } catch (error) {
@@ -305,12 +313,12 @@ const ChatHistoryPage = () => {
           setIsLoading(true);
           // Gọi API xóa cuộc trò chuyện
           await deleteChat(chatId);
-          
+
           // Cập nhật state chatHistory
-          setChatHistory(prevHistory => 
+          setChatHistory(prevHistory =>
             prevHistory.filter(chat => chat.id !== chatId)
           );
-          
+
           Swal.fire({
             title: 'Đã xóa!',
             text: 'Cuộc trò chuyện đã được xóa',
@@ -322,7 +330,7 @@ const ChatHistoryPage = () => {
               popup: 'rounded-xl shadow-xl'
             }
           });
-          
+
           // Remove from selected if it was selected
           if (selectedChats.includes(chatId)) {
             setSelectedChats(selectedChats.filter(id => id !== chatId));
@@ -346,55 +354,6 @@ const ChatHistoryPage = () => {
     });
   };
 
-  // Format date display
-  const getDateLabel = (dateString) => {
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-    
-    const chatDate = new Date(dateString);
-    
-    if (chatDate.toDateString() === today.toDateString()) {
-      return 'Hôm nay';
-    } else if (chatDate.toDateString() === yesterday.toDateString()) {
-      return 'Hôm qua';
-    } else {
-      // Format: "DD/MM/YYYY"
-      return chatDate.toLocaleDateString('vi-VN');
-    }
-  };
-
-  // Format chat title
-  const getChatTitle = (chat) => {
-    if (!chat.title || chat.title === "") {
-      return "Cuộc trò chuyện mới";
-    }
-    
-    // Check if title is just a MongoDB ID
-    const isMongoId = /^[0-9a-fA-F]{24}$/.test(chat.title);
-    if (isMongoId) {
-      return "Cuộc trò chuyện mới";
-    }
-    
-    return chat.title;
-  };
-
-  // Get message count for a chat
-  const getMessageCount = (chatId) => {
-    if (chatDetails[chatId] && chatDetails[chatId].messageCount !== undefined) {
-      return chatDetails[chatId].messageCount;
-    }
-    return 0;
-  };
-
-  // Get snippet for a chat
-  const getSnippet = (chatId) => {
-    if (chatDetails[chatId] && chatDetails[chatId].snippet) {
-      return chatDetails[chatId].snippet;
-    }
-    return "Nhấn vào đây để xem chi tiết cuộc trò chuyện";
-  };
-
   // Animation variants
   const pageVariants = {
     initial: { opacity: 0 },
@@ -408,13 +367,8 @@ const ChatHistoryPage = () => {
     exit: { opacity: 0, y: 10, transition: { duration: 0.2 } }
   };
 
-  const filterVariants = {
-    open: { height: 'auto', opacity: 1 },
-    closed: { height: 0, opacity: 0 }
-  };
-
   return (
-    <motion.div 
+    <motion.div
       className="min-h-screen bg-gray-50 flex flex-col"
       initial="initial"
       animate="animate"
@@ -423,53 +377,31 @@ const ChatHistoryPage = () => {
     >
       {/* Error notification */}
       <AnimatePresence>
-        {localError && (
-          <motion.div
-            className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-red-100 border border-red-300 text-red-700 px-4 py-2 rounded-lg shadow-lg z-50 flex items-center"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-          >
-            <AlertCircle size={16} className="mr-2" />
-            <span>{localError}</span>
-            <button
-              className="ml-3 text-red-500 hover:text-red-700"
-              onClick={() => setLocalError(null)}
-            >
-              <X size={14} />
-            </button>
-          </motion.div>
-        )}
+        {localError && <ErrorMessage message={localError} onClose={() => setLocalError(null)} />}
       </AnimatePresence>
 
       {/* Header */}
-      <header className="w-full bg-gradient-to-r from-green-600 to-teal-600 text-white py-4 shadow-lg sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between relative">
-            <button 
-              onClick={() => navigateToChat()}
-              className="flex items-center text-white hover:text-green-100 transition-colors"
-            >
-              <ChevronLeft size={20} />
-              <span className="text-sm font-medium ml-1">Quay lại chat</span>
-            </button>
-            <h1 className="text-lg font-bold">Lịch sử trò chuyện</h1>
-            <button
-              onClick={handleRefresh}
-              className={`p-2 rounded-full hover:bg-white/10 transition-colors ${refreshing ? 'animate-spin' : ''}`}
-              disabled={refreshing}
-            >
-              <RefreshCw size={18} />
-            </button>
-          </div>
-        </div>
-      </header>
+      <TopNavBar
+        title="Lịch sử trò chuyện"
+        showBackButton={true}
+        backButtonDestination="/chat"
+        backButtonText="Quay lại chat"
+        customRight={
+          <button
+            onClick={handleRefresh}
+            className={`p-2 rounded-full hover:bg-white/10 transition-colors ${refreshing ? 'animate-spin' : ''}`}
+            disabled={refreshing}
+          >
+            <RefreshCw size={18} />
+          </button>
+        }
+      />
 
       {/* Main content */}
       <main className="flex-1 max-w-7xl mx-auto py-6 px-4 sm:px-6 w-full">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Left sidebar - Search and filters */}
-          <motion.div 
+          <motion.div
             className="md:w-72 lg:w-80 flex-shrink-0 space-y-5"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -501,7 +433,7 @@ const ChatHistoryPage = () => {
                 <Filter size={14} className="mr-2 text-green-600" />
                 Bộ lọc
               </h2>
-              
+
               <div className="space-y-4">
                 {/* Time filter */}
                 <div>
@@ -552,7 +484,7 @@ const ChatHistoryPage = () => {
             {/* Statistics */}
             <div className="bg-white rounded-xl shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                <Info size={14} className="mr-2 text-green-600" />
+                <Clock size={14} className="mr-2 text-green-600" />
                 Thống kê
               </h2>
               <div className="space-y-2">
@@ -576,14 +508,14 @@ const ChatHistoryPage = () => {
               <div className="bg-white rounded-xl shadow-sm p-4">
                 <h2 className="text-sm font-semibold text-gray-700 mb-3">Thao tác</h2>
                 <div className="grid grid-cols-2 gap-2">
-                  <button 
+                  <button
                     onClick={handleExportSelected}
                     className="flex items-center justify-center px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
                   >
                     <Download size={14} className="mr-1.5" />
                     <span>Xuất ({selectedChats.length})</span>
                   </button>
-                  <button 
+                  <button
                     onClick={handleDeleteSelected}
                     className="flex items-center justify-center px-3 py-2 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors text-sm font-medium"
                   >
@@ -620,12 +552,12 @@ const ChatHistoryPage = () => {
                           className="opacity-0 absolute h-5 w-5 cursor-pointer"
                         />
                         <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors duration-200 
-                          ${selectedChats.length === currentChats.length && currentChats.length > 0 
-                            ? 'bg-green-500 border-green-500' 
+                          ${selectedChats.length === currentChats.length && currentChats.length > 0
+                            ? 'bg-green-500 border-green-500'
                             : 'border-gray-300'}`}
                         >
                           {selectedChats.length === currentChats.length && currentChats.length > 0 && (
-                            <Check size={14} className="text-white" />
+                            <div className="w-2 h-3.5 border-r-2 border-b-2 border-white transform rotate-45 translate-y-[-1px]"></div>
                           )}
                         </div>
                       </div>
@@ -653,7 +585,7 @@ const ChatHistoryPage = () => {
 
                 {/* No results message */}
                 {currentChats.length === 0 && (
-                  <motion.div 
+                  <motion.div
                     variants={itemVariants}
                     initial="initial"
                     animate="animate"
@@ -664,7 +596,7 @@ const ChatHistoryPage = () => {
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">Không tìm thấy cuộc trò chuyện nào</h3>
                     <p className="text-gray-500 text-base max-w-md mx-auto">
-                      {searchTerm 
+                      {searchTerm
                         ? `Không có kết quả nào phù hợp với "${searchTerm}"`
                         : selectedPeriod !== 'all'
                           ? "Không có cuộc trò chuyện nào trong khoảng thời gian đã chọn"
@@ -691,72 +623,16 @@ const ChatHistoryPage = () => {
                         animate="animate"
                         exit="exit"
                         transition={{ delay: index * 0.05 }}
-                        className={`bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md 
-                          ${selectedChats.includes(chat.id) 
-                            ? 'border-l-4 border-l-green-500 pl-1' 
-                            : 'border border-gray-100'}`}
                       >
-                        <div className="px-5 py-4 flex">
-                          <div className="mr-3 flex items-start pt-1">
-                            <div className="relative">
-                              <input
-                                type="checkbox"
-                                checked={selectedChats.includes(chat.id)}
-                                onChange={() => toggleSelectChat(chat.id)}
-                                className="opacity-0 absolute h-5 w-5 cursor-pointer"
-                              />
-                              <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors duration-200
-                                ${selectedChats.includes(chat.id) 
-                                  ? 'bg-green-500 border-green-500' 
-                                  : 'border-gray-300'}`}
-                              >
-                                {selectedChats.includes(chat.id) && (
-                                  <Check size={14} className="text-white" />
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                          <div 
-                            className="flex-1 cursor-pointer" 
-                            onClick={() => navigateToChat(chat.id)}
-                          >
-                            <div className="flex justify-between items-start mb-2">
-                              <h3 className="text-base font-medium text-gray-900 truncate max-w-[250px] sm:max-w-md">
-                                {getChatTitle(chat)}
-                              </h3>
-                              <div className="ml-2 flex-shrink-0">
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                  {getDateLabel(chat.updated_at || chat.date)}
-                                </span>
-                              </div>
-                            </div>
-                            <p className="text-gray-600 mb-2 text-sm line-clamp-2 leading-relaxed">
-                              {getSnippet(chat.id)}
-                            </p>
-                            <div className="flex items-center text-xs text-gray-500">
-                              <div className="flex items-center">
-                                <Clock size={14} className="mr-1" />
-                                <span>{chat.time}</span>
-                              </div>
-                              <span className="mx-2">•</span>
-                              <div className="flex items-center">
-                                <MessageSquare size={14} className="mr-1" />
-                                <span>{getMessageCount(chat.id)} tin nhắn</span>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="ml-3 flex items-start">
-                            <button 
-                              className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteChat(chat.id, getChatTitle(chat));
-                              }}
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </div>
+                        <HistoryItem
+                          chat={chat}
+                          viewMode="list"
+                          onDelete={handleDeleteChat}
+                          onClick={() => navigateToChat(chat.id)}
+                          chatDetails={chatDetails}
+                          selectedChats={selectedChats}
+                          toggleSelectChat={toggleSelectChat}
+                        />
                       </motion.div>
                     ))}
                   </div>
@@ -773,69 +649,16 @@ const ChatHistoryPage = () => {
                         animate="animate"
                         exit="exit"
                         transition={{ delay: index * 0.05 }}
-                        className={`bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md border 
-                          ${selectedChats.includes(chat.id) 
-                            ? 'border-green-500' 
-                            : 'border-gray-100'}`}
                       >
-                        <div className="p-4">
-                          <div className="flex justify-between items-start mb-3">
-                            <div className="relative mb-2 mr-2">
-                              <input
-                                type="checkbox"
-                                checked={selectedChats.includes(chat.id)}
-                                onChange={() => toggleSelectChat(chat.id)}
-                                className="opacity-0 absolute h-5 w-5 cursor-pointer"
-                              />
-                              <div className={`w-5 h-5 border rounded flex items-center justify-center transition-colors duration-200
-                                ${selectedChats.includes(chat.id) 
-                                  ? 'bg-green-500 border-green-500' 
-                                  : 'border-gray-300'}`}
-                              >
-                                {selectedChats.includes(chat.id) && (
-                                  <Check size={14} className="text-white" />
-                                )}
-                              </div>
-                            </div>
-                            <div className="flex-1">
-                              <div className="flex justify-between">
-                                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                  {getDateLabel(chat.updated_at || chat.date)}
-                                </span>
-                                <button 
-                                  className="p-1 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteChat(chat.id, getChatTitle(chat));
-                                  }}
-                                >
-                                  <Trash2 size={14} />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <div
-                            className="cursor-pointer" 
-                            onClick={() => navigateToChat(chat.id)}
-                          >
-                            <h3 className="text-base font-medium text-gray-900 truncate mb-2">
-                              {getChatTitle(chat)}
-                            </h3>
-                            <p className="text-gray-600 mb-3 text-sm line-clamp-3 leading-relaxed h-16">
-                              {getSnippet(chat.id)}
-                            </p>
-                            <div className="flex justify-between items-center text-xs text-gray-500 pt-2 border-t border-gray-100">
-                              <div className="flex items-center">
-                                <Clock size={12} className="mr-1" />
-                                <span>{chat.time}</span>
-                              </div>
-                              <div className="flex items-center">
-                                <MessageSquare size={12} className="mr-1" />
-                                <span>{getMessageCount(chat.id)} tin nhắn</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        <HistoryItem
+                          chat={chat}
+                          viewMode="grid"
+                          onDelete={handleDeleteChat}
+                          onClick={() => navigateToChat(chat.id)}
+                          chatDetails={chatDetails}
+                          selectedChats={selectedChats}
+                          toggleSelectChat={toggleSelectChat}
+                        />
                       </motion.div>
                     ))}
                   </div>
@@ -845,38 +668,35 @@ const ChatHistoryPage = () => {
                 {totalPages > 1 && (
                   <div className="mt-8 flex justify-center">
                     <nav className="flex items-center space-x-1.5">
-                      <button 
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                          currentPage === 1 
-                            ? 'text-gray-400 cursor-not-allowed' 
-                            : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                        }`}
+                      <button
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${currentPage === 1
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
                         onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                         disabled={currentPage === 1}
                       >
                         Trước
                       </button>
-                      
+
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                         <button
                           key={page}
-                          className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${
-                            currentPage === page
-                              ? 'bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-sm'
-                              : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                          }`}
+                          className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-medium transition-colors ${currentPage === page
+                            ? 'bg-gradient-to-r from-green-500 to-teal-500 text-white shadow-sm'
+                            : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                            }`}
                           onClick={() => setCurrentPage(page)}
                         >
                           {page}
                         </button>
                       ))}
-                      
-                      <button 
-                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                          currentPage === totalPages 
-                            ? 'text-gray-400 cursor-not-allowed' 
-                            : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-                        }`}
+
+                      <button
+                        className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${currentPage === totalPages
+                          ? 'text-gray-400 cursor-not-allowed'
+                          : 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                          }`}
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
                       >
