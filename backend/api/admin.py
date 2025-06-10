@@ -5,20 +5,27 @@ from pydantic import BaseModel
 import os
 import json
 import time
+import uuid
 import pandas as pd
 from datetime import datetime
 import shutil
 from pathlib import Path
+import threading
+import queue
 import numpy as np
 
 # Import services
 from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
+from services.benchmark_service import benchmark_service
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
 
 # Import config
 from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR
+
+benchmark_progress = {}
+benchmark_results_cache = {}
 
 # Khởi tạo router
 router = APIRouter(
@@ -254,138 +261,140 @@ async def search_cache(keyword: str, limit: int = 10):
     except Exception as e:
         print(f"Error in search_cache: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/run-benchmark")
-async def run_benchmark(config: BenchmarkConfig):
+    
+@router.post("/upload-benchmark")
+async def upload_benchmark_file(file: UploadFile = File(...)):
     try:
-        # Tạo thư mục kết quả nếu chưa tồn tại
-        os.makedirs(BENCHMARK_RESULTS_DIR, exist_ok=True)
+        if not file.filename.endswith('.json'):
+            raise HTTPException(status_code=400, detail="Only JSON files are allowed")
         
-        # Đường dẫn đầy đủ cho file benchmark
-        benchmark_file = os.path.join(BENCHMARK_DIR, config.file_path)
-        if not os.path.exists(benchmark_file):
-            raise HTTPException(status_code=404, detail=f"Không tìm thấy file benchmark: {config.file_path}")
+        # Read file content
+        content = await file.read()
+        file_content = content.decode('utf-8')
         
-        # Đọc file benchmark
-        with open(benchmark_file, 'r', encoding='utf-8') as f:
-            benchmark_data = json.load(f)
+        # Validate JSON format
+        try:
+            json_data = json.loads(file_content)
+            if "benchmark" not in json_data:
+                raise HTTPException(status_code=400, detail="Invalid benchmark format. Must contain 'benchmark' key")
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="Invalid JSON format")
         
-        results = []
-        
-        # Tạo tên file kết quả với timestamp
+        # Generate unique filename
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        csv_path = os.path.join(BENCHMARK_RESULTS_DIR, f"benchmark_results_{timestamp}.csv")
+        filename = f"uploaded_benchmark_{timestamp}.json"
         
-        # Chạy từng câu hỏi trong benchmark
-        total_questions = len(benchmark_data.get('benchmark', []))
-        print(f"Bắt đầu chạy benchmark với {total_questions} câu hỏi...")
-        
-        for i, item in enumerate(benchmark_data.get('benchmark', [])):
-            question_id = item.get('id', f"q{i+1}")
-            question = item.get('question', '')
-            expected_answer = item.get('ground_truth', '')
-            expected_contexts = item.get('contexts', [])
-            
-            print(f"Đang xử lý câu hỏi {i+1}/{total_questions}: {question_id}")
-            
-            # Gọi service để lấy câu trả lời
-            try:
-                # Retrieval
-                retrieval_result = retrieval_service.retrieve(question, use_cache=False)
-                context_items = retrieval_result.get('context_items', [])
-                retrieved_chunks = retrieval_result.get('retrieved_chunks', [])
-                retrieval_time = retrieval_result.get('execution_time', 0)
-                
-                # Generation
-                generation_start = time.time()
-                if context_items:
-                    generation_result = generation_service.generate_answer(question)
-                    answer = generation_result.get('answer', '')
-                    generation_time = time.time() - generation_start
-                else:
-                    answer = "Không tìm thấy thông tin liên quan."
-                    generation_time = 0
-                
-                total_time = retrieval_time + generation_time
-                
-                # Tính retrieval score
-                retrieval_score = 0
-                if expected_contexts:
-                    matches = set()
-                    for retrieved in retrieved_chunks:
-                        for expected in expected_contexts:
-                            if expected in retrieved:
-                                matches.add(expected)
-                    
-                    retrieval_score = len(matches) / len(expected_contexts) if expected_contexts else 0
-                
-                # Lưu kết quả
-                result = {
-                    'question_id': question_id,
-                    'question': question,
-                    'expected_contexts': ','.join(expected_contexts),
-                    'retrieved_contexts': ','.join(retrieved_chunks),
-                    'retrieval_score': retrieval_score,
-                    'retrieval_time': retrieval_time,
-                    'generation_time': generation_time,
-                    'total_time': total_time,
-                    'expected_answer': expected_answer[:500],  # Giới hạn để không quá dài
-                    'answer': answer[:500],  # Giới hạn để không quá dài
-                    'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                }
-                
-                results.append(result)
-                
-                # Cập nhật file CSV sau mỗi câu hỏi
-                df = pd.DataFrame(results)
-                df.to_csv(csv_path, index=False, encoding='utf-8-sig')
-                
-            except Exception as e:
-                print(f"Lỗi khi xử lý câu hỏi {question_id}: {str(e)}")
-                continue
-        
-        # Tính toán thống kê
-        if results:
-            avg_retrieval_time = sum(r['retrieval_time'] for r in results) / len(results)
-            avg_generation_time = sum(r['generation_time'] for r in results) / len(results)
-            avg_total_time = sum(r['total_time'] for r in results) / len(results)
-            avg_retrieval_score = sum(r['retrieval_score'] for r in results) / len(results)
-            
-            # Thêm hàng tổng kết vào DataFrame
-            summary = {
-                'question_id': 'SUMMARY',
-                'question': f'Avg scores for {len(results)} questions',
-                'expected_contexts': '',
-                'retrieved_contexts': '',
-                'retrieval_score': avg_retrieval_score,
-                'retrieval_time': avg_retrieval_time,
-                'generation_time': avg_generation_time,
-                'total_time': avg_total_time,
-                'expected_answer': '',
-                'answer': '',
-                'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-            results.append(summary)
-            
-            # Lưu lại file kết quả cuối cùng
-            df = pd.DataFrame(results)
-            df.to_csv(csv_path, index=False, encoding='utf-8-sig')
+        # Save file
+        saved_filename = benchmark_service.save_uploaded_benchmark(file_content, filename)
         
         return {
-            "message": f"Benchmark đã hoàn thành với {len(results)-1} câu hỏi",
-            "file_path": csv_path,
-            "stats": {
-                "avg_retrieval_time": avg_retrieval_time,
-                "avg_generation_time": avg_generation_time,
-                "avg_total_time": avg_total_time,
-                "avg_retrieval_score": avg_retrieval_score
-            }
+            "message": "Benchmark file uploaded successfully",
+            "filename": saved_filename,
+            "questions_count": len(json_data["benchmark"])
         }
-    
+        
+    except HTTPException as he:
+        raise he
     except Exception as e:
-        print(f"Error in /run-benchmark endpoint: {str(e)}")
+        print(f"Error uploading benchmark file: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.post("/run-benchmark")
+async def run_benchmark_4models(config: BenchmarkConfig):
+    try:
+        benchmark_id = str(uuid.uuid4())
+        
+        progress_queue = queue.Queue()
+        result_queue = queue.Queue()
+        
+        benchmark_progress[benchmark_id] = {
+            'status': 'running',
+            'progress': 0.0,
+            'start_time': datetime.now().isoformat(),
+            'total_questions': 0
+        }
+        
+        def progress_callback(percent):
+            progress_queue.put(float(percent))
+        
+        def run_benchmark_thread():
+            try:
+                stats = benchmark_service.run_benchmark(
+                    benchmark_file=config.file_path,
+                    progress_callback=progress_callback
+                )
+                result_queue.put(('success', stats))
+            except Exception as e:
+                result_queue.put(('error', str(e)))
+        
+        def monitor_progress():
+            thread = threading.Thread(target=run_benchmark_thread)
+            thread.start()
+            
+            while thread.is_alive():
+                try:
+                    progress = progress_queue.get(timeout=1)
+                    benchmark_progress[benchmark_id]['progress'] = float(progress)
+                except queue.Empty:
+                    continue
+            
+            try:
+                status, result = result_queue.get(timeout=5)
+                if status == 'success':
+                    benchmark_progress[benchmark_id].update({
+                        'status': 'completed',
+                        'progress': 100.0,
+                        'end_time': datetime.now().isoformat(),
+                        'stats': result
+                    })
+                    benchmark_results_cache[benchmark_id] = result
+                else:
+                    benchmark_progress[benchmark_id].update({
+                        'status': 'failed',
+                        'end_time': datetime.now().isoformat(),
+                        'error': result
+                    })
+            except queue.Empty:
+                benchmark_progress[benchmark_id].update({
+                    'status': 'failed',
+                    'end_time': datetime.now().isoformat(),
+                    'error': 'Benchmark timed out'
+                })
+        
+        monitor_thread = threading.Thread(target=monitor_progress)
+        monitor_thread.daemon = True
+        monitor_thread.start()
+        
+        return {
+            "message": "Benchmark started",
+            "benchmark_id": benchmark_id,
+            "status": "running"
+        }
+        
+    except Exception as e:
+        print(f"Error starting benchmark: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/benchmark-progress/{benchmark_id}")
+async def get_benchmark_progress(benchmark_id: str):
+    try:
+        if benchmark_id not in benchmark_progress:
+            raise HTTPException(status_code=404, detail="Benchmark not found")
+        
+        progress_data = benchmark_progress[benchmark_id].copy()
+        
+        # Ensure all values are JSON serializable
+        for key, value in progress_data.items():
+            if isinstance(value, (np.floating, np.integer)):
+                progress_data[key] = float(value)
+        
+        return progress_data
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error getting benchmark progress: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+    
 @router.get("/benchmark-results")
 async def list_benchmark_results():
     try:
@@ -407,14 +416,38 @@ async def list_benchmark_results():
                 
                 # Thử đọc file để lấy số lượng câu hỏi và thống kê
                 try:
-                    df = pd.read_csv(file_path)
-                    if not df.empty and 'SUMMARY' in df['question_id'].values:
-                        summary_row = df[df['question_id'] == 'SUMMARY'].iloc[0]
-                        stats["questions_count"] = len(df) - 1  # Trừ hàng summary
-                        stats["avg_retrieval_score"] = summary_row.get('retrieval_score', None)
-                        stats["avg_total_time"] = summary_row.get('total_time', None)
+                    df = pd.read_csv(file_path, encoding='utf-8-sig')
+                    if not df.empty:
+                        # Đếm số câu hỏi (trừ header)
+                        stats["questions_count"] = len(df)
+                        
+                        # Tính average scores nếu có cột SUMMARY
+                        if 'STT' in df.columns:
+                            summary_rows = df[df['STT'] == 'SUMMARY']
+                            if not summary_rows.empty:
+                                summary_row = summary_rows.iloc[0]
+                                if 'current_cosine_sim' in summary_row:
+                                    try:
+                                        stats["avg_cosine_sim"] = float(summary_row['current_cosine_sim'])
+                                    except:
+                                        pass
+                                if 'current_retrieval_accuracy' in summary_row:
+                                    try:
+                                        stats["avg_retrieval_accuracy"] = float(summary_row['current_retrieval_accuracy'])
+                                    except:
+                                        pass
+                        else:
+                            # Nếu không có SUMMARY, tính trung bình từ tất cả rows
+                            if 'current_cosine_sim' in df.columns:
+                                try:
+                                    numeric_values = pd.to_numeric(df['current_cosine_sim'], errors='coerce')
+                                    stats["avg_cosine_sim"] = float(numeric_values.mean())
+                                except:
+                                    pass
                 except Exception as e:
                     print(f"Lỗi khi đọc file {file}: {str(e)}")
+                    # Nếu không đọc được file, vẫn thêm thông tin cơ bản
+                    stats["questions_count"] = "Unknown"
                 
                 results.append(stats)
         
@@ -434,7 +467,89 @@ async def download_benchmark_result(file_name: str):
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail=f"Không tìm thấy file: {file_name}")
     
-    return FileResponse(file_path, media_type='text/csv', filename=file_name)
+    return FileResponse(
+        file_path, 
+        media_type='text/csv;charset=utf-8',
+        filename=file_name,
+        headers={"Content-Disposition": f"attachment; filename={file_name}"}
+    )
+
+@router.get("/view-benchmark/{file_name}")
+async def view_benchmark_content(file_name: str):
+    file_path = os.path.join(BENCHMARK_RESULTS_DIR, file_name)
+    
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy file: {file_name}")
+    
+    try:
+        df = pd.read_csv(file_path, encoding='utf-8-sig')
+        
+        # Lấy thông tin tổng quan
+        total_rows = len(df)
+        columns = list(df.columns)
+        
+        # Lấy 5 dòng đầu làm preview
+        preview_data = df.head(5).to_dict('records')
+        
+        # Tính toán thống kê nếu có
+        stats = {}
+        if 'current_cosine_sim' in df.columns:
+            try:
+                numeric_values = pd.to_numeric(df['current_cosine_sim'], errors='coerce')
+                stats['avg_current_cosine'] = float(numeric_values.mean())
+            except:
+                pass
+        
+        return {
+            "file_name": file_name,
+            "total_rows": total_rows,
+            "columns": columns,
+            "preview": preview_data,
+            "stats": stats
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Không thể đọc file: {str(e)}")
+
+@router.get("/download-benchmark/{filename}")
+async def download_benchmark_file(filename: str):
+    file_path = os.path.join(BENCHMARK_RESULTS_DIR, filename)
+    
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail=f"File not found: {filename}")
+    
+    return FileResponse(
+        file_path, 
+        media_type='text/csv;charset=utf-8', 
+        filename=filename,
+        headers={"Content-Disposition": f"attachment; filename={filename}"}
+    )
+
+@router.get("/benchmark-files")
+async def list_benchmark_files():
+    try:
+        files = []
+        if os.path.exists(BENCHMARK_DIR):
+            for filename in os.listdir(BENCHMARK_DIR):
+                if filename.endswith('.json'):
+                    file_path = os.path.join(BENCHMARK_DIR, filename)
+                    try:
+                        with open(file_path, 'r', encoding='utf-8-sig') as f:
+                            data = json.load(f)
+                            questions_count = len(data.get('benchmark', []))
+                        
+                        files.append({
+                            'filename': filename,
+                            'questions_count': questions_count,
+                            'size': os.path.getsize(file_path),
+                            'modified': datetime.fromtimestamp(os.path.getmtime(file_path)).isoformat()
+                        })
+                    except:
+                        continue
+        
+        return {'files': files}
+    except Exception as e:
+        print(f"Error listing benchmark files: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/invalidate-cache/{doc_id}")
 async def invalidate_cache(doc_id: str):

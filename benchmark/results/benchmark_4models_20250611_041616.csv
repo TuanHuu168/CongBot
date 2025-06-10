@@ -1,0 +1,26 @@
+﻿STT,question,benchmark_answer,current_answer,current_cosine_sim,current_retrieved_chunks,current_retrieval_accuracy,langchain_answer,langchain_cosine_sim,langchain_retrieved_chunks,langchain_retrieval_accuracy,haystack_answer,haystack_cosine_sim,haystack_retrieved_chunks,haystack_retrieval_accuracy,chatgpt_answer,chatgpt_cosine_sim,benchmark_chunks
+1,"Em muốn hỏi là ai chi trả tiền trợ cấp cho người có công ở các xã, phường vậy?","Theo Điều 8 Quyết định số 49/2012/QĐ-UBND, Ủy ban nhân dân phường-xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.","Việc chi trả tiền trợ cấp cho người có công ở xã, phường được thực hiện bởi Ủy ban nhân dân (UBND) phường, xã, thị trấn. Cụ thể:
+
+1.  **UBND phường, xã, thị trấn:**
+    *   Căn cứ theo hợp đồng trách nhiệm chi trả trợ cấp đã ký với Phòng Lao động - Thương binh và Xã hội quận, huyện, UBND xã sẽ ban hành quyết định giao nhiệm vụ chi trả cho cán bộ địa phương (Điều 8.1, Quyết định 49/2012/QĐ-UBND).
+    *   UBND trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trả, đảm bảo chi đúng đối tượng, đúng chế độ, kịp thời và được hưởng thù lao chi trả hàng tháng (Điều 8.2, Quyết định 49/2012/QĐ-UBND).
+    *   Hàng tháng, sau khi nhận kinh phí, UBND phải chi trả kịp thời cho đối tượng chính sách (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+2.  **Cán bộ Lao động - Thương binh và Xã hội:**
+    *   Mở sổ theo dõi và quản lý từng loại đối tượng (Điều 8.3a, Quyết định 49/2012/QĐ-UBND).
+    *   Kiểm tra, lập danh sách đối tượng đã chết, hết tuổi hưởng, chuyển đi, hoặc hưởng sai chế độ, và gửi báo cáo cho Phòng Lao động - Thương binh và Xã hội quận, huyện (Điều 8.3b, Quyết định 49/2012/QĐ-UBND).
+    *   Mở sổ theo dõi thu, chi các khoản trợ cấp, lập chứng từ, danh sách chi trả và thanh quyết toán với Phòng Lao động - Thương binh và Xã hội (Điều 8.3c, Quyết định 49/2012/QĐ-UBND).
+3.  **Cán bộ kế toán và thủ quỹ:**
+    *   Thủ quỹ rút tiền mặt về nhập quỹ và theo dõi tiền mặt xuất cho cán bộ chi trả (Điều 8.5, Quyết định 49/2012/QĐ-UBND).
+    *   Kế toán mở sổ sách theo dõi đầy đủ nguồn kinh phí chi trả (Điều 8.5, Quyết định 49/2012/QĐ-UBND).
+
+**Lưu ý:** Quyết định 49/2012/QĐ-UBND được ban hành bởi UBND Thành phố Hồ Chí Minh, do đó thông tin này có thể áp dụng đặc thù cho địa bàn thành phố.
+",0.8973,49_2012_QĐ_UBND_regulation_ch2_art8 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art4 | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_preamble,1.0000,No relevant documents found,0.7546,,0.0000,No documents found for Haystack,0.7105,,0.0000,"Theo **Quyết định số 49/2012/QĐ-UBND** của Ủy ban nhân dân Thành phố Hồ Chí Minh, việc chi trả tiền trợ cấp cho người có công tại các xã, phường được thực hiện bởi **Ủy ban nhân dân phường - xã, thị trấn**. Cụ thể, Ủy ban nhân dân phường - xã, thị trấn có trách nhiệm quản lý và chi trả các khoản trợ cấp ưu đãi người có công với cách mạng trên địa bàn của mình. Họ thực hiện việc này dựa trên hợp đồng trách nhiệm đã ký với Phòng Lao động - Thương binh và Xã hội quận - huyện.
+
+Các nhiệm vụ cụ thể của Ủy ban nhân dân phường - xã, thị trấn bao gồm:
+
+1. Quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công.
+2. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian.
+3. Chỉ đạo cán bộ Lao động - Thương binh và Xã hội mở sổ theo dõi và quản lý từng loại đối tượng, kiểm tra và lập danh sách những đối tượng đã chết, hết tuổi hưởng trợ cấp, hoặc chuyển đi địa phương khác.
+4. Bố trí nơi chi trả thuận lợi và thông báo công khai để đối tượng và nhân dân biết địa điểm và thời gian chi trả.
+
+Như vậy, Ủy ban nhân dân phường - xã, thị trấn là đơn vị trực tiếp thực hiện việc chi trả tiền trợ cấp cho người có công tại địa phương.",0.9371,49_2012_QĐ_UBND_regulation_ch2_art8

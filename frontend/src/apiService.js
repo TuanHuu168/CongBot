@@ -1,227 +1,141 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const API_BASE_URL = 'http://localhost:8001';
 
-// Tạo instance axios với cấu hình chung và TIMEOUT dài hơn
+// Centralized error messages
+const ERROR_MESSAGES = {
+  NETWORK: 'Lỗi kết nối mạng. Vui lòng kiểm tra kết nối internet.',
+  TIMEOUT: 'Yêu cầu quá thời gian. Vui lòng thử lại.',
+  SERVER: 'Lỗi máy chủ. Vui lòng thử lại sau.',
+  AUTH: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+  NOT_FOUND: 'Không tìm thấy dữ liệu.',
+  DEFAULT: 'Có lỗi xảy ra. Vui lòng thử lại.'
+};
+
+// Create axios instance with common config
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 30000, // Tăng timeout lên 30 giây
+  timeout: 30000,
+  headers: { 'Content-Type': 'application/json' }
 });
 
-// Thêm interceptor để tự động gắn token vào mỗi request
-apiClient.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+// Auth helpers
+const getAuthToken = () => localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+const getUserId = () => localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
 
-// Thêm interceptor xử lý lỗi response
+// Request interceptor
+apiClient.interceptors.request.use(config => {
+  const token = getAuthToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+// Response interceptor with centralized error handling
 apiClient.interceptors.response.use(
   response => response,
   error => {
-    // Kiểm tra xem có phải là lỗi timeout hoặc kết nối không
-    if (error.code === 'ECONNABORTED' || !error.response) {
-      return Promise.reject({ 
-        detail: "Lỗi kết nối máy chủ. Vui lòng kiểm tra kết nối internet hoặc thử lại sau." 
-      });
-    }
-    
-    // Xử lý các lỗi khác
-    return Promise.reject(error.response?.data || { detail: 'Có lỗi xảy ra, vui lòng thử lại' });
+    const errorMessage = error.code === 'ECONNABORTED' || !error.response
+      ? ERROR_MESSAGES.NETWORK
+      : error.response?.status === 401
+        ? ERROR_MESSAGES.AUTH
+        : error.response?.status === 404
+          ? ERROR_MESSAGES.NOT_FOUND
+          : error.response?.data?.detail || ERROR_MESSAGES.DEFAULT;
+
+    return Promise.reject({ detail: errorMessage, status: error.response?.status });
   }
 );
 
-export const getUserInfo = async (userId) => {
-  try {
-    const response = await apiClient.get(`/users/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching user info:', error);
-    throw error;
-  }
+// Generic API methods
+const apiMethods = {
+  get: (url, config = {}) => apiClient.get(url, config).then(res => res.data),
+  post: (url, data, config = {}) => apiClient.post(url, data, config).then(res => res.data),
+  put: (url, data, config = {}) => apiClient.put(url, data, config).then(res => res.data),
+  delete: (url, config = {}) => apiClient.delete(url, config).then(res => res.data)
 };
 
-// Gửi câu hỏi đến API và nhận phản hồi
-export const askQuestion = async (query, sessionId = null) => {
-  try {
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+// User API
+export const userAPI = {
+  getInfo: (userId) => apiMethods.get(`/users/${userId}`),
+  register: (userData) => apiMethods.post('/users/register', userData),
+  login: (credentials) => apiMethods.post('/users/login', credentials),
+  update: (userId, data) => apiMethods.put(`/users/${userId}`, data),
+  changePassword: (userId, passwords) => apiMethods.put(`/users/${userId}/password`, passwords)
+};
 
-    const clientInfo = {
+// Chat API
+export const chatAPI = {
+  ask: (query, sessionId = null) => apiMethods.post('/ask', {
+    query,
+    user_id: getUserId(),
+    session_id: sessionId,
+    client_info: {
       platform: 'web',
       deviceType: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop'
-    };
-
-    const requestData = {
-      query,
-      user_id: userId,
-      session_id: sessionId,
-      client_info: clientInfo
-    };
-
-    const response = await apiClient.post('/ask', requestData);
-    return response.data;
-  } catch (error) {
-    console.error('Error asking question:', error);
-    throw error;
-  }
-};
-
-// Tạo cuộc trò chuyện mới
-export const createNewChat = async (title = 'Cuộc trò chuyện mới') => {
-  try {
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-
-    const response = await apiClient.post('/chats/create', {
-      user_id: userId,
-      title
-    });
-
-    return response.data;
-  } catch (error) {
-    console.error('Error creating chat:', error);
-    throw error;
-  }
-};
-
-// Lấy danh sách cuộc trò chuyện của người dùng
-export const getUserChats = async () => {
-  try {
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-    if (!userId) {
-      throw new Error('Không tìm thấy ID người dùng');
     }
-
-    const response = await apiClient.get(`/chats/${userId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching chats:', error);
-    throw error;
-  }
+  }),
+  
+  create: (title = 'Cuộc trò chuyện mới') => apiMethods.post('/chats/create', {
+    user_id: getUserId(),
+    title
+  }),
+  
+  getAll: () => apiMethods.get(`/chats/${getUserId()}`),
+  getMessages: (chatId) => apiMethods.get(`/chats/${chatId}/messages`),
+  updateTitle: (chatId, title) => apiMethods.put(`/chats/${chatId}/title`, { title }),
+  delete: (chatId) => apiMethods.delete(`/chats/${chatId}`, { data: { user_id: getUserId() } }),
+  deleteBatch: (chatIds) => apiMethods.post('/chats/delete-batch', {
+    user_id: getUserId(),
+    chat_ids: chatIds
+  })
 };
 
-// Lấy tin nhắn của một cuộc trò chuyện
-export const getChatMessages = async (chatId) => {
-  try {
-    const response = await apiClient.get(`/chats/${chatId}/messages`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching chat messages:', error);
-    throw error;
-  }
+// Admin API
+export const adminAPI = {
+  getStatus: () => apiMethods.get('/status'),
+  getStatistics: () => apiMethods.get('/statistics'),
+  clearCache: () => apiMethods.post('/clear-cache'),
+  invalidateCache: (docId) => apiMethods.post(`/invalidate-cache/${docId}`),
+  runBenchmark: (config) => apiMethods.post('/run-benchmark', config),
+  getBenchmarkResults: () => apiMethods.get('/benchmark-results'),
+  getDocuments: () => apiMethods.get('/documents'),
+  deleteDocument: (docId) => apiMethods.delete(`/documents/${docId}?confirm=true`)
 };
 
-// Cập nhật tiêu đề cuộc trò chuyện
-export const updateChatTitle = async (chatId, title) => {
-  try {
-    const response = await apiClient.put(`/chats/${chatId}/title`, { title });
-    return response.data;
-  } catch (error) {
-    console.error('Error updating chat title:', error);
-    throw error;
-  }
+// Feedback API
+export const feedbackAPI = {
+  submit: (data) => apiMethods.post('/feedback', data)
 };
 
-// Thêm tin nhắn vào cuộc trò chuyện
-export const addMessageToChat = async (chatId, message) => {
-  try {
-    const response = await apiClient.post(`/chats/${chatId}/messages`, message);
-    return response.data;
-  } catch (error) {
-    console.error('Error adding message:', error);
-    throw error;
-  }
+// Show error with SweetAlert2
+export const showError = (message, title = 'Lỗi') => {
+  Swal.fire({
+    icon: 'error',
+    title,
+    text: message,
+    confirmButtonColor: '#10b981'
+  });
 };
 
-// Xóa một cuộc trò chuyện
-export const deleteChat = async (chatId) => {
-  try {
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-    
-    const response = await apiClient.delete(`/chats/${chatId}`, {
-      data: { user_id: userId }
-    });
-    
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting chat:', error);
-    throw error;
-  }
+// Show success message
+export const showSuccess = (message, title = 'Thành công') => {
+  Swal.fire({
+    icon: 'success',
+    title,
+    text: message,
+    confirmButtonColor: '#10b981',
+    timer: 2000
+  });
 };
 
-// Xóa nhiều cuộc trò chuyện cùng lúc
-export const deleteChatsBatch = async (chatIds) => {
-  try {
-    const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-    
-    const response = await apiClient.post('/chats/delete-batch', {
-      user_id: userId,
-      chat_ids: chatIds
-    });
-    
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting multiple chats:', error);
-    throw error;
-  }
-};
-
-// Gửi phản hồi về chất lượng câu trả lời
-export const submitFeedback = async (chatId, rating, comment = '', isAccurate = null, isHelpful = null) => {
-  try {
-    const response = await apiClient.post('/feedback', {
-      chat_id: chatId,
-      rating,
-      comment,
-      is_accurate: isAccurate,
-      is_helpful: isHelpful
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error submitting feedback:', error);
-    throw error;
-  }
-};
-
-// Cập nhật thông tin người dùng
-export const updateUserInfo = async (userId, userData) => {
-  try {
-    const response = await apiClient.put(`/users/${userId}`, userData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating user info:', error);
-    throw error;
-  }
-};
-
-// Thay đổi mật khẩu
-export const changePassword = async (userId, passwordData) => {
-  try {
-    const response = await apiClient.put(`/users/${userId}/password`, passwordData);
-    return response.data;
-  } catch (error) {
-    console.error('Error changing password:', error);
-    throw error;
-  }
-};
-
-export default {
-  askQuestion,
-  createNewChat,
-  getUserChats,
-  getChatMessages,
-  updateChatTitle,
-  addMessageToChat,
-  deleteChat,
-  deleteChatsBatch,
-  submitFeedback,
-  updateUserInfo,
-  changePassword
-};
+// Legacy exports for backward compatibility
+export const askQuestion = chatAPI.ask;
+export const createNewChat = chatAPI.create;
+export const getUserChats = chatAPI.getAll;
+export const getChatMessages = chatAPI.getMessages;
+export const updateChatTitle = chatAPI.updateTitle;
+export const deleteChat = chatAPI.delete;
+export const deleteChatsBatch = chatAPI.deleteBatch;
+export const getUserInfo = userAPI.getInfo;
+export const submitFeedback = feedbackAPI.submit;

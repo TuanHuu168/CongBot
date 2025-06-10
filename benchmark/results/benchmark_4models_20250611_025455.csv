@@ -1,0 +1,1514 @@
+﻿STT,question,benchmark_answer,current_answer,current_cosine_sim,current_retrieved_chunks,current_retrieval_accuracy,langchain_answer,langchain_cosine_sim,langchain_retrieved_chunks,langchain_retrieval_accuracy,haystack_answer,haystack_cosine_sim,haystack_retrieved_chunks,haystack_retrieval_accuracy,chatgpt_answer,chatgpt_cosine_sim,benchmark_chunks
+1,"Em muốn hỏi là ai chi trả tiền trợ cấp cho người có công ở các xã, phường vậy?","Theo Điều 8 Quyết định số 49/2012/QĐ-UBND, Ủy ban nhân dân phường-xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.","Việc chi trả tiền trợ cấp cho người có công ở xã, phường được thực hiện bởi Ủy ban nhân dân (UBND) phường, xã, thị trấn.
+
+**Cụ thể:**
+
+1.  **UBND phường, xã, thị trấn:**
+    *   Căn cứ vào hợp đồng trách nhiệm đã ký với Phòng Lao động - Thương binh và Xã hội quận, huyện, UBND xã sẽ ban hành quyết định giao nhiệm vụ chi trả cho cán bộ địa phương (Điều 8, Quyết định 49/2012/QĐ-UBND).
+    *   UBND trực tiếp quản lý tiền mặt và thực hiện chi trả trợ cấp, phụ cấp ưu đãi, đảm bảo đúng đối tượng, đúng chế độ và kịp thời (Điều 8, Quyết định 49/2012/QĐ-UBND).
+    *   UBND có trách nhiệm kiểm tra danh sách chi trả, bố trí địa điểm chi trả thuận lợi, thông báo công khai về thời gian và địa điểm chi trả (Điều 8, Quyết định 49/2012/QĐ-UBND).
+2.  **Cán bộ Lao động - Thương binh và Xã hội:**
+    *   Mở sổ theo dõi và quản lý đối tượng, kiểm tra và lập danh sách các trường hợp cần cắt giảm hoặc điều chỉnh trợ cấp (Điều 8, Quyết định 49/2012/QĐ-UBND).
+    *   Mở sổ theo dõi thu, chi các khoản trợ cấp và lập chứng từ, danh sách chi trả (Điều 8, Quyết định 49/2012/QĐ-UBND).
+3.  **Kế toán và thủ quỹ:**
+    *   Thủ quỹ rút tiền mặt và theo dõi tiền mặt xuất cho cán bộ chi trả.
+    *   Kế toán mở sổ sách theo dõi nguồn kinh phí chi trả (Điều 8, Quyết định 49/2012/QĐ-UBND).
+
+**Lưu ý:**
+
+*   Đối tượng hưởng trợ cấp phải trực tiếp đến nhận hoặc ủy quyền hợp lệ (có xác nhận của UBND phường, xã, thị trấn) cho thân nhân (Điều 8, Quyết định 49/2012/QĐ-UBND).
+*   UBND phường, xã, thị trấn phải thanh toán kinh phí chi trả với Phòng Lao động - Thương binh và Xã hội quận, huyện theo thời gian quy định (Điều 8, Quyết định 49/2012/QĐ-UBND).
+",0.9032,49_2012_QĐ_UBND_regulation_ch2_art8 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art4 | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_preamble,1.0000,LangChain not available,0.7470,,0.0000,Haystack not available,0.7280,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7521,49_2012_QĐ_UBND_regulation_ch2_art8
+2,"Em năm nay đang học đại học và bố em là thương binh. Em nghe nói được hưởng trợ cấp giáo dục gì đó, vậy em được nhận tiền mấy tháng một năm vậy ạ?","Theo quy định tại Điểm d, Khoản 1, Điều 9 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018: 'Trợ cấp ưu đãi trong giáo dục, đào tạo theo quy định của Chính phủ. Thời gian hưởng trợ cấp hàng tháng được cấp đủ 12 tháng cho một năm học. Đối với thời gian học năm cuối không đủ 12 tháng được trợ cấp theo số tháng thực học của năm học đó. Trường hợp học theo mô-đun, tín chỉ thì thời gian hưởng trợ cấp theo thời gian đào tạo quy đổi nhưng không vượt quá thời gian đào tạo của ngành, nghề học và trình độ đào tạo tương đương đối với chương trình đào tạo theo niên chế.'","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, và rất tiếc là các văn bản được cung cấp không trực tiếp đề cập đến chế độ trợ cấp giáo dục cho con của thương binh. 
+
+Tuy nhiên, các văn bản này tập trung vào các vấn đề sau:
+
+1.  **Quản lý và sử dụng kinh phí** thực hiện chính sách ưu đãi người có công và người trực tiếp tham gia kháng chiến (Điều 1, Thông tư 101/2018/TT-BTC).
+2.  **Các khoản chi trả trợ cấp, phụ cấp** hàng tháng, một lần cho các đối tượng chính sách (Điều 4, Thông tư 101/2018/TT-BTC).
+3.  **Chi đóng bảo hiểm y tế** cho người hưởng trợ cấp hàng tháng (Điều 5, Thông tư 101/2018/TT-BTC).
+
+Do đó, tôi không thể cung cấp thông tin chi tiết về số tháng trợ cấp giáo dục bạn có thể nhận được. Để có thông tin chính xác, bạn nên tìm kiếm các văn bản pháp luật quy định cụ thể về chế độ trợ cấp giáo dục cho con của thương binh hoặc liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được tư vấn.
+",0.8982,101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art5 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_preamble,0.0000,LangChain not available,0.7679,,0.0000,Haystack not available,0.7418,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7712,101_2018_TT_BTC_ch2_art9
+3,"Ngày xưa bố tôi đi bộ đội, tham gia kháng chiến chống Mỹ. Giờ tôi muốn thăm mộ ông ở nghĩa trang liệt sĩ tận Quảng Trị. Nhà nước có hỗ trợ tiền đi lại không?","Theo Điều 12, Thông tư số 101/2018/TT-BTC ngày 14/11/2018, thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cơ quan Lao động-Thương binh và Xã hội cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ một lần tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ. Mức hỗ trợ theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh nhưng tối đa không quá 2.400.000 đồng/người.","Dựa trên các văn bản pháp luật hiện hành, bạn có thể được hỗ trợ chi phí đi lại để thăm mộ liệt sĩ là bố của bạn. Cụ thể như sau:
+
+**1. Về việc hỗ trợ tiền tàu xe và tiền ăn:**
+
+*   **Đối tượng:** Thân nhân liệt sĩ (tối đa 3 người) hoặc người thờ cúng liệt sĩ khi được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước.
+*   **Mức hỗ trợ:**
+    *   Tiền tàu xe và tiền ăn được hỗ trợ một lần mỗi năm cho một liệt sĩ, bao gồm cả lượt đi và về.
+    *   Mức hỗ trợ được tính theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người.
+*   **Ví dụ:** Nếu khoảng cách từ nơi bạn được cấp giấy giới thiệu đến nghĩa trang liệt sĩ ở Quảng Trị là 900km, và có 3 người thân cùng đi, thì mức hỗ trợ sẽ là (2.000 đồng x 900 km) x 3 người = 5.400.000 đồng.
+*   **Văn bản pháp luật:** Điều 12, Thông tư 101/2018/TT-BTC.
+
+**2. Thủ tục thực hiện:**
+
+*   Quy trình và thủ tục cụ thể để được hỗ trợ sẽ theo quy định của Bộ LĐTBXH. Bạn cần liên hệ với cơ quan LĐTBXH địa phương để được hướng dẫn chi tiết.
+*   **Văn bản pháp luật:** Khoản 2, Điều 12, Thông tư 101/2018/TT-BTC.
+
+**Lưu ý:**
+
+*   Thông tư 101/2018/TT-BTC có hiệu lực từ ngày 01/01/2019.
+*   Bạn cần có giấy giới thiệu của cơ quan LĐTBXH để được hưởng chế độ hỗ trợ này.",0.9506,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_preamble,1.0000,LangChain not available,0.7444,,0.0000,Haystack not available,0.7260,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7432,101_2018_TT_BTC_ch2_art12_13
+4,"Chồng em là liệt sĩ mất ở chiến trường, chúng em muốn đưa hài cốt anh ấy về quê thì có được hỗ trợ tiền không ạ?","Theo Điều 13, Thông tư số 101/2018/TT-BTC ngày 14/11/2018, khi di chuyển hài cốt liệt sĩ, chị sẽ được hỗ trợ các khoản sau:
+1. Hỗ trợ tiền tàu xe và tiền ăn đối với thân nhân liệt sĩ hoặc người được thân nhân liệt sĩ uỷ quyền hoặc người thờ cúng liệt sĩ (không quá ba người), mức hỗ trợ tính theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang, nhưng tối đa không quá 2.400.000 đồng/người.
+2. Hỗ trợ kinh phí cất bốc và di chuyển một bộ hài cốt liệt sĩ: 4.000.000 đồng.
+3. Nếu an táng tại nghĩa trang dòng họ do gia đình quản lý, còn được hỗ trợ tiền xây vỏ mộ liệt sĩ theo quy định tại khoản 3 Điều 62 Nghị định số 31/2013/NĐ-CP.","Chào bạn, tôi là trợ lý tư vấn về chính sách ưu đãi người có công. Dựa trên thông tin bạn cung cấp và các văn bản pháp luật hiện hành, tôi xin giải đáp thắc mắc của bạn như sau:
+
+**Về việc hỗ trợ chi phí di chuyển hài cốt liệt sĩ về quê:**
+
+Theo quy định tại khoản 1 Điều 13 Thông tư 101/2018/TT-BTC, gia đình liệt sĩ sẽ được hỗ trợ chi phí khi di chuyển hài cốt liệt sĩ, bao gồm:
+
+1.  **Hỗ trợ tiền tàu xe và tiền ăn:**
+    *   Dành cho thân nhân liệt sĩ (tối đa 3 người) hoặc người được ủy quyền hoặc người thờ cúng liệt sĩ.
+    *   Mức hỗ trợ được tính theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cư trú đến nghĩa trang hoặc địa phương nơi liệt sĩ hy sinh, bao gồm cả lượt đi và về, nhưng tối đa không quá 2.400.000 đồng/người. (Tham khảo khoản 1 Điều 12 Thông tư 101/2018/TT-BTC)
+2.  **Hỗ trợ kinh phí cất bốc và di chuyển hài cốt:** Mức chi là 4.000.000 đồng/bộ hài cốt.
+3.  **Trường hợp đặc biệt:** Nếu gia đình có nguyện vọng xây mộ tại nghĩa trang dòng họ (không đưa vào nghĩa trang liệt sĩ) thì ngoài các khoản hỗ trợ trên, còn được hỗ trợ tiền xây vỏ mộ liệt sĩ theo quy định tại khoản 3 Điều 62 Nghị định 31/2013/NĐ-CP.
+
+**Thông tin bổ sung:**
+
+*   Quy trình và thủ tục để nhận hỗ trợ di chuyển hài cốt liệt sĩ được thực hiện theo hướng dẫn của Bộ Lao động - Thương binh và Xã hội (Khoản 2, Điều 13, Thông tư 101/2018/TT-BTC). Bạn nên liên hệ với cơ quan LĐTBXH tại địa phương để được hướng dẫn chi tiết.
+*   Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH cũng đề cập đến việc hỗ trợ thân nhân liệt sĩ thăm viếng mộ và di chuyển hài cốt liệt sĩ (khoản 14, Điều 4). Tuy nhiên, Thông tư 101/2018/TT-BTC là văn bản mới hơn và quy định chi tiết hơn về vấn đề này.
+
+**Lưu ý:** Các quy định và mức hỗ trợ có thể thay đổi theo thời gian. Bạn nên liên hệ trực tiếp với cơ quan chức năng để có thông tin cập nhật và chính xác nhất.
+",0.9514,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7584,,0.0000,Haystack not available,0.7428,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7641,101_2018_TT_BTC_ch2_art12_13
+5,"Con trai tôi là thương binh hạng 1, có thẻ bảo hiểm y tế rồi, nhưng phải đi lắp chân giả do vết thương tái phát. Vậy có được hỗ trợ tiền đi lại không?","Theo Điều 7 Thông tư 101/2018/TT-BTC, đối tượng được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình (như chân giả) khi đi làm dụng cụ chỉnh hình được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về), mỗi niên hạn 01 lần. Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người. Ngoài ra, người thương binh còn được cấp tiền mua chân giả theo niên hạn sử dụng, cụ thể là 2 năm đối với chân giả dưới gối và 3 năm đối với chân giả trên gối và chân giả tháo khớp gối.","Dựa trên các văn bản pháp luật được cung cấp, con trai bạn là thương binh hạng 1 và cần lắp chân giả do vết thương tái phát sẽ được hỗ trợ tiền đi lại. Cụ thể như sau:
+
+**1. Chế độ hỗ trợ tiền đi lại:**
+
+*   **Đối tượng:** Thương binh được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình.
+*   **Nội dung hỗ trợ:** Được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về) trong mỗi niên hạn sử dụng dụng cụ chỉnh hình.
+*   **Mức hỗ trợ:** Theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người.
+
+    *Trích dẫn: Theo điểm a, khoản 2, Điều 7, Thông tư 101/2018/TT-BTC*
+
+**2. Thủ tục thực hiện:**
+
+*   Đối tượng, quy trình, thủ tục lập sổ theo dõi và cấp phương tiện trợ giúp, dụng cụ chỉnh hình thực hiện theo quy định của Bộ LĐTBXH.
+
+    *Trích dẫn: Theo khoản 3, Điều 7, Thông tư 101/2018/TT-BTC*
+
+**3. Các văn bản liên quan:**
+
+*   **Thông tư 101/2018/TT-BTC:** Quy định quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+*   **Thông tư liên tịch số 17/2006/TTLT-BLĐTBXH-BTC-BYT:** Hướng dẫn chế độ chăm sóc sức khỏe đối với người có công với cách mạng (đã được sửa đổi, bổ sung).
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH:** Trong đó, khoản 10, 11 Điều 4 đề cập đến hỗ trợ tiền tàu xe đi khám chữa bệnh, giám định thương tật, làm dụng cụ chỉnh hình, phục hồi chức năng.
+
+**Như vậy, con trai bạn (thương binh hạng 1) sẽ được hỗ trợ tiền đi lại và tiền ăn khi đi làm chân giả. Bạn cần liên hệ với cơ quan LĐTBXH tại địa phương để được hướng dẫn cụ thể về thủ tục và hồ sơ cần thiết.**
+",0.9189,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch1_art1_3,1.0000,LangChain not available,0.7517,,0.0000,Haystack not available,0.7317,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7600,101_2018_TT_BTC_ch2_art7
+6,"Bây giờ muốn đi điều dưỡng tập trung thì có được cho người nhà đi cùng không? Mà tiền ăn uống, thuốc men có được hỗ trợ không?","Theo Điều 6, Thông tư số 101/2018/TT-BTC ngày 14/11/2018, khi đi điều dưỡng tập trung, người có công được hưởng các khoản sau:
+1. Tiền ăn trong thời gian điều dưỡng (ăn sáng, 2 bữa chính và ăn bồi dưỡng thêm nếu có)
+2. Thuốc bổ và thuốc chữa bệnh thông thường
+3. Quà tặng (bằng tiền hoặc hiện vật)
+4. Các khoản chi khác phục vụ trực tiếp trong thời gian điều dưỡng (gồm: khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng và các khoản chi khác) không quá 15% mức chi điều dưỡng tập trung
+5. Chi phí về điện, nước và các chi phí môi trường khác (320.000 đồng/người/lần)
+6. Chi sách báo, hoạt động văn hóa, văn nghệ, thể thao (100.000 đồng/người/đợt)
+
+Quy định không đề cập đến việc người nhà được đi cùng trong chế độ điều dưỡng tập trung.","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về chế độ điều dưỡng phục hồi sức khỏe cho người có công như sau:
+
+**1. Về việc người nhà đi cùng khi điều dưỡng tập trung:**
+
+Tôi không tìm thấy quy định nào trong các văn bản này về việc người nhà có được đi cùng đối tượng khi điều dưỡng tập trung hay không. Do đó, tôi không thể trả lời câu hỏi này.
+
+**2. Về hỗ trợ tiền ăn uống, thuốc men khi điều dưỡng tập trung:**
+
+Theo Thông tư 101/2018/TT-BTC, Điều 6, khi điều dưỡng tập trung, đối tượng sẽ được hỗ trợ:
+
+*   Tiền ăn trong thời gian điều dưỡng, bao gồm: ăn sáng, ăn 2 bữa chính (trưa và chiều) và ăn bồi dưỡng thêm (nếu có).
+*   Thuốc bổ và thuốc chữa bệnh thông thường.
+*   Quà tặng (bằng tiền hoặc hiện vật).
+*   Các khoản chi khác phục vụ trực tiếp cho đối tượng trong thời gian điều dưỡng (gồm: khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng và các khoản chi khác phục vụ đối tượng điều dưỡng) không quá 15% mức chi điều dưỡng tập trung.
+
+Ngoài ra, Thông tư này cũng quy định về các khoản chi khác liên quan đến điều dưỡng tập trung như chi phí điện, nước sinh hoạt, sách báo, hoạt động văn hóa, văn nghệ, thể thao (Điều 6, Khoản 2).
+
+Ngân sách địa phương đảm bảo chi phí đưa đón người có công đi điều dưỡng tập trung, chi phí ăn, ở (nếu có) phát sinh trong thời gian đi đường (đi và về) (Điều 6, Khoản 3).
+
+**Lưu ý:** Mức chi cụ thể cho các khoản này sẽ tuân theo quy định tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP và có thể được điều chỉnh bởi Hội đồng nhân dân tỉnh, thành phố trực thuộc Trung ương căn cứ vào khả năng cân đối ngân sách địa phương.
+
+> *Thông tin bổ sung:*
+>
+> *   Nếu đối tượng không tiếp tục thực hiện điều dưỡng tập trung vì lý do khách quan, cơ quan LĐTBXH sẽ thanh toán tiền ăn và các chi phí liên quan theo số ngày thực tế đối tượng điều dưỡng tại cơ sở (Điều 6, Khoản 2, điểm d, Thông tư 101/2018/TT-BTC).
+> *   Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH cũng đề cập đến việc điều trị, điều dưỡng phục hồi sức khỏe, chức năng lao động là một trong các khoản chi ưu đãi khác cho người có công (Điều 4, Khoản 5).
+",0.9322,101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch2_art7 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art10 | 47_2009_TTLT_BTC_BLĐTBXH_art3,1.0000,LangChain not available,0.7567,,0.0000,Haystack not available,0.7376,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7755,101_2018_TT_BTC_ch2_art6
+7,"Em nghe nói năm ngoái có Thông tư mới về quản lý tiền chi trả cho người có công, vậy trước đây quy định ở đâu ạ?","Theo Điều 22 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, trước đây việc quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý được quy định tại Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/03/2009 của Bộ Tài chính và Bộ Lao động-Thương binh và Xã hội. Thông tư số 101/2018/TT-BTC có hiệu lực từ ngày 01/01/2019 và thay thế Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH.","Chào bạn, để trả lời câu hỏi của bạn về các quy định trước đây liên quan đến quản lý tiền chi trả cho người có công, tôi xin cung cấp thông tin sau:
+
+Trước khi có thông tư mới (tức **Thông tư 101/2018/TT-BTC**), việc quản lý kinh phí chi trả cho người có công được quy định tại các văn bản sau:
+
+1.  **Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH** ngày 11 tháng 3 năm 2009 của Bộ Tài chính - Bộ Lao động, Thương binh và Xã hội, hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+2.  **Quyết định số 49/2012/QĐ-UBND** ngày 23 tháng 10 năm 2012 của Ủy ban nhân dân Thành phố Hồ Chí Minh, ban hành Quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến trên địa bàn Thành phố Hồ Chí Minh. Quyết định này có hiệu lực từ ngày 02 tháng 11 năm 2012.
+
+**Lưu ý quan trọng:**
+
+*   **Thông tư 101/2018/TT-BTC** có hiệu lực từ ngày 01 tháng 01 năm 2019, thay thế Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH.
+*   **Quyết định 49/2012/QĐ-UBND** có thể đã bị bãi bỏ nếu có nội dung trái với các quy định hiện hành, theo Điều 2 của Quyết định này.
+
+**Thông tin thêm:**
+
+*   **Điều 16 của Thông tư 101/2018/TT-BTC** quy định chi tiết về việc lập dự toán kinh phí thực hiện chính sách ưu đãi người có công, bao gồm các loại trợ cấp hàng tháng, trợ cấp một lần, chi thực hiện các chế độ, chính sách, và chi phí quản lý.
+*   Quy trình lập dự toán được thực hiện theo quy định của Luật Ngân sách nhà nước và các văn bản hướng dẫn liên quan.
+
+Hy vọng thông tin này hữu ích cho bạn.
+",0.9318,49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_ch3_art16 | 49_2012_QĐ_UBND_art1_3,0.0000,LangChain not available,0.7528,,0.0000,Haystack not available,0.7356,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7642,101_2018_TT_BTC_ch4_art22_23
+8,Nếu người trong diện thương binh được đi điều dưỡng tại cơ sở điều dưỡng bên ngoài thì kinh phí nằm ở đâu?,"Theo điểm d, khoản 2, Điều 6 của Thông tư số 101/2018/TT-BTC: Đối với số lượng đối tượng điều dưỡng tập trung tại địa phương khác hoặc điều dưỡng tập trung tại địa phương nhưng do cơ sở điều dưỡng ngoài công lập hoặc cơ sở điều dưỡng thuộc ngành khác thực hiện, cơ quan LĐTBXH thực hiện rút dự toán để thanh toán theo hợp đồng cho các cơ sở điều dưỡng theo số lượng đối tượng điều dưỡng từng đợt theo mức chi quy định tại các điểm a, b và c khoản này. Mức chi bao gồm tiền ăn, thuốc men, quà tặng, các khoản chi phục vụ trực tiếp đối tượng, chi phí về điện nước và chi sách báo, hoạt động văn hóa, văn nghệ, thể thao.","Dựa trên các văn bản pháp luật được cung cấp, kinh phí điều dưỡng cho thương binh tại cơ sở điều dưỡng bên ngoài được đảm bảo như sau:
+
+1.  **Nguồn kinh phí:**
+    *   Theo Điều 1 Thông tư 101/2018/TT-BTC, kinh phí thực hiện chính sách ưu đãi người có công với cách mạng do ngành Lao động - Thương binh và Xã hội (LĐTBXH) quản lý được đảm bảo từ nguồn ngân sách trung ương, bố trí trong dự toán chi ngân sách nhà nước của Bộ LĐTBXH.
+
+2.  **Phương thức chi trả và thanh toán:**
+    *   Điểm d, Khoản 2, Điều 6 Thông tư 101/2018/TT-BTC quy định, đối với đối tượng điều dưỡng tập trung tại địa phương khác hoặc tại địa phương nhưng do cơ sở điều dưỡng ngoài công lập hoặc thuộc ngành khác thực hiện, cơ quan LĐTBXH thực hiện rút dự toán để thanh toán theo hợp đồng cho các cơ sở điều dưỡng theo số lượng đối tượng điều dưỡng từng đợt theo mức chi quy định tại các điểm a, b và c khoản này.
+
+3.  **Các khoản chi cụ thể:**
+    *   Điểm a, Khoản 2, Điều 6 Thông tư 101/2018/TT-BTC quy định mức chi điều dưỡng tập trung bao gồm:
+        *   Tiền ăn trong thời gian điều dưỡng (ăn sáng, 2 bữa chính, bồi dưỡng thêm nếu có).
+        *   Thuốc bổ và thuốc chữa bệnh thông thường.
+        *   Quà tặng cho đối tượng (bằng tiền hoặc hiện vật).
+        *   Các khoản chi khác phục vụ trực tiếp (khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng...) không quá 15% mức chi điều dưỡng tập trung.
+    *   Điểm b, Khoản 2, Điều 6 Thông tư 101/2018/TT-BTC quy định các khoản chi phí về điện, nước sinh hoạt hoặc mua xăng dầu chạy máy phát điện, lọc nước (đối với các cơ sở chưa có hệ thống điện lưới và nước sạch), vệ sinh môi trường, sửa chữa điện, nước, thuê dịch vụ phục vụ công tác điều dưỡng được thanh toán theo số lượng đối tượng được điều dưỡng thực tế, định mức tối đa 320.000 đồng/người/lần.
+    *   Điểm c, Khoản 2, Điều 6 Thông tư 101/2018/TT-BTC quy định chi sách báo, hoạt động văn hóa, văn nghệ, thể thao phục vụ đối tượng trong thời gian điều dưỡng tại cơ sở là 100.000 đồng/người/đợt điều dưỡng.
+
+4.  **Xử lý trường hợp điều dưỡng không trọn vẹn:**
+    *   Điểm d, Khoản 2, Điều 6 Thông tư 101/2018/TT-BTC cũng nêu rõ, nếu đối tượng không tiếp tục điều dưỡng vì lý do khách quan, cơ quan LĐTBXH thanh toán cho cơ sở điều dưỡng tiền ăn và các chi phí khác theo số ngày thực tế điều dưỡng, tiền thuốc, quà tặng và các khoản chi phục vụ trực tiếp (như đối tượng đi cả đợt). Nếu đối tượng đã điều dưỡng dưới 30% thời gian, Giám đốc Sở LĐTBXH xem xét cho đi điều dưỡng vào đợt kế tiếp.
+
+5.  **Chi phí đi lại:**
+    *   Khoản 3, Điều 6 Thông tư 101/2018/TT-BTC quy định chi phí đưa đón người có công đi điều dưỡng tập trung và chi phí ăn ở phát sinh trong thời gian đi đường do ngân sách địa phương đảm bảo theo phân cấp ngân sách hiện hành.
+
+Tóm lại, kinh phí cho thương binh đi điều dưỡng tại các cơ sở điều dưỡng bên ngoài được lấy từ ngân sách trung ương thông qua Bộ LĐTBXH và được thanh toán theo hợp đồng giữa cơ quan LĐTBXH và cơ sở điều dưỡng, bao gồm các khoản chi cụ thể như tiền ăn, thuốc men, quà tặng và các chi phí phục vụ trực tiếp khác. Chi phí đi lại do ngân sách địa phương đảm bảo.
+",0.9284,101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch2_art10 | 47_2009_TTLT_BTC_BLĐTBXH_art5_6 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch1_art1_3,1.0000,LangChain not available,0.7597,,0.0000,Haystack not available,0.7428,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7736,101_2018_TT_BTC_ch2_art6
+9,Tiền trợ cấp hàng tháng có phải đi Kho bạc lĩnh trực tiếp không hay có thể hợp đồng với ngân hàng để làm cái thẻ ATM cho tiện nhỉ?,"Theo Điều 15 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, cơ quan LĐTBXH có thể thực hiện chi trả chế độ cho người thụ hưởng thông qua tổ chức dịch vụ chi trả. Cụ thể, việc chi trả thông qua tổ chức dịch vụ chi trả được lập thành hợp đồng giữa cơ quan LĐTBXH và tổ chức dịch vụ chi trả, trong đó phải ghi rõ phương thức chi trả (gồm chi trả trực tiếp bằng tiền mặt, chi trả qua thẻ ATM). Chi phí làm thẻ ATM cho người thụ hưởng có yêu cầu thanh toán qua ngân hàng được tính trong chi phí quản lý theo quy định tại Điều 14 của Thông tư này.","Chào bạn, tôi là trợ lý tư vấn về chính sách người có công. Dựa trên các văn bản pháp luật hiện hành, tôi xin cung cấp thông tin về việc chi trả trợ cấp hàng tháng cho người có công như sau:
+
+**Về hình thức chi trả trợ cấp:**
+
+*   **Chi trả qua tổ chức dịch vụ chi trả:** Theo Điều 15, Thông tư 101/2018/TT-BTC, cơ quan Lao động - Thương binh và Xã hội (LĐTBXH) có thể ký hợp đồng với các tổ chức dịch vụ chi trả có mạng lưới rộng khắp để thực hiện chi trả trợ cấp. Hình thức chi trả có thể là trực tiếp bằng tiền mặt hoặc qua thẻ ATM, tùy thuộc vào thỏa thuận trong hợp đồng.
+    *   _""Việc chi trả thông qua tổ chức dịch vụ chi trả được lập thành hợp đồng giữa cơ quan LĐTBXH (Sở LĐTBXH hoặc Phòng LĐTBXH tùy theo phân cấp của từng địa phương) và tổ chức dịch vụ chi trả, trong đó phải ghi rõ phạm vi đối tượng chi trả, phương thức chi trả (gồm chi trả trực tiếp bằng tiền mặt, chi trả qua thẻ ATM)...""_
+*   **Rút dự toán tại Kho bạc Nhà nước:** Theo Điều 9, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, các đơn vị sử dụng ngân sách nhà nước (Sở LĐTBXH, Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công) thực hiện rút dự toán tại Kho bạc Nhà nước nơi đơn vị mở tài khoản để thực hiện chính sách ưu đãi người có công.
+
+**Như vậy**, việc chi trả trợ cấp qua thẻ ATM là hoàn toàn có thể thực hiện nếu cơ quan LĐTBXH địa phương có ký hợp đồng với tổ chức dịch vụ chi trả và có thỏa thuận về hình thức chi trả qua thẻ ATM. Bạn nên liên hệ với cơ quan LĐTBXH cấp huyện hoặc tỉnh để biết thêm chi tiết về việc này.",0.9180,47_2009_TTLT_BTC_BLĐTBXH_art9_11 | 101_2018_TT_BTC_ch1_art1_3 | 47_2009_TTLT_BTC_BLĐTBXH_art14 | 101_2018_TT_BTC_ch2_art15 | 47_2009_TTLT_BTC_BLĐTBXH_art1_2,1.0000,LangChain not available,0.7458,,0.0000,Haystack not available,0.7219,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7586,101_2018_TT_BTC_ch2_art15
+10,"Tôi làm kế toán ở xã, cho hỏi kinh phí để chi cho các đối tượng người có công lấy từ ngân sách nào?","Theo Điều 3 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, kinh phí thực hiện các chế độ ưu đãi người có công với cách mạng do ngân sách trung ương đảm bảo, bố trí trong dự toán chi ngân sách nhà nước của Bộ Lao động - Thương binh và Xã hội (LĐTBXH). Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện nhiệm vụ chi. Sở LĐTBXH, Phòng LĐTBXH và các cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng mở tài khoản dự toán tại Kho bạc Nhà nước và thực hiện rút dự toán theo quy định.","Theo các văn bản pháp luật hiện hành, kinh phí chi cho các đối tượng người có công được lấy từ ngân sách nhà nước, cụ thể như sau:
+
+1.  **Hạch toán và quyết toán kinh phí:**
+
+    *   Kinh phí thực hiện chính sách ưu đãi người có công được hạch toán và quyết toán vào **Chương của Bộ Lao động - Thương binh và Xã hội (LĐTBXH)** (mã số 024), cấp Chương ngân sách trung ương (mã số 01), loại 370 khoản 371. Đối với chi đóng bảo hiểm y tế, hạch toán loại 130 khoản 133 của Mục lục ngân sách nhà nước hiện hành (Khoản 1, Điều 19, Thông tư 101/2018/TT-BTC).
+2.  **Lập dự toán:**
+
+    *   Dự toán kinh phí thực hiện chính sách ưu đãi người có công được lập chi tiết theo từng loại trợ cấp hằng tháng, trợ cấp một lần, chi thực hiện các chế độ, chính sách, chi phí quản lý (Khoản 1, Điều 16, Thông tư 101/2018/TT-BTC).
+    *   Phòng LĐTBXH lập dự toán của năm kế hoạch gửi Sở LĐTBXH trước ngày 20 tháng 6 hằng năm (Điểm a, Khoản 2, Điều 16, Thông tư 101/2018/TT-BTC).
+    *   Sở LĐTBXH lập dự toán phần chi tại Sở LĐTBXH thực hiện, xem xét dự toán của các Phòng LĐTBXH, tổng hợp dự toán của toàn tỉnh, thành phố gửi Bộ LĐTBXH trước ngày 05 tháng 7 hằng năm (Điểm b, Khoản 2, Điều 16, Thông tư 101/2018/TT-BTC).
+    *   Bộ LĐTBXH xem xét dự toán của các Sở LĐTBXH; tổng hợp dự toán của cả nước gửi Bộ Tài chính trước ngày 20 tháng 7 hằng năm (Điểm c, Khoản 2, Điều 16, Thông tư 101/2018/TT-BTC).
+    *   Bộ Tài chính xem xét và tổng hợp dự toán kinh phí chi ưu đãi người có công với cách mạng vào dự toán chi ngân sách nhà nước trình cấp có thẩm quyền phê duyệt và giao dự toán cho Bộ LĐTBXH trước ngày 20 tháng 11 năm trước (Điểm d, Khoản 2, Điều 16, Thông tư 101/2018/TT-BTC).
+3.  **Bổ sung dự toán:**
+
+    *   Trong trường hợp thiếu kinh phí, Sở Lao động – Thương binh và Xã hội có văn bản đề nghị Bộ Lao động – Thương binh và Xã hội để xem xét bổ sung kinh phí (Khoản 1, Điều 12, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+
+**Lưu ý:** Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH đã hết hiệu lực kể từ ngày 01/01/2019 và được thay thế bởi Thông tư 101/2018/TT-BTC. Do đó, các quy định về hạch toán và quyết toán kinh phí được thực hiện theo Thông tư 101/2018/TT-BTC.
+",0.9159,49_2012_QĐ_UBND_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art12_13 | 101_2018_TT_BTC_ch3_art19 | 49_2012_QĐ_UBND_regulation_ch2_art4_5 | 101_2018_TT_BTC_ch3_art16,0.0000,LangChain not available,0.7636,,0.0000,Haystack not available,0.7392,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7766,101_2018_TT_BTC_ch1_art1_3
+11,"Ông anh tôi là thương binh, cụt một chân. Nghe nói được hỗ trợ lắp chân giả và tiền đi lại, vậy thì giờ ông ấy được hỗ trợ bao nhiêu tiền để đi làm chân giả?","Theo Điều 7 Thông tư số 101/2018/TT-BTC và Phụ lục kèm theo, anh bạn sẽ được hưởng:
+
+1. Hỗ trợ tiền mua chân giả (tùy loại):
+   - Chân giả dưới gối có dây đeo số 8: 3.400.000 đồng (niên hạn 2 năm)
+   - Chân giả dưới gối có bao da đùi: 3.600.000 đồng (niên hạn 2 năm)
+   - Chân giả trên gối: 3.800.000 đồng (niên hạn 2 năm)
+   - Chân giả tháo khớp gối: 4.340.000 đồng (niên hạn 3 năm)
+   - Chân tháo khớp hông: 5.880.000 đồng (niên hạn 3 năm)
+
+2. Hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về) khi đi làm dụng cụ chỉnh hình: Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người.
+
+Ngoài ra, mỗi năm còn được cấp vật phẩm phụ 200.000 đồng/người/năm.","Dựa trên thông tin pháp luật hiện hành, ông anh của bạn là thương binh bị cụt một chân sẽ được hưởng các chế độ hỗ trợ sau:
+
+**1. Tiền mua chân giả:**
+
+*   Theo Phụ lục của **Thông tư 101/2018/TT-BTC**, mức tiền cấp để mua chân giả sẽ tùy thuộc vào loại chân giả mà ông anh của bạn cần:
+
+    *   **Chân giả trên gối:** 3.800.000 đồng, niên hạn sử dụng 02 năm.
+    *   **Chân giả dưới gối có bao da đùi:** 3.600.000 đồng, niên hạn sử dụng 02 năm.
+    *   **Chân giả dưới gối có dây đeo số 8:** 3.400.000 đồng, niên hạn sử dụng 02 năm.
+    *   **Chân giả tháo khớp gối:** 4.340.000 đồng, niên hạn sử dụng 03 năm.
+    *   **Chân giả tháo khớp cổ chân:** 2.260.000 đồng, niên hạn sử dụng 03 năm.
+*   Ngoài ra, theo Phụ lục của **Thông tư 101/2018/TT-BTC**, người được cấp chân giả còn được cấp thêm **200.000 đồng/năm** tiền vật phẩm phụ.
+*   **Thông tư 101/2018/TT-BTC** quy định việc cấp tiền mua chân giả được thực hiện một lần vào đầu niên hạn sử dụng.
+
+**2. Hỗ trợ chi phí đi lại:**
+
+*   **Thông tư 101/2018/TT-BTC** quy định, khi đi làm chân giả, thương binh được hỗ trợ tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về), mỗi niên hạn 01 lần.
+*   Mức hỗ trợ được tính theo đơn giá **5.000 đồng/km** nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá **1.400.000 đồng/người**.
+
+**Ví dụ:** Nếu khoảng cách từ nhà ông anh bạn đến trung tâm chỉnh hình gần nhất là 175km, thì số tiền hỗ trợ đi lại sẽ là: 5.000 đồng/km x 175km = 875.000 đồng.
+
+**Tóm lại:** Ông anh của bạn sẽ được nhận tiền mua chân giả (tùy thuộc vào loại chân giả) và tiền hỗ trợ đi lại để làm chân giả. Để biết chính xác mức tiền được nhận, cần xác định loại chân giả phù hợp và khoảng cách từ nơi ở đến cơ sở y tế.
+",0.9505,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_appendix | 47_2009_TTLT_BTC_BLĐTBXH_art4,1.0000,LangChain not available,0.7734,,0.0000,Haystack not available,0.7529,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7820,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_appendix
+12,Tôi muốn hỏi là thủ tục thăm viếng mộ liệt sĩ bây giờ theo quy định nào? Tôi nghe nói có thay đổi rồi?,"Theo Điều 12 Thông tư số 101/2018/TT-BTC ngày 14/11/2018, thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ một lần tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ. Mức hỗ trợ theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh nhưng tối đa không quá 2.400.000 đồng/người. Quy trình, thủ tục hỗ trợ đi thăm viếng mộ liệt sĩ thực hiện theo quy định của Bộ LĐTBXH. Thông tư này có hiệu lực từ 01/01/2019 và thay thế Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH.","Chào bạn, tôi là trợ lý tư vấn về chính sách ưu đãi người có công. Về câu hỏi của bạn liên quan đến thủ tục thăm viếng mộ liệt sĩ, tôi xin cung cấp thông tin như sau:
+
+**Hướng dẫn về thủ tục và hỗ trợ thăm viếng mộ liệt sĩ:**
+
+1.  **Đối tượng được hỗ trợ:**
+    *   Thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ.
+2.  **Mức hỗ trợ:**
+    *   Tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ.
+    *   Mức hỗ trợ: 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người.
+    *   Ví dụ: Nếu khoảng cách là 900km, gia đình 3 người sẽ được hỗ trợ 5.400.000 đồng (2.000 đồng x 900 km x 3 người).
+3.  **Thủ tục thực hiện:**
+    *   Thân nhân liệt sĩ hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ.
+    *   Quy trình, thủ tục cụ thể do Bộ LĐTBXH quy định.
+
+**Căn cứ pháp lý:**
+
+*   Điều 12, Thông tư 101/2018/TT-BTC (có hiệu lực từ 01/01/2019).
+*   Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH (có hiệu lực từ 25/04/2009) quy định về các khoản chi ưu đãi khác, bao gồm hỗ trợ thân nhân liệt sĩ thăm viếng mộ.
+
+**Lưu ý:**
+
+*   Thông tin chi tiết về quy trình và thủ tục cụ thể sẽ được quy định bởi Bộ LĐTBXH. Bạn nên liên hệ trực tiếp với cơ quan LĐTBXH địa phương để được hướng dẫn chi tiết.
+*   Các quy định về xây dựng, cải tạo, nâng cấp công trình ghi công liệt sĩ được quy định tại Điều 11, Thông tư 101/2018/TT-BTC.
+
+Hy vọng thông tin này hữu ích cho bạn!
+",0.9450,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11 | 63_2010_NĐ_CP_annex1 | 101_2018_TT_BTC_ch1_art1_3,1.0000,LangChain not available,0.7422,,0.0000,Haystack not available,0.7231,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7426,101_2018_TT_BTC_ch2_art12_13
+13,"Tiền điều dưỡng tập trung bao nhiêu một người? Tiền ăn uống, sách báo có được bao gồm không?","Theo Điều 6 Thông tư số 101/2018/TT-BTC, mức chi điều dưỡng tập trung bao gồm:
+1. Tiền ăn đầy đủ (ăn sáng, 2 bữa chính trưa và chiều, và ăn bồi dưỡng thêm nếu có);
+2. Thuốc bổ và thuốc chữa bệnh thông thường;
+3. Quà tặng cho đối tượng (bằng tiền hoặc hiện vật);
+4. Các khoản chi khác phục vụ trực tiếp (gồm: khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng và các khoản chi khác) không quá 15% mức chi điều dưỡng tập trung;
+5. Chi phí điện, nước sinh hoạt hoặc mua xăng dầu chạy máy phát điện, lọc nước, vệ sinh môi trường: định mức tối đa 320.000 đồng/người/lần;
+6. Chi sách báo, hoạt động văn hóa, văn nghệ, thể thao: 100.000 đồng/người/đợt điều dưỡng.
+Tiền ăn uống và sách báo đều được bao gồm trong chế độ điều dưỡng tập trung.","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về chi phí điều dưỡng tập trung như sau:
+
+**Mức chi điều dưỡng tập trung:**
+
+Theo điểm a khoản 2 Điều 6 Thông tư 101/2018/TT-BTC, mức chi điều dưỡng tập trung bao gồm:
+
+*   **Tiền ăn:** Bao gồm ăn sáng, ăn 2 bữa chính (trưa và chiều) và ăn bồi dưỡng thêm (nếu có).
+*   **Thuốc bổ và thuốc chữa bệnh thông thường.**
+*   **Quà tặng:** Bằng tiền hoặc hiện vật.
+*   **Các khoản chi khác:** Phục vụ trực tiếp cho đối tượng trong thời gian điều dưỡng (gồm: khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng và các khoản chi khác phục vụ đối tượng điều dưỡng) không quá 15% mức chi điều dưỡng tập trung.
+
+**Về sách báo, hoạt động văn hóa, văn nghệ, thể thao:**
+
+Điểm c khoản 2 Điều 6 Thông tư 101/2018/TT-BTC quy định chi cho sách báo, hoạt động văn hóa, văn nghệ, thể thao phục vụ đối tượng trong thời gian điều dưỡng tại cơ sở là 100.000 đồng/người/đợt điều dưỡng.
+
+**Lưu ý:**
+
+*   Mức chi cụ thể cho điều dưỡng tập trung được thực hiện theo quy định tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP. Bạn cần tham khảo thêm văn bản này để biết chi tiết.
+*   Thông tư 101/2018/TT-BTC cũng quy định về các khoản chi khác liên quan đến điều dưỡng, như chi phí điện, nước sinh hoạt, vệ sinh môi trường, sửa chữa điện nước (tối đa 320.000 đồng/người/lần) và chi phí đưa đón người có công đi điều dưỡng tập trung.
+*   Hội đồng nhân dân tỉnh, thành phố trực thuộc Trung ương có thể xem xét, quyết định mức chi chế độ điều dưỡng cao hơn mức quy định và hỗ trợ phần chênh lệch từ ngân sách địa phương (khoản 3 Điều 6 Thông tư 101/2018/TT-BTC).
+
+",0.9526,101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch2_art10 | 47_2009_TTLT_BTC_BLĐTBXH_art5_6 | 101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art5,1.0000,LangChain not available,0.7441,,0.0000,Haystack not available,0.7287,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7638,101_2018_TT_BTC_ch2_art6
+14,"Bọn em làm phòng tài chính ở UBND huyện Thanh Trì, em nghe nói là những khoản chi cho người có công giờ ko do UBND chi nữa mà do một đơn vị khác chi. Có đúng không ạ?","Theo Điều 3 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, kinh phí thực hiện các chế độ quy định tại Thông tư này do ngân sách trung ương đảm bảo bố trí trong dự toán chi ngân sách nhà nước của Bộ LĐTBXH và được thực hiện như sau:
+1. Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện nhiệm vụ chi.
+2. Sở LĐTBXH, Phòng LĐTBXH và các cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng mở tài khoản dự toán tại Kho bạc Nhà nước (KBNN) và thực hiện rút dự toán theo quy định.
+3. Việc quản lý, sử dụng, hạch toán kế toán và quyết toán kinh phí thực hiện theo quy định của Luật Ngân sách nhà nước, Luật Kế toán, các văn bản hướng dẫn và quy định cụ thể tại Thông tư này.","Chào bạn,
+
+Dựa trên thông tin bạn cung cấp và các văn bản pháp luật hiện hành, tôi xin trả lời câu hỏi của bạn như sau:
+
+**Giải thích:**
+
+Việc chi trả các khoản cho người có công hiện nay không chỉ do UBND huyện thực hiện mà còn có sự tham gia của các đơn vị khác như Phòng Lao động - Thương binh và Xã hội quận/huyện, Kho bạc Nhà nước và UBND phường/xã/thị trấn.
+
+**Chi tiết:**
+
+1.  **Sở Lao động - Thương binh và Xã hội:**
+    *   Thẩm tra dự toán kinh phí hàng năm của Phòng Lao động - Thương binh và Xã hội các quận/huyện (Điều 4, Quyết định 49/2012/QĐ-UBND).
+    *   Phân bổ và giao dự toán ngân sách cho các Phòng Lao động - Thương binh và Xã hội (Điều 4, Quyết định 49/2012/QĐ-UBND).
+    *   Lập bảng kê tăng và danh sách chi trả trợ cấp hàng tháng cho các Phòng Lao động - Thương binh và Xã hội (Điều 4, Quyết định 49/2012/QĐ-UBND).
+    *   Thẩm tra, xét duyệt và thông báo kết quả thực hiện dự toán, quyết toán kinh phí (Điều 4, Quyết định 49/2012/QĐ-UBND).
+
+2.  **Kho bạc Nhà nước:**
+    *   Hướng dẫn mở tài khoản, thanh toán và kiểm soát chi nguồn kinh phí (Điều 5, Quyết định 49/2012/QĐ-UBND).
+    *   Chuyển khoản kinh phí từ tài khoản của Phòng Lao động - Thương binh và Xã hội về tài khoản của UBND phường/xã/thị trấn (Điều 5, Quyết định 49/2012/QĐ-UBND).
+
+3.  **Ủy ban nhân dân phường - xã, thị trấn:**
+    *   Trực tiếp quản lý đối tượng, tiền mặt và chi trả trợ cấp ưu đãi người có công trên địa bàn (Điều 8, Quyết định 49/2012/QĐ-UBND).
+    *   Chỉ đạo cán bộ lập danh sách đối tượng, theo dõi thu chi, lập chứng từ và thanh quyết toán kinh phí (Điều 8, Quyết định 49/2012/QĐ-UBND).
+
+**Tóm lại:**
+
+UBND huyện vẫn tham gia vào quá trình quản lý và chi trả, nhưng Phòng Lao động - Thương binh và Xã hội, Kho bạc Nhà nước và UBND phường/xã/thị trấn đóng vai trò quan trọng trong việc lập dự toán, phân bổ kinh phí, kiểm soát chi và trực tiếp chi trả đến đối tượng thụ hưởng.
+
+Hy vọng thông tin này hữu ích cho công việc của bạn.
+",0.8803,49_2012_QĐ_UBND_regulation_ch2_art4_5 | 49_2012_QĐ_UBND_preamble | 49_2012_QĐ_UBND_art1_3 | 49_2012_QĐ_UBND_regulation_ch2_art8 | 47_2009_TTLT_BTC_BLĐTBXH_art12_13,0.0000,LangChain not available,0.7623,,0.0000,Haystack not available,0.7322,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7735,101_2018_TT_BTC_ch1_art1_3
+15,"Tôi làm ở phòng LĐ-TB-XH quận Thanh Xuân. Tiền trợ cấp cho người có công của quận đang thừa, quận bên lại thiếu. Vậy có chuyển được từ quận này sang quận khác không?","Theo Điều 18 Thông tư số 101/2018/TT-BTC ngày 14/11/2018, việc điều chỉnh dự toán trong nội bộ tỉnh được quy định như sau: Giám đốc Sở LĐTBXH quyết định việc điều chỉnh dự toán kinh phí giữa các đơn vị sử dụng ngân sách (Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng) và phần kinh phí chi tại Sở trong phạm vi dự toán đã được Bộ trưởng Bộ LĐTBXH giao. Sở LĐTBXH xem xét sự cần thiết, căn cứ điều chỉnh, kiểm tra số dư dự toán của các đơn vị sử dụng ngân sách có liên quan để quyết định điều chỉnh dự toán. Quyết định điều chỉnh dự toán được gửi đến đơn vị sử dụng ngân sách, đồng gửi Kho bạc Nhà nước nơi giao dịch làm căn cứ thực hiện điều chỉnh dự toán.","Dựa trên các văn bản pháp luật hiện có, tôi chưa tìm thấy quy định cụ thể nào cho phép chuyển tiền trợ cấp người có công từ quận này sang quận khác khi có sự chênh lệch về kinh phí. Tuy nhiên, tôi có thể cung cấp thông tin về quản lý và sử dụng kinh phí chi trả trợ cấp cho người có công như sau:
+
+**1. Quản lý kinh phí:**
+
+*   **UBND quận/huyện:** Chịu trách nhiệm quản lý kinh phí, xây dựng dự toán hàng năm, và báo cáo quyết toán (Điều 6, Quyết định 49/2012/QĐ-UBND).
+*   **Phòng LĐTBXH quận/huyện:** Quản lý kinh phí trên địa bàn, mở tài khoản tại Kho bạc Nhà nước, lập dự toán và thanh quyết toán (Điều 7, Quyết định 49/2012/QĐ-UBND).
+
+**2. Sử dụng kinh phí:**
+
+*   Phòng LĐTBXH quận/huyện rút dự toán và chuyển kinh phí cho các phường/xã/thị trấn để chi trả trợ cấp (Điều 7, Quyết định 49/2012/QĐ-UBND).
+*   UBND phường/xã/thị trấn quản lý tiền mặt và chi trả trợ cấp đúng đối tượng, đúng chế độ (Điều 8, Quyết định 49/2012/QĐ-UBND).
+
+**3. Chi trả qua tổ chức dịch vụ chi trả:**
+
+*   Cơ quan LĐTBXH (Sở hoặc Phòng) có thể ký hợp đồng với tổ chức dịch vụ chi trả để thực hiện chi trả (Điều 15, Thông tư 101/2018/TT-BTC).
+*   Cơ quan LĐTBXH chuyển kinh phí cho tổ chức dịch vụ chi trả, và tổ chức này thực hiện chi trả cho đối tượng (Điều 15, Thông tư 101/2018/TT-BTC).
+
+**Như vậy:**
+
+*   Các văn bản hiện tại tập trung vào việc quản lý và sử dụng kinh phí trong phạm vi quận/huyện.
+*   Tôi không tìm thấy quy định nào cho phép chuyển kinh phí giữa các quận/huyện.
+
+**Để có thông tin chính xác về việc điều chuyển kinh phí giữa các quận, bạn nên:**
+
+*   Tham khảo ý kiến của Sở LĐTBXH để được hướng dẫn cụ thể.
+*   Nghiên cứu các văn bản pháp luật khác có liên quan đến quản lý ngân sách và điều chuyển kinh phí giữa các đơn vị hành chính.
+",0.8897,49_2012_QĐ_UBND_regulation_ch2_art6_7 | 49_2012_QĐ_UBND_regulation_ch2_art8 | 101_2018_TT_BTC_ch2_art15 | 101_2018_TT_BTC_ch2_art7 | 49_2012_QĐ_UBND_art1_3,0.0000,LangChain not available,0.7561,,0.0000,Haystack not available,0.7364,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7692,101_2018_TT_BTC_ch3_art18
+16,"Chào, tôi làm thủ tục về người có công ở phường 1. Nhà nước có quy định gì về việc sử dụng dư dự toán cuối năm không? Không biết có được kết chuyển sang năm sau không?","Theo Điều 20, Khoản 1 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018: 'Việc xử lý số dư kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý cuối năm thực hiện theo quy định tại Điều 43 Nghị định số 163/2016/NĐ-CP ngày 21 tháng 12 năm 2016 của Chính phủ quy định chi tiết thi hành một số điều của Luật Ngân sách nhà nước.'
+
+Ngoài ra, theo Điều 2, Khoản 2 của Thông tư này: 'Số dư dự toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng đến hết niên độ ngân sách năm dự toán (bao gồm cả thời gian chỉnh lý quyết toán theo chế độ quy định) không sử dụng hết thì bị hủy bỏ.' Điều này nghĩa là dư dự toán cuối năm không được kết chuyển sang năm sau.","Chào bạn, về việc sử dụng và kết chuyển dự toán kinh phí chi cho người có công vào cuối năm, tôi cung cấp thông tin dựa trên các văn bản pháp luật hiện hành như sau:
+
+1.  **Điều chỉnh dự toán trong năm:**
+
+    *   **Trong nội bộ tỉnh:** Giám đốc Sở Lao động - Thương binh và Xã hội (LĐTBXH) có quyền điều chỉnh dự toán giữa các đơn vị sử dụng ngân sách trực thuộc (Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công) và kinh phí chi tại Sở, nhưng phải đảm bảo không vượt quá dự toán đã được Bộ trưởng Bộ LĐTBXH giao (khoản 1, Điều 18, Thông tư 101/2018/TT-BTC).
+    *   **Giữa các tỉnh:** Bộ trưởng Bộ LĐTBXH có quyền điều chỉnh dự toán giữa các Sở LĐTBXH, nhưng phải đảm bảo không vượt quá dự toán đã được cấp có thẩm quyền giao (khoản 2, Điều 18, Thông tư 101/2018/TT-BTC).
+
+2.  **Thời hạn điều chỉnh dự toán:**
+
+    *   Việc điều chỉnh dự toán đã giao cho các đơn vị sử dụng ngân sách phải hoàn thành trước ngày 15 tháng 11 hàng năm (khoản 3, Điều 18, Thông tư 101/2018/TT-BTC).
+
+3.  **Bổ sung dự toán:**
+
+    *   Nếu sau khi điều chỉnh dự toán trong nội bộ tỉnh vẫn thiếu kinh phí, Sở LĐTBXH có thể đề nghị Bộ LĐTBXH xem xét bổ sung (khoản 1, Điều 12, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Nếu sau khi điều chỉnh dự toán giữa các Sở LĐTBXH vẫn thiếu kinh phí, Bộ LĐTBXH có thể đề nghị Bộ Tài chính xem xét bổ sung hoặc ứng trước dự toán năm sau (khoản 2, Điều 12, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+
+4.  **Ứng trước dự toán năm sau:**
+
+    *   Việc ứng trước dự toán ngân sách năm sau do Kho bạc Nhà nước thực hiện theo quyết định của Bộ Tài chính, nhưng không quá 20% dự toán ngân sách năm trước hoặc số kiểm tra dự toán chi ngân sách năm sau đã được cơ quan nhà nước thông báo (khoản 3, Điều 12, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+
+5.  **Hạch toán và quyết toán kinh phí:**
+
+    *   Kinh phí thực hiện chính sách ưu đãi người có công được hạch toán và quyết toán vào Chương của Bộ LĐTBXH (mã số 024), cấp Chương ngân sách Trung ương (mã số 1), loại 520, khoản 527 của Mục lục ngân sách nhà nước hiện hành (khoản 2, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+
+**Như vậy:** Các văn bản pháp luật hiện hành không đề cập cụ thể đến việc **kết chuyển số dư dự toán** kinh phí chi cho người có công sang năm sau, mà chỉ quy định về điều chỉnh, bổ sung và ứng trước dự toán. Để biết rõ hơn về việc kết chuyển số dư dự toán, bạn nên liên hệ trực tiếp với Sở LĐTBXH hoặc Kho bạc Nhà nước nơi giao dịch để được giải đáp chi tiết.
+",0.8927,47_2009_TTLT_BTC_BLĐTBXH_art9_11 | 47_2009_TTLT_BTC_BLĐTBXH_art12_13 | 101_2018_TT_BTC_ch3_art17 | 63_2010_NĐ_CP_annex1 | 101_2018_TT_BTC_ch3_art18,0.0000,LangChain not available,0.7537,,0.0000,Haystack not available,0.7420,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7615,101_2018_TT_BTC_ch3_art20_21
+17,Cơ quan nào có thẩm quyền chuyển dự toán giữa các tỉnh vậy?,"Theo quy định tại Khoản 2, Điều 18 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018: 'Bộ trưởng Bộ LĐTBXH quyết định điều chỉnh dự toán giữa các Sở LĐTBXH trong phạm vi dự toán đã được cấp có thẩm quyền giao. Bộ LĐTBXH xem xét sự cần thiết, căn cứ điều chỉnh, kiểm tra số dư dự toán của các đơn vị sử dụng ngân sách có liên quan để quyết định điều chỉnh dự toán. Quyết định điều chỉnh dự toán được gửi đến Sở LĐTBXH, KBNN cấp tỉnh có liên quan để thực hiện và gửi Bộ Tài chính để kiểm tra và phê duyệt trên hệ thống TABMIS.'","Theo các văn bản pháp luật hiện hành, thẩm quyền điều chỉnh dự toán giữa các tỉnh thuộc về:
+
+1.  **Bộ trưởng Bộ Lao động - Thương binh và Xã hội (LĐTBXH)**:
+
+    *   **Thông tư 101/2018/TT-BTC** (có hiệu lực từ 01/01/2019) quy định tại Điều 18.2: ""Bộ trưởng Bộ LĐTBXH quyết định điều chỉnh dự toán giữa các Sở LĐTBXH trong phạm vi dự toán đã được cấp có thẩm quyền giao.""
+    *   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH** (có hiệu lực từ 25/04/2009) quy định tại Điều 11.2.a: ""Trên cơ sở đề nghị của Sở Lao động – Thương binh và Xã hội tỉnh (kèm theo Bảng tổng hợp xác nhận của Kho bạc Nhà nước nơi đơn vị mở tài khoản giao dịch về số dư dự toán còn lại), Bộ Lao động – Thương binh và Xã hội ra quyết định điều chỉnh dự toán giữa các Sở Lao động – Thương binh và Xã hội nhưng đảm bảo nguyên tắc không vượt quá tổng số dự toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng được giao, đồng thời gửi Kho bạc Nhà nước tỉnh, thành phố trực thuộc Trung ương để kiểm soát chi và gửi Bộ Tài chính để báo cáo.""
+
+**Lưu ý:**
+
+*   **Thứ tự ưu tiên văn bản:** Thông tư 101/2018/TT-BTC có hiệu lực từ 01/01/2019 được ưu tiên áp dụng hơn so với Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH có hiệu lực từ 25/04/2009.
+*   **Trách nhiệm của các bên liên quan:**
+    *   Sở LĐTBXH các tỉnh có trách nhiệm đề xuất điều chỉnh dự toán.
+    *   Bộ Tài chính có vai trò kiểm tra, phê duyệt (theo Thông tư 101/2018/TT-BTC) và báo cáo (theo Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Kho bạc Nhà nước có trách nhiệm kiểm soát chi và phối hợp thực hiện điều chỉnh dự toán.
+",0.9369,101_2018_TT_BTC_ch3_art18 | 101_2018_TT_BTC_ch3_art17 | 47_2009_TTLT_BTC_BLĐTBXH_art9_11 | 47_2009_TTLT_BTC_BLĐTBXH_art12_13 | 48_2013_NĐ_CP_art5,1.0000,LangChain not available,0.7734,,0.0000,Haystack not available,0.7444,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7844,101_2018_TT_BTC_ch3_art18
+18,"Mẹ chồng em là liệt sĩ, năm nay em đưa bà về quê an táng nhưng được hỗ trợ thấp quá. Chỗ em từ TPHCM ra Quảng Trị mà chỉ được 2,4 triệu thôi, em thấy mắc cả vé máy bay, tiền ăn các thứ nữa. Cho em hỏi có quy định nào khác về mức hỗ trợ không ạ?","Theo Điều 13 và Khoản 3 Điều 6 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, mức hỗ trợ tiền tàu xe và tiền ăn đối với thân nhân liệt sĩ khi di chuyển hài cốt liệt sĩ tối đa là 2.400.000 đồng/người (đã là mức cao nhất theo quy định), cộng với khoản hỗ trợ kinh phí cất bốc và di chuyển 4.000.000 đồng cho một bộ hài cốt liệt sĩ. 
+
+Tuy nhiên, tại Khoản 3 Điều 6 có quy định: 'Căn cứ khả năng cân đối ngân sách địa phương và tình hình thực tế, Hội đồng nhân dân tỉnh, thành phố trực thuộc Trung ương xem xét, quyết định theo thẩm quyền mức chi chế độ điều dưỡng cao hơn mức quy định tại Khoản 1 và 2 Điều này và hỗ trợ phần chênh lệch cao hơn từ nguồn ngân sách địa phương.'
+
+Điều này có nghĩa là TPHCM có thể có chính sách hỗ trợ thêm từ ngân sách địa phương nếu Hội đồng nhân dân Thành phố đã ban hành quy định về việc này.","Chào bạn, tôi hiểu bạn đang thắc mắc về mức hỗ trợ di chuyển hài cốt liệt sĩ từ TP.HCM ra Quảng Trị. Dưới đây là thông tin chi tiết về vấn đề này, dựa trên các văn bản pháp luật hiện hành:
+
+**1. Mức hỗ trợ di chuyển hài cốt liệt sĩ:**
+
+Theo quy định tại điểm a, khoản 1, Điều 13 của Thông tư 101/2018/TT-BTC, thân nhân liệt sĩ (tối đa ba người) hoặc người được thân nhân liệt sĩ ủy quyền hoặc người thờ cúng liệt sĩ được hỗ trợ tiền tàu xe và tiền ăn. Mức hỗ trợ này được tính theo quy định tại khoản 1 Điều 12 của Thông tư này, cụ thể:
+
+*   **Mức hỗ trợ:** 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh.
+*   **Giới hạn tối đa:** Không quá 2.400.000 đồng/người.
+
+**2. Hỗ trợ thêm kinh phí cất bốc và di chuyển hài cốt:**
+
+Điểm b, khoản 1, Điều 13 của Thông tư 101/2018/TT-BTC quy định thêm về việc hỗ trợ kinh phí cất bốc và di chuyển một bộ hài cốt liệt sĩ với mức chi là 4.000.000 đồng.
+
+**Như vậy:**
+
+Tổng cộng, bạn có thể được hỗ trợ:
+
+*   Tiền tàu xe và tiền ăn cho tối đa 3 người thân (tối đa 2.400.000 đồng/người).
+*   Kinh phí cất bốc và di chuyển hài cốt: 4.000.000 đồng.
+
+**Về trường hợp của bạn:**
+
+Bạn cho biết mức hỗ trợ bạn nhận được là 2.400.000 đồng. Nếu đây là mức hỗ trợ cho một người thân đi cùng để di chuyển hài cốt liệt sĩ, thì có thể đúng theo quy định (tối đa 2.400.000 đồng/người). Tuy nhiên, bạn nên kiểm tra lại xem mình đã được nhận đủ các khoản hỗ trợ khác theo quy định hay chưa, đặc biệt là khoản kinh phí 4.000.000 đồng cho việc cất bốc và di chuyển hài cốt.
+
+**Để làm rõ hơn, bạn nên:**
+
+1.  Liên hệ với cơ quan LĐTBXH cấp huyện/tỉnh nơi bạn làm thủ tục để được giải thích chi tiết về cách tính mức hỗ trợ trong trường hợp của bạn.
+2.  Hỏi rõ về các khoản hỗ trợ khác mà gia đình bạn có thể được hưởng, như kinh phí cất bốc và di chuyển hài cốt.
+
+**Thông tin bổ sung:**
+
+*   Thông tư 101/2018/TT-BTC có hiệu lực từ ngày 01/01/2019 và vẫn đang còn hiệu lực.
+*   Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH cũng đề cập đến việc hỗ trợ thân nhân liệt sĩ thăm viếng mộ và di chuyển hài cốt liệt sĩ (khoản 14, Điều 4), nhưng Thông tư 101/2018/TT-BTC là văn bản mới hơn và cụ thể hơn về mức hỗ trợ.
+",0.9418,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art7 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11,0.5000,LangChain not available,0.7424,,0.0000,Haystack not available,0.7305,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7525,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art6
+19,Thủ tục thực hiện chế độ bảo hiểm y tế cho người tham gia kháng chiến chống Mỹ như thế nào?,"Theo Điều 5 Thông tư số 101/2018/TT-BTC ngày 14/11/2018, thủ tục thực hiện chế độ bảo hiểm y tế cho đối tượng như sau:
+
+1. Hằng quý, cơ quan LĐTBXH căn cứ danh sách đối tượng đóng bảo hiểm y tế đã được rà soát, đối chiếu với cơ quan bảo hiểm xã hội làm thủ tục rút dự toán kinh phí tại KBNN để chuyển kinh phí vào quỹ bảo hiểm y tế.
+
+2. Số tiền đóng, phương thức đóng bảo hiểm y tế hằng quý thực hiện theo quy định của pháp luật về bảo hiểm y tế.
+
+Tuy nhiên, theo Điều 1, Khoản 2, điểm đ của Thông tư 101/2018/TT-BTC, kinh phí thực hiện chế độ bảo hiểm y tế đối với các đối tượng theo quy định tại Quyết định số 290/2005/QĐ-TTg (người tham gia kháng chiến chống Mỹ) không thuộc phạm vi điều chỉnh của Thông tư này. Khoản chi này do ngân sách địa phương đảm bảo hoặc ngân sách trung ương bổ sung có mục tiêu cho ngân sách địa phương.","Thủ tục thực hiện chế độ bảo hiểm y tế cho người tham gia kháng chiến chống Mỹ được quy định như sau:
+
+1.  **Đối tượng được cấp thẻ bảo hiểm y tế:**
+    *   Những người đang hưởng chế độ trợ cấp, phụ cấp hàng tháng (trừ những người đồng thời đang tham gia bảo hiểm xã hội bắt buộc, hưởng lương hưu, trợ cấp bảo hiểm xã hội, trợ cấp bảo hiểm thất nghiệp hàng tháng).
+    *   Đối tượng không hưởng trợ cấp hàng tháng được cấp thẻ bảo hiểm y tế theo quy định của Pháp lệnh ưu đãi người có công với cách mạng và thanh niên xung phong thời kỳ kháng chiến chống Pháp theo Quyết định số 170/2008/QĐ-TTg.
+
+    (Theo khoản 1, Điều 5, Thông tư 101/2018/TT-BTC)
+
+2.  **Thủ tục thực hiện:**
+    *   Hàng quý, cơ quan LĐTBXH căn cứ danh sách đối tượng đóng bảo hiểm y tế đã được rà soát, đối chiếu với cơ quan bảo hiểm xã hội để làm thủ tục rút dự toán kinh phí tại KBNN (Kho bạc Nhà nước) và chuyển kinh phí vào quỹ bảo hiểm y tế.
+    *   Số tiền đóng và phương thức đóng bảo hiểm y tế hàng quý thực hiện theo quy định của pháp luật về bảo hiểm y tế.
+
+    (Theo khoản 2, 3, Điều 5, Thông tư 101/2018/TT-BTC)
+
+**Thông tin bổ sung:**
+
+*   Thông tư 101/2018/TT-BTC quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý. (Theo Điều 1, Thông tư 101/2018/TT-BTC)
+*   Kinh phí thực hiện chế độ bảo hiểm y tế đối với các đối tượng theo quy định tại các Quyết định số 290/2005/QĐ-TTg, số 188/2007/QĐ-TTg, số 142/2008/QĐ-TTg, số 38/2010/QĐ-TTg, số 53/2010/QĐ-TTg, số 62/2011/QĐ-TTg, số 40/2011/QĐ-TTg, số 49/2015/QĐ-TTg thuộc phạm vi điều chỉnh của Thông tư này. (Theo điểm đ, khoản 2, Điều 1, Thông tư 101/2018/TT-BTC)
+*   Đối tượng trực tiếp tham gia kháng chiến chống Mỹ cứu nước nhưng chưa được hưởng chính sách của Đảng và Nhà nước theo Quyết định số 290/2005/QĐ-TTg và Quyết định số 188/2007/QĐ-TTg thuộc đối tượng được chi trả trợ cấp một lần theo quy định tại Thông tư này. (Theo điểm c, khoản 2, Điều 4, Thông tư 101/2018/TT-BTC)
+",0.9391,101_2018_TT_BTC_ch2_art5 | 47_2009_TTLT_BTC_BLĐTBXH_art3 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_preamble,0.6667,LangChain not available,0.7594,,0.0000,Haystack not available,0.7373,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7806,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art5 | 1766_2020_QĐ_UBND_annex_tthc_bai_bo
+20,Khi kiểm soát thủ tục hành chính thì cơ quan nào có trách nhiệm tham mưu cho UBND tỉnh vậy?,"Theo Khoản 3 Điều 1 Nghị định số 48/2013/NĐ-CP ngày 14/5/2013 sửa đổi Điều 5 của Nghị định số 63/2010/NĐ-CP về kiểm soát thủ tục hành chính: 'Sở Tư pháp có chức năng tham mưu, giúp Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính tại địa phương. Phòng Kiểm soát thủ tục hành chính thuộc Sở Tư pháp có chức năng tham mưu, giúp Giám đốc Sở Tư pháp tổ chức thực hiện công tác kiểm soát thủ tục hành chính.'","Theo các văn bản pháp luật hiện hành về kiểm soát thủ tục hành chính, Sở Tư pháp có trách nhiệm tham mưu cho UBND tỉnh về công tác này. Cụ thể:
+
+*   **Sở Tư pháp:** Có chức năng tham mưu, giúp Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương thực hiện quản lý nhà nước về công tác kiểm soát thủ tục hành chính tại địa phương (Khoản 3, Điều 5, Nghị định 48/2013/NĐ-CP sửa đổi Điều 5 Nghị định 63/2010/NĐ-CP).
+*   **Phòng Kiểm soát thủ tục hành chính thuộc Sở Tư pháp:** Có chức năng tham mưu, giúp Giám đốc Sở Tư pháp tổ chức thực hiện công tác kiểm soát thủ tục hành chính (Khoản 3, Điều 5, Nghị định 48/2013/NĐ-CP sửa đổi Điều 5 Nghị định 63/2010/NĐ-CP).
+
+Ngoài ra, tổ chức pháp chế ở cơ quan chuyên môn thuộc UBND cấp tỉnh cũng có trách nhiệm phối hợp với Sở Tư pháp trong công tác này:
+
+*   **Tổ chức pháp chế ở cơ quan chuyên môn thuộc Ủy ban nhân dân cấp tỉnh:** Chủ trì giúp Thủ trưởng cơ quan phối hợp với Sở Tư pháp kiểm soát thủ tục hành chính theo quy định của pháp luật (Điểm a, Khoản 3a, Điều 6, Nghị định 48/2013/NĐ-CP).",0.9409,48_2013_NĐ_CP_art1_part1 | 48_2013_NĐ_CP_art4 | 63_2010_NĐ_CP_preamble | 63_2010_NĐ_CP_ch3_art20_22 | 63_2010_NĐ_CP_ch2_art10_11,0.0000,LangChain not available,0.7351,,0.0000,Haystack not available,0.7073,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7480,63_2010_ND_CP | 48_2013_ND_CP
+21,Ở địa phương tôi có một số thủ tục hành chính đã thay đổi. Thời hạn để công bố thủ tục hành chính mới theo quy định là bao lâu?,"Theo Khoản 5 Điều 1 Nghị định số 48/2013/NĐ-CP ngày 14/5/2013 sửa đổi Điều 15 của Nghị định số 63/2010/NĐ-CP về thời hạn ban hành quyết định công bố thủ tục hành chính:
+
+'Quyết định công bố thủ tục hành chính của các cơ quan quy định tại Khoản 1 Điều 13 của Nghị định này phải được ban hành chậm nhất trước 20 (hai mươi) ngày làm việc tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành.
+
+Quyết định công bố thủ tục hành chính của các cơ quan quy định tại các Khoản 2 và 3 Điều 13 của Nghị định này phải được ban hành chậm nhất trước 05 (năm) ngày làm việc tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành.'
+
+Theo Điều 13 của Nghị định số 63/2010/NĐ-CP, Khoản 1 là Bộ trưởng, Thủ trưởng cơ quan ngang Bộ, Khoản 2 là Chủ tịch Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương và Khoản 3 là người đứng đầu cơ quan, đơn vị được cơ quan nhà nước cấp trên giao nhiệm vụ hoặc ủy quyền.","Thời hạn để công bố thủ tục hành chính mới được quy định như sau:
+
+*   **Đối với Bộ trưởng, Thủ trưởng cơ quan ngang Bộ:** Quyết định công bố thủ tục hành chính phải được ban hành chậm nhất **trước 20 (hai mươi) ngày làm việc** tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành (theo sửa đổi tại Điều 15, Nghị định 48/2013/NĐ-CP).
+*   **Đối với Chủ tịch Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương và người đứng đầu cơ quan, đơn vị được giao nhiệm vụ:** Quyết định công bố thủ tục hành chính phải được ban hành chậm nhất **trước 05 (năm) ngày làm việc** tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành (theo sửa đổi tại Điều 15, Nghị định 48/2013/NĐ-CP).
+
+**Lưu ý:**
+
+*   Các quy định này được sửa đổi bởi Khoản 5, Điều 1 của Nghị định 48/2013/NĐ-CP sửa đổi, bổ sung một số điều của Nghị định số 63/2010/NĐ-CP ngày 08 tháng 6 năm 2010 của Chính phủ về kiểm soát thủ tục hành chính.",0.9344,63_2010_NĐ_CP_ch3_art16_19 | 48_2013_NĐ_CP_art1_part2 | 63_2010_NĐ_CP_annex1 | 63_2010_NĐ_CP_ch3_art12_15 | 63_2010_NĐ_CP_ch7_art36_37,0.0000,LangChain not available,0.7643,,0.0000,Haystack not available,0.7219,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7523,48_2013_ND_CP
+22,"Nhà tôi có ông nội là thương binh sắp đi điều dưỡng tại trung tâm, nhưng ông đang nằm viện. Chúng tôi có thể hoãn không ạ?","Theo Khoản 2, điểm d Điều 6 Thông tư số 101/2018/TT-BTC: 'Đối với trường hợp đối tượng không tiếp tục thực hiện điều dưỡng tập trung vì lý do khách quan thì cơ quan LĐTBXH thanh quyết toán cho cơ sở điều dưỡng tiền ăn, các khoản chi phí tại các điểm b và c khoản này theo số ngày thực tế đối tượng điều dưỡng tại cơ sở điều dưỡng; các khoản chi tiền thuốc, quà tặng (như đối tượng đi cả đợt) và các khoản chi khác phục vụ trực tiếp cho đối tượng trong thời gian điều dưỡng tại cơ sở. Trường hợp đối tượng đã điều dưỡng dưới 30% thời gian một đợt điều dưỡng thì Giám đốc Sở LĐTBXH xem xét, quyết định hoặc phân cấp Phòng LĐTBXH quyết định đối tượng đi điều dưỡng vào đợt kế tiếp.'
+
+Như vậy, do ông nội bạn đang nằm viện (lý do khách quan) và chưa tham gia điều dưỡng, Sở hoặc Phòng LĐTBXH có thể quyết định cho ông đi điều dưỡng vào đợt kế tiếp.","Tôi là trợ lý ảo về chính sách ưu đãi người có công. Dựa trên thông tin hiện có, tôi chưa thể trả lời câu hỏi của bạn một cách chính xác.
+
+Tuy nhiên, tôi có thể cung cấp một số thông tin liên quan đến chế độ điều dưỡng phục hồi sức khỏe cho người có công, được quy định tại Điều 6 Thông tư 101/2018/TT-BTC:
+
+*   **Điều dưỡng tại nhà:** Chi trực tiếp cho đối tượng được hưởng theo quy định tại điểm b khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP.
+*   **Điều dưỡng tập trung:** Mức chi được quy định cụ thể tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP, bao gồm tiền ăn, thuốc bổ, quà tặng, và các chi phí khác phục vụ trực tiếp cho đối tượng.
+
+Ngoài ra, theo điểm d khoản 2 Điều 6 Thông tư 101/2018/TT-BTC, đối với trường hợp đối tượng không tiếp tục thực hiện điều dưỡng tập trung vì lý do khách quan, cơ quan LĐTBXH sẽ thanh quyết toán tiền ăn và các chi phí phát sinh cho cơ sở điều dưỡng theo số ngày thực tế đối tượng điều dưỡng tại cơ sở. Nếu đối tượng đã điều dưỡng dưới 30% thời gian một đợt điều dưỡng, Giám đốc Sở LĐTBXH sẽ xem xét, quyết định hoặc phân cấp cho Phòng LĐTBXH quyết định cho đối tượng đi điều dưỡng vào đợt kế tiếp.
+
+Để biết rõ hơn về việc hoãn điều dưỡng trong trường hợp ông nội bạn đang nằm viện, bạn nên liên hệ trực tiếp với cơ quan Lao động - Thương binh và Xã hội địa phương để được tư vấn cụ thể.
+",0.9485,101_2018_TT_BTC_ch2_art5 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7707,,0.0000,Haystack not available,0.7494,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7801,101_2018_TT_BTC_ch2_art6
+23,Đến cuối năm mà chưa chi xong kinh phí thì có phải nộp lại không chị?,"Theo Điều 20 Thông tư số 101/2018/TT-BTC ngày 14/11/2018, về xử lý kinh phí cuối năm:
+
+1. Việc xử lý số dư kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý cuối năm thực hiện theo quy định tại Điều 43 Nghị định số 163/2016/NĐ-CP ngày 21 tháng 12 năm 2016 của Chính phủ quy định chi tiết thi hành một số điều của Luật Ngân sách nhà nước.
+
+2. Thời hạn chi, tạm ứng và hạch toán các khoản chi ngân sách thực hiện theo quy định tại khoản 2 Điều 26 Thông tư số 342/2016/TT-BTC ngày 30 tháng 12 năm 2016 của Bộ Tài chính quy định chi tiết và hướng dẫn thi hành Nghị định số 163/2016/NĐ-CP.
+
+Ngoài ra, tại Khoản 2 Điều 2 Thông tư này quy định: 'Số dư dự toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng đến hết niên độ ngân sách năm dự toán (bao gồm cả thời gian chỉnh lý quyết toán theo chế độ quy định) không sử dụng hết thì bị hủy bỏ.'","Dựa trên các văn bản pháp luật được cung cấp, việc xử lý kinh phí chi cho chính sách ưu đãi người có công vào cuối năm được quy định như sau:
+
+1.  **Xử lý số dư kinh phí:**
+    *   Việc xử lý số dư kinh phí chi cho chính sách ưu đãi người có công và người trực tiếp tham gia kháng chiến do ngành LĐTBXH quản lý vào cuối năm được thực hiện theo Điều 43 Nghị định 163/2016/NĐ-CP (Điều 20, Thông tư 101/2018/TT-BTC). Bạn có thể tìm đọc điều khoản này để biết chi tiết về quy trình xử lý số dư.
+2.  **Thời hạn chi và hạch toán:**
+    *   Thời hạn chi, tạm ứng và hạch toán các khoản chi ngân sách được thực hiện theo khoản 2 Điều 26 Thông tư 342/2016/TT-BTC (Điều 20, Thông tư 101/2018/TT-BTC). Bạn có thể tìm đọc điều khoản này để nắm rõ thời hạn cụ thể.
+3.  **Báo cáo quyết toán kinh phí:**
+    *   Báo cáo quyết toán kinh phí thực hiện chính sách ưu đãi người có công phải thể hiện đầy đủ các khoản chi theo quy định trong dự toán được giao và đúng mục lục ngân sách nhà nước (Khoản 1, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Báo cáo quyết toán phải được lập và gửi cơ quan quản lý đúng thời hạn, có đủ biểu mẫu, thuyết minh và xác nhận của Kho bạc Nhà nước nơi đơn vị mở tài khoản giao dịch (Khoản 1, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+4.  **Thời hạn nộp báo cáo quyết toán:**
+    *   Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng lập báo cáo quyết toán theo quy định và gửi Sở LĐTBXH trước ngày 30/4 hàng năm (Điểm a, Khoản 4, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Sở LĐTBXH xét duyệt và thông báo kết quả xét duyệt quyết toán kinh phí cho Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng và phần kinh phí chi tại Sở; tổng hợp báo cáo quyết toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng của tỉnh, thành phố trực thuộc Trung ương (kèm theo thông báo xét duyệt quyết toán cho phòng Lao động – Thương binh và Xã hội, cơ sở nuôi dưỡng, điều dưỡng người có công cách mạng, bảng xác nhận số dư, giấy nộp tiền vào ngân sách nhà nước (nếu có) gửi Bộ Lao động – Thương binh và Xã hội trước ngày 5/7 hàng năm (Điểm b, Khoản 4, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Bộ LĐTBXH thẩm định và thông báo kết quả thẩm định quyết toán cho các Sở LĐTBXH; tổng hợp quyết toán theo kết quả thẩm định gửi Bộ Tài chính trước ngày 1/10 hàng năm (Điểm c, Khoản 4, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Bộ Tài chính thẩm định và thông báo kết quả thẩm định quyết toán kinh phí thực hiện chi ưu đãi người có công với cách mạng cho Bộ Lao động – Thương binh và Xã hội và tổng hợp vào quyết toán ngân sách nhà nước theo chế độ quy định (Điểm d, Khoản 4, Điều 13, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+
+**Tóm lại:** Việc có phải nộp lại kinh phí chưa chi hết hay không sẽ phụ thuộc vào quy định tại Điều 43 của Nghị định 163/2016/NĐ-CP và các hướng dẫn cụ thể của Bộ Tài chính. Bạn nên tham khảo trực tiếp các văn bản này để có thông tin chi tiết và chính xác nhất.
+",0.9264,101_2018_TT_BTC_ch3_art20_21 | 101_2018_TT_BTC_ch2_art15 | 47_2009_TTLT_BTC_BLĐTBXH_art12_13 | 101_2018_TT_BTC_ch3_art18 | 49_2012_QĐ_UBND_regulation_ch2_art9,1.0000,LangChain not available,0.7484,,0.0000,Haystack not available,0.7324,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7599,101_2018_TT_BTC_ch3_art20_21
+24,"Tôi có chồng mất vì chiến đấu, thủ tục xác nhận liệt sĩ còn chậm nên tôi đã lo chi phí mai táng. Nghe nói được hỗ trợ tiền mai táng phí, vậy mức hiện giờ là bao nhiêu?","Theo quy định tại Điều 9 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018 về các khoản chi ưu đãi khác, trợ cấp mai táng là một trong các khoản chi trực tiếp cho người thụ hưởng (tại điểm đ, khoản 1). Tuy nhiên, Thông tư này không quy định cụ thể mức trợ cấp mai táng phí cho từng đối tượng, mà chỉ quy định chung về quản lý và sử dụng kinh phí. Mức chi cụ thể được quy định trong các văn bản chuyên ngành của Bộ Lao động-Thương binh và Xã hội. 
+
+Để biết chính xác mức trợ cấp mai táng phí cho liệt sĩ, bà cần liên hệ với cơ quan Lao động-Thương binh và Xã hội địa phương hoặc tham khảo các Nghị định về chế độ ưu đãi người có công với cách mạng (như Nghị định số 31/2013/NĐ-CP hoặc các văn bản thay thế, sửa đổi, bổ sung khác).","Tôi rất tiếc, nhưng các văn bản pháp luật được cung cấp không chứa thông tin về mức trợ cấp mai táng phí cho trường hợp chồng bạn là liệt sĩ.
+
+Tuy nhiên, tôi có thể cung cấp một số thông tin liên quan đến các khoản chi khác liên quan đến liệt sĩ và thân nhân:
+
+*   **Hỗ trợ thăm viếng mộ liệt sĩ:** Thân nhân (tối đa 3 người) hoặc người thờ cúng liệt sĩ được cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ tiền tàu xe và tiền ăn, mỗi năm một lần. Mức hỗ trợ tối đa là 2.400.000 đồng/người (Điều 12, Thông tư 101/2018/TT-BTC).
+*   **Hỗ trợ di chuyển hài cốt liệt sĩ:** Bao gồm tiền tàu xe, tiền ăn (tối đa 3 người, theo mức hỗ trợ tại Điều 12, Thông tư 101/2018/TT-BTC) và chi phí cất bốc, di chuyển (4.000.000 đồng/bộ hài cốt) (Điều 13, Thông tư 101/2018/TT-BTC).
+*   **Hỗ trợ xây dựng, cải tạo mộ liệt sĩ:** Mức hỗ trợ tối đa 7 triệu đồng/mộ đối với xây mới và 70% mức xây mới đối với sửa chữa, nâng cấp (Điều 11, Thông tư 101/2018/TT-BTC).
+
+Để biết thông tin chi tiết về trợ cấp mai táng phí, bạn nên liên hệ trực tiếp với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được tư vấn cụ thể.",0.9063,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch3_art19,0.0000,LangChain not available,0.7392,,0.0000,Haystack not available,0.7355,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7520,101_2018_TT_BTC_ch2_art9
+25,Tôi được cấp tiền mua xe lăn 5 năm rồi mà giờ xe bị hỏng. Vậy có được hỗ trợ sửa chữa không?,"Theo quy định tại Phụ lục mức tiền cấp mua phương tiện trợ giúp, dụng cụ chỉnh hình, vật phẩm phụ và vật dụng khác ban hành kèm theo Thông tư số 101/2018/TT-BTC, tại mục 24: 'Bảo trì phương tiện đối với trường hợp được cấp tiền mua xe lăn, xe lắc' với mức chi là 350.000 đồng/năm. 
+
+Ngoài ra, theo Phụ lục này, niên hạn cấp đối với xe lăn tay là 4 năm, nghĩa là sau 4 năm sử dụng, bạn có thể được xem xét cấp mới. Vì xe của bạn đã sử dụng được 5 năm, đã quá niên hạn cấp mới, bạn có thể làm thủ tục đề nghị cấp mới thay vì chỉ sửa chữa.
+
+Để được hướng dẫn cụ thể và làm thủ tục, bạn nên liên hệ với Phòng Lao động-Thương binh và Xã hội nơi đang quản lý hồ sơ của bạn.","Dựa trên các văn bản pháp luật được cung cấp, việc xe lăn bị hỏng sau khi đã được cấp tiền mua 5 năm trước có được hỗ trợ sửa chữa hay không, được giải đáp như sau:
+
+**Giải thích:**
+
+Theo quy định hiện hành, Nhà nước cấp tiền để đối tượng mua phương tiện trợ giúp, dụng cụ chỉnh hình theo niên hạn sử dụng quy định. Việc cấp tiền mua phương tiện (bao gồm cả tiền mua vật phẩm phụ, bảo trì phương tiện) được thực hiện một lần vào đầu niên hạn sử dụng.
+
+Như vậy, bạn sẽ được cấp tiền bảo trì phương tiện đối với trường hợp được cấp tiền mua xe lăn, xe lắc mỗi năm một lần. Mức bảo trì phương tiện là 350.000 đồng/năm.
+
+**Trích dẫn:**
+
+*   **Thông tư 101/2018/TT-BTC, Điều 7, Khoản 1:** ""Cấp tiền để đối tượng mua phương tiện trợ giúp, dụng cụ chỉnh hình theo niên hạn sử dụng theo quy định"".
+*   **Thông tư 101/2018/TT-BTC, Điều 7, Khoản 1:** ""Mức tiền cấp mua phương tiện trợ giúp, dụng cụ chỉnh hình (bao gồm cả tiền mua vật phẩm phụ, bảo trì phương tiện) theo phụ lục ban hành kèm theo Thông tư này"".
+*   **Thông tư 101/2018/TT-BTC, Điều 7, Khoản 1:** ""Việc cấp tiền mua phương tiện trợ giúp, dụng cụ chỉnh hình (bao gồm cả tiền mua vật phẩm phụ, bảo trì phương tiện) được thực hiện một lần vào đầu niên hạn sử dụng"".
+*   **Thông tư 101/2018/TT-BTC, Phụ lục:** Mức bảo trì phương tiện đối với trường hợp được cấp tiền mua xe lăn, xe lắc: 350.000 đồng/năm.
+",0.9449,101_2018_TT_BTC_ch2_art7 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_appendix | 101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art4,1.0000,LangChain not available,0.7598,,0.0000,Haystack not available,0.7441,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7569,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_appendix
+26,"Tôi nghe nói có tiền quà tặng của Chủ tịch nước, vậy ai được nhận quà này và mức tặng là bao nhiêu?","Theo quy định tại Điều 9, Khoản 1, điểm b của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, 'Quà tặng của Chủ tịch nước' là một trong các khoản chi trực tiếp cho người thụ hưởng theo chính sách ưu đãi người có công với cách mạng. 
+
+Đối tượng được nhận quà tặng là các đối tượng người có công với cách mạng theo quy định tại Điều 2 của Pháp lệnh ưu đãi người có công với cách mạng.
+
+Tuy nhiên, Thông tư 101/2018/TT-BTC không quy định cụ thể mức quà tặng, vì mức này thường do Chủ tịch nước quyết định tùy theo từng dịp lễ, tết hoặc kỷ niệm ngày truyền thống. Mức quà tặng cụ thể sẽ được thông báo trước mỗi dịp tặng quà thông qua các văn bản hướng dẫn riêng.","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, và tôi sẽ cung cấp thông tin dựa trên các văn bản pháp luật hiện hành.
+
+**Về quà tặng của Chủ tịch nước cho người có công:**
+
+Theo Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, quà tặng của Chủ tịch nước là một trong những khoản chi ưu đãi khác dành cho người có công (Điều 4).
+
+Tuy nhiên, các văn bản được cung cấp không nêu rõ:
+
+*   Đối tượng cụ thể nào được nhận quà tặng của Chủ tịch nước.
+*   Mức quà tặng là bao nhiêu.
+*   Vào dịp nào thì người có công được nhận quà của Chủ tịch nước.
+
+Để biết thông tin chi tiết về đối tượng, mức quà tặng và thời điểm tặng quà, bạn cần tham khảo thêm các văn bản pháp luật khác quy định cụ thể về vấn đề này.
+",0.9193,47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art7 | 48_2013_NĐ_CP_art5 | 101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_preamble,0.0000,LangChain not available,0.7265,,0.0000,Haystack not available,0.7185,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7365,101_2018_TT_BTC_ch2_art9
+27,"Tôi đang công tác ở phường, phụ trách chi tiền trợ cấp người có công. Trường hợp người nhận không trực tiếp nhận được thì làm thế nào?","Theo Khoản 6, Điều 8 của Quyết định số 49/2012/QĐ-UBND ngày 23/10/2012 về quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công: 'Tất cả các đối tượng được hưởng trợ cấp ưu đãi người có công và người trực tiếp tham gia kháng chiến nếu không trực tiếp đến nhận trợ cấp thì phải có giấy ủy quyền cho thân nhân. Giấy ủy quyền phải có xác nhận của Ủy ban nhân dân phường-xã, thị trấn và thời hạn ủy quyền do các bên thỏa thuận và hiệu lực không quá một năm kể từ ngày xác lập việc ủy quyền.'
+
+Như vậy, người thụ hưởng không thể trực tiếp nhận trợ cấp có thể làm giấy ủy quyền cho thân nhân, có xác nhận của UBND phường-xã, thị trấn, với thời hạn không quá một năm.","Dựa trên các văn bản pháp luật được cung cấp, đây là hướng dẫn về việc chi trả trợ cấp ưu đãi người có công khi người nhận không trực tiếp nhận được:
+
+**1. Ủy quyền nhận thay:**
+
+*   Nếu người được hưởng trợ cấp ưu đãi không thể trực tiếp đến nhận, họ phải có giấy ủy quyền cho thân nhân để nhận thay.
+*   Giấy ủy quyền cần được xác nhận bởi Ủy ban nhân dân phường - xã, thị trấn.
+*   Thời hạn ủy quyền do các bên thỏa thuận, nhưng không được quá một năm kể từ ngày xác lập (Điều 8.6, Quyết định 49/2012/QĐ-UBND).
+
+**2. Chi trả qua tổ chức dịch vụ chi trả:**
+
+*   Cơ quan Lao động - Thương binh và Xã hội (LĐTBXH) có thể ký hợp đồng với các tổ chức dịch vụ chi trả có kinh nghiệm để thực hiện chi trả.
+*   Tổ chức dịch vụ chi trả cần có mạng lưới điểm giao dịch tại xã, phường, thị trấn, và có khả năng chi trả tại nhà cho một số đối tượng đặc thù.
+*   Hợp đồng giữa cơ quan LĐTBXH và tổ chức dịch vụ chi trả phải quy định rõ phạm vi đối tượng chi trả, phương thức chi trả (tiền mặt hoặc qua thẻ ATM), thời hạn chi trả, chi phí chi trả, và trách nhiệm của các bên (Điều 15, Thông tư 101/2018/TT-BTC).
+
+**3. Trách nhiệm của UBND phường - xã, thị trấn:**
+
+*   Khi giao tiền cho đối tượng được hưởng (hoặc người được ủy quyền), cần yêu cầu người nhận kiểm tra tiền, ký và ghi rõ họ tên vào danh sách chi trả (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+*   UBND phường - xã, thị trấn phải kiểm tra danh sách chi trả trước khi chi trả. Nếu phát hiện sai sót, cần báo cáo Phòng LĐTBXH quận - huyện để xử lý (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+
+**4. Tạm dừng chi trả:**
+
+*   Nếu người có công đang hưởng trợ cấp ưu đãi hàng tháng mà trong một năm không đến nhận, Phòng LĐTBXH quận - huyện sẽ có văn bản đề nghị Sở LĐTBXH tạm dừng chi trả (Điều 7.5, Quyết định 49/2012/QĐ-UBND).
+
+**Tóm lại:**
+
+Khi người có công không thể trực tiếp nhận trợ cấp, bạn cần hướng dẫn họ làm giấy ủy quyền hợp lệ hoặc phối hợp với Phòng LĐTBXH để chi trả qua tổ chức dịch vụ chi trả (nếu có). Đồng thời, luôn tuân thủ quy trình kiểm tra và xác nhận thông tin để đảm bảo chi trả đúng đối tượng.
+",0.9079,49_2012_QĐ_UBND_regulation_ch2_art8 | 101_2018_TT_BTC_ch2_art15 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art4 | 49_2012_QĐ_UBND_regulation_ch2_art6_7,1.0000,LangChain not available,0.7539,,0.0000,Haystack not available,0.7323,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7560,49_2012_QĐ_UBND_regulation_ch2_art8
+28,Tiền trợ cấp ưu đãi giáo dục thì có phải đóng thuế thu nhập cá nhân không?,"Theo quy định tại Điều 9, Khoản 1, điểm d của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, trợ cấp ưu đãi trong giáo dục, đào tạo là một trong các khoản chi trực tiếp cho người thụ hưởng theo chính sách ưu đãi người có công với cách mạng. Khoản trợ cấp này thuộc diện được ngân sách nhà nước đảm bảo để thực hiện chính sách xã hội.
+
+Theo quy định của Luật Thuế thu nhập cá nhân và các văn bản hướng dẫn thi hành, các khoản trợ cấp từ ngân sách nhà nước thuộc diện được miễn thuế thu nhập cá nhân. Do đó, khoản trợ cấp ưu đãi giáo dục cho người có công và thân nhân không phải chịu thuế thu nhập cá nhân.
+
+Người thụ hưởng khoản trợ cấp này chỉ cần ký nhận vào danh sách chi trả theo quy định mà không phải kê khai hay nộp thuế thu nhập cá nhân.","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, tôi không có thông tin về việc tiền trợ cấp ưu đãi giáo dục có phải đóng thuế thu nhập cá nhân hay không.",0.9009,101_2018_TT_BTC_ch2_art5 | 101_2018_TT_BTC_ch3_art20_21 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4 | 49_2012_QĐ_UBND_preamble,0.0000,LangChain not available,0.7437,,0.0000,Haystack not available,0.7219,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7643,101_2018_TT_BTC_ch2_art9
+29,"Kính chào cán bộ, em xin hỏi làm dụng cụ chỉnh hình thì hỗ trợ tiền tàu xe như thế nào ạ?","Theo quy định tại Điều 7, Khoản 2, điểm a của Thông tư số 101/2018/TT-BTC ngày 14/11/2018: 'Đối tượng được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình khi đi làm dụng cụ chỉnh hình, phương tiện trợ giúp được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về), mỗi niên hạn 01 lần. Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người;'
+
+Thông tư này còn cung cấp một ví dụ cụ thể: 'Ông Nguyễn Văn A là thương binh khi đi làm chân giả được hỗ trợ một lần tiền ăn và tiền tàu xe. Khoảng cách từ nhà Ông Nguyễn Văn A đến Trung tâm Chỉnh hình Phục hồi chức năng gần nhất là 175 km. Ông Nguyễn Văn A được hỗ trợ một lần tiền ăn và tiền tàu xe cho cả lượt đi và về là: 5.000 đồng x 175 km = 875.000 đồng;'","Chào bạn, tôi là trợ lý tư vấn về chính sách hỗ trợ người có công. Dựa trên thông tin bạn cung cấp, tôi xin giải đáp thắc mắc của bạn về chế độ hỗ trợ tiền tàu xe khi làm dụng cụ chỉnh hình như sau:
+
+**Đối tượng được hỗ trợ và mức hỗ trợ:**
+
+*   **Đối tượng:** Người có công được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình.
+*   **Mức hỗ trợ:**
+    *   Tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về) cho mỗi niên hạn sử dụng dụng cụ chỉnh hình, mỗi niên hạn 01 lần.
+    *   Mức hỗ trợ được tính theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình.
+    *   Mức hỗ trợ tối đa không quá 1.400.000 đồng/người.
+
+**Ví dụ:**
+
+Nếu khoảng cách từ nhà bạn đến trung tâm chỉnh hình gần nhất là 175km, bạn sẽ được hỗ trợ: 5.000 đồng/km x 175km = 875.000 đồng cho cả lượt đi và về.
+
+**Căn cứ pháp lý:**
+
+*   Điều 7, Khoản 2, điểm a của Thông tư 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính quy định về chế độ hỗ trợ khi đi làm phương tiện trợ giúp, dụng cụ chỉnh hình, điều trị phục hồi chức năng.
+
+**Lưu ý:**
+
+*   Việc cấp tiền mua phương tiện trợ giúp, dụng cụ chỉnh hình (bao gồm cả tiền mua vật phẩm phụ, bảo trì phương tiện) được thực hiện một lần vào đầu niên hạn sử dụng (Điều 7, Khoản 1, điểm c của Thông tư 101/2018/TT-BTC).
+*   Quy trình, thủ tục lập sổ theo dõi và cấp phương tiện trợ giúp, dụng cụ chỉnh hình thực hiện theo quy định của Bộ LĐTBXH (Điều 7, Khoản 3 của Thông tư 101/2018/TT-BTC). Bạn cần liên hệ với cơ quan LĐTBXH để biết thêm chi tiết về quy trình và thủ tục này.
+*   Thông tư liên tịch số 17/2006/TTLT-BLĐTBXH-BTC-BYT ngày 21/11/2006 cũng đề cập đến hỗ trợ tiền tàu xe, lưu trú làm dụng cụ chỉnh hình, phục hồi chức năng (Điều 4, Khoản 11 của Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+
+Mong rằng thông tin này hữu ích cho bạn. Nếu bạn có bất kỳ câu hỏi nào khác, xin vui lòng liên hệ.
+",0.9439,101_2018_TT_BTC_ch2_art7 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_appendix | 101_2018_TT_BTC_ch2_art12_13 | 63_2010_NĐ_CP_annex1,1.0000,LangChain not available,0.7788,,0.0000,Haystack not available,0.7534,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7871,101_2018_TT_BTC_ch2_art7
+30,Nhà tôi có ông nội là thương binh loại A. Bây giờ nếu ông tôi mất thì mai táng phí có được hỗ trợ từ ngân sách nào?,"Theo Điều 3 của Thông tư số 101/2018/TT-BTC ngày 14/11/2018, kinh phí thực hiện các chế độ ưu đãi người có công với cách mạng, bao gồm cả trợ cấp mai táng phí cho thương binh loại A, do ngân sách Trung ương đảm bảo, được bố trí trong dự toán chi ngân sách nhà nước của Bộ Lao động-Thương binh và Xã hội. Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện nhiệm vụ chi.
+
+Tại Điều 9, Khoản 1, điểm đ của Thông tư này cũng quy định rõ trợ cấp mai táng là một trong các khoản chi trực tiếp cho người thụ hưởng và thuộc chế độ ưu đãi khác. Khi thương binh loại A qua đời, thân nhân của người đó sẽ được nhận trợ cấp mai táng từ ngân sách Trung ương thông qua cơ quan LĐTBXH địa phương.","Dựa trên thông tin bạn cung cấp và các văn bản pháp luật hiện hành, tôi xin trả lời như sau:
+
+**1. Về hỗ trợ mai táng phí cho thương binh loại A:**
+
+*   **Có hỗ trợ mai táng phí:** Theo Điều 4 của Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, trợ cấp mai táng phí là một trong các khoản chi ưu đãi khác dành cho người có công với cách mạng.
+*   **Nguồn kinh phí:** Theo Điều 1, khoản 1 Thông tư 101/2018/TT-BTC, kinh phí thực hiện chính sách ưu đãi người có công với cách mạng do ngành Lao động - Thương binh và Xã hội quản lý từ nguồn ngân sách trung ương đảm bảo.
+
+**2. Cơ quan thực hiện chi trả:**
+
+*   **Ủy quyền chi trả:** Theo Điều 3 của Thông tư 101/2018/TT-BTC, Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện nhiệm vụ chi trả các chế độ ưu đãi.
+
+**Tóm lại:** Khi ông nội bạn (là thương binh loại A) qua đời, gia đình bạn sẽ được hưởng trợ cấp mai táng phí từ nguồn ngân sách trung ương do ngành Lao động - Thương binh và Xã hội quản lý. Bạn cần liên hệ với cơ quan LĐTBXH tại địa phương để được hướng dẫn cụ thể về thủ tục và mức hưởng.
+",0.9405,47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art3 | 101_2018_TT_BTC_preamble,0.5000,LangChain not available,0.7507,,0.0000,Haystack not available,0.7333,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7647,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art9
+31,"Tôi đang làm thủ tục chi trả trợ cấp cho bố tôi là thương binh, không biết giờ phải làm theo thông tư nào vậy?",Thông tư số 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng,"Để thực hiện thủ tục chi trả trợ cấp cho bố là thương binh, bạn cần tham khảo các văn bản sau:
+
+1.  **Thông tư 101/2018/TT-BTC** có hiệu lực từ 01/01/2019, quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý từ nguồn ngân sách trung ương (Điều 1).
+2.  **Quyết định 49/2012/QĐ-UBND** có hiệu lực từ 02/11/2012, quy định về nhiệm vụ của Ủy ban nhân dân phường - xã, thị trấn trong việc chi trả trợ cấp ưu đãi người có công (Điều 8).
+3.  **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH** có hiệu lực từ 25/04/2009, quy định về các khoản chi ưu đãi khác cho người có công (Điều 4).
+
+**Các bước thực hiện:**
+
+1.  **Cấp xã, phường, thị trấn:**
+    *   Cán bộ Lao động - Thương binh và Xã hội mở sổ theo dõi và quản lý đối tượng, kiểm tra và lập danh sách các trường hợp cần cắt giảm hoặc điều chỉnh (Điều 8.3, Quyết định 49/2012/QĐ-UBND).
+    *   Thực hiện chi trả trợ cấp ưu đãi, mở sổ theo dõi thu, chi, lập chứng từ, danh sách chi trả và thanh quyết toán kinh phí với Phòng Lao động - Thương binh và Xã hội cấp huyện (Điều 8.3, Quyết định 49/2012/QĐ-UBND).
+    *   Kiểm tra danh sách chi trả, bố trí địa điểm và thời gian chi trả thuận lợi, yêu cầu người nhận kiểm tra tiền và ký vào danh sách (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+    *   Thanh toán kinh phí chi trả với Phòng Lao động - Thương binh và Xã hội cấp huyện chậm nhất vào ngày 18 hàng tháng (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+2.  **Phòng Lao động - Thương binh và Xã hội cấp huyện:**
+    *   Ký Hợp đồng trách nhiệm chi trả trợ cấp ưu đãi người có công với UBND cấp xã, phường, thị trấn (Điều 8.1, Quyết định 49/2012/QĐ-UBND).
+3.  **Sở Lao động - Thương binh và Xã hội:**
+    *   Quản lý kinh phí thực hiện chính sách ưu đãi, mở tài khoản dự toán tại Kho bạc Nhà nước (Điều 9.1, Quyết định 49/2012/QĐ-UBND).
+    *   Lập dự toán kinh phí hàng năm và báo cáo (Điều 9.2, Quyết định 49/2012/QĐ-UBND).
+    *   Rút dự toán tại Kho bạc Nhà nước để triển khai nhiệm vụ (Điều 9.3, Quyết định 49/2012/QĐ-UBND).
+    *   Lập báo cáo quyết toán kinh phí chi trả hàng quý, năm (Điều 9.4, Quyết định 49/2012/QĐ-UBND).
+
+**Lưu ý:**
+
+*   Kinh phí chi trả do ngân sách trung ương đảm bảo và được Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện (Điều 3, Thông tư 101/2018/TT-BTC).
+*   Các khoản chi bao gồm trợ cấp hàng tháng, phụ cấp, trợ cấp một lần (Điều 4, Thông tư 101/2018/TT-BTC) và các khoản chi ưu đãi khác như cấp báo, bảo hiểm y tế, mai táng phí, điều trị, điều dưỡng, quà tặng, thuốc đặc trị, giám định y khoa, phương tiện trợ giúp, hỗ trợ tàu xe, công tác mộ liệt sỹ, thăm viếng mộ, trợ cấp giáo dục (Điều 4, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+*   Nếu người được hưởng không trực tiếp đến nhận trợ cấp, cần có giấy ủy quyền hợp lệ (có xác nhận của UBND cấp xã, phường, thị trấn) (Điều 8.6, Quyết định 49/2012/QĐ-UBND).
+
+Để biết chi tiết và được hướng dẫn cụ thể, bạn nên liên hệ trực tiếp với Phòng Lao động - Thương binh và Xã hội cấp huyện nơi cư trú.
+",0.8868,101_2018_TT_BTC_ch1_art1_3 | 49_2012_QĐ_UBND_regulation_ch2_art8 | 101_2018_TT_BTC_ch2_art4 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 49_2012_QĐ_UBND_regulation_ch2_art9,0.0000,LangChain not available,0.7577,,0.0000,Haystack not available,0.7396,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7747,101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch4_art22_23
+32,Ai chịu trách nhiệm chi trả tiền trợ cấp cho gia đình liệt sĩ ở TPHCM vậy?,"UBND phường-xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công trên địa bàn","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về việc chi trả tiền trợ cấp cho gia đình liệt sĩ, nhưng không thể xác định chính xác cơ quan nào chịu trách nhiệm chi trả ở TPHCM.
+
+**Giải thích:**
+
+1.  **Ngân sách Trung ương đảm bảo:** Theo Điều 3 của Thông tư 101/2018/TT-BTC, kinh phí thực hiện các chế độ ưu đãi người có công với cách mạng do ngân sách trung ương đảm bảo và bố trí trong dự toán chi ngân sách nhà nước của Bộ Lao động - Thương binh và Xã hội (LĐTBXH).
+2.  **Ủy quyền cho địa phương:** Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện nhiệm vụ chi (khoản 1 Điều 3 Thông tư 101/2018/TT-BTC).
+3.  **Các cấp thực hiện chi:** Sở LĐTBXH, Phòng LĐTBXH thực hiện rút dự toán tại Kho bạc Nhà nước (KBNN) theo quy định (khoản 2 Điều 3 Thông tư 101/2018/TT-BTC).
+4. **Các khoản chi ưu đãi khác:** Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH liệt kê các khoản chi ưu đãi khác, bao gồm: Trợ cấp lễ báo tử liệt sỹ, Trợ cấp mai táng phí, Hỗ trợ thân nhân liệt sỹ thăm viếng mộ và di chuyển hài cốt liệt sỹ.
+
+**Trích dẫn:**
+
+*   **Thông tư 101/2018/TT-BTC, Điều 3:** ""Kinh phí thực hiện các chế độ quy định tại Thông tư này do ngân sách trung ương đảm bảo bố trí trong dự toán chi ngân sách nhà nước của Bộ LĐTBXH và được thực hiện như sau: 1. Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện nhiệm vụ chi. 2. Sở LĐTBXH, Phòng LĐTBXH và các cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng mở tài khoản dự toán tại Kho bạc Nhà nước (sau đây viết tắt là KBNN) và thực hiện rút dự toán theo quy định.""
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH, Điều 4:** ""3. Trợ cấp lễ báo tử liệt sỹ. 4. Trợ cấp mai táng phí. 14. Hỗ trợ thân nhân liệt sỹ thăm viếng mộ và di chuyển hài cốt liệt sỹ.""
+
+**Thông tin bổ sung:**
+
+*   Để biết chính xác cơ quan nào ở TPHCM chịu trách nhiệm chi trả, bạn cần liên hệ trực tiếp với Sở LĐTBXH hoặc Phòng LĐTBXH của TPHCM.
+*   Các quy trình, thủ tục liên quan đến hỗ trợ thăm viếng mộ liệt sĩ và di chuyển hài cốt liệt sĩ được thực hiện theo quy định của Bộ LĐTBXH (Điều 12, 13 Thông tư 101/2018/TT-BTC).
+",0.8432,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11,0.0000,LangChain not available,0.7692,,0.0000,Haystack not available,0.7501,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7740,49_2012_QĐ_UBND_regulation_ch2_art8
+33,Quy định mới nhất về chi điều dưỡng phục hồi sức khỏe cho thương binh như thế nào?,Chi chế độ điều dưỡng phục hồi sức khỏe được quy định tại Điều 6 Thông tư số 101/2018/TT-BTC với hai hình thức: điều dưỡng tại nhà và điều dưỡng tập trung,"Dưới đây là thông tin về chi điều dưỡng phục hồi sức khỏe cho thương binh, dựa trên các văn bản pháp luật hiện hành:
+
+**Các hình thức điều dưỡng và mức chi:**
+
+Theo Điều 6, Thông tư 101/2018/TT-BTC, có hai hình thức điều dưỡng phục hồi sức khỏe:
+
+1.  **Điều dưỡng tại nhà:**
+
+    *   Mức chi: Theo quy định tại điểm b khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP.
+    *   Phương thức: Chi trực tiếp cho đối tượng được hưởng.
+2.  **Điều dưỡng tập trung:**
+
+    *   Mức chi: Theo quy định tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP, bao gồm:
+        *   Tiền ăn trong thời gian điều dưỡng (ăn sáng, 2 bữa chính, bồi dưỡng thêm nếu có).
+        *   Thuốc bổ và thuốc chữa bệnh thông thường.
+        *   Quà tặng cho đối tượng (bằng tiền hoặc hiện vật).
+        *   Các khoản chi khác phục vụ trực tiếp cho đối tượng (khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng...) không quá 15% mức chi điều dưỡng tập trung.
+    *   Chi phí điện, nước sinh hoạt hoặc mua xăng dầu chạy máy phát điện, lọc nước, vệ sinh môi trường, sửa chữa điện, nước, thuê dịch vụ phục vụ công tác điều dưỡng: Tối đa 320.000 đồng/người/lần.
+    *   Chi sách báo, hoạt động văn hóa, văn nghệ, thể thao: 100.000 đồng/người/đợt điều dưỡng.
+
+**Về chi phí đi lại:**
+
+*   Chi phí đưa đón người có công đi điều dưỡng tập trung, chi phí ăn, ở (nếu có) phát sinh trong thời gian đi đường do ngân sách địa phương đảm bảo (Điều 6, Thông tư 101/2018/TT-BTC).
+*   Đối tượng được hưởng chế độ phục hồi chức năng khi đi điều trị phục hồi chức năng theo chỉ định của bệnh viện cấp tỉnh trở lên được hỗ trợ một lần tiền ăn và tiền tàu xe (theo khoảng cách từ nơi cư trú đến cơ sở phục hồi chức năng gần nhất đủ điều kiện về chuyên môn kỹ thuật) (Điều 7, Thông tư 101/2018/TT-BTC). Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người.
+
+**Lưu ý:**
+
+*   Hội đồng nhân dân tỉnh, thành phố trực thuộc Trung ương có thể xem xét, quyết định mức chi chế độ điều dưỡng cao hơn mức quy định và hỗ trợ phần chênh lệch từ ngân sách địa phương (Điều 6, Thông tư 101/2018/TT-BTC).
+*   Thông tin chi tiết về đối tượng, quy trình, thủ tục lập sổ theo dõi và cấp phương tiện trợ giúp, dụng cụ chỉnh hình thực hiện theo quy định của Bộ LĐTBXH (Điều 7, Thông tư 101/2018/TT-BTC).
+
+**Văn bản tham khảo:**
+
+*   Thông tư 101/2018/TT-BTC (có hiệu lực từ 01-01-2019)
+*   Nghị định 31/2013/NĐ-CP
+",0.8942,47_2009_TTLT_BTC_BLĐTBXH_art3 | 101_2018_TT_BTC_ch2_art6 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7646,,0.0000,Haystack not available,0.7415,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7776,101_2018_TT_BTC_ch2_art6
+34,Khi lập dự toán kinh phí trợ cấp người có công thì Phòng Lao động - Thương binh và Xã hội cần gửi cho Sở khi nào?,"Phòng Lao động - Thương binh và Xã hội quận, huyện phải lập dự toán kinh phí gửi Sở Lao động - Thương binh và Xã hội trước ngày 20 tháng 6 hằng năm","Phòng Lao động - Thương binh và Xã hội (LĐTBXH) cần gửi dự toán kinh phí trợ cấp người có công với cách mạng của năm kế hoạch cho Sở LĐTBXH trước ngày **20 tháng 6 hàng năm**.
+
+**Căn cứ pháp lý:**
+
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH** (Điều 7.2.a) quy định: ""Phòng Lao động – Thương binh và Xã hội quận, huyện, thị xã, thành phố thuộc tỉnh và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng trực thuộc Sở Lao động – Thương binh và Xã hội, lập dự toán kinh phí thực hiện chính sách ưu đãi người có công với cách mạng của năm kế hoạch gửi Sở Lao động – Thương binh và Xã hội trước ngày 20 tháng 6 hàng năm.""
+*   **Thông tư 101/2018/TT-BTC** (Điều 16.2.a) quy định: ""Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng trực thuộc Sở LĐTBXH lập dự toán của năm kế hoạch gửi Sở LĐTBXH trước ngày 20 tháng 6 hằng năm"".
+*   **Quyết định 49/2012/QĐ-UBND** (Điều 9.2) quy định: ""Lập dự toán kinh phí thực hiện chính sách người có công với cách mạng và người trực tiếp tham gia kháng chiến của năm kế hoạch báo cáo về Sở Lao động - Thương binh và Xã hội trước ngày 20 tháng 6 hàng năm.""
+
+**Lưu ý:** Các văn bản trên đều thống nhất về thời hạn nộp dự toán là trước ngày 20 tháng 6 hàng năm.
+",0.9107,101_2018_TT_BTC_ch3_art16 | 47_2009_TTLT_BTC_BLĐTBXH_art7_8 | 49_2012_QĐ_UBND_regulation_ch2_art9 | 49_2012_QĐ_UBND_regulation_ch2_art4_5 | 47_2009_TTLT_BTC_BLĐTBXH_art12_13,1.0000,LangChain not available,0.7791,,0.0000,Haystack not available,0.7549,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8039,101_2018_TT_BTC_ch3_art16
+35,Tiền trợ cấp mua dụng cụ chỉnh hình cho thương binh mất chân hiện nay là bao nhiêu?,Mức cấp cho chân giả trên gối: 3.800.000 đồng (niên hạn 02 năm); chân giả dưới gối có bao da đùi: 3.600.000 đồng (niên hạn 02 năm); chân giả dưới gối có dây đeo số 8: 3.400.000 đồng (niên hạn 02 năm),"Hiện tại, tôi có thể cung cấp thông tin về mức tiền trợ cấp mua chân giả cho thương binh dựa trên các văn bản pháp luật sau:
+
+Theo quy định tại **Thông tư 101/2018/TT-BTC** ngày 14/11/2018 của Bộ Tài chính (có hiệu lực từ 01/01/2019), mức tiền cấp mua chân giả cho thương binh được quy định như sau:
+
+*   **Chân tháo khớp hông:** 5.880.000 đồng, niên hạn cấp 03 năm.
+*   **Chân giả trên gối:** 3.800.000 đồng, niên hạn cấp 02 năm.
+*   **Nhóm chân giả tháo khớp gối:** 4.340.000 đồng, niên hạn cấp 03 năm.
+*   **Chân giả dưới gối có bao da đùi:** 3.600.000 đồng, niên hạn cấp 02 năm.
+*   **Chân giả dưới gối có dây đeo số 8:** 3.400.000 đồng, niên hạn cấp 02 năm.
+*   **Chân giả tháo khớp cổ chân:** 2.260.000 đồng, niên hạn cấp 03 năm.
+
+Ngoài ra, theo **Điều 7 của Thông tư 101/2018/TT-BTC**, thương binh còn được hưởng các chế độ hỗ trợ khác như:
+
+*   **Hỗ trợ tiền ăn và tiền tàu xe** (bao gồm cả lượt đi và về) khi đi làm dụng cụ chỉnh hình, với mức hỗ trợ tối đa không quá 1.400.000 đồng/người/niên hạn.
+*   **Trợ cấp vật phẩm phụ** cho người được cấp chân giả là 200.000 đồng/năm.
+
+**Lưu ý:** Mức trợ cấp và các chế độ hỗ trợ có thể thay đổi theo quy định của pháp luật hiện hành. Bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được cung cấp thông tin chi tiết và chính xác nhất.
+",0.8891,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_appendix | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4,1.0000,LangChain not available,0.7590,,0.0000,Haystack not available,0.7368,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7552,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_appendix
+36,Nộp hồ sơ xin trợ cấp người có công ở TPHCM cần những giấy tờ gì?,Không có thông tin cụ thể về hồ sơ xin trợ cấp trong các tài liệu được cung cấp,"Tôi rất tiếc, tôi không tìm thấy thông tin cụ thể về danh mục giấy tờ cần thiết để nộp hồ sơ xin trợ cấp người có công tại TP.HCM trong các văn bản được cung cấp.
+
+Tuy nhiên, theo Nghị định 63/2010/NĐ-CP, bạn có thể tìm kiếm thông tin về thủ tục hành chính này theo các cách sau:
+
+1.  **Cơ sở dữ liệu quốc gia về thủ tục hành chính:** Thông tin về thủ tục hành chính phải được đăng tải trên cơ sở dữ liệu này (Điều 16).
+2.  **Trụ sở cơ quan, đơn vị trực tiếp giải quyết thủ tục hành chính:** Thông tin cũng được niêm yết tại đây (Điều 17).
+3.  **Cổng thông tin điện tử:** Cổng thông tin của Chính phủ hoặc trang thông tin của cơ quan ban hành văn bản và cơ quan thực hiện thủ tục hành chính (Điều 17).
+
+Ngoài ra, theo Điều 18 của Nghị định này, cơ quan thực hiện thủ tục hành chính có trách nhiệm:
+
+*   Hướng dẫn, giải thích, cung cấp thông tin chính xác, đầy đủ, kịp thời về thủ tục hành chính cho cá nhân, tổ chức có liên quan.
+*   Không tự đặt ra thủ tục hành chính, hồ sơ, giấy tờ ngoài quy định của pháp luật.
+
+Do đó, bạn có thể liên hệ trực tiếp với cơ quan có thẩm quyền để được cung cấp thông tin chi tiết và chính xác nhất về hồ sơ cần chuẩn bị.
+",0.8842,63_2010_NĐ_CP_ch3_art16_19 | 101_2018_TT_BTC_ch2_art4 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art5 | 63_2010_NĐ_CP_ch3_art20_22,0.0000,LangChain not available,0.8239,,0.0000,Haystack not available,0.8051,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8175,49_2012_QĐ_UBND_regulation_ch2_art7
+37,Thông tư 47/2009 có còn hiệu lực không?,"Không, Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH đã bị thay thế bởi Thông tư số 101/2018/TT-BTC có hiệu lực từ ngày 01/01/2019","Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH đã hết hiệu lực thi hành kể từ ngày 01 tháng 01 năm 2019.
+
+**Căn cứ:**
+
+*   Khoản 2, Điều 22, Thông tư 101/2018/TT-BTC quy định: ""Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11 tháng 3 năm 2009 của Bộ Tài chính, Bộ Lao động-Thương binh và Xã hội hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động-Thương binh và Xã hội quản lý hết hiệu lực thi hành kể từ ngày Thông tư này có hiệu lực thi hành.""
+*   Khoản 1, Điều 22, Thông tư 101/2018/TT-BTC quy định: ""Thông tư này có hiệu lực thi hành kể từ ngày 01 tháng 01 năm 2019.""
+",0.9262,63_2010_NĐ_CP_ch7_art36_37 | 47_2009_TTLT_BTC_BLĐTBXH_art15_end | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_ch4_art22_23 | 48_2013_NĐ_CP_art5,1.0000,LangChain not available,0.7968,,0.0000,Haystack not available,0.7761,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8037,101_2018_TT_BTC_ch4_art22_23
+38,Mỗi tháng thì phường xã đóng BHYT cho người có công khi nào?,Việc đóng bảo hiểm y tế cho người có công được thực hiện hằng quý,"Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về thời gian đóng BHYT cho người có công như sau:
+
+1.  **Đóng BHYT cho đối tượng người có công:**
+    *   Những người đang hưởng trợ cấp, phụ cấp hàng tháng sẽ được đóng BHYT, trừ những người đã tham gia BHXH bắt buộc, hưởng lương hưu, trợ cấp BHXH, hoặc trợ cấp thất nghiệp hàng tháng (Điều 5.1, Thông tư 101/2018/TT-BTC).
+    *   Đối tượng không hưởng trợ cấp hàng tháng sẽ được cấp thẻ BHYT theo quy định của Pháp lệnh ưu đãi người có công và thanh niên xung phong thời kỳ kháng chiến chống Pháp (Điều 5.1, Thông tư 101/2018/TT-BTC).
+
+2.  **Thời gian thực hiện đóng BHYT:**
+    *   Cơ quan LĐTBXH sẽ căn cứ vào danh sách đối tượng đóng BHYT đã được rà soát, đối chiếu với cơ quan BHXH để làm thủ tục rút dự toán kinh phí tại KBNN và chuyển vào quỹ BHYT theo quý (Điều 5.2, Thông tư 101/2018/TT-BTC).
+    *   Số tiền và phương thức đóng BHYT hàng quý sẽ thực hiện theo quy định của pháp luật về BHYT (Điều 5.3, Thông tư 101/2018/TT-BTC).
+
+3.  **Trách nhiệm của UBND phường/xã:**
+    *   Kiểm tra, lập danh sách đối tượng đã chết, hết tuổi hưởng trợ cấp, chuyển đi nơi khác hoặc hưởng sai chế độ (nếu có) và gửi Phòng LĐTBXH quận/huyện trước ngày 18 hàng tháng để làm cơ sở cắt giảm (Điều 8.3.b, Quyết định 49/2012/QĐ-UBND).
+    *   Khi nhận được kinh phí chi trả, UBND phường/xã phải tiến hành chi trả trợ cấp kịp thời cho đối tượng chính sách (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+    *   Kinh phí chi trả trợ cấp ưu đãi người có công cấp trong tháng phải thanh toán với Phòng LĐTBXH quận/huyện chậm nhất là ngày 18 hàng tháng (Điều 8.4, Quyết định 49/2012/QĐ-UBND).
+
+4.  **Trách nhiệm của Phòng LĐTBXH quận/huyện:**
+    *   Phối hợp với BHXH Thành phố để mua, cấp và báo giảm thẻ BHYT cho đối tượng kịp thời. Lập danh sách báo giảm hàng tháng đối với các đối tượng di chuyển hoặc qua đời (Điều 7.4, Quyết định 49/2012/QĐ-UBND).
+    *   Hàng tháng kiểm tra, rà soát đối tượng giảm và báo cáo về Sở LĐTBXH trước ngày 22 hàng tháng (Điều 7.5, Quyết định 49/2012/QĐ-UBND).
+    *   Rút dự toán và chuyển kinh phí cho các phường/xã chi tạm ứng các khoản trợ cấp ưu đãi người có công chậm nhất là ngày 10 hàng tháng (Điều 7.7, Quyết định 49/2012/QĐ-UBND).
+    *   Thanh toán với UBND phường/xã số tiền đã chi trả trợ cấp cho người có công và thanh toán tạm ứng với Kho bạc Nhà nước vào cuối tháng (Điều 7.7, Quyết định 49/2012/QĐ-UBND).
+
+Tóm lại, việc đóng BHYT cho người có công được thực hiện theo quý bởi cơ quan LĐTBXH. UBND phường/xã có trách nhiệm quản lý đối tượng, chi trả trợ cấp và thanh toán kinh phí hàng tháng với Phòng LĐTBXH quận/huyện. Phòng LĐTBXH quận/huyện có trách nhiệm phối hợp với cơ quan BHXH để cấp thẻ BHYT và thanh toán kinh phí.
+",0.8290,101_2018_TT_BTC_ch2_art5 | 49_2012_QĐ_UBND_regulation_ch2_art8 | 49_2012_QĐ_UBND_regulation_ch2_art6_7 | 49_2012_QĐ_UBND_preamble | 49_2012_QĐ_UBND_regulation_ch2_art9,1.0000,LangChain not available,0.7718,,0.0000,Haystack not available,0.7433,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7748,101_2018_TT_BTC_ch2_art5
+39,"Ông tôi là thương binh đang sống ở Bình Thuận, muốn thăm mộ của con trai ở Quảng Trị thì được hỗ trợ tiền xe không?","Thân nhân liệt sĩ được hỗ trợ một lần tiền tàu xe và tiền ăn khi đi thăm viếng mộ liệt sĩ, mức hỗ trợ 2.000 đồng/km, tối đa không quá 2.400.000 đồng/người","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về việc hỗ trợ tiền tàu xe cho thương binh đi thăm mộ liệt sĩ như sau:
+
+**Có hỗ trợ tiền tàu xe và tiền ăn cho thân nhân liệt sĩ (bao gồm cả người thờ cúng liệt sĩ) đi thăm viếng mộ liệt sĩ.**
+
+*   **Đối tượng hỗ trợ:** Thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ.
+*   **Điều kiện:** Được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước.
+*   **Mức hỗ trợ:**
+    *   Tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ.
+    *   Mức hỗ trợ theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người.
+
+**Căn cứ pháp lý:**
+
+*   Điều 12, Khoản 1, Thông tư 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính.
+*   Điều 4, Khoản 14, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH ngày 11/03/2009
+
+**Như vậy**, nếu ông của bạn là người thờ cúng liệt sĩ (con trai) và được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ ở Quảng Trị, ông sẽ được hỗ trợ tiền tàu xe và tiền ăn theo quy định trên.
+
+**Lưu ý:**
+
+*   Quy trình, thủ tục cụ thể để được cấp giấy giới thiệu và nhận hỗ trợ sẽ theo quy định của Bộ LĐTBXH.
+*   Mức hỗ trợ có thể thay đổi tùy theo quy định của pháp luật.",0.9199,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art11,1.0000,LangChain not available,0.7439,,0.0000,Haystack not available,0.7280,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7538,101_2018_TT_BTC_ch2_art12_13
+40,Người tham gia kháng chiến chống Mỹ được hưởng chế độ gì?,"Người tham gia kháng chiến chống Mỹ có thể được hưởng trợ cấp hàng tháng hoặc trợ cấp một lần (tùy đối tượng) và các chế độ khác như bảo hiểm y tế, điều dưỡng phục hồi sức khỏe","Người tham gia kháng chiến chống Mỹ có thể được hưởng các chế độ sau:
+
+1.  **Trợ cấp ưu đãi hàng tháng và trợ cấp một lần:**
+
+    *   Đối tượng: Người trực tiếp tham gia kháng chiến chống Mỹ cứu nước nhưng chưa được hưởng chính sách của Đảng và Nhà nước (theo Quyết định số 290/2005/QĐ-TTg và Quyết định số 188/2007/QĐ-TTg).
+    *   Căn cứ: Điều 3, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH; Điều 4, Thông tư 101/2018/TT-BTC.
+2.  **Trợ cấp hàng tháng:**
+
+    *   Đối tượng:
+        *   Cán bộ, chiến sĩ Công an nhân dân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong Công an nhân dân đã thôi việc, xuất ngũ về địa phương (theo Quyết định số 53/2010/QĐ-TTg).
+        *   Quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội, đã phục viên, xuất ngũ về địa phương (theo Quyết định số 142/2008/QĐ-TTg và Quyết định số 38/2010/QĐ-TTg).
+    *   Căn cứ: Điều 4, Thông tư 101/2018/TT-BTC.
+3.  **Trợ cấp một lần:**
+
+    *   Đối tượng:
+        *   Quân nhân, cán bộ đi chiến trường B, C, K trong thời kỳ chống Mỹ cứu nước không có thân nhân phải trực tiếp nuôi dưỡng và quân nhân, cán bộ được Đảng cử lại miền Nam sau Hiệp định Giơnevơ năm 1954 (theo Nghị định số 23/1999/NĐ-CP).
+        *   Thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến (theo Quyết định số 40/2011/QĐ-TTg); thanh niên xung phong cơ sở ở miền Nam tham gia kháng chiến (theo Nghị định số 112/2017/NĐ-CP).
+    *   Căn cứ: Điều 4, Thông tư 101/2018/TT-BTC.
+
+**Lưu ý:**
+
+*   Các chế độ cụ thể và điều kiện hưởng có thể thay đổi theo quy định của pháp luật hiện hành.
+*   Để biết thông tin chi tiết và chính xác nhất, bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương nơi cư trú.
+",0.8710,47_2009_TTLT_BTC_BLĐTBXH_art3 | 101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch1_art1_3 | 49_2012_QĐ_UBND_preamble,1.0000,LangChain not available,0.7369,,0.0000,Haystack not available,0.7225,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7370,101_2018_TT_BTC_ch2_art4
+41,"Cha tôi mất là thương binh, tiền mai táng phí được bao nhiêu?",Không có thông tin cụ thể về mức mai táng phí cho thương binh trong các tài liệu được cung cấp,"Dựa trên các văn bản pháp luật hiện hành, tôi có thể cung cấp thông tin về trợ cấp mai táng phí cho thân nhân thương binh như sau:
+
+1.  **Về việc chi trả mai táng phí:**
+    *   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH** quy định **trợ cấp mai táng phí** là một trong các khoản chi ưu đãi khác dành cho người có công (Điều 4).
+    *   **Thông tư 101/2018/TT-BTC** quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng, do ngành Lao động - Thương binh và Xã hội quản lý (Điều 1).
+    *   Tuy nhiên, Thông tư này không áp dụng đối với kinh phí chi trả chế độ mai táng phí đối với các đối tượng theo quy định tại một số Quyết định của Thủ tướng Chính phủ, bao gồm cả các đối tượng là người có công (Điều 1.2.đ).
+
+Do đó, tôi không có đủ thông tin để xác định mức mai táng phí cụ thể mà gia đình bạn sẽ nhận được. Bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được cung cấp thông tin chi tiết và chính xác nhất về chế độ mai táng phí áp dụng trong trường hợp của cha bạn.
+",0.8788,47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_preamble,0.0000,LangChain not available,0.7974,,0.0000,Haystack not available,0.7981,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8064,101_2018_TT_BTC_ch2_art8_9
+42,"Tôi ở Bình Thuận, muốn chứng thực bản sao giấy tờ người có công thì làm sao?","Thủ tục chứng thực bản sao từ bản chính được thực hiện tại Bộ phận Tiếp nhận và trả kết quả của UBND cấp xã, UBND cấp huyện hoặc tổ chức hành nghề công chứng","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, nên rất tiếc không thể cung cấp thông tin về thủ tục chứng thực bản sao giấy tờ.",0.8647,63_2010_NĐ_CP_ch3_art16_19 | 63_2010_NĐ_CP_ch3_art20_22 | 49_2012_QĐ_UBND_preamble | 63_2010_NĐ_CP_annex1 | 49_2012_QĐ_UBND_art1_3,0.0000,LangChain not available,0.7686,,0.0000,Haystack not available,0.7359,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7710,1766_2020_QĐ_UBND_annex_chung_thuc_chung
+43,Tiền đi điều dưỡng của thương binh nặng được bao nhiêu?,"Mức chi điều dưỡng tập trung thực hiện theo quy định tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP, bao gồm tiền ăn, thuốc, quà tặng và các khoản chi khác","Để biết thông tin chi tiết về tiền điều dưỡng của thương binh nặng, tôi cần thêm thông tin về hình thức điều dưỡng mà bạn quan tâm, cụ thể là:
+
+1.  **Điều dưỡng tại nhà:** Mức chi được quy định tại điểm b khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP và chi trực tiếp cho đối tượng.
+2.  **Điều dưỡng tập trung:** Mức chi được quy định tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP, bao gồm tiền ăn, thuốc bổ, quà tặng và các khoản chi khác phục vụ trực tiếp cho đối tượng.
+
+Ngoài ra, Thông tư 101/2018/TT-BTC cũng quy định về các khoản chi khác liên quan đến điều dưỡng, như chi phí đưa đón, chi phí ăn ở phát sinh trong thời gian đi đường, và các hoạt động văn hóa, văn nghệ, thể thao phục vụ đối tượng trong thời gian điều dưỡng tập trung. Mức chi cụ thể có thể được Hội đồng nhân dân tỉnh, thành phố trực thuộc Trung ương xem xét, quyết định theo thẩm quyền dựa trên khả năng cân đối ngân sách địa phương (Khoản 3, Điều 6, Thông tư 101/2018/TT-BTC).
+
+Xin vui lòng cung cấp thêm thông tin để tôi có thể cung cấp câu trả lời chính xác hơn.
+",0.9002,101_2018_TT_BTC_ch2_art6 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_preamble,1.0000,LangChain not available,0.7537,,0.0000,Haystack not available,0.7306,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7709,101_2018_TT_BTC_ch2_art6
+44,Nếu tôi nhận tiền trợ cấp thương binh hộ cha tôi thì có được không?,"Người có công có thể ủy quyền cho thân nhân nhận trợ cấp thay, giấy ủy quyền phải có xác nhận của UBND phường-xã, thị trấn và có hiệu lực không quá một năm","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, nhưng các văn bản hiện tại không cung cấp thông tin cụ thể về việc con cái có được nhận trợ cấp thương binh của cha hay không.
+
+Để biết thông tin chi tiết, bạn nên tham khảo:
+
+*   **Pháp lệnh Ưu đãi người có công với Cách mạng** (nếu có sửa đổi, bổ sung) để nắm rõ các quy định về đối tượng được hưởng ưu đãi.
+*   **Nghị định hướng dẫn thi hành Pháp lệnh** để biết chi tiết hơn về điều kiện, tiêu chuẩn và thủ tục hưởng trợ cấp.
+*   Liên hệ trực tiếp với **Sở Lao động - Thương binh và Xã hội** tại địa phương để được tư vấn cụ thể về trường hợp của bạn.
+",0.8714,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4 | 47_2009_TTLT_BTC_BLĐTBXH_art3 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_preamble,0.0000,LangChain not available,0.7710,,0.0000,Haystack not available,0.7466,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7579,49_2012_QĐ_UBND_regulation_ch2_art8
+45,Tôi xét nghiệm ADN để xác nhận hài cốt liệt sĩ thì được hỗ trợ tiền không?,Nhà nước có hỗ trợ kinh phí cho công tác xác định hài cốt liệt sĩ còn thiếu thông tin theo quy định tại Thông tư số 148/2015/TT-BTC,"Dựa trên các văn bản pháp luật được cung cấp, việc bạn xét nghiệm ADN để xác nhận hài cốt liệt sĩ có thể được hỗ trợ tiền, cụ thể như sau:
+
+**Hỗ trợ chi phí liên quan đến công tác mộ liệt sĩ:**
+
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH** quy định tại Điều 4, khoản 13 về ""Chi công tác mộ liệt sỹ: Khảo sát, tìm kiếm, quy tập mộ, đón nhận, an táng"".
+*   **Thông tư 101/2018/TT-BTC** quy định tại Điều 9, khoản 3, điểm b về ""Chi thực hiện Đề án xác định hài cốt liệt sĩ còn thiếu thông tin theo Quyết định số 150/QĐ-TTg ngày 14 tháng 01 năm 2013 của Thủ tướng Chính phủ. Nội dung và mức chi thực hiện theo quy định tại Thông tư số 148/2015/TT-BTC ngày 15 tháng 9 năm 2015 của Bộ Tài chính quy định về nội dung và mức chi thực hiện Đề án xác định hài cốt liệt sĩ còn thiếu thông tin"".
+
+Như vậy, việc xét nghiệm ADN để xác nhận hài cốt liệt sĩ có thể nằm trong nội dung chi của Đề án xác định hài cốt liệt sĩ còn thiếu thông tin. Mức chi cụ thể sẽ tuân theo quy định tại Thông tư số 148/2015/TT-BTC.
+
+**Ngoài ra, thân nhân liệt sĩ còn có thể được hỗ trợ chi phí đi lại và di chuyển hài cốt:**
+
+*   **Điều 13, Thông tư 101/2018/TT-BTC** quy định về ""Chi hỗ trợ di chuyển hài cốt liệt sĩ"", bao gồm:
+    *   Hỗ trợ tiền tàu xe và tiền ăn cho thân nhân (không quá ba người) theo mức quy định tại khoản 1 Điều 12 của Thông tư này (tối đa 2.400.000 đồng/người).
+    *   Hỗ trợ kinh phí cất bốc và di chuyển một bộ hài cốt liệt sĩ: 4.000.000 đồng.
+
+**Lưu ý:** Để biết chi tiết về quy trình, thủ tục và mức hỗ trợ cụ thể cho việc xét nghiệm ADN xác nhận hài cốt liệt sĩ, bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội địa phương để được tư vấn chi tiết, vì các quy định này có thể thay đổi theo thời gian và có hướng dẫn cụ thể từ Bộ Lao động - Thương binh và Xã hội.
+",0.9153,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_ch2_art8_9 | 101_2018_TT_BTC_ch1_art1_3,1.0000,LangChain not available,0.7834,,0.0000,Haystack not available,0.7513,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7860,101_2018_TT_BTC_ch2_art8_9
+46,Người có công ở TP Hồ Chí Minh nhận trợ cấp bằng cách nào?,"Người có công ở TP.HCM nhận trợ cấp trực tiếp tại địa điểm chi trả do UBND phường-xã, thị trấn bố trí","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về việc chi trả trợ cấp cho người có công ở TP. Hồ Chí Minh như sau:
+
+**Đối tượng và hình thức trợ cấp:**
+
+*   **Các đối tượng được quy định tại Điều 1 Pháp lệnh sửa đổi, bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng ngày 16 tháng 7 năm 2012** sẽ được chi trả **trợ cấp hàng tháng, phụ cấp hàng tháng, trợ cấp một lần** (theo khoản 1, Điều 4, Thông tư 101/2018/TT-BTC).
+*   **Người trực tiếp tham gia kháng chiến** do ngành LĐTBXH quản lý được nhận các hình thức trợ cấp sau (theo điểm 2, Điều 4, Thông tư 101/2018/TT-BTC):
+    *   **Trợ cấp hàng tháng** đối với:
+        *   Cán bộ, chiến sĩ Công an nhân dân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong Công an nhân dân đã thôi việc, xuất ngũ về địa phương theo Quyết định số 53/2010/QĐ-TTg.
+        *   Quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội, đã phục viên, xuất ngũ về địa phương theo Quyết định số 142/2008/QĐ-TTg và Quyết định số 38/2010/QĐ-TTg.
+    *   **Trợ cấp hàng tháng và trợ cấp một lần** đối với người tham gia chiến tranh bảo vệ Tổ quốc, làm nhiệm vụ quốc tế ở Căm-pu-chi-a, giúp bạn Lào sau ngày 30 tháng 4 năm 1975 đã phục viên, xuất ngũ, thôi việc theo Quyết định số 62/2011/QĐ-TTg.
+    *   **Trợ cấp một lần** đối với:
+        *   Quân nhân, cán bộ đi chiến trường B, C, K trong thời kỳ chống Mỹ cứu nước không có thân nhân phải trực tiếp nuôi dưỡng và quân nhân, cán bộ được Đảng cử lại miền Nam sau Hiệp định Giơnevơ năm 1954 theo Nghị định số 23/1999/NĐ-CP.
+        *   Người trực tiếp tham gia kháng chiến chống Mỹ cứu nước nhưng chưa được hưởng chính sách của Đảng và Nhà nước theo Quyết định số 290/2005/QĐ-TTg và Quyết định số 188/2007/QĐ-TTg.
+        *   Thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến theo Quyết định số 40/2011/QĐ-TTg; thanh niên xung phong cơ sở ở miền Nam tham gia kháng chiến theo Nghị định số 112/2017/NĐ-CP.
+        *   Người được cử làm chuyên gia sang giúp Lào và Căm-pu-chi-a theo Quyết định số 57/2013/QĐ-TTg và Quyết định số 62/2015/QĐ-TTg.
+    *   Trợ cấp hàng tháng, trợ cấp một lần đối với các đối tượng chính sách khác theo quy định của pháp luật.
+
+**Lưu ý:**
+
+*   Quyết định 49/2012/QĐ-UBND do UBND TP.HCM ban hành quy định về quản lý kinh phí chi trả cho người có công trên địa bàn TP.HCM.
+*   Thông tư 101/2018/TT-BTC của Bộ Tài chính quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+*   Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+",0.8565,49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art4 | 49_2012_QĐ_UBND_art1_3 | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art3,0.0000,LangChain not available,0.7591,,0.0000,Haystack not available,0.7472,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7549,49_2012_QĐ_UBND_regulation_ch2_art8
+47,Quy định mới nhất về quản lý kinh phí người có công từ khi nào tới giờ?,"Thông tư số 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính, có hiệu lực từ ngày 01/01/2019","Quy định mới nhất về quản lý kinh phí người có công được thể hiện trong **Thông tư 101/2018/TT-BTC**, có hiệu lực từ ngày 01/01/2019. Thông tư này hướng dẫn về việc lập dự toán, phân bổ dự toán và quyết toán kinh phí chi trả cho các đối tượng người có công với cách mạng.
+
+**Chi tiết về quy trình lập dự toán:**
+
+1.  **Lập dự toán chi tiết:** Dự toán kinh phí phải được lập chi tiết theo từng loại trợ cấp (hàng tháng, một lần), các khoản chi thực hiện chế độ, chính sách và chi phí quản lý theo quy định (Điều 16.1, Thông tư 101/2018/TT-BTC).
+2.  **Thời gian lập dự toán:**
+    *   Phòng LĐTBXH và cơ sở nuôi dưỡng, điều dưỡng người có công trực thuộc Sở LĐTBXH lập dự toán của năm kế hoạch và gửi về Sở LĐTBXH trước ngày 20 tháng 6 hàng năm (Điều 16.2a, Thông tư 101/2018/TT-BTC).
+    *   Sở LĐTBXH lập dự toán phần chi tại Sở, xem xét dự toán của các Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng, tổng hợp dự toán của toàn tỉnh, thành phố và gửi về Bộ LĐTBXH trước ngày 05 tháng 7 hàng năm (Điều 16.2b, Thông tư 101/2018/TT-BTC).
+    *   Bộ LĐTBXH xem xét dự toán của các Sở LĐTBXH, tổng hợp dự toán của cả nước và gửi về Bộ Tài chính trước ngày 20 tháng 7 hàng năm (Điều 16.2c, Thông tư 101/2018/TT-BTC).
+    *   Bộ Tài chính xem xét và tổng hợp dự toán kinh phí chi ưu đãi người có công vào dự toán chi ngân sách nhà nước, trình cấp có thẩm quyền phê duyệt và giao dự toán cho Bộ LĐTBXH trước ngày 20 tháng 11 năm trước (Điều 16.2d, Thông tư 101/2018/TT-BTC).
+
+**Lưu ý:**
+
+*   Các quy định về lập dự toán kinh phí hàng năm phải tuân thủ Luật Ngân sách nhà nước và các văn bản hướng dẫn luật (Điều 16.2, Thông tư 101/2018/TT-BTC).
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH** hướng dẫn về cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công, tuy nhiên văn bản này có thể đã được sửa đổi, bổ sung hoặc thay thế bởi các văn bản pháp luật khác.
+
+",0.8746,49_2012_QĐ_UBND_art1_3 | 47_2009_TTLT_BTC_BLĐTBXH_art7_8 | 101_2018_TT_BTC_ch3_art16 | 49_2012_QĐ_UBND_preamble | 49_2012_QĐ_UBND_regulation_ch2_art9,0.0000,LangChain not available,0.7779,,0.0000,Haystack not available,0.7563,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7828,101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch4_art22_23
+48,Đi làm giám định y khoa để xác nhận thương tật thì tôi được hỗ trợ tiền không?,Nhà nước thanh toán chi phí thẩm định cấp giấy giám định y khoa cho các trường hợp có hồ sơ đủ điều kiện và được Sở Lao động - Thương binh và Xã hội giới thiệu,"Dựa trên các văn bản pháp luật được cung cấp, bạn có thể được hỗ trợ tiền khi đi giám định y khoa để xác nhận thương tật nếu thuộc đối tượng và trường hợp được quy định. Cụ thể như sau:
+
+**1. Các trường hợp được thanh toán chi phí giám định y khoa:**
+
+Theo Điều 8, Thông tư 101/2018/TT-BTC, các trường hợp sau sẽ được thanh toán chi phí thẩm định cấp giấy giám định y khoa:
+
+*   Giám định lần đầu để xem xét, công nhận hưởng chế độ ưu đãi.
+*   Giám định lại tỷ lệ suy giảm khả năng lao động (bao gồm cả trường hợp phải chuyển hồ sơ đến Hội đồng giám định y khoa cấp Trung ương hoặc Hội đồng giám định y khoa do Bộ trưởng Bộ Y tế thành lập để khám giám định phúc quyết).
+
+**2. Chi phí đi lại và ăn ở liên quan đến giám định y khoa:**
+
+Theo Điều 4, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH và Điều 7, Thông tư 101/2018/TT-BTC, đối tượng thuộc diện người có công được hỗ trợ tiền tàu xe đi khám giám định thương tật. Cụ thể:
+
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH:** Khoản 10 Điều 4 quy định ""Hỗ trợ tiền tàu, xe, đi khám chữa bệnh, giám định thương tật.""
+*   **Thông tư 101/2018/TT-BTC:**
+    *   Điểm b Khoản 2 Điều 9 quy định hỗ trợ tiền ăn và tiền tàu xe cho người có công với cách mạng đang được nuôi dưỡng tại cơ sở khi đi khám bệnh, chữa bệnh, giám định thương tật, về thăm gia đình.
+    *   Điểm a Khoản 2 Điều 7 quy định đối tượng được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình khi đi làm dụng cụ chỉnh hình, phương tiện trợ giúp được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về), mỗi niên hạn 01 lần. Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người.
+
+**3. Trường hợp không được thanh toán chi phí giám định:**
+
+*   Theo khoản 3, Điều 8, Thông tư 101/2018/TT-BTC, nếu bạn không đồng ý với kết luận của Hội đồng giám định y khoa và yêu cầu giám định lại, và kết quả giám định phúc quyết không đúng như đề nghị của bạn, thì bạn sẽ phải tự chi trả chi phí thẩm định cấp giấy giám định y khoa.
+
+**Tóm lại:**
+
+Bạn có thể được hỗ trợ tiền đi giám định y khoa nếu thuộc đối tượng người có công và thuộc các trường hợp được quy định tại các văn bản trên. Mức hỗ trợ cụ thể sẽ phụ thuộc vào quy định chi tiết của pháp luật và khoảng cách di chuyển. Để biết thông tin chi tiết và chính xác nhất về trường hợp của mình, bạn nên liên hệ với Sở Lao động - Thương binh và Xã hội (LĐTBXH) tại địa phương để được tư vấn cụ thể.
+",0.8729,101_2018_TT_BTC_ch2_art8_9 | 101_2018_TT_BTC_ch2_art7 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art5 | 101_2018_TT_BTC_ch2_art12_13,1.0000,LangChain not available,0.7683,,0.0000,Haystack not available,0.7400,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7739,101_2018_TT_BTC_ch2_art8_9
+49,"Ở Bình Thuận, thủ tục hành chính nào liên quan đến người có công đã bãi bỏ rồi?",Không có thông tin cụ thể về thủ tục hành chính bị bãi bỏ liên quan trực tiếp đến người có công trong tài liệu được cung cấp,"Tôi là trợ lý tư vấn về chính sách người có công, tôi không có thông tin về các thủ tục hành chính đã bãi bỏ ở tỉnh Bình Thuận. Để có thông tin này, bạn vui lòng tìm kiếm thông tin từ các nguồn chính thức của tỉnh hoặc liên hệ trực tiếp với cơ quan có thẩm quyền tại địa phương.
+",0.9075,49_2012_QĐ_UBND_art1_3 | 63_2010_NĐ_CP_ch3_art20_22 | 63_2010_NĐ_CP_ch3_art16_19 | 48_2013_NĐ_CP_art1_part3 | 63_2010_NĐ_CP_ch7_art36_37,0.0000,LangChain not available,0.7969,,0.0000,Haystack not available,0.7814,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7874,1766_2020_QĐ_UBND_annex_tthc_bai_bo
+50,"Tôi đang ở Bình Thuận, muốn thực hiện thủ tục thế chấp sổ đỏ của người có công thì như thế nào?","Thủ tục đăng ký thế chấp quyền sử dụng đất, tài sản gắn liền với đất được thực hiện tại Bộ phận Một cửa cấp huyện hoặc Trung tâm Hành chính công tỉnh, thời hạn giải quyết thường trong ngày","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, rất tiếc là các văn bản được cung cấp không có thông tin cụ thể về thủ tục thế chấp sổ đỏ của người có công tại Bình Thuận. Tuy nhiên, tôi có thể cung cấp một số thông tin chung liên quan đến thủ tục hành chính và trách nhiệm của các bên liên quan trong việc thực hiện chính sách ưu đãi người có công, dựa trên các văn bản pháp luật mà bạn đã cung cấp:
+
+1.  **Công khai thủ tục hành chính:**
+    *   Thông tin về thủ tục hành chính phải được công khai đầy đủ, thường xuyên, rõ ràng, đúng địa chỉ, dễ tiếp cận và được đăng tải trên Cơ sở dữ liệu quốc gia về thủ tục hành chính (Điều 16, Nghị định 63/2010/NĐ-CP).
+    *   Hình thức công khai bao gồm đăng tải trên Cơ sở dữ liệu quốc gia, niêm yết tại trụ sở cơ quan giải quyết thủ tục, đăng tải trên cổng thông tin điện tử, thông báo trên phương tiện thông tin đại chúng và các hình thức khác (Điều 17, Nghị định 63/2010/NĐ-CP).
+2.  **Trách nhiệm của cơ quan thực hiện thủ tục hành chính:**
+    *   Hướng dẫn, giải thích, cung cấp thông tin chính xác, đầy đủ, kịp thời về thủ tục hành chính cho cá nhân, tổ chức liên quan (khoản 2, Điều 18, Nghị định 63/2010/NĐ-CP).
+    *   Hỗ trợ người có công trong thực hiện thủ tục hành chính (khoản 8, Điều 18, Nghị định 63/2010/NĐ-CP).
+3.  **Trách nhiệm của cán bộ, công chức:**
+    *   Thực hiện nghiêm túc, đầy đủ nhiệm vụ được giao trong quá trình thực hiện thủ tục hành chính (khoản 1, Điều 20, Nghị định 63/2010/NĐ-CP).
+    *   Tạo thuận lợi cho đối tượng thực hiện thủ tục hành chính; có tác phong, thái độ lịch sự, nghiêm túc, khiêm tốn; ngôn ngữ giao tiếp phải chuẩn mực, rõ ràng, mạch lạc (khoản 2, Điều 20, Nghị định 63/2010/NĐ-CP).
+4.  **Quyền và nghĩa vụ của đối tượng thực hiện thủ tục hành chính:**
+    *   Thực hiện đầy đủ các quy định về thủ tục hành chính (khoản 1, Điều 21, Nghị định 63/2010/NĐ-CP).
+    *   Từ chối thực hiện những yêu cầu không được quy định trong thủ tục hành chính hoặc chưa được công khai theo quy định (khoản 2, Điều 21, Nghị định 63/2010/NĐ-CP).
+    *   Giám sát việc thực hiện thủ tục hành chính; phản ánh, kiến nghị về những bất hợp lý của thủ tục hành chính và các hành vi vi phạm của cán bộ, công chức (khoản 6, Điều 21, Nghị định 63/2010/NĐ-CP).
+5.  **Phản ánh, kiến nghị về thủ tục hành chính:**
+    *   Mọi cá nhân, tổ chức có quyền phản ánh, kiến nghị về thủ tục hành chính và việc thực hiện thủ tục hành chính (khoản 1, Điều 22, Nghị định 63/2010/NĐ-CP).
+
+**Lời khuyên:** Để biết thông tin chi tiết về thủ tục thế chấp sổ đỏ của người có công tại Bình Thuận, bạn nên:
+
+*   Tìm kiếm thông tin trên Cơ sở dữ liệu quốc gia về thủ tục hành chính.
+*   Liên hệ trực tiếp với Sở Lao động - Thương binh và Xã hội tỉnh Bình Thuận hoặc các cơ quan có thẩm quyền để được hướng dẫn cụ thể.
+",0.8498,63_2010_NĐ_CP_ch3_art16_19 | 63_2010_NĐ_CP_ch3_art20_22 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch4_art22_23 | 49_2012_QĐ_UBND_art1_3,0.0000,LangChain not available,0.7811,,0.0000,Haystack not available,0.7545,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7723,1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_1
+51,"Tôi ở Hồ Chí Minh, mẹ tôi là thân nhân liệt sĩ, cuối tháng này nhà nước trả tiền trợ cấp, nhưng mẹ tôi đang đi xa, tôi muốn nhận hộ thì phải làm sao?","Cần có giấy ủy quyền có xác nhận của UBND phường-xã, thị trấn, thời hạn ủy quyền không quá một năm kể từ ngày xác lập việc ủy quyền","Tôi là trợ lý tư vấn về chính sách ưu đãi người có công, nên tôi chỉ có thể cung cấp thông tin liên quan đến lĩnh vực này. Rất tiếc, câu hỏi của bạn không thuộc phạm vi chuyên môn của tôi.",0.8177,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4,0.0000,LangChain not available,0.7910,,0.0000,Haystack not available,0.7685,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7934,49_2012_QĐ_UBND_regulation_ch2_art8
+52,Quyết định 49/2012 của TP.HCM có còn áp dụng không hay đã bị thay thế rồi?,Quyết định số 49/2012/QĐ-UBND vẫn còn hiệu lực và áp dụng tại TP.HCM,"Dựa trên các văn bản được cung cấp, tôi có thể trả lời câu hỏi của bạn như sau:
+
+Quyết định 49/2012/QĐ-UBND của UBND TP.HCM có hiệu lực thi hành từ ngày 02-11-2012 (theo thông tin từ đoạn văn bản 1 và 2).
+
+**Về việc Quyết định này còn hiệu lực hay không:**
+
+*   **Đoạn văn bản 1** quy định: ""Các quy định trước đây trái với nội dung tại Quyết định này bị bãi bỏ"". Điều này có nghĩa là Quyết định 49/2012/QĐ-UBND có thể đã thay thế một số quy định trước đó.
+*   Tuy nhiên, tôi không có thông tin về việc Quyết định 49/2012/QĐ-UBND đã bị sửa đổi, bổ sung, thay thế hoặc bãi bỏ bởi một văn bản pháp luật nào khác. Do đó, tôi không thể chắc chắn liệu Quyết định này hiện tại còn hiệu lực hay không.
+
+Để biết chính xác Quyết định 49/2012/QĐ-UBND còn hiệu lực hay không, bạn nên tham khảo các nguồn thông tin pháp luật chính thức hoặc liên hệ với cơ quan có thẩm quyền để được giải đáp.
+",0.9131,49_2012_QĐ_UBND_art1_3 | 49_2012_QĐ_UBND_preamble | 63_2010_NĐ_CP_ch7_art36_37 | 48_2013_NĐ_CP_art1_part3 | 48_2013_NĐ_CP_preamble,1.0000,LangChain not available,0.7811,,0.0000,Haystack not available,0.7642,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7674,49_2012_QĐ_UBND_preamble | 49_2012_QĐ_UBND_art1_3
+53,"Tôi đang muốn xác nhận lại mộ liệt sĩ nhưng không có giấy tờ, vậy có được hỗ trợ kinh phí xác định hài cốt không?",Nhà nước có chi phí cho thực hiện Đề án xác định hài cốt liệt sĩ còn thiếu thông tin theo Quyết định số 150/QĐ-TTg,"Dựa trên các văn bản pháp luật hiện hành, tôi có thể cung cấp thông tin về hỗ trợ kinh phí liên quan đến mộ liệt sĩ như sau:
+
+**Hỗ trợ chi phí đi lại và ăn ở khi di chuyển hài cốt liệt sĩ:**
+
+*   Theo Điều 13, khoản 1a của Thông tư 101/2018/TT-BTC, thân nhân liệt sĩ (tối đa ba người), người được ủy quyền hoặc người thờ cúng liệt sĩ được hỗ trợ tiền tàu xe và tiền ăn khi di chuyển hài cốt liệt sĩ. Mức hỗ trợ này được tính theo quy định tại khoản 1 Điều 12 của Thông tư này, tương đương 2.000 đồng/km, tính từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người.
+*   Ngoài ra, theo Điều 13, khoản 1b của Thông tư 101/2018/TT-BTC, còn có mức hỗ trợ kinh phí cất bốc và di chuyển một bộ hài cốt liệt sĩ là 4.000.000 đồng.
+
+**Hỗ trợ chi phí thăm viếng mộ liệt sĩ:**
+
+*   Theo Điều 12, khoản 1 của Thông tư 101/2018/TT-BTC, thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ một lần tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ. Mức hỗ trợ theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh nhưng tối đa không quá 2.400.000 đồng/người.
+
+**Về việc xác nhận lại mộ liệt sĩ khi không có giấy tờ:**
+
+Các văn bản trên không trực tiếp đề cập đến trường hợp xác nhận lại mộ liệt sĩ khi không có giấy tờ. Tuy nhiên, nếu việc xác nhận lại mộ liệt sĩ là cần thiết để thực hiện di chuyển hài cốt, thì các quy định về hỗ trợ di chuyển hài cốt có thể được áp dụng sau khi có xác nhận hợp lệ. Để biết thêm chi tiết về quy trình và thủ tục, bạn nên liên hệ với cơ quan LĐTBXH địa phương để được hướng dẫn cụ thể.
+",0.8710,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_ch3_art19 | 101_2018_TT_BTC_ch1_art1_3,0.0000,LangChain not available,0.7908,,0.0000,Haystack not available,0.7616,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8001,101_2018_TT_BTC_ch2_art8_9
+54,Tiền đi thăm mộ liệt sĩ tính theo km hay như thế nào?,"Hỗ trợ thăm viếng mộ liệt sĩ được tính theo km với mức 2.000 đồng/km, tối đa không quá 2.400.000 đồng/người","Tiền đi thăm mộ liệt sĩ được tính dựa trên **khoảng cách** từ nơi cấp giấy giới thiệu đến nghĩa trang liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, theo đơn giá **2.000 đồng/km** (bao gồm cả lượt đi và về).
+
+**CHI TIẾT:**
+
+*   **Đối tượng:** Thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ có giấy giới thiệu của cơ quan LĐTBXH.
+*   **Mức hỗ trợ:** 2.000 đồng/km.
+*   **Giới hạn tối đa:** Không quá 2.400.000 đồng/người/năm.
+*   **Tần suất:** Mỗi năm một lần đối với một liệt sĩ.
+
+**VÍ DỤ:**
+
+Gia đình bà Lê Thị Bé có một liệt sĩ và được cấp giấy giới thiệu đi thăm viếng mộ. Khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang là 900km. Gia đình bà Bé được hỗ trợ cho tối đa 3 người với số tiền là: (2.000 đồng/km x 900 km) x 3 người = 5.400.000 đồng.
+
+**TRÍCH DẪN:**
+
+Thông tin trên được quy định tại **Điều 12, Khoản 1, Thông tư 101/2018/TT-BTC** có hiệu lực từ 01/01/2019.
+",0.9177,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art11 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7613,,0.0000,Haystack not available,0.7432,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7630,101_2018_TT_BTC_ch2_art12_13
+55,Ở đâu có nhiệm vụ lập dự toán kinh phí trợ cấp người có công?,"Phòng Lao động - Thương binh và Xã hội quận, huyện, Sở Lao động - Thương binh và Xã hội, và Bộ Lao động - Thương binh và Xã hội đều có nhiệm vụ lập dự toán theo phân cấp","Dựa trên các văn bản pháp luật được cung cấp, các đơn vị sau có nhiệm vụ lập dự toán kinh phí trợ cấp người có công:
+
+1.  **Phòng Lao động - Thương binh và Xã hội (LĐTBXH)** cấp huyện, quận, thị xã, thành phố thuộc tỉnh:
+    *   Lập dự toán kinh phí của năm kế hoạch và gửi Sở LĐTBXH trước ngày 20 tháng 6 hàng năm. (Theo Điều 7.2.a Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH và Điều 16.2.a Thông tư 101/2018/TT-BTC)
+2.  **Cơ sở nuôi dưỡng, điều dưỡng người có công với cách mạng** trực thuộc Sở LĐTBXH:
+    *   Lập dự toán kinh phí của năm kế hoạch và gửi Sở LĐTBXH trước ngày 20 tháng 6 hàng năm. (Theo Điều 7.2.a Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH và Điều 16.2.a Thông tư 101/2018/TT-BTC)
+3.  **Sở Lao động - Thương binh và Xã hội (LĐTBXH)** cấp tỉnh, thành phố trực thuộc Trung ương:
+    *   Lập dự toán phần chi tại Sở, xem xét dự toán của các Phòng LĐTBXH, cơ sở nuôi dưỡng, điều dưỡng người có công; tổng hợp dự toán của toàn tỉnh, thành phố và gửi Bộ LĐTBXH trước ngày 05 tháng 7 hàng năm. (Theo Điều 7.2.b Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH và Điều 16.2.b Thông tư 101/2018/TT-BTC)
+4.  **Bộ Lao động - Thương binh và Xã hội (LĐTBXH)**:
+    *   Xem xét dự toán của các Sở LĐTBXH; tổng hợp dự toán của cả nước và gửi Bộ Tài chính trước ngày 20 tháng 7 hàng năm. (Theo Điều 7.2.c Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH và Điều 16.2.c Thông tư 101/2018/TT-BTC)
+5.  **Bộ Tài chính**:
+    *   Xem xét và tổng hợp dự toán kinh phí chi ưu đãi người có công vào dự toán chi ngân sách nhà nước trình cấp có thẩm quyền phê duyệt và giao dự toán cho Bộ LĐTBXH trước ngày 20 tháng 11 năm trước. (Theo Điều 7.2.d Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH và Điều 16.2.d Thông tư 101/2018/TT-BTC)
+
+**Lưu ý:** Các đơn vị thuộc Sở LĐTBXH cũng có nhiệm vụ lập dự toán kinh phí thực hiện chính sách người có công và báo cáo về Sở LĐTBXH trước ngày 20 tháng 6 hàng năm (Điều 9.2 Quyết định 49/2012/QĐ-UBND).
+",0.8654,101_2018_TT_BTC_ch3_art16 | 49_2012_QĐ_UBND_regulation_ch2_art9 | 47_2009_TTLT_BTC_BLĐTBXH_art7_8 | 47_2009_TTLT_BTC_BLĐTBXH_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art1_2,1.0000,LangChain not available,0.7572,,0.0000,Haystack not available,0.7275,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7711,101_2018_TT_BTC_ch3_art16
+56,Gia đình tôi chuyển từ Bình Thuận ra Hà Nội sống thì tiền trợ cấp thương binh có bị cắt không?,"Tiền trợ cấp thương binh không bị cắt khi chuyển nơi cư trú, sẽ có thủ tục chuyển hồ sơ và điều chỉnh dự toán giữa các tỉnh","Dựa trên các văn bản pháp luật được cung cấp, tôi chưa tìm thấy quy định cụ thể nào về việc tiền trợ cấp thương binh bị cắt khi gia đình chuyển từ Bình Thuận ra Hà Nội sinh sống.
+
+Tuy nhiên, tôi có thể cung cấp một số thông tin liên quan đến việc quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công, có thể hữu ích cho bạn:
+
+1.  **Quản lý và sử dụng kinh phí:**
+    *   Kinh phí thực hiện các chế độ ưu đãi người có công do ngân sách trung ương đảm bảo và được Bộ LĐTBXH ủy quyền cho cơ quan LĐTBXH địa phương thực hiện chi trả (Điều 3, Thông tư 101/2018/TT-BTC).
+    *   Sở LĐTBXH, Phòng LĐTBXH mở tài khoản dự toán tại Kho bạc Nhà nước để thực hiện rút dự toán theo quy định (Điều 3, Thông tư 101/2018/TT-BTC).
+2.  **Đối tượng được đóng bảo hiểm y tế:**
+    *   Những người đang hưởng chế độ trợ cấp, phụ cấp hàng tháng (trừ những người đồng thời đang tham gia bảo hiểm xã hội bắt buộc, hưởng lương hưu, trợ cấp bảo hiểm xã hội, trợ cấp bảo hiểm thất nghiệp hàng tháng) (Điều 5, Thông tư 101/2018/TT-BTC).
+
+**Lưu ý:**
+
+*   Các thông tin trên chỉ liên quan đến việc quản lý kinh phí và đối tượng được hưởng bảo hiểm y tế.
+*   Để biết chính xác việc chuyển hộ khẩu có ảnh hưởng đến trợ cấp thương binh hay không, bạn nên liên hệ trực tiếp với Phòng LĐTBXH nơi bạn chuyển đến (Hà Nội) để được tư vấn cụ thể.
+
+Vì câu hỏi của bạn liên quan đến vấn đề thay đổi nơi cư trú và ảnh hưởng đến trợ cấp, đây là vấn đề cụ thể có thể cần xem xét thêm các quy định khác ngoài các văn bản đã cung cấp.",0.8913,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_preamble | 49_2012_QĐ_UBND_art1_3 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art5,0.0000,LangChain not available,0.7935,,0.0000,Haystack not available,0.7812,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7989,101_2018_TT_BTC_ch3_art18
+57,Giữa Thông tư 101/2018 và Quyết định 49/2012 của TP.HCM thì tôi phải tuân theo cái nào?,"Cần tuân theo cả hai văn bản, Thông tư 101/2018/TT-BTC có giá trị pháp lý cao hơn và ban hành sau, Quyết định 49/2012 quy định chi tiết tại TP.HCM","Chào bạn, để biết bạn cần tuân theo văn bản nào giữa Thông tư 101/2018/TT-BTC và Quyết định 49/2012/QĐ-UBND của TP.HCM, ta cần xem xét phạm vi điều chỉnh, hiệu lực và nội dung của từng văn bản.
+
+**1. Về hiệu lực và phạm vi điều chỉnh:**
+
+*   **Thông tư 101/2018/TT-BTC:**
+    *   **Hiệu lực:** Có hiệu lực từ ngày 01/01/2019 (theo Thông tư 101_2018_TT_BTC).
+    *   **Phạm vi điều chỉnh:** Quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý từ nguồn ngân sách trung ương (Điều 1, Thông tư 101/2018/TT-BTC).
+    *   **Đối tượng áp dụng:** Các cơ quan, tổ chức, cá nhân liên quan đến quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công (Điều 2, Thông tư 101/2018/TT-BTC).
+*   **Quyết định 49/2012/QĐ-UBND của TP.HCM:**
+    *   **Hiệu lực:** Có hiệu lực từ ngày 02/11/2012 (Điều 2, Quyết định 49/2012/QĐ-UBND).
+    *   **Phạm vi điều chỉnh:** Quy định về quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến trên địa bàn Thành phố Hồ Chí Minh (Điều 1, Quyết định 49/2012/QĐ-UBND).
+    *   **Đối tượng áp dụng:** Sở Lao động - Thương binh và Xã hội; Kho bạc Nhà nước Thành phố, Kho bạc Nhà nước quận - huyện; Ủy ban nhân dân quận - huyện, Phòng Lao động - Thương binh và Xã hội quận - huyện; Ủy ban nhân dân phường - xã, thị trấn (Điều 1, Quyết định 49/2012/QĐ-UBND).
+
+**2. So sánh và xác định văn bản cần tuân theo:**
+
+*   **Về cấp độ pháp lý:** Thông tư là văn bản quy phạm pháp luật do Bộ ban hành, còn Quyết định là văn bản do UBND cấp tỉnh ban hành. Do đó, Thông tư có hiệu lực pháp lý cao hơn và được áp dụng trên phạm vi cả nước, còn Quyết định chỉ có hiệu lực trên địa bàn TP.HCM.
+*   **Về thời gian:** Thông tư 101/2018/TT-BTC có hiệu lực sau Quyết định 49/2012/QĐ-UBND.
+*   **Về nội dung:** Cả hai văn bản đều điều chỉnh về quản lý kinh phí ưu đãi người có công. Tuy nhiên, Thông tư 101/2018/TT-BTC tập trung vào nguồn kinh phí từ ngân sách trung ương, còn Quyết định 49/2012/QĐ-UBND điều chỉnh chung trên địa bàn TP.HCM.
+
+**3. Kết luận:**
+
+Theo nguyên tắc văn bản cấp trên có hiệu lực pháp lý cao hơn và văn bản mới thay thế văn bản cũ, bạn cần tuân theo **Thông tư 101/2018/TT-BTC** của Bộ Tài chính. Tuy nhiên, Quyết định 49/2012/QĐ-UBND của TP.HCM vẫn có thể được áp dụng nếu không trái với các quy định của Thông tư 101/2018/TT-BTC và để giải quyết các vấn đề đặc thù của địa phương.
+",0.9034,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_preamble | 49_2012_QĐ_UBND_art1_3 | 101_2018_TT_BTC_ch2_art11 | 49_2012_QĐ_UBND_regulation_ch1,1.0000,LangChain not available,0.7907,,0.0000,Haystack not available,0.7629,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7873,101_2018_TT_BTC_preamble | 49_2012_QĐ_UBND_regulation_ch1
+58,"Tôi đang ở Bình Thuận, con tôi là thương binh nặng muốn di chuyển hồ sơ ra Đà Nẵng thì phải làm sao?",Không có thông tin cụ thể về thủ tục di chuyển hồ sơ người có công trong các tài liệu được cung cấp,"Tôi rất tiếc, nhưng không có thông tin nào trong các văn bản được cung cấp đề cập đến thủ tục di chuyển hồ sơ người có công từ tỉnh này sang tỉnh khác. Vì vậy, tôi không thể cung cấp thông tin chính xác về quy trình di chuyển hồ sơ thương binh của con bạn từ Bình Thuận ra Đà Nẵng.
+
+Tôi là trợ lý ảo chuyên về chính sách cho người có công và chỉ có thể trả lời các câu hỏi liên quan đến lĩnh vực này.",0.8896,63_2010_NĐ_CP_ch3_art16_19 | 101_2018_TT_BTC_ch3_art17 | 101_2018_TT_BTC_preamble | 49_2012_QĐ_UBND_art1_3 | 101_2018_TT_BTC_ch1_art1_3,1.0000,LangChain not available,0.8162,,1.0000,Haystack not available,0.7975,,1.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8110,
+59,Tôi mua đất của người có công với cách mạng thì giấy tờ làm thế nào?,Không có thông tin cụ thể về thủ tục mua bán đất của người có công với cách mạng trong các tài liệu được cung cấp,"Tôi rất tiếc, với những thông tin được cung cấp hiện tại, tôi không thể tư vấn cụ thể về thủ tục giấy tờ khi mua đất của người có công với cách mạng. Các văn bản này tập trung vào quy chế quản lý kinh phí chi trả cho các chính sách ưu đãi người có công chứ không đề cập đến vấn đề mua bán đất đai.
+
+Để có thông tin chính xác nhất, bạn nên liên hệ trực tiếp với các cơ quan có thẩm quyền như:
+
+*   **Sở Tài nguyên và Môi trường**
+*   **Văn phòng đăng ký đất đai**
+
+Các cơ quan này sẽ cung cấp thông tin chi tiết về thủ tục, giấy tờ cần thiết khi thực hiện giao dịch mua bán đất đai trong trường hợp của bạn.
+",0.9177,49_2012_QĐ_UBND_preamble | 49_2012_QĐ_UBND_art1_3 | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art1_2,0.0000,LangChain not available,0.7840,,0.0000,Haystack not available,0.7764,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7876,1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_1
+60,Chi phí quản lý được trích bao nhiêu phần trăm từ kinh phí thực hiện chính sách ưu đãi người có công?,"Chi phí phục vụ chi trả đến người thụ hưởng tối đa là 50% chi phí quản lý toàn ngành, tỷ lệ cụ thể do Bộ trưởng Bộ Lao động - Thương binh và Xã hội quyết định","Chi phí quản lý được trích từ kinh phí thực hiện chính sách ưu đãi người có công với cách mạng được quy định tại Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH. Cụ thể:
+
+*   **Mức trích:** Hàng năm, ngành Lao động – Thương binh và Xã hội được trích **1,7%** tổng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng để chi cho công tác quản lý (Điều 6, khoản 1).
+*   **Nội dung chi:** Khoản trích này dùng để chi trả thù lao cho cán bộ trực tiếp chi trả trợ cấp, phổ biến chính sách, thông tin tuyên truyền, văn phòng phẩm, tập huấn, xét duyệt hồ sơ, mua sắm sửa chữa tài sản, ứng dụng công nghệ thông tin, phụ cấp làm đêm, và các chi phí khác liên quan (Điều 6, khoản 1, điểm a đến k).
+
+**Lưu ý:** Mức chi cụ thể cho từng nội dung sẽ tuân theo các quy định hiện hành của Nhà nước hoặc do Giám đốc Sở Lao động – Thương binh và Xã hội quy định trong phạm vi dự toán được giao (Điều 6, khoản 1).
+",0.8749,49_2012_QĐ_UBND_art1_3 | 49_2012_QĐ_UBND_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art5_6 | 47_2009_TTLT_BTC_BLĐTBXH_art1_2 | 47_2009_TTLT_BTC_BLĐTBXH_preamble,0.0000,LangChain not available,0.7627,,0.0000,Haystack not available,0.7456,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7653,101_2018_TT_BTC_ch2_art14
+61,Thời gian từ bao giờ thì Thông tư 101 bắt đầu có hiệu lực vậy?,Thông tư số 101/2018/TT-BTC có hiệu lực thi hành kể từ ngày 01/01/2019.,"Thông tư 101/2018/TT-BTC có hiệu lực thi hành từ ngày 01 tháng 01 năm 2019. (Nguồn: Thông tư 101/2018/TT-BTC)
+",0.9866,101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art15_end | 63_2010_NĐ_CP_ch7_art36_37 | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 49_2012_QĐ_UBND_art1_3,0.0000,LangChain not available,0.7875,,0.0000,Haystack not available,0.7645,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7915,101_2018_TT_BTC_ch4_art22_23
+62,Cái Thông tư 101 nó thay thế cho cái gì vậy?,Thông tư số 101/2018/TT-BTC thay thế cho Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH.,"Dựa trên các văn bản được cung cấp, Thông tư 101/2018/TT-BTC không trực tiếp thay thế văn bản nào.
+
+Tuy nhiên, Thông tư này quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý (Điều 1, Thông tư 101/2018/TT-BTC).",0.9013,63_2010_NĐ_CP_ch7_art36_37 | 101_2018_TT_BTC_preamble | 63_2010_NĐ_CP_annex1 | 101_2018_TT_BTC_ch1_art1_3 | 48_2013_NĐ_CP_art1_part3,0.0000,LangChain not available,0.7894,,0.0000,Haystack not available,0.7747,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7979,101_2018_TT_BTC_ch4_art22_23
+63,Tôi muốn đi thăm mộ người thân là liệt sĩ thì được hỗ trợ bao nhiêu tiền?,"Thân nhân liệt sĩ được hỗ trợ tiền tàu xe và tiền ăn theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ, tối đa không quá 2.400.000 đồng/người.","Dựa trên các văn bản pháp luật hiện hành, thân nhân liệt sĩ được hỗ trợ tiền tàu xe và tiền ăn khi đi thăm viếng mộ liệt sĩ. Cụ thể như sau:
+
+**Mức hỗ trợ:**
+
+*   Theo Điều 12, Thông tư 101/2018/TT-BTC, thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ một lần tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ.
+*   Mức hỗ trợ được tính theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người.
+
+**Ví dụ:**
+
+Nếu khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang liệt sĩ là 900km, thì mức hỗ trợ cho 3 người thân nhân là: (2.000 đồng/km x 900 km) x 3 người = 5.400.000 đồng.
+
+**Lưu ý:**
+
+*   Quy trình và thủ tục để được hỗ trợ thăm viếng mộ liệt sĩ sẽ theo quy định của Bộ LĐTBXH. Bạn cần liên hệ với cơ quan LĐTBXH để được hướng dẫn chi tiết.",0.9215,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7508,,0.0000,Haystack not available,0.7345,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7497,101_2018_TT_BTC_ch2_art12_13
+64,Chế độ hỗ trợ thăm viếng mộ liệt sĩ có khác không giữa Thông tư 101/2018 với Thông tư 47/2009?,"Có sự khác biệt. Thông tư 101/2018/TT-BTC quy định mức hỗ trợ là 2.000 đồng/km với mức tối đa không quá 2.400.000 đồng/người, trong khi Thông tư 47/2009 không nêu rõ mức cụ thể.","Có sự khác biệt về chế độ hỗ trợ thăm viếng mộ liệt sĩ giữa Thông tư 101/2018/TT-BTC và Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH.
+
+**Thông tư 101/2018/TT-BTC (hiện hành):**
+
+*   **Mức hỗ trợ:** Thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ một lần tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ. Mức hỗ trợ theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh nhưng tối đa không quá 2.400.000 đồng/người. (Theo khoản 1, Điều 12)
+
+**Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH (hết hiệu lực):**
+
+*   Thông tư này quy định về các khoản chi ưu đãi khác, trong đó có ""Hỗ trợ thân nhân liệt sỹ thăm viếng mộ và di chuyển hài cốt liệt sỹ."" (khoản 14, Điều 4) Tuy nhiên, Thông tư này không nêu rõ mức hỗ trợ cụ thể là bao nhiêu.
+
+**Tóm tắt:**
+
+Thông tư 101/2018/TT-BTC quy định chi tiết về mức hỗ trợ thăm viếng mộ liệt sĩ (2.000 đồng/km, tối đa 2.400.000 đồng/người), trong khi Thông tư 47/2009/TTLT-BTC-BLĐTBXH chỉ quy định chung về việc hỗ trợ mà không nêu rõ mức hỗ trợ. Do đó, Thông tư 101/2018/TT-BTC cụ thể và chi tiết hơn về chế độ này.
+",0.9210,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art11 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_preamble,1.0000,LangChain not available,0.7734,,0.0000,Haystack not available,0.7596,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7857,101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH
+65,"Đi làm dụng cụ chỉnh hình có được hỗ trợ tiền ăn, tiền xe không?","Có, được hỗ trợ một lần tiền ăn và tiền tàu xe theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế, tối đa không quá 1.400.000 đồng/người.","Chào bạn, tôi là trợ lý tư vấn về chính sách người có công. Dựa trên thông tin bạn cung cấp, tôi xin trả lời câu hỏi của bạn như sau:
+
+**Đối tượng được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình sẽ được hỗ trợ tiền ăn và tiền tàu xe khi đi làm dụng cụ chỉnh hình.**
+
+Cụ thể:
+
+*   Bạn sẽ được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về) cho mỗi niên hạn sử dụng dụng cụ chỉnh hình.
+*   Mức hỗ trợ được tính theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi bạn cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình.
+*   Mức hỗ trợ tối đa là 1.400.000 đồng/người.
+
+**Ví dụ:** Nếu bạn là thương binh và khoảng cách từ nhà bạn đến trung tâm chỉnh hình gần nhất là 175km, bạn sẽ được hỗ trợ: 5.000 đồng/km x 175km = 875.000 đồng cho cả lượt đi và về.
+
+Thông tin này được quy định tại điểm a khoản 2 Điều 7 của **Thông tư 101/2018/TT-BTC** (có hiệu lực từ 01/01/2019).
+",0.9002,101_2018_TT_BTC_ch2_art7 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch2_art10,1.0000,LangChain not available,0.7862,,0.0000,Haystack not available,0.7633,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7822,101_2018_TT_BTC_ch2_art7
+66,"Tôi có bố là thương binh loại A, nếu bố tôi đi điều dưỡng tập trung thì được hỗ trợ những chi phí gì? Đặc biệt là tiền ăn thì như thế nào ạ?","Khi đi điều dưỡng tập trung, được hỗ trợ: tiền ăn (gồm ăn sáng, 2 bữa chính và ăn bồi dưỡng), thuốc bổ và thuốc chữa bệnh, quà tặng, chi phí khác phục vụ trực tiếp, chi phí điện nước (tối đa 320.000 đồng/người/lần), và chi hoạt động văn hóa (100.000 đồng/người/đợt).","Dựa trên các văn bản pháp luật được cung cấp, bố của bạn là thương binh loại A nếu đi điều dưỡng tập trung sẽ được hỗ trợ các chi phí sau:
+
+1.  **Các khoản chi trong thời gian điều dưỡng tập trung (Điều 6, Thông tư 101/2018/TT-BTC):**
+
+    *   **Tiền ăn:** Bao gồm tiền ăn sáng, hai bữa chính (trưa và chiều), và tiền ăn bồi dưỡng thêm (nếu có).
+    *   **Thuốc men:** Thuốc bổ và thuốc chữa bệnh thông thường.
+    *   **Quà tặng:** Quà tặng cho đối tượng (bằng tiền hoặc hiện vật).
+    *   **Các chi phí khác:** Các khoản chi khác phục vụ trực tiếp cho đối tượng trong thời gian điều dưỡng (gồm: khăn mặt, xà phòng, bàn chải, thuốc đánh răng, tham quan, chụp ảnh, tư vấn sức khỏe, phục hồi chức năng và các khoản chi khác phục vụ đối tượng điều dưỡng) không quá 15% mức chi điều dưỡng tập trung.
+
+2.  **Các khoản chi phí khác (Điều 6, Thông tư 101/2018/TT-BTC):**
+
+    *   Chi phí điện, nước sinh hoạt hoặc mua xăng dầu chạy máy phát điện, lọc nước (đối với các cơ sở chưa có hệ thống điện lưới và nước sạch), vệ sinh môi trường, sửa chữa điện, nước, thuê dịch vụ phục vụ công tác điều dưỡng được thanh toán theo số lượng đối tượng được điều dưỡng thực tế, định mức tối đa 320.000 đồng/người/lần.
+    *   Chi sách báo, hoạt động văn hóa, văn nghệ, thể thao phục vụ đối tượng trong thời gian điều dưỡng tại cơ sở là 100.000 đồng/người/đợt điều dưỡng.
+
+3.  **Chi phí đi lại (Điều 6, Thông tư 101/2018/TT-BTC):**
+    *   Các khoản chi phí đưa đón người có công với cách mạng đi điều dưỡng tập trung, chi phí ăn, ở (nếu có) phát sinh trong thời gian đi đường (đi và về) do ngân sách địa phương đảm bảo theo phân cấp ngân sách hiện hành.
+
+**Lưu ý:**
+
+*   Mức chi cụ thể cho các khoản mục trên sẽ thực hiện theo quy định tại điểm a khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP.
+*   Hội đồng nhân dân tỉnh, thành phố trực thuộc Trung ương có thể xem xét, quyết định mức chi chế độ điều dưỡng cao hơn mức quy định và hỗ trợ phần chênh lệch cao hơn từ nguồn ngân sách địa phương (Điều 6, Thông tư 101/2018/TT-BTC).
+*   Thông tư 101/2018/TT-BTC quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng do ngành Lao động - Thương binh và Xã hội quản lý từ nguồn ngân sách trung ương.
+",0.9097,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art5 | 47_2009_TTLT_BTC_BLĐTBXH_art4,1.0000,LangChain not available,0.7447,,0.0000,Haystack not available,0.7203,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7571,101_2018_TT_BTC_ch2_art6
+67,"Quyết định 49/2012/QĐ-UBND của TPHCM dẫn chiếu đến Thông tư liên tịch số 47/2009 nhưng hiện nay Thông tư này đã được thay thế, vậy tôi nên áp dụng theo quy định nào?",Nên áp dụng Thông tư 101/2018/TT-BTC (có hiệu lực từ 01/01/2019) thay vì Thông tư 47/2009 đã bị thay thế. Quyết định 49/2012/QĐ-UBND vẫn có hiệu lực nếu không trái với quy định mới.,"Dựa trên các văn bản pháp luật bạn cung cấp, tôi xin trả lời như sau:
+
+Tôi không có thông tin về việc Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH đã được thay thế bởi văn bản nào. Tuy nhiên, tôi có thể cung cấp thông tin về hiệu lực và nội dung của Thông tư này:
+
+1.  **Hiệu lực thi hành:**
+    *   Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH có hiệu lực thi hành từ ngày 25 tháng 4 năm 2009 và áp dụng từ năm ngân sách 2009. (Theo Điều 15, Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH)
+    *   Thông tư này thay thế Thông tư liên tịch số 84/2005/TTLT/BTC-BLĐTBXH ngày 23/9/2005. (Theo Điều 15, Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH)
+
+2.  **Nội dung:**
+    *   Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH hướng dẫn về cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+
+Vì không có thông tin về việc thay thế Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH trong các văn bản được cung cấp, bạn nên tìm kiếm thông tin cập nhật từ các nguồn chính thức hoặc liên hệ với cơ quan có thẩm quyền để có thông tin chính xác nhất.
+",0.8873,47_2009_TTLT_BTC_BLĐTBXH_art15_end | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 63_2010_NĐ_CP_ch7_art36_37 | 48_2013_NĐ_CP_preamble | 48_2013_NĐ_CP_art1_part3,0.0000,LangChain not available,0.8024,,0.0000,Haystack not available,0.7785,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.8055,49_2012_QĐ_UBND_regulation_ch1 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch4_art22_23
+68,Thứ trưởng Bộ nào ký ban hành Thông tư 47/2009/TTLT-BTC-BLĐTBXH vậy?,Thông tư 47/2009/TTLT-BTC-BLĐTBXH được ký bởi Thứ trưởng Bộ Tài chính Phạm Sỹ Danh và Thứ trưởng Bộ Lao động - Thương binh và Xã hội Bùi Hồng Lĩnh.,"Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH được ký ban hành bởi **Thứ trưởng Bộ Lao động - Thương binh và Xã hội Bùi Hồng Lĩnh** và **Thứ trưởng Bộ Tài chính Phạm Sỹ Danh**.
+
+**Căn cứ:**
+
+*   Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH (Thông tư liên tịch 47_2009_TTLT_BTC_BLĐTBXH)
+*   Mục IV, Điều 15, Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH.
+
+**Lưu ý:**
+
+*   Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH đã hết hiệu lực kể từ ngày 01/01/2019, theo Điều 22, Thông tư 101/2018/TT-BTC.
+",0.9380,47_2009_TTLT_BTC_BLĐTBXH_art15_end | 101_2018_TT_BTC_ch4_art22_23 | 101_2018_TT_BTC_ch3_art18 | 48_2013_NĐ_CP_art5 | 47_2009_TTLT_BTC_BLĐTBXH_preamble,1.0000,LangChain not available,0.7566,,0.0000,Haystack not available,0.7357,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7640,47_2009_TTLT_BTC_BLĐTBXH
+69,"Tôi nghe nói là có chế độ ưu đãi giáo dục cho con của người có công, vậy mỗi tháng con tôi được hỗ trợ bao nhiêu ạ?","Thông tư 101/2018/TT-BTC có quy định về trợ cấp ưu đãi giáo dục (cấp đủ 12 tháng/năm học), nhưng không nêu mức cụ thể. Cần tham khảo Nghị định 31/2013/NĐ-CP hoặc liên hệ Phòng Lao động-TB&XH địa phương.","Tôi rất tiếc, nhưng các văn bản pháp luật được cung cấp không chứa thông tin chi tiết về mức hỗ trợ giáo dục cụ thể hàng tháng cho con của người có công.
+
+Tuy nhiên, tôi có thể cung cấp thông tin tổng quan về các chính sách ưu đãi người có công được đề cập trong các văn bản này:
+
+*   **Quyết định số 49/2012/QĐ-UBND:** Quy định về quản lý kinh phí chi trả cho các chính sách ưu đãi người có công và người trực tiếp tham gia kháng chiến tại Thành phố Hồ Chí Minh.
+*   **Thông tư số 101/2018/TT-BTC:** Quy định về quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+*   **Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH:** Hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+
+Để biết thông tin chi tiết về mức hỗ trợ giáo dục, bạn nên tìm kiếm các văn bản pháp luật quy định cụ thể về chế độ ưu đãi giáo dục cho con của người có công với cách mạng hoặc liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được tư vấn chi tiết.
+",0.8958,49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_ch1_art1_3,0.0000,LangChain not available,0.7725,,0.0000,Haystack not available,0.7485,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7791,101_2018_TT_BTC_ch2_art8_9
+70,Nếu tôi là người có công thì có phải đóng tiền bảo hiểm y tế không?,"Nếu bạn là người có công đang hưởng trợ cấp, phụ cấp hàng tháng, bạn không phải tự đóng bảo hiểm y tế mà sẽ được ngân sách nhà nước đóng cho (trừ khi đang tham gia BHXH bắt buộc hoặc hưởng lương hưu).","Dựa trên các văn bản pháp luật được cung cấp, việc đóng bảo hiểm y tế đối với người có công được quy định như sau:
+
+**Đối tượng được đóng bảo hiểm y tế:**
+
+*   Những người đang hưởng chế độ trợ cấp, phụ cấp hàng tháng theo quy định tại khoản 1 Điều 4 Thông tư 101/2018/TT-BTC (trừ những người đồng thời đang tham gia bảo hiểm xã hội bắt buộc, hưởng lương hưu, trợ cấp bảo hiểm xã hội, trợ cấp bảo hiểm thất nghiệp hàng tháng).
+*   Đối tượng không hưởng trợ cấp hàng tháng được cấp thẻ bảo hiểm y tế theo quy định của Pháp lệnh ưu đãi người có công với cách mạng và thanh niên xung phong thời kỳ kháng chiến chống Pháp theo Quyết định số 170/2008/QĐ-TTg.
+
+**Trách nhiệm đóng bảo hiểm y tế:**
+
+*   Hằng quý, cơ quan LĐTBXH căn cứ danh sách đối tượng đóng bảo hiểm y tế đã được rà soát, đối chiếu với cơ quan bảo hiểm xã hội để làm thủ tục rút dự toán kinh phí tại KBNN và chuyển kinh phí vào quỹ bảo hiểm y tế (khoản 2 Điều 5 Thông tư 101/2018/TT-BTC).
+
+**Như vậy:**
+
+Nếu bạn là người có công và thuộc diện được hưởng trợ cấp, phụ cấp hàng tháng (và không đồng thời tham gia BHXH bắt buộc, hưởng lương hưu, trợ cấp BHXH, trợ cấp thất nghiệp), hoặc không hưởng trợ cấp hàng tháng thuộc đối tượng của Quyết định 170/2008/QĐ-TTg, thì sẽ thuộc đối tượng được đóng bảo hiểm y tế. Cơ quan LĐTBXH sẽ có trách nhiệm thực hiện việc đóng bảo hiểm y tế cho bạn.
+
+**Thông tin trích dẫn:**
+
+*   Điều 5, Thông tư 101/2018/TT-BTC
+*   Quyết định 170/2008/QĐ-TTg
+",0.8961,101_2018_TT_BTC_ch2_art5 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch3_art19 | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch2_art8_9,1.0000,LangChain not available,0.7660,,0.0000,Haystack not available,0.7450,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7615,101_2018_TT_BTC_ch2_art5
+71,Hỗ trợ an táng người có công thì được bao nhiêu tiền?,Thông tư 101/2018/TT-BTC có quy định về trợ cấp mai táng cho người có công nhưng không nêu mức cụ thể. Mức trợ cấp được quy định trong Nghị định 31/2013/NĐ-CP và các văn bản sửa đổi.,"Tôi là trợ lý tư vấn về chính sách người có công và rất tiếc vì không tìm thấy thông tin trực tiếp về mức hỗ trợ an táng người có công trong các văn bản được cung cấp. Các văn bản này tập trung vào:
+
+*   **Thông tư 101/2018/TT-BTC:** Chi cấp phương tiện trợ giúp, dụng cụ chỉnh hình.
+*   **Quyết định 49/2012/QĐ-UBND:** Quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công tại TP.HCM.
+*   **Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH:** Hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công.
+
+Tuy nhiên, tôi có thể cung cấp một số thông tin liên quan đến các khoản chi khác có thể được áp dụng:
+
+*   **Trợ cấp mai táng phí:** Khoản này có thể được chi trả trong trường hợp người có công qua đời (Điều 4, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH).
+*   **Chi hỗ trợ xây dựng, cải tạo, nâng cấp công trình ghi công liệt sĩ:** (Điều 11, Thông tư 101/2018/TT-BTC).
+*   **Hỗ trợ thân nhân liệt sỹ thăm viếng mộ và di chuyển hài cốt liệt sỹ (khoản 14, điều 4, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH)**
+
+Để biết chính xác mức hỗ trợ an táng, bạn nên tham khảo các văn bản pháp luật hiện hành khác hoặc liên hệ trực tiếp với cơ quan chức năng có thẩm quyền để được giải đáp cụ thể.
+",0.9046,101_2018_TT_BTC_ch2_art7 | 49_2012_QĐ_UBND_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art5_6 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch2_art11,0.0000,LangChain not available,0.7654,,0.0000,Haystack not available,0.7633,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7665,101_2018_TT_BTC_ch2_art8_9
+72,"Trường hợp tôi đi điều dưỡng được vài ngày thì có việc gấp phải về, vậy tôi có được nhận đủ tiền điều dưỡng không?","Nếu không tiếp tục điều dưỡng vì lý do khách quan, bạn được thanh toán tiền ăn và chi phí theo số ngày thực tế, được nhận đủ tiền thuốc và quà tặng. Nếu điều dưỡng dưới 30% thời gian đợt, có thể được xem xét cho đi điều dưỡng đợt kế tiếp.","Về việc bạn có được nhận đủ tiền điều dưỡng khi phải về sớm do có việc gấp, theo quy định tại Thông tư 101/2018/TT-BTC, cụ thể như sau:
+
+**Giải thích:**
+
+*   Nếu bạn không tiếp tục thực hiện điều dưỡng tập trung vì lý do khách quan, cơ quan LĐTBXH sẽ thanh toán cho cơ sở điều dưỡng tiền ăn và các chi phí phát sinh khác theo số ngày thực tế bạn điều dưỡng tại cơ sở.
+*   Bạn vẫn sẽ được nhận tiền thuốc và quà tặng như những đối tượng đi cả đợt, cũng như các khoản chi khác phục vụ trực tiếp cho bạn trong thời gian điều dưỡng tại cơ sở.
+*   Nếu bạn đã điều dưỡng dưới 30% thời gian của một đợt điều dưỡng, Giám đốc Sở LĐTBXH sẽ xem xét và quyết định (hoặc phân cấp cho Phòng LĐTBXH quyết định) để bạn được đi điều dưỡng vào đợt kế tiếp.
+
+**Trích dẫn:**
+
+*   Điểm d, khoản 2, Điều 6, Thông tư 101/2018/TT-BTC quy định:
+
+    *   ""- Đối với trường hợp đối tượng không tiếp tục thực hiện điều dưỡng tập trung vì lý do khách quan thì cơ quan LĐTBXH thanh quyết toán cho cơ sở điều dưỡng tiền ăn, các khoản chi phí tại các điểm b và c khoản này theo số ngày thực tế đối tượng điều dưỡng tại cơ sở điều dưỡng; các khoản chi tiền thuốc, quà tặng (như đối tượng đi cả đợt) và các khoản chi khác phục vụ trực tiếp cho đối tượng trong thời gian điều dưỡng tại cơ sở. Trường hợp đối tượng đã điều dưỡng dưới 30% thời gian một đợt điều dưỡng thì Giám đốc Sở LĐTBXH xem xét, quyết định hoặc phân cấp Phòng LĐTBXH quyết định đối tượng đi điều dưỡng vào đợt kế tiếp.""*
+",0.9113,101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch3_art17 | 101_2018_TT_BTC_ch2_art10 | 101_2018_TT_BTC_ch2_art8_9,1.0000,LangChain not available,0.7777,,0.0000,Haystack not available,0.7533,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7729,101_2018_TT_BTC_ch2_art6
+73,"Tôi là con của liệt sĩ, bố tôi đã hy sinh từ năm 1970 và mộ ở nghĩa trang liệt sĩ cách nhà tôi khoảng 600km. Nếu tôi muốn đi thăm viếng mộ bố thì được hỗ trợ bao nhiêu?","Với khoảng cách 600km, bạn sẽ được hỗ trợ 1.200.000 đồng (2.000 đồng/km × 600km) cho cả lượt đi và về. Hỗ trợ này áp dụng mỗi năm một lần, tối đa cho 3 người thân.","Dựa trên các văn bản pháp luật được cung cấp, tôi xin trả lời câu hỏi của bạn như sau:
+
+**Về hỗ trợ thăm viếng mộ liệt sĩ:**
+
+Bạn là con của liệt sĩ, do đó bạn thuộc đối tượng được xem xét hỗ trợ thăm viếng mộ liệt sĩ. Theo quy định tại Khoản 1, Điều 12, Thông tư 101/2018/TT-BTC, thân nhân liệt sĩ (tối đa ba người) được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước sẽ được hỗ trợ:
+
+*   **Tiền tàu xe và tiền ăn:** Được hỗ trợ một lần mỗi năm cho một liệt sĩ, bao gồm cả lượt đi và về.
+*   **Mức hỗ trợ:** 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ (hoặc địa phương nơi liệt sĩ hy sinh), nhưng tối đa không quá 2.400.000 đồng/người.
+
+**Trường hợp của bạn:**
+
+*   Khoảng cách từ nhà bạn đến nghĩa trang liệt sĩ là 600km.
+*   Bạn sẽ được hỗ trợ tiền tàu xe và tiền ăn với mức: 2.000 đồng/km x 600 km = 1.200.000 đồng.
+*   Vì mức hỗ trợ này không vượt quá 2.400.000 đồng/người nên bạn sẽ nhận được 1.200.000 đồng.
+
+**Tóm lại:** Bạn sẽ được hỗ trợ 1.200.000 đồng tiền tàu xe và tiền ăn cho một lần thăm viếng mộ liệt sĩ là bố của bạn trong năm.
+
+**Lưu ý:**
+
+*   Bạn cần liên hệ với cơ quan LĐTBXH để được cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ.
+*   Quy trình và thủ tục cụ thể sẽ được thực hiện theo hướng dẫn của Bộ LĐTBXH (Khoản 2, Điều 12, Thông tư 101/2018/TT-BTC).
+",0.8834,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art11 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7626,,0.0000,Haystack not available,0.7439,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7667,101_2018_TT_BTC_ch2_art12_13
+74,"Mẹ tôi hưởng chế độ trợ cấp thương binh, vừa mất tháng trước nhưng chưa nhận tiền trợ cấp, vậy tiền trợ cấp tháng đó có được trả không?","Tiền trợ cấp của tháng mẹ bạn mất nhưng chưa nhận vẫn được chi trả. Theo quy định về truy lĩnh, trường hợp đối tượng chưa được hưởng đầy đủ mức trợ cấp thì được truy lĩnh. Bạn nên liên hệ Phòng Lao động-TB&XH nơi mẹ đăng ký để làm thủ tục.","Tôi rất tiếc, các văn bản được cung cấp không đề cập đến việc giải quyết chế độ trợ cấp trong trường hợp người hưởng trợ cấp thương binh qua đời mà chưa kịp nhận tiền trợ cấp của tháng đó. Do đó, tôi không thể cung cấp thông tin chính xác về việc tiền trợ cấp tháng đó có được trả hay không.
+
+Tôi là trợ lý ảo chuyên về các vấn đề liên quan đến chính sách ưu đãi người có công tại Việt Nam. Nếu bạn có bất kỳ câu hỏi nào khác liên quan đến lĩnh vực này, tôi sẽ cố gắng hết sức để hỗ trợ bạn.
+",0.8821,101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art4 | 49_2012_QĐ_UBND_regulation_ch2_art8 | 101_2018_TT_BTC_ch2_art15 | 101_2018_TT_BTC_ch2_art5,0.0000,LangChain not available,0.7767,,0.0000,Haystack not available,0.7571,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7719,101_2018_TT_BTC_ch3_art20_21
+75,Tiền điều dưỡng tại nhà được chi trả như thế nào?,"Tiền điều dưỡng tại nhà được chi trực tiếp cho đối tượng được hưởng, với mức chi theo quy định tại điểm b khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP.","Theo Thông tư 101/2018/TT-BTC, việc chi trả tiền điều dưỡng tại nhà được thực hiện như sau:
+
+*   **Mức chi:** Thực hiện theo quy định tại điểm b khoản 3 Điều 53 Nghị định số 31/2013/NĐ-CP.
+*   **Phương thức:** Chi trực tiếp cho đối tượng được hưởng (Điều 6, Khoản 1).
+",0.9473,101_2018_TT_BTC_ch2_art6 | 101_2018_TT_BTC_ch2_art10 | 101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art8_9 | 101_2018_TT_BTC_ch2_art5,1.0000,LangChain not available,0.7595,,0.0000,Haystack not available,0.7383,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7688,101_2018_TT_BTC_ch2_art6
+76,"Tôi thấy ở quê tôi có nhiều người được cất nhà tình nghĩa, không biết kinh phí từ đâu ra vậy?",Các văn bản pháp luật được cung cấp không quy định cụ thể về kinh phí xây dựng nhà tình nghĩa. Nguồn kinh phí này thường đến từ ngân sách địa phương và các nguồn huy động khác như quỹ 'Đền ơn đáp nghĩa'.,"Theo các văn bản pháp luật hiện hành, kinh phí xây nhà tình nghĩa cho người có công với cách mạng có thể đến từ các nguồn sau:
+
+1.  **Ngân sách Trung ương:**
+    *   Ngân sách Trung ương đảm bảo nguồn kinh phí để thực hiện chính sách ưu đãi người có công với cách mạng (khoản 2, Điều 1, Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH).
+    *   Bộ Tài chính, Kho bạc Nhà nước bảo đảm đầy đủ, kịp thời kinh phí cho cơ quan Lao động – Thương binh và Xã hội để thực hiện chính sách (khoản 2, Điều 1, Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH).
+2.  **Ngân sách địa phương:**
+    *   Đối với địa phương tự cân đối ngân sách, kinh phí xây dựng nhà tình nghĩa được bố trí từ ngân sách địa phương (điểm b, khoản 3, Điều 11, Thông tư 101/2018/TT-BTC).
+3.  **Hỗ trợ từ ngân sách trung ương cho địa phương:**
+    *   Đối với địa phương được ngân sách trung ương bổ sung cân đối, mức hỗ trợ tối đa 70% tổng giá trị công trình được cơ quan có thẩm quyền phê duyệt (điểm a, khoản 3, Điều 11, Thông tư 101/2018/TT-BTC).
+
+**Thông tin chi tiết về mức hỗ trợ:**
+
+*   Đối với công trình cấp tỉnh, mức hỗ trợ không quá 10 tỷ đồng/công trình.
+*   Đối với công trình cấp huyện, mức hỗ trợ không quá 04 tỷ đồng/công trình.
+*   Đối với công trình cấp xã, mức hỗ trợ không quá 0,5 tỷ đồng/công trình.
+*   Đối với công trình sửa chữa, cải tạo, nâng cấp mức hỗ trợ tối đa 50% mức hỗ trợ xây dựng mới (điểm a, khoản 3, Điều 11, Thông tư 101/2018/TT-BTC).
+
+**Lưu ý:** Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH đã hết hiệu lực kể từ ngày 01/01/2019, được thay thế bởi Thông tư 101/2018/TT-BTC.
+",0.8326,49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_preamble | 101_2018_TT_BTC_ch2_art11 | 47_2009_TTLT_BTC_BLĐTBXH_art1_2 | 47_2009_TTLT_BTC_BLĐTBXH_preamble,0.0000,LangChain not available,0.7368,,0.0000,Haystack not available,0.7196,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7463,101_2018_TT_BTC_ch1_art1_3 | 49_2012_QĐ_UBND_regulation_ch1
+77,"Tháng sau tôi đưa bố tôi đi làm chân giả, không biết cơ quan nào sẽ chi trả tiền đi lại?","Cơ quan Lao động - Thương binh và Xã hội sẽ chi trả tiền hỗ trợ đi làm chân giả (5.000 đồng/km, tối đa 1.400.000 đồng/người). Bạn cần liên hệ Phòng Lao động-TB&XH cấp quận/huyện nơi bố bạn đăng ký hưởng trợ cấp.","Dựa trên thông tin bạn cung cấp, bố của bạn có thể được hỗ trợ chi phí đi lại khi làm chân giả theo quy định về **chế độ hỗ trợ khi đi làm phương tiện trợ giúp, dụng cụ chỉnh hình** được quy định tại Thông tư 101/2018/TT-BTC. Cụ thể như sau:
+
+1.  **Đối tượng được hỗ trợ:**
+
+    *   Đối tượng được hưởng chế độ cấp phương tiện trợ giúp, dụng cụ chỉnh hình.
+2.  **Mức hỗ trợ:**
+
+    *   Tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về), mỗi niên hạn 01 lần.
+    *   Mức hỗ trợ theo đơn giá 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người.
+
+    **Ví dụ:** Nếu khoảng cách từ nhà bố bạn đến trung tâm chỉnh hình gần nhất là 175km, mức hỗ trợ sẽ là: 5.000 đồng/km x 175km = 875.000 đồng. (Theo khoản 2 Điều 7 Thông tư 101/2018/TT-BTC).
+3.  **Cơ quan chi trả:**
+
+    *   Thông tư 101/2018/TT-BTC và Quyết định 49/2012/QĐ-UBND không nêu rõ cơ quan nào trực tiếp chi trả khoản tiền này. Tuy nhiên, theo Điều 15 Thông tư 101/2018/TT-BTC và Điều 9 Quyết định 49/2012/QĐ-UBND, cơ quan Lao động - Thương binh và Xã hội (LĐTBXH) các cấp (Sở hoặc Phòng) có trách nhiệm quản lý kinh phí và chi trả các chế độ ưu đãi cho người có công. Ủy ban nhân dân phường - xã, thị trấn có trách nhiệm chi trả trợ cấp ưu đãi cho người có công trên địa bàn (Điều 8 Quyết định 49/2012/QĐ-UBND).
+    *   Bạn nên liên hệ với Phòng LĐTBXH cấp quận/huyện nơi cư trú để được hướng dẫn cụ thể về thủ tục và cơ quan chi trả.
+
+**Trích dẫn văn bản pháp luật:**
+
+*   **Thông tư 101/2018/TT-BTC:** Điều 7 quy định về chế độ hỗ trợ khi đi làm phương tiện trợ giúp, dụng cụ chỉnh hình.
+*   **Quyết định 49/2012/QĐ-UBND:**
+    *   Điều 8 quy định về nhiệm vụ của Ủy ban nhân dân phường - xã, thị trấn trong việc chi trả trợ cấp ưu đãi.
+    *   Điều 9 quy định về nhiệm vụ của các đơn vị thuộc Sở LĐTBXH trong việc quản lý kinh phí và thực hiện chính sách ưu đãi.
+*   **Điều 15 Thông tư 101/2018/TT-BTC** quy định về chi trả chế độ cho người thụ hưởng thông qua tổ chức dịch vụ chi trả.
+
+**Lưu ý:** Để biết chính xác về quy trình và thủ tục cụ thể, bạn nên liên hệ trực tiếp với Phòng LĐTBXH nơi bạn cư trú để được tư vấn chi tiết.
+",0.9140,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art15 | 49_2012_QĐ_UBND_regulation_ch2_art9 | 49_2012_QĐ_UBND_regulation_ch2_art8,1.0000,LangChain not available,0.7656,,0.0000,Haystack not available,0.7448,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7652,101_2018_TT_BTC_ch2_art7
+78,"Tôi là thương binh hạng 1/4, bị mất 1 chân. Tôi được cấp mấy năm 1 lần chân giả và được hỗ trợ bao nhiêu tiền?","Với thương binh mất 1 chân, niên hạn cấp chân giả là 2 năm/lần, với mức 3.600.000 đồng (chân giả dưới gối) hoặc 3.800.000 đồng (chân giả trên gối). Ngoài ra còn được hưởng vật phẩm phụ (200.000 đồng/năm) và hỗ trợ đi làm dụng cụ (5.000 đồng/km, tối đa 1.400.000 đồng).","Dựa trên các văn bản pháp luật được cung cấp, tôi xin cung cấp thông tin về việc cấp chân giả và hỗ trợ tiền cho thương binh như sau:
+
+**1. Về việc cấp chân giả:**
+
+*   **Niên hạn cấp:** Tùy thuộc vào loại chân giả, niên hạn cấp có thể là **2 hoặc 3 năm** (Phụ lục, Thông tư 101/2018/TT-BTC). Cụ thể:
+    *   Chân giả trên gối: 2 năm/lần, mức cấp 3.800.000 đồng
+    *   Chân giả dưới gối có bao da đùi: 2 năm/lần, mức cấp 3.600.000 đồng
+    *   Chân giả dưới gối có dây đeo số 8: 2 năm/lần, mức cấp 3.400.000 đồng
+    *   Chân tháo khớp hông: 3 năm/lần, mức cấp 5.880.000 đồng
+    *   Chân giả tháo khớp gối: 3 năm/lần, mức cấp 4.340.000 đồng
+    *   Chân giả tháo khớp cổ chân: 3 năm/lần, mức cấp 2.260.000 đồng
+
+*   **Hình thức cấp:** Cấp tiền để đối tượng tự mua chân giả (Điểm a, Khoản 1, Điều 7, Thông tư 101/2018/TT-BTC).
+*   **Thời điểm cấp:** Cấp một lần vào đầu niên hạn sử dụng (Điểm c, Khoản 1, Điều 7, Thông tư 101/2018/TT-BTC).
+*   **Mức tiền cấp:** Mức tiền cấp bao gồm cả tiền mua vật phẩm phụ và bảo trì phương tiện (Điểm b, Khoản 1, Điều 7, Thông tư 101/2018/TT-BTC).
+    *   Người được cấp chân giả được cấp thêm 200.000 đồng/năm để mua vật phẩm phụ (Phụ lục, Thông tư 101/2018/TT-BTC).
+
+**2. Về chế độ hỗ trợ khi đi làm chân giả:**
+
+*   Thương binh được hỗ trợ tiền ăn và tiền tàu xe một lần cho cả lượt đi và về khi đi làm chân giả, mỗi niên hạn 01 lần (Điểm a, Khoản 2, Điều 7, Thông tư 101/2018/TT-BTC).
+*   **Mức hỗ trợ:** 5.000 đồng/km tính theo khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình, nhưng tối đa không quá 1.400.000 đồng/người (Điểm a, Khoản 2, Điều 7, Thông tư 101/2018/TT-BTC).
+
+**Ví dụ:** Nếu khoảng cách từ nhà bạn đến trung tâm chỉnh hình gần nhất là 100km, bạn sẽ được hỗ trợ: 5.000 đồng/km x 100km = 500.000 đồng.
+
+**Lưu ý:**
+
+*   Quy trình, thủ tục lập sổ theo dõi và cấp phương tiện trợ giúp, dụng cụ chỉnh hình thực hiện theo quy định của Bộ LĐTBXH (Khoản 3, Điều 7, Thông tư 101/2018/TT-BTC). Bạn cần liên hệ với cơ quan LĐTBXH địa phương để biết thêm chi tiết.
+
+**Văn bản tham khảo:**
+
+*   Thông tư 101/2018/TT-BTC ngày 14/11/2018 của Bộ Tài chính.
+",0.9150,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_appendix | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art3,1.0000,LangChain not available,0.7566,,0.0000,Haystack not available,0.7389,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7549,101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_appendix
+79,"Tôi đang hưởng chính sách người có công, nay tôi muốn đi công tác sang nước ngoài khoảng 5 tháng. Vậy trong thời gian đi, tôi có được nhận tiền trợ cấp không?","Các văn bản không quy định cụ thể về tạm dừng trợ cấp khi đi công tác nước ngoài ngắn hạn. Bạn vẫn được nhận trợ cấp, nhưng nên thông báo cho Phòng Lao động-TB&XH và làm thủ tục ủy quyền cho người thân nhận hộ trong thời gian đi vắng.","Dựa trên các văn bản pháp luật được cung cấp, tôi không tìm thấy quy định cụ thể nào về việc người có công đi công tác nước ngoài có bị ảnh hưởng đến trợ cấp hay không. Do đó, tôi không có đủ thông tin để trả lời câu hỏi của bạn.
+
+Để có thông tin chính xác nhất, bạn nên liên hệ trực tiếp với cơ quan Lao động - Thương binh và Xã hội địa phương nơi bạn đang cư trú để được tư vấn cụ thể về trường hợp của mình.
+",0.9224,101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_ch2_art7 | 101_2018_TT_BTC_preamble | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch1_art1_3,0.0000,LangChain not available,0.7580,,0.0000,Haystack not available,0.7468,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7499,101_2018_TT_BTC_ch3_art20_21 | 49_2012_QĐ_UBND_regulation_ch2_art8
+80,Để có thẻ bảo hiểm y tế người có công thì tôi cần làm những thủ tục gì?,"Các văn bản không quy định cụ thể thủ tục cấp thẻ BHYT. Thông thường, sau khi được công nhận là người có công, cơ quan LĐTBXH sẽ phối hợp với BHXH để cấp thẻ. Bạn nên liên hệ Phòng LĐTBXH nơi cư trú để được hướng dẫn cụ thể.","Để có thẻ bảo hiểm y tế (BHYT) người có công, bạn cần lưu ý các thông tin sau:
+
+**Đối tượng được cấp thẻ BHYT:**
+
+*   Người có công và thân nhân của họ thuộc diện được hưởng chế độ trợ cấp, phụ cấp hàng tháng sẽ được đóng BHYT, trừ những người đã có BHYT bắt buộc, hưởng lương hưu, trợ cấp BHXH hoặc trợ cấp thất nghiệp hàng tháng (Theo Điều 5, Thông tư 101/2018/TT-BTC).
+*   Đối tượng không hưởng trợ cấp hàng tháng được cấp thẻ bảo hiểm y tế theo quy định của Pháp lệnh ưu đãi người có công với cách mạng và thanh niên xung phong thời kỳ kháng chiến chống Pháp theo Quyết định số 170/2008/QĐ-TTg (Theo Điều 5, Thông tư 101/2018/TT-BTC).
+
+**Thủ tục cấp thẻ BHYT:**
+
+1.  **Rà soát danh sách:** Hàng quý, cơ quan Lao động - Thương binh và Xã hội (LĐTBXH) rà soát danh sách đối tượng được đóng BHYT (Theo Điều 5, Thông tư 101/2018/TT-BTC).
+2.  **Đối chiếu với cơ quan BHXH:** Cơ quan LĐTBXH đối chiếu danh sách với cơ quan Bảo hiểm xã hội (BHXH) (Theo Điều 5, Thông tư 101/2018/TT-BTC).
+3.  **Rút dự toán kinh phí:** Cơ quan LĐTBXH làm thủ tục rút dự toán kinh phí tại Kho bạc Nhà nước (KBNN) để chuyển vào quỹ BHYT (Theo Điều 5, Thông tư 101/2018/TT-BTC).
+
+**Lưu ý:**
+
+*   **Công khai thủ tục hành chính:** Thông tin về thủ tục hành chính phải được công khai đầy đủ, thường xuyên, rõ ràng và dễ tiếp cận trên Cơ sở dữ liệu quốc gia về thủ tục hành chính và niêm yết tại trụ sở cơ quan, đơn vị trực tiếp giải quyết thủ tục hành chính (Theo Điều 16, Nghị định 63/2010/NĐ-CP).
+*   **Trách nhiệm của cơ quan thực hiện thủ tục hành chính:** Cơ quan thực hiện thủ tục hành chính có trách nhiệm hướng dẫn, giải thích và cung cấp thông tin chính xác, đầy đủ, kịp thời về thủ tục hành chính cho cá nhân, tổ chức liên quan (Theo Điều 18, Nghị định 63/2010/NĐ-CP).
+*   **Hỗ trợ đối tượng ưu tiên:** Cơ quan thực hiện thủ tục hành chính có trách nhiệm hỗ trợ người có công, người cao tuổi, người tàn tật, người nghèo, phụ nữ mang thai, trẻ mồ côi và người thuộc diện bảo trợ xã hội khác trong thực hiện thủ tục hành chính (Theo Điều 18, Nghị định 63/2010/NĐ-CP).
+
+Để biết chi tiết về hồ sơ và quy trình cụ thể, bạn nên liên hệ trực tiếp với cơ quan LĐTBXH tại địa phương.
+",0.8797,101_2018_TT_BTC_ch2_art5 | 63_2010_NĐ_CP_ch3_art16_19 | 101_2018_TT_BTC_ch3_art19 | 49_2012_QĐ_UBND_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art4,0.5000,LangChain not available,0.7615,,0.0000,Haystack not available,0.7352,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7665,101_2018_TT_BTC_ch2_art5 | 49_2012_QĐ_UBND_regulation_ch2_art7
+81,Muốn di chuyển mộ liệt sĩ từ nghĩa trang liệt sĩ về nghĩa trang gia đình thì được hỗ trợ những gì?,"Khi di chuyển mộ liệt sĩ về nghĩa trang gia đình, được hỗ trợ: (1) Tiền tàu xe và tiền ăn cho thân nhân (2.000 đồng/km, tối đa 2.400.000 đồng/người), (2) Kinh phí cất bốc và di chuyển (4.000.000 đồng/hài cốt), (3) Tiền xây vỏ mộ nếu chôn cất tại nghĩa trang dòng họ.","Theo các văn bản pháp luật hiện hành, việc di chuyển mộ liệt sĩ từ nghĩa trang liệt sĩ về nghĩa trang gia đình được hỗ trợ như sau:
+
+**1. Hỗ trợ chi phí di chuyển:**
+
+*   **Tiền tàu xe và tiền ăn:** Hỗ trợ cho thân nhân liệt sĩ (không quá ba người) hoặc người được thân nhân ủy quyền hoặc người thờ cúng liệt sĩ. Mức hỗ trợ được tính theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người (bao gồm cả lượt đi và về).
+    *   (Trích dẫn: Điểm a, Khoản 1, Điều 13, Thông tư 101/2018/TT-BTC)
+*   **Kinh phí cất bốc và di chuyển:** Mức chi 4.000.000 đồng cho một bộ hài cốt liệt sĩ.
+    *   (Trích dẫn: Điểm b, Khoản 1, Điều 13, Thông tư 101/2018/TT-BTC)
+
+**2. Hỗ trợ xây vỏ mộ (nếu có nguyện vọng giữ lại hài cốt):**
+
+*   Nếu gia đình có nguyện vọng giữ lại hài cốt liệt sĩ và xây cất phần mộ tại nghĩa trang dòng họ do gia đình quản lý (không đưa vào nghĩa trang liệt sĩ), sẽ được hỗ trợ thêm tiền xây vỏ mộ liệt sĩ theo quy định tại khoản 3 Điều 62 Nghị định số 31/2013/NĐ-CP.
+    *   (Trích dẫn: Điểm c, Khoản 1, Điều 13, Thông tư 101/2018/TT-BTC)
+
+**Lưu ý:**
+
+*   Quy trình và thủ tục cụ thể để được hỗ trợ di chuyển hài cốt liệt sĩ sẽ theo quy định của Bộ Lao động - Thương binh và Xã hội.
+    *   (Trích dẫn: Khoản 2, Điều 13, Thông tư 101/2018/TT-BTC)
+
+**Thông tin bổ sung:**
+
+*   Thông tư 101/2018/TT-BTC có hiệu lực từ ngày 01/01/2019.
+*   Các mức hỗ trợ có thể thay đổi theo quy định của pháp luật hiện hành. Để có thông tin chi tiết và chính xác nhất, bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội địa phương để được tư vấn cụ thể.
+",0.9214,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art11 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 101_2018_TT_BTC_ch1_art1_3 | 101_2018_TT_BTC_ch2_art7,1.0000,LangChain not available,0.7395,,0.0000,Haystack not available,0.7262,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7392,101_2018_TT_BTC_ch2_art12_13
+82,Một người ở xa muốn đi thăm viếng mộ liệt sĩ thì có phải làm thủ tục gì với chính quyền không?,"Có, người đi thăm viếng mộ liệt sĩ muốn hưởng chế độ hỗ trợ phải được cơ quan Lao động-Thương binh và Xã hội cấp giấy giới thiệu. Cần liên hệ Phòng LĐTBXH nơi cư trú để được hướng dẫn thủ tục cụ thể.","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin về việc hỗ trợ thăm viếng mộ liệt sĩ, nhưng không có thông tin nào quy định về thủ tục hành chính bắt buộc đối với cá nhân muốn tự đi thăm viếng mộ liệt sĩ.
+
+**Giải thích chi tiết:**
+
+1.  **Hỗ trợ thăm viếng mộ liệt sĩ:**
+    *   Theo Điều 12, Thông tư 101/2018/TT-BTC, thân nhân liệt sĩ (tối đa 3 người) hoặc người thờ cúng liệt sĩ khi được cơ quan LĐTBXH cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước sẽ được hỗ trợ tiền tàu xe và tiền ăn (cả lượt đi và về), mỗi năm một lần đối với một liệt sĩ.
+    *   Mức hỗ trợ được tính theo đơn giá 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang có mộ liệt sĩ hoặc địa phương nơi liệt sĩ hy sinh, nhưng tối đa không quá 2.400.000 đồng/người.
+    *   Quy trình và thủ tục cụ thể để được hỗ trợ sẽ theo quy định của Bộ LĐTBXH.
+
+2.  **Công khai thủ tục hành chính:**
+    *   Nghị định 63/2010/NĐ-CP quy định về việc công khai các thủ tục hành chính, đảm bảo thông tin đầy đủ, rõ ràng, dễ tiếp cận và được đăng tải trên Cơ sở dữ liệu quốc gia về thủ tục hành chính (Điều 16, 17).
+    *   Cơ quan thực hiện thủ tục hành chính có trách nhiệm hướng dẫn, giải thích, cung cấp thông tin chính xác, đầy đủ, kịp thời về thủ tục hành chính cho cá nhân, tổ chức liên quan (Điều 18).
+
+**Tóm lại:**
+
+*   Nếu bạn muốn nhận hỗ trợ chi phí đi thăm viếng mộ liệt sĩ, bạn cần làm thủ tục để được cấp giấy giới thiệu từ cơ quan LĐTBXH.
+*   Việc tự đi thăm viếng mộ liệt sĩ mà không yêu cầu hỗ trợ có thể không cần thủ tục hành chính, nhưng để chắc chắn, bạn nên liên hệ với cơ quan LĐTBXH địa phương để được tư vấn cụ thể.
+*   Tôi không tìm thấy quy định nào yêu cầu người dân phải làm thủ tục hành chính khi tự đi thăm viếng mộ liệt sĩ. Tuy nhiên, quy định có thể tồn tại ở các văn bản khác mà tôi không có quyền truy cập.
+",0.9162,101_2018_TT_BTC_ch2_art12_13 | 101_2018_TT_BTC_ch2_art11 | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 63_2010_NĐ_CP_ch3_art16_19 | 63_2010_NĐ_CP_annex1,1.0000,LangChain not available,0.7632,,0.0000,Haystack not available,0.7447,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7721,101_2018_TT_BTC_ch2_art12_13
+83,"Tôi thấy văn bản nói về cấp báo Nhân dân miễn phí cho người hoạt động cách mạng, vậy tôi cần chuẩn bị gì để được nhận báo?","Thông tư 101/2018/TT-BTC có quy định về cấp tiền mua báo Nhân dân cho người hoạt động cách mạng trước cách mạng tháng 8/1945, nhưng không nêu cụ thể thủ tục. Bạn cần liên hệ Phòng LĐTBXH nơi đang hưởng trợ cấp để được hướng dẫn.","Để được cấp báo Nhân dân miễn phí, bạn cần thuộc đối tượng được quy định và làm thủ tục theo hướng dẫn của cơ quan có thẩm quyền. Dưới đây là thông tin chi tiết:
+
+**1. Đối tượng được cấp báo Nhân dân miễn phí:**
+
+*   Người hoạt động cách mạng trước ngày 01/01/1945.
+*   Người hoạt động cách mạng từ ngày 01/01/1945 đến trước Tổng khởi nghĩa 19/8/1945.
+
+    (Theo Khoản 1, Điều 4, Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH)
+
+**2. Thủ tục và hồ sơ cần chuẩn bị:**
+
+Văn bản bạn cung cấp không nêu rõ về thủ tục và hồ sơ cần chuẩn bị để được cấp báo Nhân dân miễn phí. Để biết chi tiết, bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương nơi bạn cư trú để được hướng dẫn cụ thể.
+",0.9219,63_2010_NĐ_CP_ch3_art16_19 | 49_2012_QĐ_UBND_preamble | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art4,0.0000,LangChain not available,0.7781,,0.0000,Haystack not available,0.7616,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7726,101_2018_TT_BTC_ch2_art8_9
+84,"Tôi đang là trụ cột trong gia đình, mẹ tôi là người có công, giờ mẹ tôi mất rồi thì ai sẽ là người thờ cúng, có được hưởng trợ cấp không?","Theo Thông tư 101/2018/TT-BTC, chỉ có trợ cấp thờ cúng đối với liệt sĩ không còn thân nhân hưởng trợ cấp tiền tuất. Nếu mẹ bạn không phải liệt sĩ mà là đối tượng người có công khác, khi mất đi thì không có quy định về trợ cấp thờ cúng.","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp một số thông tin liên quan đến câu hỏi của bạn như sau:
+
+**1. Về người thờ cúng và quyền lợi sau khi mẹ là người có công qua đời:**
+
+Tôi rất tiếc, các văn bản pháp luật được cung cấp không đề cập cụ thể đến việc ai là người thờ cúng người có công sau khi họ qua đời, cũng như các quyền lợi liên quan đến trợ cấp trong trường hợp này. Do đó, tôi không thể cung cấp thông tin chính xác về vấn đề này.
+
+**2. Các chế độ ưu đãi khác đối với người có công:**
+
+Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH quy định một số khoản chi ưu đãi khác đối với người có công với cách mạng, bao gồm:
+
+*   Cấp Báo Nhân dân (Điều 4.1)
+*   Bảo hiểm y tế (Điều 4.2)
+*   Trợ cấp lễ báo tử liệt sỹ (Điều 4.3)
+*   Trợ cấp mai táng phí (Điều 4.4)
+*   Điều trị, điều dưỡng phục hồi sức khỏe (Điều 4.5)
+*   Quà tặng của Chủ tịch nước, chi ăn thêm ngày lễ, tết (Điều 4.6)
+*   Thuốc đặc trị và các điều trị đặc biệt khác (Điều 4.7)
+*   Giám định y khoa (Điều 4.8)
+*   Phương tiện trợ giúp, dụng cụ chỉnh hình (Điều 4.9)
+*   Hỗ trợ tiền tàu, xe đi khám chữa bệnh, giám định thương tật (Điều 4.10)
+*   Hỗ trợ tiền tàu xe, lưu trú làm dụng cụ chỉnh hình, phục hồi chức năng (Điều 4.11)
+*   Chi hỗ trợ thương binh, bệnh binh nặng về sống với gia đình (Điều 4.12)
+*   Chi công tác mộ liệt sỹ (Điều 4.13)
+*   Hỗ trợ thân nhân liệt sỹ thăm viếng mộ và di chuyển hài cốt liệt sỹ (Điều 4.14)
+*   Đón tiếp người có công với cách mạng (Điều 4.15)
+*   Trợ cấp ưu đãi trong giáo dục, đào tạo (Điều 4.16)
+*   Các khoản chi ưu đãi khác theo quy định của pháp luật (Điều 4.17)
+
+**3. Hỗ trợ thăm viếng mộ liệt sĩ và di chuyển hài cốt liệt sĩ:**
+
+*   **Thăm viếng mộ liệt sĩ:** Thân nhân liệt sĩ (không quá ba người) hoặc người thờ cúng liệt sĩ được cấp giấy giới thiệu đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ tiền tàu xe và tiền ăn, mỗi năm một lần đối với một liệt sĩ. Mức hỗ trợ tối đa không quá 2.400.000 đồng/người (Điều 12, Thông tư 101/2018/TT-BTC).
+*   **Di chuyển hài cốt liệt sĩ:** Hỗ trợ tiền tàu xe và tiền ăn (không quá ba người), mức hỗ trợ tương tự như thăm viếng mộ liệt sĩ. Ngoài ra, còn hỗ trợ kinh phí cất bốc và di chuyển một bộ hài cốt liệt sĩ (4.000.000 đồng) và hỗ trợ tiền xây vỏ mộ liệt sĩ nếu gia đình có nguyện vọng giữ lại xây cất phần mộ tại nghĩa trang dòng họ (Điều 13, Thông tư 101/2018/TT-BTC).
+
+**Lưu ý:** Để biết thông tin chi tiết và đầy đủ về quyền lợi và nghĩa vụ của người có công và thân nhân, bạn nên liên hệ trực tiếp với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được tư vấn cụ thể.
+",0.8966,101_2018_TT_BTC_ch2_art4 | 101_2018_TT_BTC_ch1_art1_3 | 47_2009_TTLT_BTC_BLĐTBXH_art3 | 101_2018_TT_BTC_ch2_art12_13 | 47_2009_TTLT_BTC_BLĐTBXH_art4,0.0000,LangChain not available,0.7672,,0.0000,Haystack not available,0.7506,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7651,101_2018_TT_BTC_ch2_art8_9
+85,"Tui nghe nói Quyết định 49/2012 của TPHCM có quy định về việc chi trả trợ cấp người có công qua ngân hàng, vậy tôi làm thủ tục ra sao?","Quyết định 49/2012/QĐ-UBND không quy định cụ thể thủ tục chi trả qua ngân hàng. Thông tư 101/2018/TT-BTC đề cập đến chi trả qua thẻ ATM thông qua tổ chức dịch vụ chi trả. Để đăng ký, bạn nên liên hệ Phòng LĐTBXH nơi đang hưởng trợ cấp, làm đơn đề nghị và cung cấp thông tin tài khoản.","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin sau về việc chi trả trợ cấp cho người có công qua ngân hàng tại TP.HCM theo Quyết định 49/2012/QĐ-UBND:
+
+**1. Cơ sở pháp lý:**
+
+*   **Quyết định 49/2012/QĐ-UBND** của UBND TP.HCM ban hành Quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến trên địa bàn TP.HCM.
+*   **Thông tư 101/2018/TT-BTC** của Bộ Tài chính hướng dẫn quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến.
+
+**2. Hình thức chi trả:**
+
+*   Việc chi trả có thể thực hiện thông qua **tổ chức dịch vụ chi trả** có kinh nghiệm, có mạng lưới điểm giao dịch tại xã, phường, thị trấn, có thể đảm nhiệm việc chi trả tại nhà cho một số đối tượng đặc thù, bảo đảm kịp thời và an toàn trong việc chi trả (Điều 15, Thông tư 101/2018/TT-BTC).
+*   **Phương thức chi trả** bao gồm chi trả trực tiếp bằng tiền mặt hoặc chi trả qua thẻ ATM (Điều 15, Thông tư 101/2018/TT-BTC).
+
+**3. Thủ tục thực hiện:**
+
+*   Cơ quan LĐTBXH (Sở LĐTBXH hoặc Phòng LĐTBXH tùy theo phân cấp của từng địa phương) ký hợp đồng với tổ chức dịch vụ chi trả. Hợp đồng phải ghi rõ phạm vi đối tượng chi trả, phương thức chi trả, phương thức chuyển tiền và thời hạn chuyển tiền, thời hạn chi trả đến người thụ hưởng, mức chi phí chi trả, thời hạn thanh quyết toán, quyền và trách nhiệm của các bên (Điều 15, Thông tư 101/2018/TT-BTC).
+*   Trước ngày 25 hàng tháng, cơ quan LĐTBXH căn cứ danh sách đối tượng thụ hưởng và số kinh phí chi trả tháng sau thực hiện rút dự toán tại KBNN và chuyển vào tài khoản tiền gửi của tổ chức dịch vụ chi trả; đồng thời chuyển danh sách chi trả cho tổ chức dịch vụ chi trả cho đối tượng thụ hưởng tháng sau (Điều 15, Thông tư 101/2018/TT-BTC).
+*   Hằng tháng, tổ chức dịch vụ chi trả tổng hợp, báo cáo danh sách đối tượng đã nhận tiền, số tiền đã chi trả; danh sách đối tượng chưa nhận tiền để chuyển chi trả vào tháng sau, số kinh phí còn lại chưa chi trả và chuyển chứng từ (danh sách đã ký nhận và chứng từ chuyển khoản ngân hàng) cho cơ quan LĐTBXH trước ngày 20 hằng tháng. Cơ quan LĐTBXH tổng hợp quyết toán kinh phí chi trả theo quy định (Điều 15, Thông tư 101/2018/TT-BTC).
+
+**4. Các quy định khác:**
+
+*   Việc quản lý kinh phí chi trả trợ cấp ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến phải tuân thủ theo quy định của Luật Ngân sách nhà nước, các quy định của pháp luật hiện hành và các nội dung tại Quy chế ban hành kèm theo Quyết định 49/2012/QĐ-UBND. Đảm bảo nguyên tắc tổ chức thực hiện chi trả đúng đối tượng, đúng chế độ, đúng nội dung và phải hoàn thành trước ngày 15 hàng tháng (Điều 2, Quyết định 49/2012/QĐ-UBND).
+*   Nghiêm cấm các tổ chức, cá nhân được giao nhiệm vụ sử dụng kinh phí chi thực hiện các chế độ đối với người có công với cách mạng và người trực tiếp tham gia kháng chiến để cho vay, mượn hoặc sử dụng vào các mục đích khác. Không được thu bất cứ một khoản lệ phí nào của người có công với cách mạng và người trực tiếp tham gia kháng chiến trong việc cấp, phát, chi trả chế độ ưu đãi (Điều 2, Quyết định 49/2012/QĐ-UBND).
+
+**Lưu ý:** Để biết chi tiết về thủ tục đăng ký và các giấy tờ cần thiết, bạn nên liên hệ trực tiếp với Phòng Lao động - Thương binh và Xã hội tại địa phương nơi bạn cư trú để được hướng dẫn cụ thể.
+",0.9053,49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch3_art20_21 | 49_2012_QĐ_UBND_regulation_ch1 | 101_2018_TT_BTC_ch2_art15 | 101_2018_TT_BTC_ch2_art4,0.5000,LangChain not available,0.7693,,0.0000,Haystack not available,0.7500,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7716,49_2012_QĐ_UBND_regulation_ch2_art8 | 101_2018_TT_BTC_ch2_art15
+86,"Thời gian gần đây tôi không thấy mình được cấp tiền mua báo Nhân dân nữa, không biết mình có bị cắt chế độ không?","Nếu bạn thuộc diện người hoạt động cách mạng trước cách mạng tháng 8/1945 (đối tượng được cấp tiền mua báo Nhân dân), nhưng không nhận được nữa, có thể do thay đổi chính sách, nhầm lẫn, hoặc vấn đề hồ sơ. Bạn nên liên hệ Phòng LĐTBXH nơi hưởng trợ cấp để được giải quyết.","Dựa trên các văn bản pháp luật được cung cấp, tôi có thể cung cấp thông tin sau liên quan đến việc cấp báo Nhân dân cho người có công:
+
+**1. Chế độ cấp báo Nhân dân:**
+
+*   Theo Điều 4 của Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, một trong các khoản chi ưu đãi khác là ""Chi cấp Báo Nhân dân cho người hoạt động cách mạng trước ngày 01/01/1945, người hoạt động cách mạng từ ngày 01/01/1945 đến trước tổng khởi nghĩa 19/8/1945"".
+
+**2. Các văn bản liên quan:**
+
+*   **Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH** ngày 11 tháng 3 năm 2009 của Bộ Tài chính - Bộ Lao động - Thương binh và Xã hội hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+*   **Quyết định số 49/2012/QĐ-UBND** ngày 23 tháng 10 năm 2012 của Ủy ban nhân dân Thành phố Hồ Chí Minh ban hành Quy chế quản lý kinh phí chi thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến trên địa bàn Thành phố Hồ Chí Minh.
+*   **Thông tư số 101/2018/TT-BTC** ngày 14 tháng 11 năm 2018 của Bộ Tài chính quy định quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý.
+
+**Vậy, để biết bạn có bị cắt chế độ cấp báo Nhân dân hay không**, bạn cần xem xét các yếu tố sau:
+
+1.  **Đối tượng được hưởng:** Bạn có thuộc đối tượng ""người hoạt động cách mạng trước ngày 01/01/1945"" hoặc ""người hoạt động cách mạng từ ngày 01/01/1945 đến trước tổng khởi nghĩa 19/8/1945"" hay không?
+2.  **Quy định hiện hành:** Các văn bản pháp luật có thể đã được sửa đổi, bổ sung hoặc thay thế. Bạn nên liên hệ với cơ quan Lao động - Thương binh và Xã hội tại địa phương để được cung cấp thông tin chính xác nhất về chế độ hiện hành và lý do bạn không còn được cấp báo.
+
+Lưu ý rằng, theo các văn bản tôi có, việc cấp báo Nhân dân là một trong những chính sách ưu đãi dành cho người có công với cách mạng. Việc bạn không còn nhận được báo có thể do nhiều nguyên nhân, và cần được xác minh cụ thể tại cơ quan chức năng.
+",0.9028,49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_preamble | 47_2009_TTLT_BTC_BLĐTBXH_art4 | 49_2012_QĐ_UBND_art1_3 | 101_2018_TT_BTC_ch2_art4,0.0000,LangChain not available,0.7864,,0.0000,Haystack not available,0.7723,,0.0000,ERROR: module 'openai' has no attribute 'OpenAI',0.7791,101_2018_TT_BTC_ch2_art8_9
