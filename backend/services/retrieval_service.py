@@ -298,8 +298,8 @@ class RetrievalService:
         
         # Bao gồm validityStatus trong metadata
         metadata = {
-            "validityStatus": CacheStatus.VALID,  # Thêm trường validityStatus
-            "relatedDocIds": related_docs_str  # Lưu dưới dạng chuỗi phân cách bằng dấu phẩy
+            "validityStatus": str(CacheStatus.VALID),  # Thêm trường validityStatus
+            "relatedDocIds": ",".join(related_doc_ids) if related_doc_ids else ""
         }
         
         # Sử dụng collection riêng cho cache

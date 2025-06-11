@@ -1,10 +1,10 @@
 chromadb-client==1.0.12
 
-fastapi==0.115.9
-langchain==0.3.25
-langchain_chroma==0.2.4
-langchain_google_genai==2.1.5
-langchain_huggingface==0.2.0
+fastapi
+langchain
+langchain_chroma
+langchain_google_genai
+langchain_huggingface
 haystack-ai
 numpy
 openai==1.86.0
