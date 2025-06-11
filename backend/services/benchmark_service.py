@@ -10,9 +10,11 @@ import google.generativeai as genai
 from openai import OpenAI
 import sys
 import numpy as np
+import chromadb
+from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import GEMINI_API_KEY, BENCHMARK_DIR, BENCHMARK_RESULTS_DIR
+from config import GEMINI_API_KEY, BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION, EMBEDDING_MODEL_NAME, USE_GPU
 from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from database.chroma_client import chroma_client
@@ -40,8 +42,11 @@ except ImportError:
 
 class BenchmarkService:
     def __init__(self):
-        self.embedding_model = SentenceTransformer('intfloat/multilingual-e5-base')
+        self.embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
         genai.configure(api_key=GEMINI_API_KEY)
+        
+        # Khởi tạo ChromaDB client cho LangChain (sử dụng cùng config với chroma_client)
+        self._init_langchain_client()
         
         self.prompt_template = """
 [SYSTEM INSTRUCTION]
@@ -77,6 +82,34 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
 {context}
 """
 
+    def _init_langchain_client(self):
+        """Khởi tạo ChromaDB client cho LangChain sử dụng cùng config với hệ thống chính"""
+        try:
+            # Sử dụng HttpClient như chroma_client.py
+            self.langchain_chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+            
+            # Sử dụng cùng embedding function
+            device = "cuda" if USE_GPU and self._check_gpu() else "cpu"
+            self.langchain_embedding_function = SentenceTransformerEmbeddingFunction(
+                model_name=EMBEDDING_MODEL_NAME,
+                device=device
+            )
+            
+            print(f"LangChain ChromaDB client initialized: {CHROMA_HOST}:{CHROMA_PORT}")
+            
+        except Exception as e:
+            print(f"Lỗi khởi tạo LangChain ChromaDB client: {str(e)}")
+            self.langchain_chroma_client = None
+            self.langchain_embedding_function = None
+
+    def _check_gpu(self):
+        """Kiểm tra GPU availability"""
+        try:
+            import torch
+            return torch.cuda.is_available()
+        except:
+            return False
+
     def _convert_numpy_types(self, obj):
         """Convert numpy types to Python native types for JSON serialization"""
         if isinstance(obj, np.floating):
@@ -92,6 +125,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
         return obj
 
     def calculate_cosine_similarity(self, generated_answer, reference_answer):
+        """Tính cosine similarity giữa câu trả lời generated và reference"""
         if isinstance(reference_answer, dict):
             if "current_citation" in reference_answer and reference_answer["current_citation"]:
                 ref_text = reference_answer["current_citation"]
@@ -105,13 +139,17 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             ref_text = str(reference_answer)
         
         gen_text = str(generated_answer)
-        embeddings = self.embedding_model.encode([gen_text, ref_text])
-        cosine_sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
         
-        # Convert to Python float
-        return float(cosine_sim), ref_text
+        try:
+            embeddings = self.embedding_model.encode([gen_text, ref_text])
+            cosine_sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
+            return float(cosine_sim), ref_text
+        except Exception as e:
+            print(f"Error calculating cosine similarity: {str(e)}")
+            return 0.0, ref_text
 
     def evaluate_retrieval_accuracy(self, retrieved_chunks, benchmark_chunks):
+        """Đánh giá độ chính xác của retrieval"""
         if not benchmark_chunks:
             return 1.0, []
         
@@ -143,6 +181,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
         return float(accuracy), found_chunks
 
     def process_current_system(self, question):
+        """Xử lý câu hỏi bằng hệ thống hiện tại"""
         try:
             retrieval_result = retrieval_service.retrieve(question, use_cache=False)
             context_items = retrieval_result.get("context_items", [])
@@ -156,22 +195,41 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             
             return answer, retrieved_chunks
         except Exception as e:
+            print(f"Error in process_current_system: {str(e)}")
             return f"ERROR: {str(e)}", []
 
     def process_langchain(self, question):
+        """Xử lý câu hỏi bằng LangChain với ChromaDB Docker"""
         if not LANGCHAIN_AVAILABLE:
             return "LangChain not available", []
         
+        if not self.langchain_chroma_client:
+            return "LangChain ChromaDB client not initialized", []
+        
         try:
-            from langchain_chroma import Chroma
-            from langchain_huggingface import HuggingFaceEmbeddings
             from langchain_google_genai import ChatGoogleGenerativeAI
             from langchain.prompts import ChatPromptTemplate
             
-            embedding_function = HuggingFaceEmbeddings(model_name="intfloat/multilingual-e5-base")
-            db = Chroma(persist_directory="chroma", embedding_function=embedding_function)
+            # Khởi tạo LangChain Chroma với client hiện có
+            from langchain_chroma import Chroma
+            from langchain_huggingface import HuggingFaceEmbeddings
+            
+            # Sử dụng cùng embedding model như hệ thống chính
+            embedding_function = HuggingFaceEmbeddings(
+                model_name=EMBEDDING_MODEL_NAME,
+                model_kwargs={'device': 'cuda' if USE_GPU and self._check_gpu() else 'cpu'}
+            )
+            
+            # Kết nối với collection chính (law_data)
+            db = Chroma(
+                client=self.langchain_chroma_client,
+                collection_name=CHROMA_COLLECTION,  # Sử dụng collection chính
+                embedding_function=embedding_function
+            )
+            
             model = ChatGoogleGenerativeAI(model="gemini-2.0-flash", api_key=GEMINI_API_KEY)
             
+            # Thực hiện similarity search
             results = db.similarity_search_with_relevance_scores(question, k=5)
             
             if len(results) == 0 or results[0][1] < 0.7:
@@ -184,6 +242,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             response = model.invoke(prompt)
             answer = str(response.content)
             
+            # Format retrieved chunks info
             retrieved_chunks = []
             for i, (doc, score) in enumerate(results):
                 chunk_id = doc.metadata.get('chunk_id', f'unknown_chunk_{i}')
@@ -193,10 +252,13 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                 retrieved_chunks.append(chunk_info)
             
             return answer, retrieved_chunks
+            
         except Exception as e:
+            print(f"Error in process_langchain: {str(e)}")
             return f"ERROR: {str(e)}", []
 
     def process_haystack(self, question):
+        """Xử lý câu hỏi bằng Haystack"""
         if not HAYSTACK_AVAILABLE:
             return "Haystack not available", []
         
@@ -204,9 +266,8 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             from haystack import Document
             from haystack.document_stores.in_memory import InMemoryDocumentStore
             from haystack.components.retrievers import InMemoryBM25Retriever
-            from haystack.components.builders import PromptBuilder
-            from haystack import Pipeline
             
+            # Load documents từ data directory
             data_dir = "data"
             all_docs = []
             
@@ -227,10 +288,12 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                                 chunk_id = chunk.get("chunk_id", "unknown")
                                 file_path = chunk.get("file_path", "")
                                 
+                                # Tìm file chunk
                                 if file_path.startswith("/data/") or file_path.startswith("data/"):
                                     filename = os.path.basename(file_path)
                                     abs_file_path = os.path.join(subdir, filename)
                                 else:
+                                    # Fallback: tìm file chunk_*.md
                                     for i in range(1, 11):
                                         test_path = os.path.join(subdir, f"chunk_{i}.md")
                                         if os.path.exists(test_path):
@@ -248,10 +311,12 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             if not all_docs:
                 return "No documents found for Haystack", []
             
+            # Khởi tạo document store và retriever
             document_store = InMemoryDocumentStore()
             document_store.write_documents(all_docs)
             retriever = InMemoryBM25Retriever(document_store, top_k=5)
             
+            # Retrieve documents
             retrieved_docs = retriever.run(query=question)
             
             chunk_ids = []
@@ -262,6 +327,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                 chunk_ids.append(f"{doc_id}_{chunk_id}")
                 context_parts.append(doc.content)
             
+            # Generate answer
             context_text = "\n\n---\n\n".join(context_parts)
             prompt = self.prompt_template.format(context=context_text, question=question)
             
@@ -270,11 +336,15 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             answer = response.text
             
             return answer, chunk_ids
+            
         except Exception as e:
+            print(f"Error in process_haystack: {str(e)}")
             return f"ERROR: {str(e)}", []
 
     def process_chatgpt(self, question):
+        """Xử lý câu hỏi bằng ChatGPT"""
         try:
+            # Sử dụng retrieval từ hệ thống chính để lấy context
             retrieval_result = retrieval_service.retrieve(question, use_cache=False)
             context_items = retrieval_result.get("context_items", [])
             
@@ -290,7 +360,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             
             client = OpenAI(api_key=openai_api_key)
             response = client.chat.completions.create(
-                model="gpt-4o",
+                model="gpt-4o-mini",
                 messages=[{"role": "user", "content": prompt}],
                 max_tokens=1000,
                 temperature=0.1
@@ -298,25 +368,24 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             
             answer = response.choices[0].message.content
             return answer, []
+            
         except Exception as e:
+            print(f"Error in process_chatgpt: {str(e)}")
             return f"ERROR: {str(e)}", []
 
     def save_uploaded_benchmark(self, file_content, filename):
         """Save uploaded benchmark file"""
         try:
-            # Ensure benchmark directory exists
             os.makedirs(BENCHMARK_DIR, exist_ok=True)
-            
-            # Save file
             file_path = os.path.join(BENCHMARK_DIR, filename)
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(file_content)
-            
             return filename
         except Exception as e:
             raise Exception(f"Failed to save benchmark file: {str(e)}")
 
     def run_benchmark(self, benchmark_file="benchmark.json", progress_callback=None):
+        """Chạy benchmark so sánh 4 models"""
         try:
             benchmark_path = os.path.join(BENCHMARK_DIR, benchmark_file)
             if not os.path.exists(benchmark_path):
@@ -340,6 +409,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             with open(output_path, "w", encoding="utf-8-sig", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 
+                # Header
                 writer.writerow([
                     "STT", "question", "benchmark_answer", 
                     "current_answer", "current_cosine_sim", "current_retrieved_chunks", "current_retrieval_accuracy",
@@ -357,6 +427,9 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                     if progress_callback:
                         progress_callback(i / total_questions * 100)
                     
+                    print(f"Processing question {i}/{total_questions}: {question[:50]}...")
+                    
+                    # Process với các models
                     current_answer, current_chunks = self.process_current_system(question)
                     current_cosine_sim, benchmark_text = self.calculate_cosine_similarity(current_answer, expected)
                     current_retrieval_acc, _ = self.evaluate_retrieval_accuracy(current_chunks, benchmark_chunks)
@@ -372,6 +445,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                     chatgpt_answer, _ = self.process_chatgpt(question)
                     chatgpt_cosine_sim, _ = self.calculate_cosine_similarity(chatgpt_answer, expected)
                     
+                    # Ghi kết quả
                     writer.writerow([
                         i, question, benchmark_text,
                         current_answer, f"{current_cosine_sim:.4f}", 
@@ -394,8 +468,10 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                         'chatgpt_cosine_sim': chatgpt_cosine_sim
                     })
                     
+                    # Delay để tránh rate limit
                     time.sleep(2)
             
+            # Tính statistics
             stats = {
                 'current_avg_cosine': float(sum(r['current_cosine_sim'] for r in results) / len(results)),
                 'current_avg_retrieval': float(sum(r['current_retrieval_acc'] for r in results) / len(results)),
@@ -408,7 +484,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                 'output_file': output_file
             }
             
-            # Convert any remaining numpy types
+            # Convert numpy types
             stats = self._convert_numpy_types(stats)
             
             return stats
@@ -416,4 +492,5 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
         except Exception as e:
             raise Exception(f"Benchmark failed: {str(e)}")
 
+# Singleton instance
 benchmark_service = BenchmarkService()

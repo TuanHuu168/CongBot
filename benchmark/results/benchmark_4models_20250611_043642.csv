@@ -1,0 +1,55 @@
+﻿STT,question,benchmark_answer,current_answer,current_cosine_sim,current_retrieved_chunks,current_retrieval_accuracy,langchain_answer,langchain_cosine_sim,langchain_retrieved_chunks,langchain_retrieval_accuracy,haystack_answer,haystack_cosine_sim,haystack_retrieved_chunks,haystack_retrieval_accuracy,chatgpt_answer,chatgpt_cosine_sim,benchmark_chunks
+1,"Em muốn hỏi là ai chi trả tiền trợ cấp cho người có công ở các xã, phường vậy?","Theo Điều 8 Quyết định số 49/2012/QĐ-UBND, Ủy ban nhân dân phường-xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.","Việc chi trả tiền trợ cấp cho người có công ở xã, phường được thực hiện bởi UBND phường, xã, thị trấn.
+
+**Chi tiết:**
+
+1.  **Trách nhiệm của UBND phường, xã, thị trấn:**
+    *   UBND cấp xã có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công trên địa bàn.
+    *   Đảm bảo chi trả đúng đối tượng, đúng chế độ, kịp thời và được hưởng tiền thù lao chi trả hàng tháng theo quy định.
+
+    > Trích dẫn: ""Điều 8.2 Quyết định 49/2012/QĐ-UBND: Trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.""
+
+2.  **Quy trình chi trả:**
+    *   UBND phường, xã, thị trấn ban hành quyết định giao nhiệm vụ cho cán bộ thực hiện chi trả trợ cấp ưu đãi người có công tại địa phương, căn cứ theo Hợp đồng trách nhiệm chi trả trợ cấp ưu đãi người có công đã ký với Phòng Lao động - Thương binh và Xã hội quận - huyện.
+    *   Hàng tháng, khi nhận được kinh phí, UBND phường, xã, thị trấn phải tiến hành chi trả kịp thời cho đối tượng chính sách.
+    *   Trước khi chi trả, phải kiểm tra danh sách chi trả, nếu có sai sót phải báo cáo Phòng Lao động - Thương binh và Xã hội quận - huyện để xử lý.
+    *   Khi giao tiền, yêu cầu người nhận kiểm tra tiền, ký và ghi rõ họ tên vào danh sách chi trả.
+    *   Kinh phí chi trả phải được thanh toán với Phòng Lao động - Thương binh và Xã hội quận - huyện chậm nhất là ngày 18 hàng tháng.
+
+    > Trích dẫn: ""Điều 8.1 Quyết định 49/2012/QĐ-UBND: Căn cứ Hợp đồng trách nhiệm chi trả trợ cấp ưu đãi người có công đã ký với Phòng Lao động - Thương binh và Xã hội quận - huyện, ban hành Quyết định giao nhiệm vụ cho cán bộ thực hiện chi trả trợ cấp ưu đãi người có công tại địa phương.""
+    >
+    > ""Điều 8.4 Quyết định 49/2012/QĐ-UBND: Hàng tháng khi nhận được kinh phí chi trả, Ủy ban nhân dân phường - xã, thị trấn phải tiến hành ngay việc chi trả trợ cấp kịp thời cho đối tượng chính sách...""
+
+**Lưu ý:**
+
+*   Quyết định 49/2012/QĐ-UBND được ban hành bởi UBND Thành phố Hồ Chí Minh, do đó có thể chỉ áp dụng trực tiếp cho địa bàn thành phố này. Tuy nhiên, các quy định chung về trách nhiệm của UBND cấp xã trong việc chi trả trợ cấp cho người có công có thể được áp dụng tương tự ở các địa phương khác.
+*   Các văn bản pháp luật khác như Thông tư 101/2018/TT-BTC và Thông tư liên tịch 47/2009/TTLT-BTC-BLĐTBXH quy định về quản lý và sử dụng kinh phí cho chính sách ưu đãi người có công, nhưng không trực tiếp quy định về việc chi trả ở cấp xã, phường.
+",0.9238,49_2012_QĐ_UBND_regulation_ch2_art8 | 49_2012_QĐ_UBND_preamble | 101_2018_TT_BTC_ch2_art4 | 47_2009_TTLT_BTC_BLĐTBXH_preamble | 101_2018_TT_BTC_preamble,1.0000,ERROR: Unknown field for Part: thought,0.7449,,0.0000,"Việc chi trả tiền trợ cấp cho người có công ở các xã, phường được thực hiện thông qua các hình thức và nguồn như sau:
+
+1.  **Ủy ban nhân dân (UBND) phường, xã, thị trấn:**
+
+    *   UBND cấp xã có trách nhiệm chi trả trực tiếp các khoản trợ cấp, phụ cấp ưu đãi cho người có công, đảm bảo đúng đối tượng, đúng chế độ và kịp thời.
+    *   Kinh phí chi trả được cấp hàng tháng và phải được thanh toán với Phòng Lao động - Thương binh và Xã hội (LĐTBXH) quận, huyện chậm nhất vào ngày 18 hàng tháng (Điều 8, Quyết định 49/2012/QĐ-UBND).
+
+2.  **Phòng Lao động - Thương binh và Xã hội (LĐTBXH) quận, huyện:**
+
+    *   Phòng LĐTBXH có trách nhiệm quản lý kinh phí thực hiện chính sách người có công trên địa bàn.
+    *   Hàng tháng, Phòng LĐTBXH rút dự toán và chuyển kinh phí cho các phường, xã, thị trấn để chi trả trợ cấp ưu đãi, chậm nhất là ngày 10 hàng tháng (Điều 7, Quyết định 49/2012/QĐ-UBND).
+
+3.  **Tổ chức dịch vụ chi trả:**
+
+    *   Trong trường hợp có tổ chức dịch vụ chi trả, cơ quan LĐTBXH (Sở hoặc Phòng) ký hợp đồng với tổ chức này để chi trả. Hợp đồng phải ghi rõ phạm vi đối tượng, phương thức, thời hạn chi trả, mức chi phí và trách nhiệm của các bên (Điều 15, Thông tư 101/2018/TT-BTC).
+    *   Cơ quan LĐTBXH chuyển kinh phí vào tài khoản của tổ chức dịch vụ chi trả trước ngày 25 hàng tháng, đồng thời chuyển danh sách chi trả. Tổ chức dịch vụ chi trả báo cáo danh sách đã chi trả và kinh phí còn lại cho cơ quan LĐTBXH trước ngày 20 hàng tháng (Điều 15, Thông tư 101/2018/TT-BTC).
+
+**Tóm lại:** Tiền trợ cấp cho người có công ở xã, phường có thể được chi trả trực tiếp bởi UBND xã, phường hoặc thông qua các tổ chức dịch vụ chi trả, nhưng nguồn kinh phí đều từ Phòng LĐTBXH quận, huyện chuyển về.
+",0.9028,49_2012_QĐ_UBND_49_2012_QĐ_UBND_regulation_ch2_art8 | 49_2012_QĐ_UBND_49_2012_QĐ_UBND_regulation_ch2_art6_7 | 101_2018_TT_BTC_101_2018_TT_BTC_ch2_art15 | 49_2012_QĐ_UBND_49_2012_QĐ_UBND_regulation_ch2_art4_5 | 101_2018_TT_BTC_101_2018_TT_BTC_ch2_art14,1.0000,"Tiền trợ cấp cho người có công ở các xã, phường được **Ủy ban nhân dân phường - xã, thị trấn** chi trả. Cụ thể, theo **Điều 8** của **Quyết định 49/2012/QĐ-UBND**, Ủy ban nhân dân phường - xã có nhiệm vụ:
+
+1. **Ký hợp đồng** với Phòng Lao động - Thương binh và Xã hội quận - huyện để chi trả trợ cấp ưu đãi cho người có công.
+2. **Quản lý** đối tượng và tiền mặt liên quan đến trợ cấp, đảm bảo chi trả đúng đối tượng và đúng chế độ.
+3. **Chi trả** các khoản trợ cấp kịp thời và thực hiện các thủ tục liên quan đến việc thanh toán kinh phí với Phòng Lao động - Thương binh và Xã hội quận - huyện.
+
+Hàng tháng, khi nhận được kinh phí, Ủy ban nhân dân phường - xã sẽ tiến hành chi trả trợ cấp cho các đối tượng chính sách, đồng thời phải kiểm tra danh sách chi trả để đảm bảo không có sai sót.
+
+**Trích dẫn**: ""Theo Điều 8, Quyết định 49/2012/QĐ-UBND"".
+
+Nếu bạn cần thêm thông tin chi tiết về quy trình hoặc các đối tượng cụ thể được hưởng trợ cấp, hãy cho tôi biết!",0.9275,49_2012_QĐ_UBND_regulation_ch2_art8
