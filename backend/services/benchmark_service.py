@@ -45,7 +45,7 @@ class BenchmarkService:
         self.embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
         genai.configure(api_key=GEMINI_API_KEY)
         
-        # Khởi tạo ChromaDB client cho LangChain (sử dụng cùng config với chroma_client)
+        # Khởi tạo ChromaDB client cho LangChain
         self._init_langchain_client()
         
         self.prompt_template = """
@@ -85,10 +85,8 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
     def _init_langchain_client(self):
         """Khởi tạo ChromaDB client cho LangChain sử dụng cùng config với hệ thống chính"""
         try:
-            # Sử dụng HttpClient như chroma_client.py
             self.langchain_chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
             
-            # Sử dụng cùng embedding function
             device = "cuda" if USE_GPU and self._check_gpu() else "cpu"
             self.langchain_embedding_function = SentenceTransformerEmbeddingFunction(
                 model_name=EMBEDDING_MODEL_NAME,
@@ -182,6 +180,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
 
     def process_current_system(self, question):
         """Xử lý câu hỏi bằng hệ thống hiện tại"""
+        start_time = time.time()
         try:
             retrieval_result = retrieval_service.retrieve(question, use_cache=False)
             context_items = retrieval_result.get("context_items", [])
@@ -193,47 +192,47 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             else:
                 answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
             
-            return answer, retrieved_chunks
+            processing_time = time.time() - start_time
+            return answer, retrieved_chunks, processing_time
         except Exception as e:
+            processing_time = time.time() - start_time
             print(f"Error in process_current_system: {str(e)}")
-            return f"ERROR: {str(e)}", []
+            return f"ERROR: {str(e)}", [], processing_time
 
     def process_langchain(self, question):
         """Xử lý câu hỏi bằng LangChain với ChromaDB Docker"""
+        start_time = time.time()
+        
         if not LANGCHAIN_AVAILABLE:
-            return "LangChain not available", []
+            return "LangChain not available", [], time.time() - start_time
         
         if not self.langchain_chroma_client:
-            return "LangChain ChromaDB client not initialized", []
+            return "LangChain ChromaDB client not initialized", [], time.time() - start_time
         
         try:
             from langchain_google_genai import ChatGoogleGenerativeAI
             from langchain.prompts import ChatPromptTemplate
-            
-            # Khởi tạo LangChain Chroma với client hiện có
             from langchain_chroma import Chroma
             from langchain_huggingface import HuggingFaceEmbeddings
             
-            # Sử dụng cùng embedding model như hệ thống chính
             embedding_function = HuggingFaceEmbeddings(
                 model_name=EMBEDDING_MODEL_NAME,
                 model_kwargs={'device': 'cuda' if USE_GPU and self._check_gpu() else 'cpu'}
             )
             
-            # Kết nối với collection chính (law_data)
             db = Chroma(
                 client=self.langchain_chroma_client,
-                collection_name=CHROMA_COLLECTION,  # Sử dụng collection chính
+                collection_name=CHROMA_COLLECTION,
                 embedding_function=embedding_function
             )
             
             model = ChatGoogleGenerativeAI(model="gemini-2.0-flash", api_key=GEMINI_API_KEY)
             
-            # Thực hiện similarity search
             results = db.similarity_search_with_relevance_scores(question, k=5)
             
             if len(results) == 0 or results[0][1] < 0.7:
-                return "No relevant documents found", []
+                processing_time = time.time() - start_time
+                return "No relevant documents found", [], processing_time
             
             context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in results])
             prompt_template = ChatPromptTemplate.from_template(self.prompt_template)
@@ -242,7 +241,6 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             response = model.invoke(prompt)
             answer = str(response.content)
             
-            # Format retrieved chunks info
             retrieved_chunks = []
             for i, (doc, score) in enumerate(results):
                 chunk_id = doc.metadata.get('chunk_id', f'unknown_chunk_{i}')
@@ -251,16 +249,20 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                 chunk_info = f"{chunk_id} (doc: {doc_id}, type: {doc_type}, score: {float(score):.3f})"
                 retrieved_chunks.append(chunk_info)
             
-            return answer, retrieved_chunks
+            processing_time = time.time() - start_time
+            return answer, retrieved_chunks, processing_time
             
         except Exception as e:
+            processing_time = time.time() - start_time
             print(f"Error in process_langchain: {str(e)}")
-            return f"ERROR: {str(e)}", []
+            return f"ERROR: {str(e)}", [], processing_time
 
     def process_haystack(self, question):
         """Xử lý câu hỏi bằng Haystack"""
+        start_time = time.time()
+        
         if not HAYSTACK_AVAILABLE:
-            return "Haystack not available", []
+            return "Haystack not available", [], time.time() - start_time
         
         try:
             from haystack import Document
@@ -309,7 +311,8 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                                     all_docs.append(doc)
             
             if not all_docs:
-                return "No documents found for Haystack", []
+                processing_time = time.time() - start_time
+                return "No documents found for Haystack", [], processing_time
             
             # Khởi tạo document store và retriever
             document_store = InMemoryDocumentStore()
@@ -324,7 +327,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             for doc in retrieved_docs["documents"]:
                 doc_id = doc.meta.get("doc_id", "unknown")
                 chunk_id = doc.meta.get("chunk_id", "unknown")
-                chunk_ids.append(f"{doc_id}_{chunk_id}")
+                chunk_ids.append(f"{chunk_id} (doc: {doc_id}, type: BM25)")
                 context_parts.append(doc.content)
             
             # Generate answer
@@ -335,28 +338,34 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             response = model.generate_content(prompt)
             answer = response.text
             
-            return answer, chunk_ids
+            processing_time = time.time() - start_time
+            return answer, chunk_ids, processing_time
             
         except Exception as e:
+            processing_time = time.time() - start_time
             print(f"Error in process_haystack: {str(e)}")
-            return f"ERROR: {str(e)}", []
+            return f"ERROR: {str(e)}", [], processing_time
 
     def process_chatgpt(self, question):
         """Xử lý câu hỏi bằng ChatGPT"""
+        start_time = time.time()
+        
         try:
             # Sử dụng retrieval từ hệ thống chính để lấy context
             retrieval_result = retrieval_service.retrieve(question, use_cache=False)
             context_items = retrieval_result.get("context_items", [])
             
             if not context_items:
-                return "No relevant context found", []
+                processing_time = time.time() - start_time
+                return "No relevant context found", [], processing_time
             
             context_text = "\n\n---\n\n".join(context_items)
             prompt = self.prompt_template.format(context=context_text, question=question)
             
             openai_api_key = os.getenv("OPENAI_API_KEY")
             if not openai_api_key:
-                return "OpenAI API key not configured", []
+                processing_time = time.time() - start_time
+                return "OpenAI API key not configured", [], processing_time
             
             client = OpenAI(api_key=openai_api_key)
             response = client.chat.completions.create(
@@ -367,11 +376,13 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             )
             
             answer = response.choices[0].message.content
-            return answer, []
+            processing_time = time.time() - start_time
+            return answer, [], processing_time
             
         except Exception as e:
+            processing_time = time.time() - start_time
             print(f"Error in process_chatgpt: {str(e)}")
-            return f"ERROR: {str(e)}", []
+            return f"ERROR: {str(e)}", [], processing_time
 
     def save_uploaded_benchmark(self, file_content, filename):
         """Save uploaded benchmark file"""
@@ -385,7 +396,7 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             raise Exception(f"Failed to save benchmark file: {str(e)}")
 
     def run_benchmark(self, benchmark_file="benchmark.json", progress_callback=None):
-        """Chạy benchmark so sánh 4 models"""
+        """Chạy benchmark so sánh 4 models với tracking thời gian đầy đủ"""
         try:
             benchmark_path = os.path.join(BENCHMARK_DIR, benchmark_file)
             if not os.path.exists(benchmark_path):
@@ -405,17 +416,18 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
             
             results = []
             total_questions = len(benchmark_data)
+            total_times = {'current': [], 'langchain': [], 'haystack': [], 'chatgpt': []}
             
             with open(output_path, "w", encoding="utf-8-sig", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 
-                # Header
+                # Header với thêm cột thời gian xử lý
                 writer.writerow([
                     "STT", "question", "benchmark_answer", 
-                    "current_answer", "current_cosine_sim", "current_retrieved_chunks", "current_retrieval_accuracy",
-                    "langchain_answer", "langchain_cosine_sim", "langchain_retrieved_chunks", "langchain_retrieval_accuracy",
-                    "haystack_answer", "haystack_cosine_sim", "haystack_retrieved_chunks", "haystack_retrieval_accuracy",
-                    "chatgpt_answer", "chatgpt_cosine_sim",
+                    "current_answer", "current_cosine_sim", "current_retrieval_accuracy", "current_processing_time",
+                    "langchain_answer", "langchain_cosine_sim", "langchain_retrieval_accuracy", "langchain_processing_time",
+                    "haystack_answer", "haystack_cosine_sim", "haystack_retrieval_accuracy", "haystack_processing_time",
+                    "chatgpt_answer", "chatgpt_cosine_sim", "chatgpt_processing_time",
                     "benchmark_chunks"
                 ])
                 
@@ -429,57 +441,95 @@ Bạn là trợ lý tư vấn chính sách người có công tại Việt Nam, 
                     
                     print(f"Processing question {i}/{total_questions}: {question[:50]}...")
                     
-                    # Process với các models
-                    current_answer, current_chunks = self.process_current_system(question)
+                    # Process với các models (bao gồm thời gian xử lý)
+                    current_answer, current_chunks, current_time = self.process_current_system(question)
                     current_cosine_sim, benchmark_text = self.calculate_cosine_similarity(current_answer, expected)
                     current_retrieval_acc, _ = self.evaluate_retrieval_accuracy(current_chunks, benchmark_chunks)
+                    total_times['current'].append(current_time)
                     
-                    langchain_answer, langchain_chunks = self.process_langchain(question)
+                    langchain_answer, langchain_chunks, langchain_time = self.process_langchain(question)
                     langchain_cosine_sim, _ = self.calculate_cosine_similarity(langchain_answer, expected)
                     langchain_retrieval_acc, _ = self.evaluate_retrieval_accuracy(langchain_chunks, benchmark_chunks)
+                    total_times['langchain'].append(langchain_time)
                     
-                    haystack_answer, haystack_chunks = self.process_haystack(question)
+                    haystack_answer, haystack_chunks, haystack_time = self.process_haystack(question)
                     haystack_cosine_sim, _ = self.calculate_cosine_similarity(haystack_answer, expected)
                     haystack_retrieval_acc, _ = self.evaluate_retrieval_accuracy(haystack_chunks, benchmark_chunks)
+                    total_times['haystack'].append(haystack_time)
                     
-                    chatgpt_answer, _ = self.process_chatgpt(question)
+                    chatgpt_answer, _, chatgpt_time = self.process_chatgpt(question)
                     chatgpt_cosine_sim, _ = self.calculate_cosine_similarity(chatgpt_answer, expected)
+                    total_times['chatgpt'].append(chatgpt_time)
                     
-                    # Ghi kết quả
+                    # Ghi kết quả với đầy đủ thông tin thời gian
                     writer.writerow([
                         i, question, benchmark_text,
-                        current_answer, f"{current_cosine_sim:.4f}", 
-                        " | ".join(current_chunks), f"{current_retrieval_acc:.4f}",
-                        langchain_answer, f"{langchain_cosine_sim:.4f}", 
-                        " | ".join(langchain_chunks), f"{langchain_retrieval_acc:.4f}",
-                        haystack_answer, f"{haystack_cosine_sim:.4f}", 
-                        " | ".join(haystack_chunks), f"{haystack_retrieval_acc:.4f}",
-                        chatgpt_answer, f"{chatgpt_cosine_sim:.4f}",
+                        current_answer, f"{current_cosine_sim:.4f}", f"{current_retrieval_acc:.4f}", f"{current_time:.3f}",
+                        langchain_answer, f"{langchain_cosine_sim:.4f}", f"{langchain_retrieval_acc:.4f}", f"{langchain_time:.3f}",
+                        haystack_answer, f"{haystack_cosine_sim:.4f}", f"{haystack_retrieval_acc:.4f}", f"{haystack_time:.3f}",
+                        chatgpt_answer, f"{chatgpt_cosine_sim:.4f}", f"{chatgpt_time:.3f}",
                         " | ".join(benchmark_chunks)
                     ])
                     
                     results.append({
                         'current_cosine_sim': current_cosine_sim,
                         'current_retrieval_acc': current_retrieval_acc,
+                        'current_time': current_time,
                         'langchain_cosine_sim': langchain_cosine_sim,
                         'langchain_retrieval_acc': langchain_retrieval_acc,
+                        'langchain_time': langchain_time,
                         'haystack_cosine_sim': haystack_cosine_sim,
                         'haystack_retrieval_acc': haystack_retrieval_acc,
-                        'chatgpt_cosine_sim': chatgpt_cosine_sim
+                        'haystack_time': haystack_time,
+                        'chatgpt_cosine_sim': chatgpt_cosine_sim,
+                        'chatgpt_time': chatgpt_time
                     })
                     
                     # Delay để tránh rate limit
                     time.sleep(2)
+                
+                # Tính statistics đầy đủ
+                avg_current_time = sum(total_times['current']) / len(total_times['current'])
+                avg_langchain_time = sum(total_times['langchain']) / len(total_times['langchain'])
+                avg_haystack_time = sum(total_times['haystack']) / len(total_times['haystack'])
+                avg_chatgpt_time = sum(total_times['chatgpt']) / len(total_times['chatgpt'])
+                
+                # Thêm dòng SUMMARY
+                writer.writerow([
+                    "SUMMARY", 
+                    f"Average results from {total_questions} questions",
+                    "Statistical Summary",
+                    "See individual results above",
+                    f"{sum(r['current_cosine_sim'] for r in results) / len(results):.4f}",
+                    f"{sum(r['current_retrieval_acc'] for r in results) / len(results):.4f}",
+                    f"{avg_current_time:.3f}",
+                    "See individual results above",
+                    f"{sum(r['langchain_cosine_sim'] for r in results) / len(results):.4f}",
+                    f"{sum(r['langchain_retrieval_acc'] for r in results) / len(results):.4f}",
+                    f"{avg_langchain_time:.3f}",
+                    "See individual results above",
+                    f"{sum(r['haystack_cosine_sim'] for r in results) / len(results):.4f}",
+                    f"{sum(r['haystack_retrieval_acc'] for r in results) / len(results):.4f}",
+                    f"{avg_haystack_time:.3f}",
+                    "See individual results above",
+                    f"{sum(r['chatgpt_cosine_sim'] for r in results) / len(results):.4f}",
+                    f"{avg_chatgpt_time:.3f}",
+                    "All benchmark chunks across questions"
+                ])
             
-            # Tính statistics
+            # Tính toán statistics trả về
             stats = {
                 'current_avg_cosine': float(sum(r['current_cosine_sim'] for r in results) / len(results)),
                 'current_avg_retrieval': float(sum(r['current_retrieval_acc'] for r in results) / len(results)),
+                'current_avg_time': float(avg_current_time),
                 'langchain_avg_cosine': float(sum(r['langchain_cosine_sim'] for r in results) / len(results)),
                 'langchain_avg_retrieval': float(sum(r['langchain_retrieval_acc'] for r in results) / len(results)),
+                'langchain_avg_time': float(avg_langchain_time),
                 'haystack_avg_cosine': float(sum(r['haystack_cosine_sim'] for r in results) / len(results)),
                 'haystack_avg_retrieval': float(sum(r['haystack_retrieval_acc'] for r in results) / len(results)),
+                'haystack_avg_time': float(avg_haystack_time),
                 'chatgpt_avg_cosine': float(sum(r['chatgpt_cosine_sim'] for r in results) / len(results)),
+                'chatgpt_avg_time': float(avg_chatgpt_time),
                 'total_questions': int(total_questions),
                 'output_file': output_file
             }

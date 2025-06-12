@@ -1,0 +1,254 @@
+{
+  "training_data": [
+    {
+      "question": "Nguồn kinh phí để thực hiện chính sách ưu đãi người có công với cách mạng được lấy từ đâu?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Cơ quan nào chịu trách nhiệm đảm bảo và cấp phát kinh phí cho chính sách ưu đãi người có công?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_preamble"
+    },
+    {
+      "question": "Số dư dự toán kinh phí không sử dụng hết vào cuối năm sẽ được xử lý như thế nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art3"
+    },
+    {
+      "question": "Quy định về việc thu hồi các khoản chi sai chế độ, cấp trùng cho người có công ra sao?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art13;47_2009_TTLT_BTC_BLĐTBXH_art10;47_2009_TTLT_BTC_BLĐTBXH_art5_6"
+    },
+    {
+      "question": "Những đối tượng nào được hưởng trợ cấp ưu đãi hàng tháng và trợ cấp một lần theo Thông tư 47/2009?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art7_8"
+    },
+    {
+      "question": "Thanh niên xung phong thời kỳ kháng chiến chống Pháp có được hưởng chế độ ưu đãi theo Thông tư này không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+    },
+    {
+      "question": "Quân nhân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong quân đội có thuộc đối tượng hưởng chế độ không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art14;47_2009_TTLT_BTC_BLĐTBXH_preamble"
+    },
+    {
+      "question": "Đối tượng theo Quyết định 290/2005/QĐ-TTg có được hưởng trợ cấp theo quy định tại Thông tư này không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art15_end"
+    },
+    {
+      "question": "Ngoài trợ cấp, người có công với cách mạng còn được hưởng các khoản chi ưu đãi nào khác?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Chính sách có hỗ trợ chi phí cho công tác tìm kiếm, quy tập và xây mới mộ liệt sỹ không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+    },
+    {
+      "question": "Đối tượng nào được cấp Báo Nhân dân miễn phí theo quy định?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art15_end"
+    },
+    {
+      "question": "Người có công có được hỗ trợ tiền tàu xe khi đi giám định thương tật không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Các cơ sở nuôi dưỡng, điều dưỡng người có công được nhà nước hỗ trợ kinh phí cho những hoạt động nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art7_8"
+    },
+    {
+      "question": "Mức trích kinh phí cho công tác quản lý là bao nhiêu phần trăm và được dùng để chi cho những việc gì?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art4"
+    },
+    {
+      "question": "Kinh phí quản lý có được sử dụng để chi trả thù lao cho cán bộ trực tiếp chi trả trợ cấp không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Chi phí quản lý để thực hiện chính sách theo Quyết định 290/2005/QĐ-TTg được hướng dẫn ở đâu?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Quy trình và thời gian lập dự toán kinh phí hàng năm cho chính sách người có công được quy định như thế nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Hạn chót để Sở Lao động – Thương binh và Xã hội gửi dự toán kinh phí lên Bộ Lao động – Thương binh và Xã hội là ngày nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art15_end;47_2009_TTLT_BTC_BLĐTBXH_art3"
+    },
+    {
+      "question": "Cơ quan nào có thẩm quyền giao dự toán kinh phí thực hiện chính sách cho các Sở Lao động – Thương binh và Xã hội?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Dự toán kinh phí trợ cấp ưu đãi một lần được Bộ Lao động – Thương binh và Xã hội phân bổ như thế nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art3"
+    },
+    {
+      "question": "Thủ tục tạm cấp ngân sách đầu năm khi chưa có dự toán chính thức được quy định ra sao?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Việc tạm cấp ngân sách có áp dụng đối với kinh phí trợ cấp ưu đãi một lần không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art14;47_2009_TTLT_BTC_BLĐTBXH_art4"
+    },
+    {
+      "question": "Ai có thẩm quyền quyết định điều chỉnh dự toán kinh phí giữa các Phòng Lao động – Thương binh và Xã hội trong cùng một tỉnh?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Mức tạm cấp kinh phí đầu năm cho các đơn vị không được vượt quá bao nhiêu?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Phải làm gì khi kinh phí thực hiện chính sách tại một tỉnh bị thiếu sau khi đã tự điều chỉnh?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Quy trình quyết toán kinh phí thực hiện chính sách ưu đãi người có công được thực hiện như thế nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Kinh phí thực hiện chính sách ưu đãi người có công được hạch toán vào chương, loại, khoản nào của Mục lục ngân sách nhà nước?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art3"
+    },
+    {
+      "question": "Hạn chót để Phòng Lao động – Thương binh và Xã hội gửi báo cáo quyết toán cho Sở là ngày nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art15_end;47_2009_TTLT_BTC_BLĐTBXH_art9_11"
+    },
+    {
+      "question": "Việc quyết toán chi hỗ trợ cho các công trình, dự án đầu tư liên quan đến mộ liệt sỹ được thực hiện ra sao?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14;47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art5_6"
+    },
+    {
+      "question": "Hồ sơ cần thiết để Kho bạc Nhà nước kiểm soát chi đối với các khoản trợ cấp ưu đãi hàng tháng là gì?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art3"
+    },
+    {
+      "question": "Để Kho bạc Nhà nước thực hiện chi trả trợ cấp một lần, cơ quan Lao động - Thương binh và Xã hội cần cung cấp những giấy tờ gì?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art9_11"
+    },
+    {
+      "question": "Căn cứ vào đâu để Kho bạc Nhà nước kiểm soát chi cho công tác mộ và nghĩa trang liệt sỹ?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14;47_2009_TTLT_BTC_BLĐTBXH_art4",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+    },
+    {
+      "question": "Mẫu biểu nào được sử dụng để lập danh sách chi trả trợ cấp ưu đãi giáo dục?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+    },
+    {
+      "question": "Khi nào cơ quan LĐTBXH phải gửi danh sách chi trả trợ cấp hàng tháng cho Kho bạc Nhà nước?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art9_11"
+    },
+    {
+      "question": "Thông tư 47/2009/TTLT-BTC-BLĐTBXH có hiệu lực từ khi nào và thay thế cho văn bản nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art15_end",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_preamble;47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art3"
+    },
+    {
+      "question": "Trách nhiệm của Sở Lao động – Thương binh và Xã hội và Kho bạc Nhà nước cấp tỉnh trong việc thực hiện Thông tư này là gì?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art15_end",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Quy trình tài chính đầy đủ để thực hiện chi trả trợ cấp cho người có công bao gồm những bước chính nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art14",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_preamble"
+    },
+    {
+      "question": "Kinh phí cho chính sách người có công được quản lý và sử dụng như thế nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art15_end"
+    },
+    {
+      "question": "Các khoản chi cho người có công bao gồm những loại chính nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art4",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Thông tư này hướng dẫn về những nội dung gì?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_preamble",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art15_end"
+    },
+    {
+      "question": "Cơ sở pháp lý để ban hành Thông tư liên tịch số 47/2009 là gì?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_preamble",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art15_end;47_2009_TTLT_BTC_BLĐTBXH_art7_8"
+    },
+    {
+      "question": "Chi phí quản lý có được dùng để tổ chức tập huấn, bồi dưỡng nghiệp vụ không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+    },
+    {
+      "question": "Thủ tục điều chỉnh dự toán kinh phí giữa các tỉnh, thành phố trực thuộc Trung ương được thực hiện như thế nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Trường hợp nào thì được ứng trước dự toán ngân sách năm sau?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Báo cáo quyết toán kinh phí cần phải có xác nhận của cơ quan nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art12_13",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Hồ sơ kiểm soát chi của Kho bạc Nhà nước đối với đối tượng theo Quyết định 290/2005/QĐ-TTg cần mẫu biểu nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art5_6;47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+    },
+    {
+      "question": "Các cơ sở nuôi dưỡng người có công có được hỗ trợ kinh phí để chi trả dịch vụ công cộng không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art3;47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+    },
+    {
+      "question": "Chi phí quản lý có bao gồm chi xăng dầu, thông tin liên lạc phục vụ công tác không?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art4;47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    },
+    {
+      "question": "Bộ Tài chính có vai trò gì trong quy trình lập và phân bổ dự toán?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art14;47_2009_TTLT_BTC_BLĐTBXH_art12_13;47_2009_TTLT_BTC_BLĐTBXH_art9_11"
+    },
+    {
+      "question": "Việc rút dự toán tại Kho bạc Nhà nước được thực hiện bởi những đơn vị nào?",
+      "positive_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+      "negative_chunks": "47_2009_TTLT_BTC_BLĐTBXH_art1_2;47_2009_TTLT_BTC_BLĐTBXH_art7_8;47_2009_TTLT_BTC_BLĐTBXH_art14"
+    }
+  ]
+}

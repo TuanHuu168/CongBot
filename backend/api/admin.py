@@ -488,24 +488,125 @@ async def view_benchmark_content(file_name: str):
         total_rows = len(df)
         columns = list(df.columns)
         
-        # Lấy 5 dòng đầu làm preview
-        preview_data = df.head(5).to_dict('records')
+        # Lọc ra dòng SUMMARY nếu có
+        summary_row = None
+        data_rows = df
         
-        # Tính toán thống kê nếu có
-        stats = {}
-        if 'current_cosine_sim' in df.columns:
-            try:
-                numeric_values = pd.to_numeric(df['current_cosine_sim'], errors='coerce')
-                stats['avg_current_cosine'] = float(numeric_values.mean())
-            except:
-                pass
+        if 'STT' in df.columns:
+            summary_rows = df[df['STT'] == 'SUMMARY']
+            if not summary_rows.empty:
+                summary_row = summary_rows.iloc[0].to_dict()
+                # Lọc ra chỉ data rows (không bao gồm SUMMARY)
+                data_rows = df[df['STT'] != 'SUMMARY']
+        
+        # Tính toán chi tiết cho từng model
+        model_stats = {}
+        
+        # Định nghĩa các cột cho từng model
+        models = {
+            'current': {
+                'cosine_col': 'current_cosine_sim',
+                'retrieval_col': 'current_retrieval_accuracy',
+                'time_col': 'current_processing_time',
+                'name': 'Current System'
+            },
+            'langchain': {
+                'cosine_col': 'langchain_cosine_sim', 
+                'retrieval_col': 'langchain_retrieval_accuracy',
+                'time_col': 'langchain_processing_time',
+                'name': 'LangChain'
+            },
+            'haystack': {
+                'cosine_col': 'haystack_cosine_sim',
+                'retrieval_col': 'haystack_retrieval_accuracy', 
+                'time_col': 'haystack_processing_time',
+                'name': 'Haystack'
+            },
+            'chatgpt': {
+                'cosine_col': 'chatgpt_cosine_sim',
+                'retrieval_col': 'chatgpt_retrieval_accuracy',
+                'time_col': 'chatgpt_processing_time', 
+                'name': 'ChatGPT'
+            }
+        }
+        
+        for model_key, model_info in models.items():
+            stats = {
+                'name': model_info['name'],
+                'cosine_similarity': {'avg': 0, 'min': 0, 'max': 0, 'count': 0},
+                'retrieval_accuracy': {'avg': 0, 'min': 0, 'max': 0, 'count': 0},
+                'processing_time': {'avg': 0, 'min': 0, 'max': 0, 'count': 0}
+            }
+            
+            # Tính toán Cosine Similarity
+            if model_info['cosine_col'] in data_rows.columns:
+                cosine_values = pd.to_numeric(data_rows[model_info['cosine_col']], errors='coerce').dropna()
+                if not cosine_values.empty:
+                    stats['cosine_similarity'] = {
+                        'avg': float(cosine_values.mean()),
+                        'min': float(cosine_values.min()),
+                        'max': float(cosine_values.max()),
+                        'count': int(len(cosine_values))
+                    }
+            
+            # Tính toán Retrieval Accuracy
+            if model_info['retrieval_col'] in data_rows.columns:
+                retrieval_values = pd.to_numeric(data_rows[model_info['retrieval_col']], errors='coerce').dropna()
+                if not retrieval_values.empty:
+                    stats['retrieval_accuracy'] = {
+                        'avg': float(retrieval_values.mean()),
+                        'min': float(retrieval_values.min()),
+                        'max': float(retrieval_values.max()),
+                        'count': int(len(retrieval_values))
+                    }
+            
+            # Tính toán Processing Time
+            if model_info['time_col'] in data_rows.columns:
+                time_values = pd.to_numeric(data_rows[model_info['time_col']], errors='coerce').dropna()
+                if not time_values.empty:
+                    stats['processing_time'] = {
+                        'avg': float(time_values.mean()),
+                        'min': float(time_values.min()),
+                        'max': float(time_values.max()),
+                        'count': int(len(time_values))
+                    }
+            
+            model_stats[model_key] = stats
+        
+        # Tìm model tốt nhất cho từng metric
+        best_models = {
+            'cosine_similarity': max(model_stats.items(), 
+                                   key=lambda x: x[1]['cosine_similarity']['avg'] if x[1]['cosine_similarity']['count'] > 0 else 0),
+            'retrieval_accuracy': max(model_stats.items(), 
+                                    key=lambda x: x[1]['retrieval_accuracy']['avg'] if x[1]['retrieval_accuracy']['count'] > 0 else 0),
+            'processing_time': min(model_stats.items(), 
+                                 key=lambda x: x[1]['processing_time']['avg'] if x[1]['processing_time']['count'] > 0 else float('inf'))
+        }
+        
+        # Lấy 5 dòng đầu làm preview
+        preview_data = data_rows.head(5).to_dict('records')
         
         return {
             "file_name": file_name,
-            "total_rows": total_rows,
+            "total_questions": int(len(data_rows)) if 'STT' in df.columns else total_rows,
             "columns": columns,
-            "preview": preview_data,
-            "stats": stats
+            "model_stats": model_stats,
+            "best_models": {
+                'cosine_similarity': {
+                    'name': best_models['cosine_similarity'][1]['name'],
+                    'score': best_models['cosine_similarity'][1]['cosine_similarity']['avg']
+                },
+                'retrieval_accuracy': {
+                    'name': best_models['retrieval_accuracy'][1]['name'], 
+                    'score': best_models['retrieval_accuracy'][1]['retrieval_accuracy']['avg']
+                },
+                'processing_time': {
+                    'name': best_models['processing_time'][1]['name'],
+                    'time': best_models['processing_time'][1]['processing_time']['avg']
+                }
+            },
+            "summary_row": summary_row,
+            "preview": preview_data[:3]  # Chỉ 3 dòng đầu
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Không thể đọc file: {str(e)}")

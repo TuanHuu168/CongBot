@@ -1,0 +1,276 @@
+{
+    "benchmark": [
+        {
+            "id": "q1",
+            "question": "Tôi là thương binh muốn biết mức chi phí quản lý thực hiện chính sách ưu đãi người có công hiện nay được trích bao nhiêu phần trăm từ tổng kinh phí?",
+            "answer": "Theo quy định hiện hành, kinh phí thực hiện các hoạt động nghiệp vụ về quản lý đối tượng, hồ sơ, quản lý tài chính, kế toán và tổ chức thực hiện chi trả do ngân sách trung ương đảm bảo. Trước đây, theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH, mức trích là 1,7% tổng kinh phí. Tuy nhiên, quy định này đã được thay thế bởi Thông tư 101/2018/TT-BTC ngày 14/11/2018, trong đó không còn quy định tỷ lệ cố định mà giao cho Bộ LĐTBXH phân bổ kinh phí quản lý phù hợp với đặc thù từng địa phương, với điều kiện chi phí phục vụ chi trả đến người thụ hưởng tối đa là 50% chi phí quản lý toàn ngành. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 14 - Lịch sử sửa đổi: Thay thế Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+                "101_2018_TT_BTC_ch2_art14"
+            ]
+        },
+        {
+            "id": "q2",
+            "question": "Gia đình tôi muốn thăm viếng mộ liệt sĩ, xin hỏi hiện nay được hỗ trợ tiền tàu xe như thế nào và tối đa bao nhiêu người được hỗ trợ?",
+            "answer": "Hiện nay, thân nhân liệt sĩ hoặc người thờ cúng liệt sĩ khi đi thăm viếng mộ liệt sĩ trong nước được hỗ trợ tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về) với mức 2.000 đồng/km, tối đa không quá 3 người, mỗi năm một lần cho một liệt sĩ. Mức hỗ trợ tối đa là 2.400.000 đồng/người. Đây là quy định mới theo Thông tư 101/2018/TT-BTC, tăng so với mức cũ là 1.400.000 đồng/người theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 12 - Lịch sử sửa đổi: Thay thế quy định tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art12_13"
+            ]
+        },
+        {
+            "id": "q3",
+            "question": "Tôi cần chứng thực bản sao từ bản chính giấy tờ do cơ quan nhà nước cấp, hiện tại phí chứng thực là bao nhiêu?",
+            "answer": "Theo quy định hiện hành, phí chứng thực bản sao từ bản chính giấy tờ, văn bản do cơ quan tổ chức có thẩm quyền của Việt Nam cấp hoặc chứng nhận là 2.000 đồng/trang; từ trang thứ 3 trở lên thu 1.000 đồng/trang, tối đa thu không quá 200.000 đồng/bản. Mức phí này được quy định tại Thông tư 226/2016/TT-BTC và được cập nhật trong các thủ tục hành chính theo Quyết định 1766/QĐ-UBND năm 2020. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 226/2016/TT-BTC ngày 11/11/2016 - Điều khoản liên quan: Mức phí chứng thực - Lịch sử sửa đổi: Được áp dụng theo Quyết định 1766/QĐ-UBND năm 2020",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung",
+                "1766_2020_QĐ_UBND_preamble"
+            ]
+        },
+        {
+            "id": "q4",
+            "question": "Tôi là thương binh cần làm chân giả, muốn biết ngoài tiền mua dụng cụ thì còn được hỗ trợ gì khác không?",
+            "answer": "Ngoài tiền mua dụng cụ chỉnh hình, thương binh còn được hỗ trợ một lần tiền ăn và tiền tàu xe (bao gồm cả lượt đi và về) khi đi làm dụng cụ chỉnh hình, mỗi niên hạn 01 lần. Mức hỗ trợ hiện nay là 5.000 đồng/km nhân với khoảng cách từ nơi cư trú đến cơ sở y tế gần nhất, tối đa không quá 1.400.000 đồng/người. Đây là quy định mới theo Thông tư 101/2018/TT-BTC, thay thế các quy định cũ trong Thông tư 47/2009/TTLT-BTC-BLĐTBXH. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 7, khoản 2 - Lịch sử sửa đổi: Thay thế quy định tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art7"
+            ]
+        },
+        {
+            "id": "q5",
+            "question": "Cơ quan tư pháp có nhiệm vụ gì trong việc kiểm soát thủ tục hành chính? Tôi nghe nói trước đây thuộc về Văn phòng Chính phủ?",
+            "answer": "Đúng vậy, trước đây công tác kiểm soát thủ tục hành chính do Văn phòng Chính phủ phụ trách theo Nghị định 63/2010/NĐ-CP. Tuy nhiên, từ ngày 01/7/2013, theo Nghị định 48/2013/NĐ-CP, nhiệm vụ này đã được chuyển sang Bộ Tư pháp. Hiện nay, Bộ Tư pháp giúp Chính phủ thống nhất quản lý nhà nước về công tác kiểm soát thủ tục hành chính, với Cục Kiểm soát thủ tục hành chính thuộc Bộ Tư pháp làm đầu mối. Ở cấp địa phương, Sở Tư pháp tham mưu giúp UBND cấp tỉnh thực hiện quản lý nhà nước về công tác này. KÈM: - Văn bản hiệu lực hiện tại: Nghị định 48/2013/NĐ-CP ngày 14/5/2013 - Điều khoản liên quan: Điều 1, sửa đổi Điều 5 của Nghị định 63/2010/NĐ-CP - Lịch sử sửa đổi: Chuyển từ Văn phòng Chính phủ sang Bộ Tư pháp",
+            "contexts": [
+                "63_2010_NĐ_CP_ch1_art1_6",
+                "48_2013_NĐ_CP_art1_part1"
+            ]
+        },
+        {
+            "id": "q6",
+            "question": "Tôi muốn biết hiện nay mức hỗ trợ ăn thêm ngày lễ, tết cho thương binh nặng là bao nhiêu?",
+            "answer": "Theo quy định hiện hành tại Thông tư 101/2018/TT-BTC, thương binh, bệnh binh, người hưởng chính sách như thương binh, thương binh loại B bị suy giảm khả năng lao động từ 81% trở lên được hỗ trợ ăn thêm ngày lễ, tết với mức 200.000 đồng/người/ngày. Số ngày được hỗ trợ theo số ngày lễ, tết được cấp có thẩm quyền quyết định. Đây là quy định mới, thay thế các quy định trước đây trong Thông tư 47/2009/TTLT-BTC-BLĐTBXH. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 9, khoản 1, điểm c - Lịch sử sửa đổi: Thay thế quy định tại Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art8_9"
+            ]
+        },
+        {
+            "id": "q7",
+            "question": "Thời hạn giải quyết quyết định công bố thủ tục hành chính hiện nay là bao lâu?",
+            "answer": "Theo quy định hiện hành được sửa đổi tại Nghị định 48/2013/NĐ-CP, quyết định công bố thủ tục hành chính phải được ban hành chậm nhất trước 20 ngày làm việc (đối với cấp Bộ) và trước 05 ngày làm việc (đối với cấp tỉnh, huyện) tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực. Đây là quy định mới, thay đổi so với thời hạn 10 ngày làm việc thống nhất cho tất cả các cấp theo Nghị định 63/2010/NĐ-CP trước đây. KÈM: - Văn bản hiệu lực hiện tại: Nghị định 48/2013/NĐ-CP ngày 14/5/2013 - Điều khoản liên quan: Điều 1, khoản 5 sửa đổi Điều 15 - Lịch sử sửa đổi: Thay đổi từ 10 ngày thành 20 ngày (cấp Bộ) và 5 ngày (cấp tỉnh, huyện)",
+            "contexts": [
+                "63_2010_NĐ_CP_ch3_art12_15",
+                "48_2013_NĐ_CP_art1_part2"
+            ]
+        },
+        {
+            "id": "q8",
+            "question": "Gia đình tôi ở TP.HCM muốn biết kinh phí chi trả chế độ người có công được quản lý như thế nào, ai là người ký hợp đồng với cán bộ chi trả?",
+            "answer": "Theo Quyết định 49/2012/QĐ-UBND của UBND TP.HCM, Trưởng Phòng Lao động - Thương binh và Xã hội quận/huyện trực tiếp ký hợp đồng trách nhiệm với Chủ tịch UBND phường/xã/thị trấn về việc chi trả trợ cấp ưu đãi người có công. Hàng tháng, Phòng LĐTBXH chuyển kinh phí vào tài khoản tiền gửi của UBND phường/xã chậm nhất ngày 10, và phường/xã phải hoàn thành chi trả trước ngày 15 hàng tháng. Quy định này áp dụng riêng cho TP.HCM. KÈM: - Văn bản hiệu lực hiện tại: Quyết định 49/2012/QĐ-UBND ngày 23/10/2012 - Điều khoản liên quan: Điều 7 và Điều 8 - Lịch sử sửa đổi: Không có",
+            "contexts": [
+                "49_2012_QĐ_UBND_regulation_ch2_art4_5",
+                "49_2012_QĐ_UBND_regulation_ch2_art6_7",
+                "49_2012_QĐ_UBND_regulation_ch2_art8"
+            ]
+        },
+        {
+            "id": "q9",
+            "question": "Tôi cần nhập quốc tịch Việt Nam, xin hỏi lệ phí hiện nay là bao nhiêu và có trường hợp nào được miễn không?",
+            "answer": "Theo quy định hiện hành, lệ phí nhập quốc tịch Việt Nam là 3.000.000 đồng/trường hợp. Tuy nhiên, có hai trường hợp được miễn lệ phí: (1) Người có công lao đặc biệt đóng góp cho sự nghiệp xây dựng và bảo vệ Tổ quốc Việt Nam; (2) Người không quốc tịch có hoàn cảnh kinh tế khó khăn, có xác nhận của UBND cấp xã nơi cư trú. Quy định này theo Nghị định 16/2020/NĐ-CP và Thông tư 281/2016/TT-BTC. KÈM: - Văn bản hiệu lực hiện tại: Nghị định 16/2020/NĐ-CP ngày 03/02/2020 và Thông tư 281/2016/TT-BTC - Điều khoản liên quan: Phần lệ phí trong danh mục TTHC - Lịch sử sửa đổi: Nghị định 16/2020/NĐ-CP thay thế các quy định cũ",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_quoc_tich",
+                "1766_2020_QĐ_UBND_preamble"
+            ]
+        },
+        {
+            "id": "q10",
+            "question": "Tôi là người có công muốn đi điều dưỡng tập trung, muốn biết mức chi tiền ăn và các khoản hỗ trợ khác hiện nay như thế nào?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, khi đi điều dưỡng tập trung, người có công được hưởng: tiền ăn (gồm 3 bữa chính và ăn bồi dưỡng thêm nếu có), thuốc bổ và thuốc chữa bệnh thông thường, quà tặng, và các khoản chi khác phục vụ trực tiếp (không quá 15% mức chi điều dưỡng). Ngoài ra còn được hỗ trợ: chi phí điện nước tối đa 320.000 đồng/người/lần; sách báo, văn hóa văn nghệ 100.000 đồng/người/đợt. Mức chi cụ thể do cơ sở điều dưỡng thực hiện theo quy định của địa phương. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 6, khoản 2 - Lịch sử sửa đổi: Thay thế quy định trong Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art6",
+                "47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+            ]
+        },
+        {
+            "id": "q11",
+            "question": "Tôi muốn biết báo cáo viên pháp luật cấp tỉnh hiện nay còn được công nhận không hay đã bị bãi bỏ?",
+            "answer": "Thủ tục công nhận báo cáo viên pháp luật cấp tỉnh đã bị bãi bỏ. Theo Quyết định 1766/QĐ-UBND ngày 03/8/2020 của UBND tỉnh Bình Thuận, thủ tục này (mã số 2.001923) cùng với thủ tục miễn nhiệm báo cáo viên pháp luật cấp tỉnh đã bị bãi bỏ theo Quyết định 1427/QĐ-BTP ngày 25/6/2020 của Bộ Tư pháp. Tương tự, các thủ tục về báo cáo viên pháp luật cấp huyện cũng đã bị bãi bỏ. KÈM: - Văn bản hiệu lực hiện tại: Quyết định 1427/QĐ-BTP ngày 25/6/2020 - Điều khoản liên quan: Bãi bỏ thủ tục hành chính - Lịch sử sửa đổi: Bãi bỏ các thủ tục công nhận và miễn nhiệm báo cáo viên pháp luật",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_tthc_bai_bo",
+                "1766_2020_QĐ_UBND_preamble"
+            ]
+        },
+        {
+            "id": "q12",
+            "question": "Công tác mộ liệt sĩ được chi từ nguồn kinh phí nào và mức hỗ trợ xây mới vỏ mộ hiện nay là bao nhiêu?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, chi xây mới vỏ mộ liệt sĩ (không gắn liền với dự án xây dựng nghĩa trang) được thực hiện theo quyết định phê duyệt dự toán của cấp có thẩm quyền nhưng tối đa không quá 7 triệu đồng/mộ (bao gồm cả bia). Đối với sửa chữa, nâng cấp vỏ mộ, mức hỗ trợ tối đa 70% mức xây mới (tức khoảng 4,9 triệu đồng). Kinh phí này từ nguồn ngân sách trung ương trong dự toán của Bộ LĐTBXH. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 11, khoản 2 - Lịch sử sửa đổi: Thay thế quy định trong Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art11",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q13",
+            "question": "Hiện nay chi phí giám định y khoa cho thương binh được thanh toán như thế nào? Trường hợp nào phải tự chi trả?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, chi phí giám định y khoa được thanh toán cho các trường hợp: giám định lần đầu và giám định lại tỷ lệ suy giảm khả năng lao động. Tuy nhiên, nếu đối tượng không đồng ý với kết luận giám định và yêu cầu giám định lại, thì: nếu kết quả giám định lại đúng như đề nghị của đối tượng - Sở LĐTBXH thanh toán; nếu kết quả không đúng như đề nghị - đối tượng phải tự chi trả. Mức phí theo Biểu phí của Thông tư 243/2016/TT-BTC. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 8 - Lịch sử sửa đổi: Quy định mới trong Thông tư 101/2018/TT-BTC",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art8_9",
+                "101_2018_TT_BTC_preamble"
+            ]
+        },
+        {
+            "id": "q14",
+            "question": "Tổ chức dịch vụ chi trả trợ cấp người có công được trả thù lao như thế nào và họ phải tự chi những gì?",
+            "answer": "Theo Thông tư 101/2018/TT-BTC, cơ quan LĐTBXH chuyển chi phí chi trả vào tài khoản của tổ chức dịch vụ chi trả theo tỷ lệ % trên số tiền chi trả do Bộ trưởng Bộ LĐTBXH quyết định. Tổ chức dịch vụ chi trả phải tự quyết định và chịu trách nhiệm về các chi phí: mua két sắt, máy đếm tiền, thuê phương tiện vận chuyển tiền, địa điểm chi trả, lực lượng bảo vệ, phí chuyển tiền, phí rút tiền mặt, làm thẻ ATM cho người thụ hưởng, thù lao chi trả, nước uống tại điểm chi trả. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 14, khoản 2, điểm g và Điều 15 - Lịch sử sửa đổi: Quy định chi tiết hơn so với Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art14",
+                "101_2018_TT_BTC_ch2_art15"
+            ]
+        },
+        {
+            "id": "q15",
+            "question": "Tôi cần đăng ký thế chấp quyền sử dụng đất để vay vốn, xin hỏi lệ phí hiện nay là bao nhiêu và thời gian giải quyết trong bao lâu?",
+            "answer": "Theo quy định hiện hành, lệ phí đăng ký thế chấp quyền sử dụng đất, tài sản gắn liền với đất là 80.000 đồng/hồ sơ. Thời gian giải quyết trong ngày nhận hồ sơ hợp lệ (nếu nhận hồ sơ sau 15 giờ thì trả kết quả ngay trong ngày làm việc tiếp theo). Trường hợp phải kéo dài thời gian thì không quá 03 ngày làm việc. Quy định này theo Nghị quyết 24/2017/NQ-HĐND của HĐND tỉnh và các văn bản pháp luật hiện hành. KÈM: - Văn bản hiệu lực hiện tại: Nghị quyết 24/2017/NQ-HĐND ngày 17/7/2017 - Điều khoản liên quan: Mức lệ phí đăng ký biện pháp bảo đảm - Lịch sử sửa đổi: Áp dụng theo Quyết định 1766/QĐ-UBND năm 2020",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_1",
+                "1766_2020_QĐ_UBND_preamble"
+            ]
+        },
+        {
+            "id": "q16",
+            "question": "Tôi nghe nói thủ tục chứng thực bản sao từ bản chính giấy tờ trước đây có 2 thủ tục riêng, bây giờ còn phân biệt trong nước và nước ngoài không?",
+            "answer": "Theo quy định cũ trong danh mục thủ tục hành chính, có thủ tục riêng cho chứng thực bản sao giấy tờ do cơ quan Việt Nam cấp (mã 2.001004). Tuy nhiên, thủ tục này đã bị bãi bỏ theo Quyết định 1329/QĐ-BTP ngày 01/6/2020. Hiện nay vẫn có 2 thủ tục riêng biệt: một cho giấy tờ do cơ quan Việt Nam cấp (mã 2.000815) và một cho giấy tờ do cơ quan nước ngoài hoặc liên kết Việt Nam-nước ngoài cấp (mã 2.000843). Cả hai đều có mức phí 2.000 đồng/trang, từ trang thứ 3 thu 1.000 đồng/trang, tối đa 200.000 đồng/bản. KÈM: - Văn bản hiệu lực hiện tại: Quyết định 1766/QĐ-UBND ngày 03/8/2020 - Điều khoản liên quan: Phụ lục danh mục TTHC - Lịch sử sửa đổi: Bãi bỏ TTHC cũ theo Quyết định 1329/QĐ-BTP",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung",
+                "1766_2020_QĐ_UBND_annex_tthc_bai_bo"
+            ]
+        },
+        {
+            "id": "q17",
+            "question": "Các cơ sở nuôi dưỡng người có công được hỗ trợ chi phí hoạt động như thế nào? Tôi thấy có thông tư mới thay thế thông tư cũ?",
+            "answer": "Đúng vậy, quy định về hỗ trợ hoạt động cơ sở nuôi dưỡng người có công đã thay đổi. Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH (đã hết hiệu lực), có quy định chung về các khoản chi hỗ trợ. Hiện nay, Thông tư 101/2018/TT-BTC quy định chi tiết hơn, bao gồm: sửa chữa cơ sở vật chất, mua sắm trang thiết bị, thuê mướn nhân công, chi sách báo văn hóa văn nghệ. Đặc biệt, quy định mới bổ sung thêm chi đón tiếp thân nhân người có công (không quá 3 người, năm 2 lần) theo mức chi tiếp khách trong nước của Thông tư 71/2018/TT-BTC. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 10 - Lịch sử sửa đổi: Thay thế Điều 5 Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+                "101_2018_TT_BTC_ch2_art10"
+            ]
+        },
+        {
+            "id": "q18",
+            "question": "Tôi định đăng ký hoạt động văn phòng luật sư, nghe nói lệ phí đã thay đổi và các thủ tục về chấm dứt hoạt động cũng khác trước?",
+            "answer": "Về lệ phí đăng ký hoạt động văn phòng luật sư hiện nay là 50.000 đồng/hồ sơ theo Thông tư 47/2019/TT-BTC (thay thế quy định cũ). Quan trọng hơn, nhiều thủ tục về chấm dứt hoạt động đã bị bãi bỏ theo Quyết định 1565/QĐ-BTP ngày 13/7/2020, bao gồm: chấm dứt hoạt động trong trường hợp tự chấm dứt (mã 1.002113), bị thu hồi Giấy đăng ký (mã 1.002126), hoặc do Trưởng văn phòng chết (mã 1.002138). Các thủ tục về thu hồi Giấy đăng ký hoạt động (mã 1.002638) cũng đã bị bãi bỏ. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 47/2019/TT-BTC và Quyết định 1565/QĐ-BTP - Điều khoản liên quan: Phí đăng ký và bãi bỏ TTHC - Lịch sử sửa đổi: Bãi bỏ nhiều TTHC theo Quyết định 1565/QĐ-BTP",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_luat_su_1",
+                "1766_2020_QĐ_UBND_annex_tthc_bai_bo"
+            ]
+        },
+        {
+            "id": "q19",
+            "question": "Người có công đi khám chữa bệnh có được hỗ trợ tiền tàu xe không? Mức hỗ trợ hiện nay có khác với quy định trước không?",
+            "answer": "Người có công đi khám chữa bệnh được hỗ trợ tiền tàu xe, nhưng quy định đã thay đổi giữa các văn bản. Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH (đã hết hiệu lực), có quy định chung về hỗ trợ tiền tàu xe đi khám chữa bệnh, giám định thương tật. Hiện nay, Thông tư 101/2018/TT-BTC quy định cụ thể hơn: người có công đang được nuôi dưỡng tại cơ sở khi đi khám bệnh, chữa bệnh, giám định thương tật được hỗ trợ tiền ăn và tiền tàu xe theo quy định tại khoản 1 Điều 12 (mức 2.000 đồng/km, tối đa 2.400.000 đồng/người). KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 9, khoản 2, điểm b - Lịch sử sửa đổi: Thay thế quy định tại Điều 4 Thông tư 47/2009/TTLT-BTC-BLĐTBXH",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art8_9"
+            ]
+        },
+        {
+            "id": "q20",
+            "question": "Việc lập dự toán kinh phí thực hiện chính sách người có công hàng năm có thời hạn gửi báo cáo khác nhau giữa các cấp không?",
+            "answer": "Có, thời hạn gửi báo cáo dự toán khác nhau giữa các cấp và đã được điều chỉnh qua các văn bản. Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH (đã thay thế), Phòng LĐTBXH gửi Sở trước 20/6, Sở gửi Bộ trước 5/7, Bộ gửi Bộ Tài chính trước 20/7. Thông tư 101/2018/TT-BTC giữ nguyên các mốc thời gian này nhưng bổ sung thêm quy định Bộ Tài chính giao dự toán cho Bộ LĐTBXH trước 20/11 năm trước (thay vì 20/11 hàng năm như quy định cũ). KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 16 - Lịch sử sửa đổi: Giữ nguyên thời hạn nhưng làm rõ 'năm trước'",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+                "101_2018_TT_BTC_ch3_art16"
+            ]
+        },
+        {
+            "id": "q21",
+            "question": "Quy trình xử lý kết quả rà soát thủ tục hành chính hiện nay như thế nào? Tôi nghe nói Bộ Tư pháp có vai trò mới?",
+            "answer": "Đúng, vai trò của Bộ Tư pháp đã thay đổi đáng kể. Theo Nghị định 63/2010/NĐ-CP ban đầu, việc xử lý kết quả rà soát do các Bộ, ngành tự thực hiện. Tuy nhiên, Nghị định 48/2013/NĐ-CP đã sửa đổi Điều 31, theo đó: các Bộ, cơ quan ngang Bộ phải gửi phương án sửa đổi, bổ sung, bãi bỏ thủ tục hành chính thuộc thẩm quyền Chính phủ, Thủ tướng cho Bộ Tư pháp xem xét, đánh giá trước khi trình. Bộ Tư pháp còn chịu trách nhiệm theo dõi, đôn đốc, kiểm tra việc thực hiện quyết định phê duyệt phương án. KÈM: - Văn bản hiệu lực hiện tại: Nghị định 48/2013/NĐ-CP ngày 14/5/2013 - Điều khoản liên quan: Điều 1, khoản 9 sửa đổi Điều 31 - Lịch sử sửa đổi: Bổ sung vai trò xem xét, đánh giá của Bộ Tư pháp",
+            "contexts": [
+                "63_2010_NĐ_CP_ch5_art27_31",
+                "48_2013_NĐ_CP_art1_part3"
+            ]
+        },
+        {
+            "id": "q22",
+            "question": "Chế độ trợ cấp một lần cho thanh niên xung phong được quy định trong những văn bản nào? Có phân biệt giữa thanh niên xung phong các thời kỳ không?",
+            "answer": "Có phân biệt rõ ràng giữa các thời kỳ. Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH và Thông tư 101/2018/TT-BTC, có các nhóm: (1) Thanh niên xung phong hoàn thành nhiệm vụ trong kháng chiến theo Quyết định 104/1999/QĐ-TTg (đã được thay thế bởi Quyết định 40/2011/QĐ-TTg); (2) Thanh niên xung phong thời kỳ chống Pháp theo Quyết định 170/2008/QĐ-TTg được chế độ bảo hiểm y tế và mai táng; (3) Thanh niên xung phong cơ sở miền Nam theo Nghị định 112/2017/NĐ-CP. Mỗi nhóm có chế độ trợ cấp một lần riêng và nguồn kinh phí khác nhau. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC và các Quyết định riêng - Điều khoản liên quan: Điều 4 và Điều 1 - Lịch sử sửa đổi: Quyết định 40/2011/QĐ-TTg thay thế 104/1999/QĐ-TTg",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art3",
+                "101_2018_TT_BTC_ch2_art4",
+                "101_2018_TT_BTC_ch1_art1_3"
+            ]
+        },
+        {
+            "id": "q23",
+            "question": "Trung tâm tư vấn pháp luật muốn đăng ký hoạt động thì có phải đóng phí không? Các thủ tục chấm dứt hoạt động còn áp dụng không?",
+            "answer": "Đăng ký hoạt động Trung tâm tư vấn pháp luật không phải đóng phí (theo danh mục TTHC hiện hành). Tuy nhiên, thay đổi nội dung đăng ký hoạt động phải đóng phí 50.000 đồng/hồ sơ. Quan trọng là nhiều thủ tục về chấm dứt hoạt động đã bị bãi bỏ theo Quyết định 1566/QĐ-BTP ngày 13/7/2020, bao gồm: chấm dứt theo quyết định tổ chức chủ quản (mã 1.000460), bị thu hồi giấy đăng ký (mã 1.001840), chấm dứt hoạt động chi nhánh (mã 1.000443). Cả hai thủ tục thu hồi Giấy đăng ký hoạt động cũng đã bị bãi bỏ. KÈM: - Văn bản hiệu lực hiện tại: Quyết định 1566/QĐ-BTP ngày 13/7/2020 - Điều khoản liên quan: Bãi bỏ TTHC - Lịch sử sửa đổi: Bãi bỏ 5 TTHC về chấm dứt hoạt động",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_luat_su_2_tu_van",
+                "1766_2020_QĐ_UBND_annex_tthc_bai_bo"
+            ]
+        },
+        {
+            "id": "q24",
+            "question": "Việc điều chỉnh dự toán kinh phí người có công giữa các tỉnh phải hoàn thành trước thời điểm nào? Có thay đổi gì không?",
+            "answer": "Thời hạn điều chỉnh dự toán đã có thay đổi quan trọng. Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH (đã hết hiệu lực), không quy định rõ thời hạn cụ thể. Thông tư 101/2018/TT-BTC quy định chặt chẽ hơn: việc điều chỉnh dự toán phải hoàn thành trước ngày 15/11 năm hiện hành. Đặc biệt, nếu điều chỉnh nhiệm vụ chi đã được ghi chú trong quyết định giao dự toán của Thủ tướng hoặc Bộ trưởng Bộ Tài chính, Bộ LĐTBXH phải có ý kiến thống nhất của Bộ Tài chính, với thời hạn gửi đề nghị chậm nhất trước 31/10 hàng năm. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 18, khoản 3 - Lịch sử sửa đổi: Bổ sung thời hạn cụ thể 15/11 và 31/10",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+                "101_2018_TT_BTC_ch3_art18"
+            ]
+        },
+        {
+            "id": "q25",
+            "question": "Chi phí đóng bảo hiểm y tế cho người có công được thực hiện như thế nào? Có phải đóng cho tất cả đối tượng không?",
+            "answer": "Không phải tất cả đối tượng đều được đóng BHYT từ ngân sách. Theo Thông tư 101/2018/TT-BTC, chỉ đóng BHYT cho người đang hưởng trợ cấp, phụ cấp hàng tháng, trừ những người đồng thời đang tham gia BHXH bắt buộc, hưởng lương hưu, trợ cấp BHXH, trợ cấp thất nghiệp hàng tháng. Cách thức đóng: hàng quý, cơ quan LĐTBXH rà soát danh sách, đối chiếu với cơ quan BHXH, rút dự toán tại KBNN và chuyển vào quỹ BHYT. Đây là quy định mới, cụ thể hơn so với Thông tư 47/2009/TTLT-BTC-BLĐTBXH chỉ nêu chung là 'Bảo hiểm y tế'. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 5 - Lịch sử sửa đổi: Chi tiết hóa từ quy định chung trong Thông tư 47/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art4",
+                "101_2018_TT_BTC_ch2_art5"
+            ]
+        },
+        {
+            "id": "q26",
+            "question": "Thủ tục hành chính về chứng thực di chúc và văn bản từ chối nhận di sản hiện nay do cấp nào thực hiện? Phí bao nhiêu?",
+            "answer": "Hiện nay, cả hai thủ tục chứng thực di chúc và chứng thực văn bản từ chối nhận di sản đều do UBND cấp xã thực hiện, với phí 50.000 đồng/trường hợp. Thời gian giải quyết không quá 02 ngày kể từ khi nhận đủ hồ sơ. Đây là quy định theo Nghị định 23/2015/NĐ-CP, Thông tư 01/2020/TT-BTP và Thông tư 226/2016/TT-BTC về mức phí. Trước đây có thể có sự phân cấp khác nhau giữa các loại văn bản này. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 01/2020/TT-BTP và Thông tư 226/2016/TT-BTC - Điều khoản liên quan: Phí chứng thực hợp đồng, giao dịch - Lịch sử sửa đổi: Thống nhất cấp xã thực hiện",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_cap_huyen_xa",
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung"
+            ]
+        },
+        {
+            "id": "q27",
+            "question": "Báo cáo định kỳ về kiểm soát thủ tục hành chính phải gửi cho ai và có những nội dung gì khác với trước?",
+            "answer": "Theo Nghị định 48/2013/NĐ-CP sửa đổi Nghị định 63/2010/NĐ-CP, báo cáo định kỳ 6 tháng phải gửi cho Bộ Tư pháp (thay vì Văn phòng Chính phủ như trước). Nội dung báo cáo được bổ sung thêm: công tác truyền thông hỗ trợ hoạt động kiểm soát TTHC và nội dung khác theo yêu cầu của Bộ Tư pháp. Đặc biệt, Nghị định 48/2013 còn bổ sung Điều 35a về kiểm tra việc thực hiện, trong đó Cục Kiểm soát TTHC giúp Bộ trưởng Bộ Tư pháp kiểm tra tại các Bộ, ngành, địa phương. KÈM: - Văn bản hiệu lực hiện tại: Nghị định 48/2013/NĐ-CP ngày 14/5/2013 - Điều khoản liên quan: Điều 1, khoản 10 và 11 - Lịch sử sửa đổi: Chuyển từ VPCP sang Bộ Tư pháp, bổ sung nội dung báo cáo",
+            "contexts": [
+                "63_2010_NĐ_CP_ch6_art32_35",
+                "48_2013_NĐ_CP_art1_part4"
+            ]
+        },
+        {
+            "id": "q28",
+            "question": "Kinh phí hỗ trợ xây dựng đài tưởng niệm liệt sĩ cấp xã hiện nay là bao nhiêu? Có phân biệt giữa các địa phương không?",
+            "answer": "Có phân biệt rõ ràng giữa các địa phương. Theo Thông tư 101/2018/TT-BTC, đối với địa phương được ngân sách trung ương bổ sung cân đối: mức hỗ trợ tối đa 70% tổng giá trị công trình, không quá 0,5 tỷ đồng/công trình cấp xã (cấp huyện 4 tỷ, cấp tỉnh 10 tỷ). Với công trình sửa chữa, nâng cấp chỉ hỗ trợ tối đa 50% mức xây mới. Còn địa phương tự cân đối ngân sách thì phải bố trí từ ngân sách địa phương, không được hỗ trợ từ ngân sách trung ương. Đây là quy định mới, cụ thể hơn Thông tư 47/2009. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 11, khoản 3 - Lịch sử sửa đổi: Quy định chi tiết mức hỗ trợ theo cấp và loại địa phương",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art11",
+                "101_2018_TT_BTC_ch1_art1_3"
+            ]
+        },
+        {
+            "id": "q29",
+            "question": "Việc phân bổ dự toán cho các địa phương có phải qua Bộ Tài chính thẩm tra không? Quy trình này đã thay đổi như thế nào?",
+            "answer": "Có, phải qua Bộ Tài chính thẩm tra. Theo Thông tư 47/2009/TTLT-BTC-BLĐTBXH, Bộ LĐTBXH gửi phương án phân bổ cho Bộ Tài chính trước 30/11, Bộ Tài chính thông báo kết quả thẩm tra trong 7 ngày làm việc. Thông tư 101/2018/TT-BTC điều chỉnh thời hạn: Bộ LĐTBXH phân bổ và giao dự toán cho Sở LĐTBXH trước 25/12 (sớm hơn 6 ngày so với quy định cũ 31/12), gửi Bộ Tài chính kèm thuyết minh và báo cáo phân bổ. Bộ Tài chính kiểm tra trong 10 ngày làm việc, nếu phát hiện sai phải yêu cầu điều chỉnh trong 7 ngày. KÈM: - Văn bản hiệu lực hiện tại: Thông tư 101/2018/TT-BTC ngày 14/11/2018 - Điều khoản liên quan: Điều 17 - Lịch sử sửa đổi: Thay đổi thời hạn từ 31/12 xuống 25/12",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+                "101_2018_TT_BTC_ch3_art17"
+            ]
+        },
+        {
+            "id": "q30",
+            "question": "Xóa đăng ký biện pháp bảo đảm bằng quyền sử dụng đất phải đóng lệ phí bao nhiêu? Các thủ tục về đăng ký thế chấp có thay đổi gì?",
+            "answer": "Lệ phí xóa đăng ký biện pháp bảo đảm là 20.000 đồng/hồ sơ, thấp nhất trong các thủ tục về biện pháp bảo đảm. Các thủ tục khác như: đăng ký thế chấp 80.000 đồng, thay đổi nội dung 60.000 đồng, đăng ký văn bản thông báo xử lý tài sản 70.000 đồng. Thời gian giải quyết đều trong ngày nhận hồ sơ hợp lệ. Các mức phí này theo Nghị quyết 24/2017/NQ-HĐND của HĐND tỉnh và được áp dụng thống nhất theo Thông tư 07/2019/TT-BTP của Bộ Tư pháp. KÈM: - Văn bản hiệu lực hiện tại: Nghị quyết 24/2017/NQ-HĐND và Thông tư 07/2019/TT-BTP - Điều khoản liên quan: Mức lệ phí các thủ tục - Lịch sử sửa đổi: Áp dụng theo quy định mới từ 2019",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_2",
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_1"
+            ]
+        }
+    ]
+}

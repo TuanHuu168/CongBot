@@ -1,0 +1,247 @@
+{
+    "benchmark": [
+        {
+            "id": "q1",
+            "question": "Tôi là thương binh muốn đi điều dưỡng tập trung, nghe nói có nhiều quy định khác nhau về mức chi tiền ăn. Vậy tôi được hưởng mức nào là đúng?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC (văn bản mới nhất và chuyên biệt) tại Điều 6, mức chi điều dưỡng tập trung được quy định chi tiết và thay thế cho các quy định cũ trong Thông tư số 47/2009/TTLT-BTC-BLĐTBXH. Văn bản mới này quy định rõ ràng hơn về các khoản chi bao gồm tiền ăn, thuốc bổ, quà tặng và các chi phí khác, nên được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art6",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q2",
+            "question": "Gia đình tôi có người thân là liệt sĩ, muốn hỏi về tiền hỗ trợ đi thăm mộ thì mức cũ và mới khác nhau thế nào, tính theo mức nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 12 (văn bản mới hơn), mức hỗ trợ thăm viếng mộ liệt sĩ là 2.000 đồng/km, tối đa 2.400.000 đồng/người. Mức này thay thế cho các quy định cũ trong Thông tư số 47/2009/TTLT-BTC-BLĐTBXH và được ưu tiên áp dụng do là văn bản mới nhất về vấn đề này.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art12_13",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q3",
+            "question": "Tôi thấy có Nghị định và Thông tư đều nói về chế độ mai táng phí cho người có công, không biết áp dụng theo văn bản nào?",
+            "answer": "Theo nguyên tắc pháp luật, Nghị định số 31/2013/NĐ-CP (văn bản cấp cao hơn) quy định khung chung về chế độ mai táng phí, còn Thông tư số 101/2018/TT-BTC chỉ hướng dẫn chi tiết việc thực hiện. Do đó, cần áp dụng đồng thời cả hai văn bản, trong đó Nghị định quy định nguyên tắc còn Thông tư hướng dẫn cụ thể cách thực hiện.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q4",
+            "question": "Về kinh phí quản lý chính sách người có công, tôi thấy quy định cũ cho phép trích 1,7% nhưng văn bản mới lại quy định khác, vậy tính thế nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 14 (văn bản mới thay thế), kinh phí quản lý được quy định chi tiết hơn với nhiều nội dung chi cụ thể, trong đó chi phí phục vụ chi trả tối đa là 50% chi phí quản lý toàn ngành. Quy định này thay thế cho mức 1,7% trong Thông tư số 47/2009/TTLT-BTC-BLĐTBXH (văn bản cũ) và được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art14",
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6"
+            ]
+        },
+        {
+            "id": "q5",
+            "question": "Tôi là thương binh cần làm dụng cụ chỉnh hình, thấy có quy định về hỗ trợ tiền đi lại nhưng mức cũ mới khác nhau, tính sao cho đúng?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 7 (văn bản mới và chuyên biệt hơn), mức hỗ trợ tiền ăn và tiền tàu xe khi đi làm dụng cụ chỉnh hình là 5.000 đồng/km, tối đa 1.400.000 đồng/người cho cả lượt đi và về. Đây là quy định mới nhất thay thế cho các quy định cũ và được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art7",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q6",
+            "question": "Về việc lập dự toán kinh phí người có công hàng năm, tôi thấy có nhiều văn bản quy định thời hạn khác nhau, phải làm theo văn bản nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 16 (văn bản mới nhất), quy trình lập dự toán có thời hạn cụ thể: Phòng LĐTBXH gửi trước 20/6, Sở LĐTBXH gửi trước 5/7, Bộ LĐTBXH gửi trước 20/7. Quy định này thay thế cho Thông tư số 47/2009/TTLT-BTC-BLĐTBXH và được ưu tiên áp dụng do là văn bản mới hơn.",
+            "contexts": [
+                "101_2018_TT_BTC_ch3_art16",
+                "47_2009_TTLT_BTC_BLĐTBXH_art7_8"
+            ]
+        },
+        {
+            "id": "q7",
+            "question": "Tôi nghe nói có quy định mới về phương tiện trợ giúp cho thương binh, không biết có thay đổi gì so với quy định cũ không?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC (văn bản mới), Điều 7 quy định chi tiết về cấp phương tiện trợ giúp, dụng cụ chỉnh hình với mức tiền cấp mua được quy định trong phụ lục kèm theo. Đây là quy định mới thay thế hoàn toàn cho các quy định cũ trong Thông tư số 47/2009/TTLT-BTC-BLĐTBXH và được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art7",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q8",
+            "question": "Gia đình tôi muốn di chuyển hài cốt liệt sĩ, thấy có cả Nghị định và Thông tư quy định về vấn đề này, phải làm theo văn bản nào?",
+            "answer": "Theo nguyên tắc pháp luật, Nghị định số 31/2013/NĐ-CP (cấp cao hơn) quy định nguyên tắc chung về di chuyển hài cốt liệt sĩ, còn Thông tư số 101/2018/TT-BTC, Điều 13 hướng dẫn chi tiết mức hỗ trợ cụ thể. Cần áp dụng đồng thời: Nghị định cho nguyên tắc, Thông tư cho mức chi cụ thể là 4.000.000 đồng/bộ hài cốt.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art12_13",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q9",
+            "question": "Về chế độ điều dưỡng tại nhà cho thương binh, tôi thấy có văn bản cũ và mới quy định khác nhau, áp dụng theo văn bản nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 6 (văn bản mới nhất), chế độ điều dưỡng tại nhà được thực hiện theo quy định tại Nghị định số 31/2013/NĐ-CP. Thông tư mới này thay thế cho Thông tư số 47/2009/TTLT-BTC-BLĐTBXH và được ưu tiên áp dụng do là văn bản hướng dẫn mới nhất.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art6",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q10",
+            "question": "Tôi thấy quy định về chi phí giám định y khoa cho thương binh có trong nhiều văn bản, không biết nên áp dụng mức phí nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 8 (văn bản chuyên biệt và mới), chi phí giám định y khoa được thanh toán theo Biểu phí trong Thông tư số 243/2016/TT-BTC. Đây là quy định mới và cụ thể hơn so với các quy định chung trong văn bản cũ, nên được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art8_9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q11",
+            "question": "Về việc đăng ký hoạt động của văn phòng luật sư, tôi thấy có cả Luật và Nghị định quy định, phải làm theo văn bản nào?",
+            "answer": "Theo nguyên tắc pháp luật, Luật Luật sư năm 2006 (văn bản cấp cao nhất) quy định nguyên tắc chung, còn Nghị định số 123/2013/NĐ-CP và Thông tư số 02/2015/TT-BTP hướng dẫn chi tiết thủ tục. Cần áp dụng đồng thời cả ba văn bản, trong đó Luật là cơ sở pháp lý cao nhất.",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_luat_su_1",
+                "1766_2020_QĐ_UBND_annex_luat_su_2_tu_van"
+            ]
+        },
+        {
+            "id": "q12",
+            "question": "Tôi muốn làm thủ tục chứng thực bản sao văn bằng, thấy có quy định mới về lệ phí khác với quy định cũ, phải đóng theo mức nào?",
+            "answer": "Theo Quyết định số 1766/QĐ-UBND ngày 3/8/2020 (văn bản mới nhất), lệ phí chứng thực bản sao là 2.000 đồng/trang, từ trang thứ 3 thu 1.000 đồng/trang, tối đa 200.000 đồng/bản. Đây là quy định mới nhất của địa phương được áp dụng theo Thông tư số 226/2016/TT-BTC và thay thế các quy định cũ.",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung",
+                "63_2010_NĐ_CP_ch3_art20_22"
+            ]
+        },
+        {
+            "id": "q13",
+            "question": "Về chế độ bảo hiểm y tế cho người có công, tôi thấy có nhiều văn bản quy định, không biết văn bản nào được ưu tiên áp dụng?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 5 (văn bản mới và chuyên biệt), việc đóng bảo hiểm y tế cho người có công được thực hiện theo quy định hiện hành của pháp luật về bảo hiểm y tế. Thông tư này là văn bản hướng dẫn mới nhất nên được ưu tiên áp dụng thay cho các quy định cũ.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art5",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q14",
+            "question": "Tôi nghe nói quy định về kiểm soát thủ tục hành chính có thay đổi, không biết Nghị định cũ và mới khác nhau thế nào?",
+            "answer": "Theo Nghị định số 48/2013/NĐ-CP (văn bản sửa đổi), đã chuyển chức năng kiểm soát thủ tục hành chính từ Văn phòng Chính phủ sang Bộ Tư pháp. Nghị định này sửa đổi Nghị định số 63/2010/NĐ-CP và được ưu tiên áp dụng do là văn bản mới hơn có hiệu lực từ 1/7/2013.",
+            "contexts": [
+                "48_2013_NĐ_CP_art1_part1",
+                "63_2010_NĐ_CP_ch1_art1_6"
+            ]
+        },
+        {
+            "id": "q15",
+            "question": "Về thời hạn công bố thủ tục hành chính, tôi thấy Nghị định cũ và mới quy định khác nhau, phải tính theo quy định nào?",
+            "answer": "Theo Nghị định số 48/2013/NĐ-CP, Điều 1 (văn bản sửa đổi mới), thời hạn công bố thủ tục hành chính là chậm nhất trước 20 ngày làm việc (cấp Bộ) và 5 ngày làm việc (cấp địa phương). Quy định này thay thế cho thời hạn 10 ngày trong Nghị định số 63/2010/NĐ-CP và được ưu tiên áp dụng.",
+            "contexts": [
+                "48_2013_NĐ_CP_art1_part1",
+                "63_2010_NĐ_CP_ch3_art12_15"
+            ]
+        },
+        {
+            "id": "q16",
+            "question": "Tôi là cơ sở nuôi dưỡng người có công, muốn hỏi về kinh phí hỗ trợ hoạt động thì áp dụng theo văn bản nào trong các văn bản hiện có?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 10 (văn bản mới và chuyên biệt), cơ sở nuôi dưỡng được hỗ trợ chi sửa chữa cơ sở vật chất, mua sắm trang thiết bị, chi hoạt động văn hóa thể thao. Đây là quy định mới thay thế cho Điều 5 Thông tư số 47/2009/TTLT-BTC-BLĐTBXH và được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art10",
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6"
+            ]
+        },
+        {
+            "id": "q17",
+            "question": "Về chế độ quà tặng của Chủ tịch nước cho người có công, văn bản nào quy định cụ thể nhất mà tôi nên tham khảo?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 9 (văn bản chuyên biệt về tài chính), quà tặng của Chủ tịch nước là một trong các khoản chi trực tiếp cho người thụ hưởng. Đây là văn bản hướng dẫn cụ thể về mặt tài chính nên được ưu tiên tham khảo cho việc thực hiện chi trả.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art8_9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q18",
+            "question": "Tôi thấy quy định về hỗ trợ xây dựng nghĩa trang liệt sĩ có trong nhiều văn bản, địa phương tôi thuộc diện được ngân sách trung ương hỗ trợ thì áp dụng mức nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 11 (văn bản mới nhất), địa phương được ngân sách trung ương bổ sung cân đối được hỗ trợ tối đa 70% tổng giá trị công trình, không quá 10 tỷ đồng/công trình cấp tỉnh. Đây là quy định mới và cụ thể nhất về mức hỗ trợ nên được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art11",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q19",
+            "question": "Về việc điều chỉnh dự toán kinh phí người có công trong năm, tôi thấy có quy định về thời hạn khác nhau giữa văn bản cũ và mới, phải theo văn bản nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 18 (văn bản mới), thời gian điều chỉnh dự toán hoàn thành trước ngày 15/11 năm hiện hành. Quy định này thay thế cho các quy định trong Thông tư số 47/2009/TTLT-BTC-BLĐTBXH và được ưu tiên áp dụng do là văn bản hướng dẫn mới nhất.",
+            "contexts": [
+                "101_2018_TT_BTC_ch3_art18",
+                "47_2009_TTLT_BTC_BLĐTBXH_art9_11"
+            ]
+        },
+        {
+            "id": "q20",
+            "question": "Tôi muốn biết về chế độ trợ cấp ăn thêm ngày lễ tết cho thương binh nặng, văn bản nào quy định mức chi cụ thể nhất?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 9 (văn bản chuyên biệt và mới), thương binh bị suy giảm khả năng lao động từ 81% trở lên được hỗ trợ ăn thêm ngày lễ, tết với mức 200.000 đồng/người/ngày. Đây là quy định cụ thể và mới nhất nên được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art8_9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q21",
+            "question": "Về thủ tục nhập quốc tịch Việt Nam, tôi thấy có Luật và Nghị định quy định, không biết phải làm theo văn bản nào là chính?",
+            "answer": "Theo nguyên tắc pháp luật, Luật Quốc tịch Việt Nam 2008 (văn bản cấp cao nhất) quy định nguyên tắc chung, còn Nghị định số 16/2020/NĐ-CP và Thông tư số 02/2020/TT-BTP hướng dẫn chi tiết thủ tục với thời hạn 115 ngày. Cần áp dụng đồng thời, trong đó Luật là cơ sở pháp lý cao nhất.",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_quoc_tich",
+                "48_2013_NĐ_CP_art1_part1"
+            ]
+        },
+        {
+            "id": "q22",
+            "question": "Tôi cần làm thủ tục chứng thực hợp đồng mua bán đất, thấy có nhiều nơi thực hiện với mức phí khác nhau, phải đóng phí theo quy định nào?",
+            "answer": "Theo Quyết định số 1766/QĐ-UBND ngày 3/8/2020 áp dụng Thông tư số 226/2016/TT-BTC (văn bản về phí lệ phí), mức phí chứng thực hợp đồng liên quan đến đất là 50.000 đồng/trường hợp. Đây là mức phí thống nhất được quy định trong văn bản mới nhất của địa phương.",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_cap_huyen_xa",
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung"
+            ]
+        },
+        {
+            "id": "q23",
+            "question": "Về việc chi trả trợ cấp cho người có công qua ngân hàng, tôi thấy có quy định mới về chi phí, không biết có thay đổi gì so với trước?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 15 (văn bản mới), việc chi trả qua tổ chức dịch vụ được quy định chi tiết với chi phí theo tỷ lệ % do Bộ trưởng LĐTBXH quyết định. Đây là quy định mới thay thế cho cách tính phí trong văn bản cũ và được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art15",
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6"
+            ]
+        },
+        {
+            "id": "q24",
+            "question": "Tôi thấy quy định về thủ tục đăng ký biện pháp bảo đảm có trong nhiều văn bản, khi thế chấp nhà đất thì phải làm theo văn bản nào?",
+            "answer": "Theo nguyên tắc pháp luật, Luật đất đai 2013 và Luật nhà ở 2014 (văn bản cấp cao) quy định nguyên tắc, còn Nghị định số 102/2017/NĐ-CP và Thông tư số 07/2019/TT-BTP hướng dẫn chi tiết thủ tục. Cần áp dụng đồng thời, ưu tiên văn bản cấp cao cho nguyên tắc và văn bản mới cho thủ tục cụ thể.",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_1",
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_2"
+            ]
+        },
+        {
+            "id": "q25",
+            "question": "Về quy định chi hỗ trợ người có công đi khám chữa bệnh, tôi thấy mức hỗ trợ trong các văn bản khác nhau, áp dụng mức nào?",
+            "answer": "Theo Thông tư số 101/2018/TT-BTC, Điều 9 (văn bản mới và chuyên biệt), hỗ trợ tiền ăn và tiền tàu xe cho người có công đi khám bệnh được thực hiện theo quy định tại Điều 12 cùng Thông tư. Đây là quy định mới nhất và cụ thể nhất nên được ưu tiên áp dụng.",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art8_9",
+                "47_2009_TTLT_BTC_BLĐTBXH_art4"
+            ]
+        },
+        {
+            "id": "q26",
+            "question": "Tôi làm ở cơ quan quản lý người có công, thấy quy định về báo cáo định kỳ có thay đổi, phải báo cáo theo mẫu nào và thời hạn nào?",
+            "answer": "Theo Nghị định số 48/2013/NĐ-CP sửa đổi Điều 35 Nghị định số 63/2010/NĐ-CP (văn bản mới), báo cáo định kỳ 6 tháng gửi Bộ Tư pháp (không phải Văn phòng Chính phủ như cũ). Đây là quy định mới về cơ quan tiếp nhận và thời hạn báo cáo nên được ưu tiên áp dụng.",
+            "contexts": [
+                "48_2013_NĐ_CP_art1_part4",
+                "63_2010_NĐ_CP_ch6_art32_35"
+            ]
+        },
+        {
+            "id": "q27",
+            "question": "Về việc cấp bản sao có chứng thực từ hợp đồng đã chứng thực trước đây, tôi thấy có quy định mới về lệ phí, phải đóng bao nhiêu?",
+            "answer": "Theo Quyết định số 1766/QĐ-UBND ngày 3/8/2020 áp dụng Thông tư số 226/2016/TT-BTC (văn bản mới về phí), lệ phí cấp bản sao từ bản chính hợp đồng đã chứng thực là 2.000 đồng/trang, từ trang thứ 3 thu 1.000 đồng/trang, tối đa 200.000 đồng/bản. Đây là mức phí mới nhất được áp dụng.",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung",
+                "63_2010_NĐ_CP_ch3_art16_19"
+            ]
+        }
+    ]
+}
