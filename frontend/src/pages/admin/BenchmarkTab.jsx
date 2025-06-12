@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart2, Activity, Eye, Download, Upload, Info, CheckCircle, XCircle, Clock, File, X } from 'lucide-react';
+import { Activity, Eye, Download, Upload, Info, CheckCircle, XCircle, Clock, File, X } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
 import axios from 'axios';
@@ -16,6 +16,9 @@ const BenchmarkTab = ({
     const [currentBenchmarkId, setCurrentBenchmarkId] = useState(null);
     const [benchmarkStats, setBenchmarkStats] = useState(null);
     const [benchmarkStatus, setBenchmarkStatus] = useState('idle');
+    const [benchmarkPhase, setBenchmarkPhase] = useState('');
+    const [currentStep, setCurrentStep] = useState(0);
+    const [totalSteps, setTotalSteps] = useState(0);
     const [benchmarkMode, setBenchmarkMode] = useState('default');
     const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -40,7 +43,7 @@ const BenchmarkTab = ({
         }
     };
 
-    // Poll benchmark progress
+    // Poll benchmark progress with enhanced tracking
     useEffect(() => {
         let interval;
         if (currentBenchmarkId && runningBenchmark) {
@@ -51,6 +54,9 @@ const BenchmarkTab = ({
 
                     setBenchmarkProgress(data.progress || 0);
                     setBenchmarkStatus(data.status);
+                    setBenchmarkPhase(data.phase || '');
+                    setCurrentStep(data.current_step || 0);
+                    setTotalSteps(data.total_steps || 0);
 
                     if (data.status === 'completed') {
                         setRunningBenchmark(false);
@@ -58,9 +64,8 @@ const BenchmarkTab = ({
                         clearInterval(interval);
 
                         Swal.fire({
-                            icon: 'success',
                             title: 'Benchmark hoàn thành',
-                            text: `Đã đánh giá ${data.stats?.total_questions || 0} câu hỏi trên 4 models`,
+                            text: `Đã đánh giá ${data.stats?.total_questions || 0} câu hỏi trên 4 models với entity extraction`,
                             confirmButtonColor: '#10b981'
                         });
                     } else if (data.status === 'failed') {
@@ -68,7 +73,6 @@ const BenchmarkTab = ({
                         clearInterval(interval);
 
                         Swal.fire({
-                            icon: 'error',
                             title: 'Benchmark thất bại',
                             text: data.error || 'Có lỗi xảy ra trong quá trình benchmark',
                             confirmButtonColor: '#10b981'
@@ -85,13 +89,44 @@ const BenchmarkTab = ({
         };
     }, [currentBenchmarkId, runningBenchmark]);
 
+    const getPhaseDisplay = (phase) => {
+        const phaseMap = {
+            'starting': 'Đang khởi động...',
+            'extracting_benchmark_entities': 'Trích xuất entities từ benchmark',
+            'processing_models': 'Xử lý với 4 models',
+            'current_system': 'Hệ thống hiện tại',
+            'langchain': 'LangChain', 
+            'haystack': 'Haystack',
+            'chatgpt': 'ChatGPT',
+            'finalizing': 'Hoàn thiện kết quả',
+            'completed': 'Hoàn thành',
+            'failed': 'Thất bại'
+        };
+        return phaseMap[phase] || phase;
+    };
+
+    const getPhaseColor = (phase) => {
+        const colorMap = {
+            'starting': 'text-blue-600',
+            'extracting_benchmark_entities': 'text-purple-600',
+            'processing_models': 'text-green-600',
+            'current_system': 'text-emerald-600',
+            'langchain': 'text-blue-600',
+            'haystack': 'text-orange-600', 
+            'chatgpt': 'text-pink-600',
+            'finalizing': 'text-indigo-600',
+            'completed': 'text-green-600',
+            'failed': 'text-red-600'
+        };
+        return colorMap[phase] || 'text-gray-600';
+    };
+
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
 
         if (!file.name.endsWith('.json')) {
             Swal.fire({
-                icon: 'error',
                 title: 'File không hợp lệ',
                 text: 'Chỉ hỗ trợ tải lên file JSON',
                 confirmButtonColor: '#10b981'
@@ -108,7 +143,6 @@ const BenchmarkTab = ({
             });
 
             Swal.fire({
-                icon: 'success',
                 title: 'Tải lên thành công',
                 text: `Đã tải lên file với ${response.data.questions_count} câu hỏi`,
                 confirmButtonColor: '#10b981'
@@ -121,7 +155,6 @@ const BenchmarkTab = ({
         } catch (error) {
             console.error('Error uploading file:', error);
             Swal.fire({
-                icon: 'error',
                 title: 'Lỗi tải file',
                 text: error.response?.data?.detail || 'Không thể tải lên file',
                 confirmButtonColor: '#10b981'
@@ -134,7 +167,6 @@ const BenchmarkTab = ({
 
         if (benchmarkMode === 'upload' && !fileToUse) {
             Swal.fire({
-                icon: 'warning',
                 title: 'Chưa chọn file',
                 text: 'Vui lòng chọn file benchmark để chạy',
                 confirmButtonColor: '#10b981'
@@ -144,8 +176,15 @@ const BenchmarkTab = ({
 
         Swal.fire({
             title: 'Xác nhận chạy benchmark',
-            text: `Sẽ đánh giá 4 models với file ${fileToUse}. Quá trình có thể mất 10-20p. Tiếp tục?`,
-            icon: 'question',
+            html: `
+                <div class="text-left">
+                    <p><strong>File:</strong> ${fileToUse}</p>
+                    <p><strong>Models:</strong> Current System, LangChain, Haystack, ChatGPT</p>
+                    <p><strong>Metrics:</strong> Cosine Similarity + Entity Similarity + Retrieval Accuracy</p>
+                    <p><strong>Thời gian dự kiến:</strong> 15-30 phút</p>
+                    <p class="text-sm text-gray-600 mt-2">Sẽ có delay giữa các API call để tránh quá tải</p>
+                </div>
+            `,
             showCancelButton: true,
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#64748b',
@@ -156,8 +195,11 @@ const BenchmarkTab = ({
                 try {
                     setRunningBenchmark(true);
                     setBenchmarkProgress(0);
+                    setCurrentStep(0);
+                    setTotalSteps(0);
                     setBenchmarkStats(null);
                     setBenchmarkStatus('running');
+                    setBenchmarkPhase('starting');
 
                     const response = await axios.post(`${API_BASE_URL}/run-benchmark`, {
                         file_path: fileToUse,
@@ -170,7 +212,6 @@ const BenchmarkTab = ({
                     setRunningBenchmark(false);
 
                     Swal.fire({
-                        icon: 'error',
                         title: 'Lỗi khởi động benchmark',
                         text: error.response?.data?.detail || 'Không thể khởi động benchmark',
                         confirmButtonColor: '#10b981'
@@ -199,8 +240,7 @@ const BenchmarkTab = ({
         } catch (error) {
             console.error('Error downloading file:', error);
             Swal.fire({
-                icon: 'error',
-                title: 'Loi tai file',
+                title: 'Lỗi tải file',
                 text: error.response?.status === 404 ? 'File không tồn tại' : 'Không thể tải xuống file',
                 confirmButtonColor: '#10b981'
             });
@@ -212,95 +252,55 @@ const BenchmarkTab = ({
             const response = await axios.get(`${API_BASE_URL}/view-benchmark/${filename}`);
             const data = response.data;
 
-            // Tạo HTML hiển thị chi tiết đẹp
+            // Enhanced display with entity similarity
             const modelStatsHtml = Object.entries(data.model_stats || {})
                 .map(([key, stats]) => {
                     const cosineAvg = stats.cosine_similarity?.avg || 0;
+                    const entityAvg = stats.entity_similarity?.avg || 0;
                     const retrievalAvg = stats.retrieval_accuracy?.avg || 0;
                     const timeAvg = stats.processing_time?.avg || 0;
                     
                     return `
                         <div class="mb-4 p-3 border rounded bg-gray-50">
                             <h4 class="font-bold text-blue-700 mb-2">${stats.name}</h4>
-                            <div class="grid grid-cols-3 gap-4 text-sm">
+                            <div class="grid grid-cols-2 gap-4 text-sm">
                                 <div>
                                     <strong>Cosine Similarity:</strong><br>
-                                    Avg: ${cosineAvg > 0 ? (cosineAvg * 100).toFixed(2) + '%' : 'N/A'}<br>
-                                    Range: ${stats.cosine_similarity?.count > 0 ? 
-                                        (stats.cosine_similarity.min * 100).toFixed(2) + '% - ' + 
-                                        (stats.cosine_similarity.max * 100).toFixed(2) + '%' : 'N/A'}
+                                    Avg: ${cosineAvg > 0 ? (cosineAvg * 100).toFixed(2) + '%' : 'N/A'}
+                                </div>
+                                <div>
+                                    <strong>Entity Similarity:</strong><br>
+                                    Avg: ${entityAvg > 0 ? (entityAvg * 100).toFixed(2) + '%' : 'N/A'}
                                 </div>
                                 <div>
                                     <strong>Retrieval Accuracy:</strong><br>
-                                    Avg: ${retrievalAvg > 0 ? (retrievalAvg * 100).toFixed(2) + '%' : 'N/A'}<br>
-                                    Range: ${stats.retrieval_accuracy?.count > 0 ? 
-                                        (stats.retrieval_accuracy.min * 100).toFixed(2) + '% - ' + 
-                                        (stats.retrieval_accuracy.max * 100).toFixed(2) + '%' : 'N/A'}
+                                    Avg: ${retrievalAvg > 0 ? (retrievalAvg * 100).toFixed(2) + '%' : 'N/A'}
                                 </div>
                                 <div>
                                     <strong>Processing Time:</strong><br>
-                                    Avg: ${timeAvg > 0 ? timeAvg.toFixed(3) + 's' : 'N/A'}<br>
-                                    Range: ${stats.processing_time?.count > 0 ? 
-                                        stats.processing_time.min.toFixed(3) + 's - ' + 
-                                        stats.processing_time.max.toFixed(3) + 's' : 'N/A'}
+                                    Avg: ${timeAvg > 0 ? timeAvg.toFixed(3) + 's' : 'N/A'}
                                 </div>
-                            </div>
-                            <div class="mt-2 text-xs text-gray-600">
-                                Samples: ${Math.max(
-                                    stats.cosine_similarity?.count || 0, 
-                                    stats.retrieval_accuracy?.count || 0, 
-                                    stats.processing_time?.count || 0
-                                )}
                             </div>
                         </div>
                     `;
                 })
                 .join('');
 
-            const bestModelsHtml = data.best_models ? `
-                <div class="mt-4 p-3 bg-green-50 rounded border">
-                    <h4 class="font-bold text-green-700 mb-2">Models tốt nhất</h4>
-                    <div class="grid grid-cols-3 gap-4 text-sm">
-                        <div>
-                            <strong>Cosine Similarity:</strong><br>
-                            ${data.best_models.cosine_similarity?.name || 'N/A'}<br>
-                            (${data.best_models.cosine_similarity?.score ? 
-                                (data.best_models.cosine_similarity.score * 100).toFixed(2) + '%' : 'N/A'})
-                        </div>
-                        <div>
-                            <strong>Retrieval Accuracy:</strong><br>
-                            ${data.best_models.retrieval_accuracy?.name || 'N/A'}<br>
-                            (${data.best_models.retrieval_accuracy?.score ? 
-                                (data.best_models.retrieval_accuracy.score * 100).toFixed(2) + '%' : 'N/A'})
-                        </div>
-                        <div>
-                            <strong>Processing Speed:</strong><br>
-                            ${data.best_models.processing_time?.name || 'N/A'}<br>
-                            (${data.best_models.processing_time?.time ? 
-                                data.best_models.processing_time.time.toFixed(3) + 's' : 'N/A'})
-                        </div>
-                    </div>
-                </div>
-            ` : '';
-
-            // Hiển thị modal với thông tin chi tiết
             Swal.fire({
-                title: `Chi tiet Benchmark: ${filename}`,
+                title: `Chi tiết Benchmark: ${filename}`,
                 html: `
                     <div class="text-left max-h-96 overflow-y-auto">
                         <div class="mb-4 p-3 bg-blue-50 rounded">
                             <h4 class="font-bold text-blue-700 mb-2">Thông tin tổng quan</h4>
                             <div class="text-sm">
                                 <p><strong>Tổng số câu hỏi:</strong> ${data.total_questions || data.total_rows}</p>
-                                <p><strong>Số cột dữ liệu:</strong> ${data.columns?.length || 0}</p>
+                                <p><strong>Metrics:</strong> Cosine + Entity + Retrieval + Time</p>
                                 <p><strong>File:</strong> ${filename}</p>
                             </div>
                         </div>
                         
                         <h4 class="font-bold text-gray-700 mb-3">Chi tiết theo từng model</h4>
                         ${modelStatsHtml || '<p class="text-gray-500">Không có thông tin chi tiết</p>'}
-                        
-                        ${bestModelsHtml}
                     </div>
                 `,
                 width: 800,
@@ -317,61 +317,11 @@ const BenchmarkTab = ({
         } catch (error) {
             console.error('Error viewing file:', error);
             Swal.fire({
-                icon: 'error',
                 title: 'Lỗi xem file',
                 text: 'Không thể xem nội dung file',
                 confirmButtonColor: '#10b981'
             });
         }
-    };
-
-    // Helper functions for getting best models
-    const getBestModel = (stats) => {
-        if (!stats) return null;
-        const scores = {
-            'Current System': stats.current_avg_cosine || 0,
-            'LangChain': stats.langchain_avg_cosine || 0,
-            'Haystack': stats.haystack_avg_cosine || 0,
-            'ChatGPT': stats.chatgpt_avg_cosine || 0
-        };
-        const best = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-        return { name: best, score: scores[best] };
-    };
-
-    const getFastestModel = (stats) => {
-        if (!stats) return null;
-        const times = {
-            'Current System': stats.current_avg_time || Infinity,
-            'LangChain': stats.langchain_avg_time || Infinity,
-            'Haystack': stats.haystack_avg_time || Infinity,
-            'ChatGPT': stats.chatgpt_avg_time || Infinity
-        };
-        const fastest = Object.keys(times).reduce((a, b) => times[a] < times[b] ? a : b);
-        return { name: fastest, time: times[fastest] };
-    };
-
-    const getOverallBest = (stats) => {
-        // Weighted score: 60% accuracy + 40% speed (inverse)
-        if (!stats) return null;
-        const models = ['current', 'langchain', 'haystack', 'chatgpt'];
-        const names = ['Current System', 'LangChain', 'Haystack', 'ChatGPT'];
-        
-        let bestScore = -1;
-        let bestModel = null;
-        
-        models.forEach((model, idx) => {
-            const accuracy = stats[`${model}_avg_cosine`] || 0;
-            const time = stats[`${model}_avg_time`] || Infinity;
-            const speedScore = time === Infinity ? 0 : 1 / time;
-            const overallScore = accuracy * 0.6 + (speedScore / 10) * 0.4; // Normalize speed
-            
-            if (overallScore > bestScore) {
-                bestScore = overallScore;
-                bestModel = names[idx];
-            }
-        });
-        
-        return { name: bestModel, score: bestScore };
     };
 
     return (
@@ -386,32 +336,45 @@ const BenchmarkTab = ({
                 >
                     <div className="p-5 border-b border-gray-100">
                         <h2 className="text-lg font-semibold flex items-center">
-                            <BarChart2 size={18} className="text-green-600 mr-2" />
-                            Kết quả Benchmark 4 Models
+                            <Activity size={18} className="text-green-600 mr-2" />
+                            Kết quả Benchmark với Entity Extraction
                         </h2>
                     </div>
 
                     <div className="p-5">
-                        {/* Current benchmark status */}
+                        {/* Enhanced benchmark status display */}
                         {runningBenchmark && (
                             <div className="mb-6 p-4 bg-blue-50 rounded-lg">
                                 <div className="flex items-center justify-between mb-2">
                                     <span className="text-blue-700 font-medium">Đang chạy benchmark 4 models...</span>
                                     <span className="text-blue-600 text-sm">{Math.round(benchmarkProgress)}%</span>
                                 </div>
-                                <div className="w-full bg-blue-200 rounded-full h-2">
+                                
+                                <div className="w-full bg-blue-200 rounded-full h-3 mb-2">
                                     <div
-                                        className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                                        className="bg-blue-600 h-3 rounded-full transition-all duration-500"
                                         style={{ width: `${benchmarkProgress}%` }}
                                     ></div>
                                 </div>
+                                
+                                <div className="flex justify-between items-center text-sm">
+                                    <span className={`font-medium ${getPhaseColor(benchmarkPhase)}`}>
+                                        {getPhaseDisplay(benchmarkPhase)}
+                                    </span>
+                                    {totalSteps > 0 && (
+                                        <span className="text-gray-600">
+                                            {currentStep}/{totalSteps}
+                                        </span>
+                                    )}
+                                </div>
+                                
                                 <div className="mt-2 text-xs text-blue-600">
-                                    File: {selectedBenchmarkFile} | Models: Current System, LangChain, Haystack, ChatGPT
+                                    File: {selectedBenchmarkFile} | Models: Current + LangChain + Haystack + ChatGPT | Metrics: Cosine + Entity + Retrieval
                                 </div>
                             </div>
                         )}
 
-                        {/* Benchmark stats - Enhanced display */}
+                        {/* Enhanced benchmark stats with entity similarity */}
                         {benchmarkStats && (
                             <div className="mb-6 p-4 bg-green-50 rounded-lg">
                                 <h3 className="text-green-700 font-medium mb-3">Kết quả benchmark mới nhất</h3>
@@ -423,80 +386,51 @@ const BenchmarkTab = ({
                                         <div className="space-y-1">
                                             <div className="flex justify-between items-center">
                                                 <span>Current System:</span>
-                                                <div className="text-right">
-                                                    <span className="font-medium">{((benchmarkStats.current_avg_cosine || 0) * 100).toFixed(2)}%</span>
-                                                    <span className="text-xs text-gray-500 ml-2">({(benchmarkStats.current_avg_time || 0).toFixed(3)}s)</span>
-                                                </div>
+                                                <span className="font-medium">{((benchmarkStats.current_avg_cosine || 0) * 100).toFixed(2)}%</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span>LangChain:</span>
-                                                <div className="text-right">
-                                                    <span className="font-medium">{((benchmarkStats.langchain_avg_cosine || 0) * 100).toFixed(2)}%</span>
-                                                    <span className="text-xs text-gray-500 ml-2">({(benchmarkStats.langchain_avg_time || 0).toFixed(3)}s)</span>
-                                                </div>
+                                                <span className="font-medium">{((benchmarkStats.langchain_avg_cosine || 0) * 100).toFixed(2)}%</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span>Haystack:</span>
-                                                <div className="text-right">
-                                                    <span className="font-medium">{((benchmarkStats.haystack_avg_cosine || 0) * 100).toFixed(2)}%</span>
-                                                    <span className="text-xs text-gray-500 ml-2">({(benchmarkStats.haystack_avg_time || 0).toFixed(3)}s)</span>
-                                                </div>
+                                                <span className="font-medium">{((benchmarkStats.haystack_avg_cosine || 0) * 100).toFixed(2)}%</span>
                                             </div>
                                             <div className="flex justify-between items-center">
                                                 <span>ChatGPT:</span>
-                                                <div className="text-right">
-                                                    <span className="font-medium">{((benchmarkStats.chatgpt_avg_cosine || 0) * 100).toFixed(2)}%</span>
-                                                    <span className="text-xs text-gray-500 ml-2">({(benchmarkStats.chatgpt_avg_time || 0).toFixed(3)}s)</span>
-                                                </div>
+                                                <span className="font-medium">{((benchmarkStats.chatgpt_avg_cosine || 0) * 100).toFixed(2)}%</span>
                                             </div>
                                         </div>
                                     </div>
 
-                                    {/* Retrieval Accuracy */}
+                                    {/* Entity Similarity */}
                                     <div>
-                                        <div className="font-medium text-gray-700 mb-2">Retrieval Accuracy (Avg)</div>
+                                        <div className="font-medium text-gray-700 mb-2">Entity Similarity (Avg)</div>
                                         <div className="space-y-1">
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between items-center">
                                                 <span>Current System:</span>
-                                                <span className="font-medium">{((benchmarkStats.current_avg_retrieval || 0) * 100).toFixed(2)}%</span>
+                                                <span className="font-medium">{((benchmarkStats.current_avg_entity || 0) * 100).toFixed(2)}%</span>
                                             </div>
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between items-center">
                                                 <span>LangChain:</span>
-                                                <span className="font-medium">{((benchmarkStats.langchain_avg_retrieval || 0) * 100).toFixed(2)}%</span>
+                                                <span className="font-medium">{((benchmarkStats.langchain_avg_entity || 0) * 100).toFixed(2)}%</span>
                                             </div>
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between items-center">
                                                 <span>Haystack:</span>
-                                                <span className="font-medium">{((benchmarkStats.haystack_avg_retrieval || 0) * 100).toFixed(2)}%</span>
+                                                <span className="font-medium">{((benchmarkStats.haystack_avg_entity || 0) * 100).toFixed(2)}%</span>
                                             </div>
-                                            <div className="flex justify-between">
+                                            <div className="flex justify-between items-center">
                                                 <span>ChatGPT:</span>
-                                                <span className="text-gray-500">N/A (No retrieval)</span>
+                                                <span className="font-medium">{((benchmarkStats.chatgpt_avg_entity || 0) * 100).toFixed(2)}%</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Hiển thị model tốt nhất */}
-                                <div className="mt-4 p-3 bg-white rounded border">
-                                    <div className="text-xs text-gray-600 mb-2">Models tốt nhất:</div>
-                                    <div className="grid grid-cols-3 gap-4 text-xs">
-                                        <div>
-                                            <span className="font-medium">Chính xác:</span> {getBestModel(benchmarkStats)?.name || 'N/A'}
-                                        </div>
-                                        <div>
-                                            <span className="font-medium">Tốc độ:</span> {getFastestModel(benchmarkStats)?.name || 'N/A'}
-                                        </div>
-                                        <div>
-                                            <span className="font-medium">Overall:</span> {getOverallBest(benchmarkStats)?.name || 'N/A'}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="mt-3 flex justify-between items-center">
+                                <div className="mt-4 flex justify-between items-center">
                                     <span className="text-xs text-gray-500">
                                         Tổng số câu hỏi: {benchmarkStats.total_questions || 0} | 
-                                        Model nhanh nhất: {getFastestModel(benchmarkStats)?.name || 'N/A'} | 
-                                        Model chính xác nhất: {getBestModel(benchmarkStats)?.name || 'N/A'}
+                                        Entity extraction được thực hiện cho tất cả models
                                     </span>
                                     <button
                                         onClick={() => downloadBenchmarkFile(benchmarkStats.output_file)}
@@ -508,7 +442,7 @@ const BenchmarkTab = ({
                             </div>
                         )}
 
-                        {/* Historical results */}
+                        {/* Historical results remain the same */}
                         {isLoading ? (
                             <div className="py-4 flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-500"></div>
@@ -528,14 +462,14 @@ const BenchmarkTab = ({
                                                         <button
                                                             className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
                                                             onClick={() => viewBenchmarkFile(result.file_name)}
-                                                            title="Xem chi tiet"
+                                                            title="Xem chi tiết"
                                                         >
                                                             <Eye size={14} />
                                                         </button>
                                                         <button
                                                             className="p-1.5 rounded-lg bg-green-50 text-green-600 hover:bg-green-100 transition-colors"
                                                             onClick={() => downloadBenchmarkFile(result.file_name)}
-                                                            title="Tai xuong"
+                                                            title="Tải xuống"
                                                         >
                                                             <Download size={14} />
                                                         </button>
@@ -560,7 +494,7 @@ const BenchmarkTab = ({
                                 ) : (
                                     <div className="py-10 text-center">
                                         <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
-                                            <BarChart2 size={24} className="text-gray-400" />
+                                            <Activity size={24} className="text-gray-400" />
                                         </div>
                                         <p className="text-gray-500 text-sm">Chưa có kết quả benchmark nào</p>
                                     </div>
@@ -570,7 +504,7 @@ const BenchmarkTab = ({
                     </div>
                 </motion.div>
 
-                {/* Run Benchmark Control Panel */}
+                {/* Control Panel */}
                 <motion.div
                     className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -621,7 +555,6 @@ const BenchmarkTab = ({
                             {/* File selection for upload mode */}
                             {benchmarkMode === 'upload' && (
                                 <div className="space-y-3">
-                                    {/* File upload */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Tải file mới
@@ -636,7 +569,6 @@ const BenchmarkTab = ({
                                         </div>
                                     </div>
 
-                                    {/* Available files */}
                                     <div>
                                         <label className="block text-sm font-medium text-gray-700 mb-1">
                                             Hoặc chọn file đã tải lên
@@ -657,11 +589,11 @@ const BenchmarkTab = ({
                                 </div>
                             )}
 
-                            {/* Benchmark description */}
+                            {/* Enhanced benchmark description */}
                             <div className="p-4 bg-amber-50 rounded-lg">
-                                <h3 className="text-amber-700 text-base font-medium mb-2">Benchmark 4 Models</h3>
+                                <h3 className="text-amber-700 text-base font-medium mb-2">Benchmark với Entity Extraction</h3>
                                 <p className="text-sm text-gray-600 mb-3">
-                                    Đánh giá hiệu suất của 4 phuong pháp khác nhau trong việc trả lời câu hỏi từ dữ liệu benchmark.
+                                    Đánh giá hiệu suất của 4 phương pháp khác nhau với entity extraction và nhiều metrics.
                                 </p>
 
                                 <div className="mb-3 text-xs text-gray-600">
@@ -672,8 +604,9 @@ const BenchmarkTab = ({
                                 </div>
 
                                 <div className="mb-3 text-xs text-gray-600">
-                                    <div><strong>Metrics:</strong> Cosine Similarity + Retrieval Accuracy + Processing Time</div>
-                                    <div><strong>Embedding:</strong> multilingual-e5-base (cong bang cho tat ca)</div>
+                                    <div><strong>Metrics:</strong> Cosine Similarity + Entity Similarity + Retrieval Accuracy + Processing Time</div>
+                                    <div><strong>Entity Extraction:</strong> Tiền, Đối tượng, Điều kiện, Thủ tục, Thời hạn, Cơ quan, Văn bản</div>
+                                    <div><strong>Optimization:</strong> 0.5s delay giữa API calls, 1s delay giữa câu hỏi</div>
                                 </div>
 
                                 <button
@@ -688,8 +621,8 @@ const BenchmarkTab = ({
                                         </>
                                     ) : (
                                         <>
-                                            <BarChart2 size={16} className="mr-2" />
-                                            <span>Chạy benchmark 4 models</span>
+                                            <Activity size={16} className="mr-2" />
+                                            <span>Chạy benchmark với entity extraction</span>
                                         </>
                                     )}
                                 </button>

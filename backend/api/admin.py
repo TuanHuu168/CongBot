@@ -310,12 +310,18 @@ async def run_benchmark_4models(config: BenchmarkConfig):
         benchmark_progress[benchmark_id] = {
             'status': 'running',
             'progress': 0.0,
-            'start_time': datetime.now().isoformat(),
-            'total_questions': 0
+            'phase': 'starting',
+            'current_step': 0,
+            'total_steps': 0,
+            'start_time': datetime.now().isoformat()
         }
         
-        def progress_callback(percent):
-            progress_queue.put(float(percent))
+        def progress_callback(progress_info):
+            if isinstance(progress_info, dict):
+                progress_queue.put(progress_info)
+            else:
+                # Backwards compatibility - nếu chỉ là số
+                progress_queue.put({'progress': float(progress_info)})
         
         def run_benchmark_thread():
             try:
@@ -333,8 +339,11 @@ async def run_benchmark_4models(config: BenchmarkConfig):
             
             while thread.is_alive():
                 try:
-                    progress = progress_queue.get(timeout=1)
-                    benchmark_progress[benchmark_id]['progress'] = float(progress)
+                    progress_info = progress_queue.get(timeout=1)
+                    if isinstance(progress_info, dict):
+                        benchmark_progress[benchmark_id].update(progress_info)
+                    else:
+                        benchmark_progress[benchmark_id]['progress'] = float(progress_info)
                 except queue.Empty:
                     continue
             
@@ -344,6 +353,7 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                     benchmark_progress[benchmark_id].update({
                         'status': 'completed',
                         'progress': 100.0,
+                        'phase': 'completed',
                         'end_time': datetime.now().isoformat(),
                         'stats': result
                     })
@@ -351,12 +361,14 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                 else:
                     benchmark_progress[benchmark_id].update({
                         'status': 'failed',
+                        'phase': 'failed',
                         'end_time': datetime.now().isoformat(),
                         'error': result
                     })
             except queue.Empty:
                 benchmark_progress[benchmark_id].update({
                     'status': 'failed',
+                    'phase': 'timeout',
                     'end_time': datetime.now().isoformat(),
                     'error': 'Benchmark timed out'
                 })
