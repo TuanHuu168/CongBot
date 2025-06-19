@@ -71,13 +71,6 @@ const TopNavBar = ({
   // Check if user is admin - với debug log
   const isAdmin = () => {
     const isAdminRole = userInfo?.role === 'admin' || user?.role === 'admin';
-    console.log('Admin check:', {
-      userInfo: userInfo,
-      user: user,
-      userInfoRole: userInfo?.role,
-      userRole: user?.role,
-      isAdminRole: isAdminRole
-    });
     return isAdminRole;
   };
 
@@ -116,13 +109,6 @@ const TopNavBar = ({
 
     // Filter out current page from menu
     const filteredItems = allItems.filter(item => item.path !== currentPath);
-    
-    console.log('Menu items:', {
-      currentPath,
-      allItems,
-      filteredItems,
-      isAdmin: isAdmin()
-    });
 
     return filteredItems;
   };

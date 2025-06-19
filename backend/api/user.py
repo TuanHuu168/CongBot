@@ -142,6 +142,7 @@ async def get_user_info(user_id: str):
             "email": user.get("email", ""),
             "fullName": user.get("fullName", ""),
             "phoneNumber": user.get("phoneNumber", ""),
+            "role": user.get("role", "user"),
             "created_at": user.get("created_at", datetime.now())
         }
         

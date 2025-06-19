@@ -32,8 +32,6 @@ export const ChatProvider = ({ children }) => {
       setIsLoading(true);
       const userInfo = await userAPI.getInfo(userId);
 
-      console.log('User info fetched:', userInfo); // Debug log
-
       setUser({
         id: userId,
         name: userInfo.fullName || userInfo.username,
