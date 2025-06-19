@@ -46,10 +46,9 @@ class BenchmarkService:
     def __init__(self):
         self.embedding_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
         genai.configure(api_key=GEMINI_API_KEY)
-        
-        # Khởi tạo ChromaDB client cho LangChain
         self._init_langchain_client()
         
+        # Prompt template giữ nguyên từ code cũ
         self.prompt_template = """
 [SYSTEM INSTRUCTION]
 Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam, được phát triển để cung cấp thông tin chính xác, đầy đủ và có căn cứ pháp lý rõ ràng. Nhiệm vụ của bạn là phân tích và tổng hợp thông tin từ các văn bản pháp luật để đưa ra câu trả lời hoàn chỉnh.
@@ -77,60 +76,11 @@ Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam
 - **Ví dụ**: "Theo Điều 4, Thông tư số 101/2018/TT-BTC ngày 14 tháng 11 năm 2018 của Bộ Tài chính"
 - **Khi có nhiều văn bản**: Liệt kê theo thứ tự quan trọng, nêu rõ mối quan hệ giữa các văn bản
 
-### XỬ LÝ CÁC LOẠI THÔNG TIN
-1. **Số tiền/Mức chi**: Nêu chính xác số tiền, công thức tính, điều kiện áp dụng
-   - VD: "mức 2.000 đồng/trang, từ trang thứ 3 trở lên thu 1.000 đồng/trang, tối đa không quá 200.000 đồng/bản"
-
-2. **Thời hạn**: Phân biệt rõ các loại thời hạn
-   - Thời gian xử lý: "trong ngày", "không quá 02 ngày"
-   - Thời hạn nộp hồ sơ: "trước ngày 20 tháng 6"
-   - Thời điểm có hiệu lực: "kể từ ngày 01/01/2024"
-
-3. **Đối tượng**: Mô tả chi tiết đối tượng được áp dụng
-   - Đối tượng chính: "thương binh", "bệnh binh", "người có công với cách mạng"
-   - Điều kiện cụ thể: tuổi, thời gian phục vụ, nơi cư trú...
-
-4. **Thủ tục/Hồ sơ**: Liệt kê đầy đủ
-   - Thành phần hồ sơ
-   - Địa điểm nộp
-   - Cách thức thực hiện
-
-5. **Cơ quan có thẩm quyền**: Nêu rõ cơ quan nào làm gì
-   - Cơ quan tiếp nhận hồ sơ
-   - Cơ quan xử lý
-   - Cơ quan ra quyết định
-
 ### QUY TẮC TRÌNH BÀY
 1. **Ngôn ngữ**: Đơn giản, dễ hiểu, tránh thuật ngữ pháp lý phức tạp
 2. **Cấu trúc**: Sử dụng đoạn văn ngắn, có thể dùng danh sách đánh số khi cần
 3. **Nhấn mạnh**: Dùng **in đậm** cho thông tin quan trọng (số tiền, thời hạn, điều kiện...)
 4. **Độ chính xác**: Giữ nguyên con số, không làm tròn, không thay đổi format
-
-### XỬ LÝ TÌNH HUỐNG ĐẶC BIỆT
-1. **Thiếu thông tin**: "Dựa trên văn bản được cung cấp, [nội dung hiện có]. Tuy nhiên, văn bản không quy định chi tiết về [vấn đề cần thêm thông tin]."
-
-2. **Thông tin mâu thuẫn**: "Theo [văn bản A] thì [nội dung A], nhưng [văn bản B] quy định [nội dung B]. Do [văn bản A] là [lý do ưu tiên], nên áp dụng theo [lựa chọn]."
-
-3. **Câu hỏi ngoài phạm vi**: "Câu hỏi của bạn về [chủ đề] nằm ngoài phạm vi chính sách người có công. Tôi chuyên tư vấn về các vấn đề liên quan đến thương binh, bệnh binh, liệt sĩ và người có công với cách mạng. Bạn có thể đặt câu hỏi khác về lĩnh vực này không?"
-
-### TEMPLATE CÂU TRẢ LỜI
-"Theo [văn bản + điều khoản], thì [câu trả lời trực tiếp]. 
-
-Cụ thể:
-- **[Yếu tố 1]**: [Thông tin chi tiết]
-- **[Yếu tố 2]**: [Thông tin chi tiết]
-- **[Yếu tố 3]**: [Thông tin chi tiết]
-
-[Thông tin bổ sung từ văn bản khác nếu có]
-
-*Lưu ý*: [Các điều kiện đặc biệt, ngoại lệ nếu có]"
-
-### YÊU CẦU CHẤT LƯỢNG
-- Đảm bảo **100% dựa trên văn bản được cung cấp**
-- **Không bỏ sót** thông tin quan trọng
-- **Trích dẫn chính xác** số hiệu văn bản và điều khoản
-- **Tổ chức logic** từ tổng quát đến chi tiết
-- **Dễ hiểu** với người không chuyên
 
 [USER QUERY]
 {question}
@@ -139,6 +89,7 @@ Cụ thể:
 {context}
 """
 
+        # Entity extraction prompt mới theo format JSON
         self.entity_extraction_prompt = """
 Bạn là chuyên gia phân tích văn bản pháp luật về chính sách người có công tại Việt Nam.
 Nhiệm vụ của bạn là trích xuất TOÀN BỘ thông tin có cấu trúc từ câu trả lời về chính sách để phục vụ đánh giá độ chính xác của hệ thống RAG.
@@ -148,98 +99,6 @@ NGUYÊN TẮC TRÍCH XUẤT:
 - Giữ nguyên con số, ký hiệu, mã số CHÍNH XÁC
 - Chuẩn hóa format nhưng không thay đổi nội dung
 - Nếu có nhiều giá trị cho cùng 1 field, liệt kê tất cả
-
-HƯỚNG DẪN TRÍCH XUẤT CHI TIẾT:
-
-1. **MÃ ĐỊNH DANH**:
-   - Mã thủ tục hành chính: "2.000815", "1.002010", "2.001895"
-   - Mã văn bản: "47/2009/TTLT-BTC-BLĐTBXH", "101/2018/TT-BTC"
-   - Mã chương mục: "024", "520", "527"
-
-2. **LOẠI VĂN BẢN/CHÍNH SÁCH**:
-   - Loại văn bản: "Nghị định", "Thông tư", "Quyết định", "Pháp lệnh"
-   - Loại chính sách: "trợ cấp hàng tháng", "trợ cấp một lần", "điều dưỡng", "bảo hiểm y tế", "thủ tục hành chính", "chứng thực"
-   - Loại thủ tục: "đăng ký", "cấp phép", "chứng nhận", "xác nhận"
-
-3. **SỐ LIỆU/MỨC TIỀN** (Quan trọng - phải chính xác 100%):
-   - Số tiền cụ thể: "5.500.000 đồng", "2.000 đồng/trang", "50.000 đồng/hồ sơ"
-   - Tỷ lệ: "1,7%", "70%", "50%", "80%"
-   - Hệ số/đơn giá: "5.000 đồng/km", "2.000 đồng/km", "320.000 đồng/người/lần"
-   - Mức giới hạn: "tối đa 2.400.000 đồng", "không quá 200.000 đồng", "từ trang thứ 3 trở lên"
-   - Số lượng: "không quá 3 người", "một năm không quá 02 lần"
-
-4. **ĐỐI TƯỢNG** (Phân loại chi tiết):
-   - Đối tượng chính: "thương binh", "bệnh binh", "liệt sĩ", "người có công với cách mạng", "thanh niên xung phong"
-   - Phân cấp: "thương binh hạng 1/4", "bệnh binh loại B", "thương binh loại B bị suy giảm khả năng lao động từ 81% trở lên"
-   - Thân nhân: "con liệt sĩ", "thân nhân liệt sĩ", "vợ/chồng liệt sĩ"
-   - Đối tượng áp dụng TTHC: "cá nhân", "tổ chức", "doanh nghiệp", "cơ quan nhà nước"
-
-5. **ĐIỀU KIỆN/YÊU CẦU** (Chi tiết từng loại):
-   - Điều kiện tuổi: "từ 18 tuổi trở lên", "dưới 20 năm công tác"
-   - Điều kiện thời gian: "có dưới 20 năm công tác trong quân đội", "thời kỳ kháng chiến chống Pháp"
-   - Điều kiện địa lý: "cư trú tại địa phương", "trên địa bàn Thành phố Hồ Chí Minh"
-   - Điều kiện kinh tế: "có hoàn cảnh kinh tế khó khăn"
-   - Điều kiện loại trừ: "trừ những người đồng thời đang tham gia bảo hiểm xã hội bắt buộc"
-
-6. **THỦ TỤC/HỒ SƠ**:
-   - Tên thủ tục đầy đủ
-   - Thành phần hồ sơ cụ thể
-   - Số lượng bản sao: "bản chính", "02 bản sao"
-   - Yêu cầu xác thực: "có xác nhận của UBND cấp xã"
-
-7. **THỜI HẠN** (Tất cả các loại thời hạn):
-   - Thời gian xử lý: "trong ngày", "không quá 02 ngày", "05 ngày", "115 ngày"
-   - Thời điểm nộp hồ sơ: "trước ngày 20 tháng 6", "trước ngày 05 tháng 7"
-   - Thời điểm hiệu lực: "có hiệu lực kể từ ngày 01 tháng 7 năm 2013", "áp dụng từ năm ngân sách 2009"
-   - Thời hạn thanh toán: "trước ngày 15 hàng tháng", "chậm nhất trong phạm vi 07 ngày làm việc"
-   - Niên hạn: "mỗi niên hạn 01 lần", "một năm một lần"
-
-8. **CƠ QUAN/TỔ CHỨC** (Phân cấp rõ ràng):
-   - Cấp trung ương: "Bộ Tài chính", "Bộ LĐTBXH", "Thủ tướng Chính phủ", "Kho bạc Nhà nước"
-   - Cấp tỉnh: "UBND tỉnh", "Sở LĐTBXH", "Sở Tư pháp", "Kho bạc Nhà nước tỉnh"
-   - Cấp huyện: "UBND huyện", "Phòng LĐTBXH", "Kho bạc Nhà nước huyện"
-   - Cấp xã: "UBND xã", "UBND phường", "UBND thị trấn"
-   - Tổ chức khác: "tổ chức hành nghề công chứng", "Trung tâm HCC"
-
-9. **ĐỊA ĐIỂM/PHẠM VI**:
-   - Phạm vi áp dụng: "toàn quốc", "địa phương", "trên địa bàn tỉnh Bình Thuận"
-   - Địa điểm thực hiện: "tại Trung tâm HCC tỉnh", "Bộ phận Tiếp nhận và trả kết quả của UBND cấp xã"
-   - Địa điểm cụ thể: "Quầy Sở Tư pháp", "Bộ phận Một cửa cấp huyện"
-
-10. **PHÍ/LỆ PHÍ**:
-    - Mức phí chính xác: "50.000 đồng/hồ sơ", "2.000 đồng/trang"
-    - Công thức tính: "từ trang thứ 3 trở lên thu 1.000 đồng/trang"
-    - Miễn phí: "Không thu phí", "Miễn lệ phí đối với người có công lao đặc biệt"
-
-11. **VĂN BẢN PHÁP LUẬT** (Đầy đủ thông tin):
-    - Số hiệu đầy đủ: "Nghị định số 48/2013/NĐ-CP", "Thông tư số 101/2018/TT-BTC"
-    - Ngày ban hành: "ngày 14 tháng 05 năm 2013", "ngày 14 tháng 11 năm 2018"
-    - Cơ quan ban hành: "của Chính phủ", "của Bộ Tài chính"
-    - Văn bản liên quan: "thay thế Thông tư liên tịch số 84/2005/TTLT/BTC-BLĐTBXH"
-
-12. **NGÀY THÁNG** (Tất cả ngày quan trọng):
-    - Ngày ban hành, ký
-    - Ngày có hiệu lực
-    - Ngày hết hạn nộp hồ sơ
-    - Các mốc thời gian lịch sử: "trước ngày 01/01/1945", "sau ngày 30 tháng 4 năm 1975"
-
-13. **TRẠNG THÁI VĂN BẢN**:
-    - "có hiệu lực", "bãi bỏ", "sửa đổi", "bổ sung", "thay thế"
-
-14. **MỨC ĐỘ DỊCH VỤ CÔNG**:
-    - "Mức độ DVC 2", "Mức độ DVC 3", "Mức độ DVC 4"
-    - "Có" hoặc "Không" thực hiện qua DVCTT
-
-15. **NGUỒN KINH PHÍ**:
-    - "ngân sách trung ương", "ngân sách địa phương", "nguồn vốn sự nghiệp"
-    - Phương thức đảm bảo cụ thể
-
-16. **PHƯƠNG THỨC THỰC HIỆN**:
-    - Cách thức: "trực tiếp", "qua bưu điện", "trực tuyến", "qua tổ chức dịch vụ"
-    - Tần suất: "hàng tháng", "hàng quý", "một lần", "theo đợt"
-
-17. **KẾT QUẢ/SẢN PHẨM**:
-    - "Giấy chứng nhận", "Thẻ bảo hiểm y tế", "Quyết định", "Giấy xác nhận"
 
 YÊU CẦU FORMAT OUTPUT:
 - Trả về JSON với structure rõ ràng
@@ -252,7 +111,7 @@ Câu trả lời cần phân tích:
 {answer_text}
 
 JSON:
-{
+{{
   "ma_dinh_danh": [],
   "loai_van_ban_chinh_sach": [],
   "so_lieu_muc_tien": [],
@@ -270,22 +129,31 @@ JSON:
   "nguon_kinh_phi": [],
   "phuong_thuc_thuc_hien": [],
   "ket_qua_san_pham": []
-}
+}}
 """
 
+        # Định nghĩa fields cần exact match vs similarity
+        self.exact_match_fields = {
+            "ma_dinh_danh", "so_lieu_muc_tien", "ngay_thang", 
+            "phi_le_phi", "van_ban_phap_luat"
+        }
+        
+        self.similarity_fields = {
+            "loai_van_ban_chinh_sach", "doi_tuong", "dieu_kien_yeu_cau",
+            "thu_tuc_ho_so", "thoi_han", "co_quan_to_chuc", "dia_diem_pham_vi",
+            "trang_thai_van_ban", "muc_do_dich_vu_cong", "nguon_kinh_phi",
+            "phuong_thuc_thuc_hien", "ket_qua_san_pham"
+        }
+
     def _init_langchain_client(self):
-        """Khởi tạo ChromaDB client cho LangChain sử dụng cùng config với hệ thống chính"""
+        """Khởi tạo ChromaDB client cho LangChain"""
         try:
             self.langchain_chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
-            
             device = "cuda" if USE_GPU and self._check_gpu() else "cpu"
             self.langchain_embedding_function = SentenceTransformerEmbeddingFunction(
-                model_name=EMBEDDING_MODEL_NAME,
-                device=device
+                model_name=EMBEDDING_MODEL_NAME, device=device
             )
-            
             print(f"LangChain ChromaDB client initialized: {CHROMA_HOST}:{CHROMA_PORT}")
-            
         except Exception as e:
             print(f"Lỗi khởi tạo LangChain ChromaDB client: {str(e)}")
             self.langchain_chroma_client = None
@@ -300,7 +168,7 @@ JSON:
             return False
 
     def _convert_numpy_types(self, obj):
-        """Convert numpy types to Python native types for JSON serialization"""
+        """Convert numpy types to Python native types"""
         if isinstance(obj, np.floating):
             return float(obj)
         elif isinstance(obj, np.integer):
@@ -314,7 +182,7 @@ JSON:
         return obj
 
     def extract_entities(self, answer_text):
-        """Trích xuất entities từ câu trả lời sử dụng Gemini"""
+        """Trích xuất entities từ câu trả lời sử dụng Gemini với format JSON mới"""
         try:
             time.sleep(0.5)  # Delay để tránh quá tải API
             
@@ -332,16 +200,15 @@ JSON:
                 json_str = result_text[json_start:json_end]
                 entities = json.loads(json_str)
                 
-                # Chuẩn hóa entities - đảm bảo có đủ các key
-                standard_entities = {
-                    "MỨC_TIỀN": entities.get("MỨC_TIỀN", "").strip(),
-                    "ĐỐI_TƯỢNG": entities.get("ĐỐI_TƯỢNG", "").strip(),
-                    "ĐIỀU_KIỆN": entities.get("ĐIỀU_KIỆN", "").strip(),
-                    "THỦ_TỤC": entities.get("THỦ_TỤC", "").strip(),
-                    "THỜI_HẠN": entities.get("THỜI_HẠN", "").strip(),
-                    "CƠ_QUAN": entities.get("CƠ_QUAN", "").strip(),
-                    "VĂN_BẢN_PHÁP_LUẬT": entities.get("VĂN_BẢN_PHÁP_LUẬT", "").strip()
-                }
+                # Đảm bảo có đủ các key theo format mới
+                standard_entities = {}
+                for key in ["ma_dinh_danh", "loai_van_ban_chinh_sach", "so_lieu_muc_tien", 
+                           "doi_tuong", "dieu_kien_yeu_cau", "thu_tuc_ho_so", "thoi_han",
+                           "co_quan_to_chuc", "dia_diem_pham_vi", "phi_le_phi", 
+                           "van_ban_phap_luat", "ngay_thang", "trang_thai_van_ban",
+                           "muc_do_dich_vu_cong", "nguon_kinh_phi", "phuong_thuc_thuc_hien",
+                           "ket_qua_san_pham"]:
+                    standard_entities[key] = entities.get(key, [])
                 
                 return standard_entities
             else:
@@ -349,93 +216,86 @@ JSON:
                 
         except Exception as e:
             print(f"Lỗi khi trích xuất entities: {str(e)}")
-            return {
-                "MỨC_TIỀN": "",
-                "ĐỐI_TƯỢNG": "", 
-                "ĐIỀU_KIỆN": "",
-                "THỦ_TỤC": "",
-                "THỜI_HẠN": "",
-                "CƠ_QUAN": "",
-                "VĂN_BẢN_PHÁP_LUẬT": ""
-            }
+            # Return empty structure
+            return {key: [] for key in ["ma_dinh_danh", "loai_van_ban_chinh_sach", 
+                   "so_lieu_muc_tien", "doi_tuong", "dieu_kien_yeu_cau", "thu_tuc_ho_so",
+                   "thoi_han", "co_quan_to_chuc", "dia_diem_pham_vi", "phi_le_phi",
+                   "van_ban_phap_luat", "ngay_thang", "trang_thai_van_ban",
+                   "muc_do_dich_vu_cong", "nguon_kinh_phi", "phuong_thuc_thuc_hien",
+                   "ket_qua_san_pham"]}
+
+    def _normalize_for_exact_match(self, values):
+        """Chuẩn hóa giá trị để so sánh exact match"""
+        normalized = []
+        for value in values:
+            if isinstance(value, str):
+                # Loại bỏ khoảng trắng, chuyển thường, chuẩn hóa format số
+                norm = re.sub(r'\s+', '', value.lower())
+                norm = re.sub(r'\.(?=\d{3})', '', norm)  # 5.500.000 -> 5500000
+                norm = re.sub(r',(?=\d{3})', '', norm)   # 5,500,000 -> 5500000
+                normalized.append(norm)
+            else:
+                normalized.append(str(value))
+        return set(normalized)
+
+    def _calculate_field_similarity(self, values1, values2, field_name):
+        """Tính similarity cho một field cụ thể"""
+        if not values1 and not values2:
+            return 1.0  # Cả hai đều rỗng
+        
+        if not values1 or not values2:
+            return 0.0  # Một bên rỗng
+        
+        if field_name in self.exact_match_fields:
+            # So sánh chính xác 100%
+            norm1 = self._normalize_for_exact_match(values1)
+            norm2 = self._normalize_for_exact_match(values2)
+            
+            if norm1 == norm2:
+                return 1.0
+            else:
+                # Tính overlap ratio
+                intersection = len(norm1.intersection(norm2))
+                union = len(norm1.union(norm2))
+                return intersection / union if union > 0 else 0.0
+        
+        else:
+            # So sánh bằng cosine similarity
+            text1 = " ".join([str(v) for v in values1])
+            text2 = " ".join([str(v) for v in values2])
+            
+            try:
+                embeddings = self.embedding_model.encode([text1, text2])
+                cosine_sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
+                return float(cosine_sim)
+            except:
+                return 0.0
 
     def calculate_entity_similarity(self, entities1, entities2):
-        """Tính độ tương đồng giữa 2 bộ entities"""
-        total_score = 0
-        count = 0
+        """Tính độ tương đồng giữa 2 bộ entities với logic tối ưu"""
+        if not entities1 or not entities2:
+            return 0.0
         
-        for key in entities1.keys():
-            val1 = entities1.get(key, "").strip()
-            val2 = entities2.get(key, "").strip()
+        total_score = 0.0
+        field_count = 0
+        
+        # Tính similarity cho từng field
+        all_fields = self.exact_match_fields.union(self.similarity_fields)
+        
+        for field in all_fields:
+            values1 = entities1.get(field, [])
+            values2 = entities2.get(field, [])
             
-            count += 1
-            
-            # Nếu cả 2 đều rỗng -> 100%
-            if not val1 and not val2:
-                total_score += 1.0
-                continue
-            
-            # Nếu một bên rỗng, bên kia không -> 0%
-            if (not val1 and val2) or (val1 and not val2):
-                total_score += 0.0
-                continue
-            
-            # Kiểm tra số liệu (tiền, tỷ lệ, số) - so sánh chính xác
-            if self._is_numeric_content(val1) and self._is_numeric_content(val2):
-                if self._normalize_numeric(val1) == self._normalize_numeric(val2):
-                    total_score += 1.0
-                else:
-                    total_score += 0.0
-            else:
-                # Văn bản - dùng cosine similarity
-                try:
-                    embeddings = self.embedding_model.encode([val1, val2])
-                    cosine_sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
-                    total_score += float(cosine_sim)
-                except:
-                    total_score += 0.0
+            field_score = self._calculate_field_similarity(values1, values2, field)
+            total_score += field_score
+            field_count += 1
         
-        return total_score / count if count > 0 else 0.0
-
-    def _is_numeric_content(self, text):
-        """Kiểm tra xem text có chứa thông tin số liệu không"""
-        numeric_patterns = [
-            r'\d+\.?\d*\s*(triệu|tỷ|đồng|%|phần trăm)',
-            r'\d+\.\d+\.\d+',  # Format 5.500.000
-            r'\d+,\d+',        # Format 5,500,000
-            r'\d+%',           # 80%
-            r'hệ\s*số\s*\d+',  # hệ số 2.5
-            r'\d+\s*lần'       # 2 lần
-        ]
-        
-        text_lower = text.lower()
-        for pattern in numeric_patterns:
-            if re.search(pattern, text_lower):
-                return True
-        return False
-
-    def _normalize_numeric(self, text):
-        """Chuẩn hóa text chứa số liệu để so sánh"""
-        # Loại bỏ khoảng trắng, chuyển thường
-        normalized = re.sub(r'\s+', '', text.lower())
-        
-        # Chuẩn hóa format số
-        normalized = re.sub(r'\.(?=\d{3})', '', normalized)  # 5.500.000 -> 5500000
-        normalized = re.sub(r',(?=\d{3})', '', normalized)   # 5,500,000 -> 5500000
-        
-        return normalized
+        return total_score / field_count if field_count > 0 else 0.0
 
     def calculate_cosine_similarity(self, generated_answer, reference_answer):
         """Tính cosine similarity giữa câu trả lời generated và reference"""
         if isinstance(reference_answer, dict):
-            if "current_citation" in reference_answer and reference_answer["current_citation"]:
-                ref_text = reference_answer["current_citation"]
-            else:
-                parts = []
-                for key, value in reference_answer.items():
-                    if value and isinstance(value, str):
-                        parts.append(f"{key}: {value}")
-                ref_text = " ".join(parts)
+            ref_text = reference_answer.get("current_citation", str(reference_answer))
         else:
             ref_text = str(reference_answer)
         
@@ -454,32 +314,16 @@ JSON:
         if not benchmark_chunks:
             return 1.0, []
         
-        clean_retrieved = []
-        for chunk in retrieved_chunks:
-            if '(' in chunk and 'doc:' in chunk:
-                chunk_id = chunk.split(' (doc:')[0].strip()
-                clean_retrieved.append(chunk_id)
-            elif chunk:
-                clean_retrieved.append(chunk.strip())
+        clean_retrieved = [chunk.split(' (doc:')[0].strip() if '(' in chunk and 'doc:' in chunk 
+                          else chunk.strip() for chunk in retrieved_chunks if chunk]
         
-        found = 0
-        found_chunks = []
+        found = sum(1 for benchmark_chunk in benchmark_chunks 
+                   if any(benchmark_chunk == retrieved_chunk or 
+                         benchmark_chunk in retrieved_chunk or 
+                         retrieved_chunk in benchmark_chunk 
+                         for retrieved_chunk in clean_retrieved))
         
-        for benchmark_chunk in benchmark_chunks:
-            chunk_found = False
-            for retrieved_chunk in clean_retrieved:
-                if (benchmark_chunk == retrieved_chunk or 
-                    benchmark_chunk in retrieved_chunk or 
-                    retrieved_chunk in benchmark_chunk):
-                    chunk_found = True
-                    break
-            
-            if chunk_found:
-                found += 1
-                found_chunks.append(benchmark_chunk)
-        
-        accuracy = found / len(benchmark_chunks)
-        return float(accuracy), found_chunks
+        return float(found / len(benchmark_chunks)), []
 
     def process_current_system(self, question):
         """Xử lý câu hỏi bằng hệ thống hiện tại"""
@@ -489,7 +333,7 @@ JSON:
             context_items = retrieval_result.get("context_items", [])
             retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
             
-            time.sleep(0.5)  # Delay giữa retrieval và generation
+            time.sleep(0.5)
             
             if context_items:
                 generation_result = generation_service.generate_answer(question, use_cache=False)
@@ -497,22 +341,16 @@ JSON:
             else:
                 answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
             
-            processing_time = time.time() - start_time
-            return answer, retrieved_chunks, processing_time
+            return answer, retrieved_chunks, time.time() - start_time
         except Exception as e:
-            processing_time = time.time() - start_time
-            print(f"Error in process_current_system: {str(e)}")
-            return f"ERROR: {str(e)}", [], processing_time
+            return f"ERROR: {str(e)}", [], time.time() - start_time
 
     def process_langchain(self, question):
-        """Xử lý câu hỏi bằng LangChain với ChromaDB Docker"""
+        """Xử lý câu hỏi bằng LangChain"""
         start_time = time.time()
         
-        if not LANGCHAIN_AVAILABLE:
+        if not LANGCHAIN_AVAILABLE or not self.langchain_chroma_client:
             return "LangChain not available", [], time.time() - start_time
-        
-        if not self.langchain_chroma_client:
-            return "LangChain ChromaDB client not initialized", [], time.time() - start_time
         
         try:
             from langchain_google_genai import ChatGoogleGenerativeAI
@@ -533,11 +371,10 @@ JSON:
             
             results = db.similarity_search_with_relevance_scores(question, k=5)
             
-            time.sleep(0.5)  # Delay giữa retrieval và generation
+            time.sleep(0.5)
             
-            if len(results) == 0 or results[0][1] < 0.7:
-                processing_time = time.time() - start_time
-                return "No relevant documents found", [], processing_time
+            if not results or results[0][1] < 0.7:
+                return "No relevant documents found", [], time.time() - start_time
             
             context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in results])
             prompt_template = ChatPromptTemplate.from_template(self.prompt_template)
@@ -547,21 +384,13 @@ JSON:
             response = model.invoke(prompt)
             answer = str(response.content)
             
-            retrieved_chunks = []
-            for i, (doc, score) in enumerate(results):
-                chunk_id = doc.metadata.get('chunk_id', f'unknown_chunk_{i}')
-                doc_id = doc.metadata.get('doc_id', 'unknown_doc')
-                doc_type = doc.metadata.get('doc_type', '')
-                chunk_info = f"{chunk_id} (doc: {doc_id}, type: {doc_type}, score: {float(score):.3f})"
-                retrieved_chunks.append(chunk_info)
+            retrieved_chunks = [f"{doc.metadata.get('chunk_id', f'unknown_chunk_{i}')} (doc: {doc.metadata.get('doc_id', 'unknown_doc')}, score: {float(score):.3f})" 
+                              for i, (doc, score) in enumerate(results)]
             
-            processing_time = time.time() - start_time
-            return answer, retrieved_chunks, processing_time
+            return answer, retrieved_chunks, time.time() - start_time
             
         except Exception as e:
-            processing_time = time.time() - start_time
-            print(f"Error in process_langchain: {str(e)}")
-            return f"ERROR: {str(e)}", [], processing_time
+            return f"ERROR: {str(e)}", [], time.time() - start_time
 
     def process_haystack(self, question):
         """Xử lý câu hỏi bằng Haystack"""
@@ -575,15 +404,12 @@ JSON:
             from haystack.document_stores.in_memory import InMemoryDocumentStore
             from haystack.components.retrievers import InMemoryBM25Retriever
             
-            # Load documents từ data directory
+            # Load documents
             data_dir = "data"
             all_docs = []
             
             if os.path.exists(data_dir):
-                subdirs = [os.path.join(data_dir, d) for d in os.listdir(data_dir) 
-                          if os.path.isdir(os.path.join(data_dir, d))]
-                
-                for subdir in subdirs:
+                for subdir in [os.path.join(data_dir, d) for d in os.listdir(data_dir) if os.path.isdir(os.path.join(data_dir, d))]:
                     metadata_path = os.path.join(subdir, "metadata.json")
                     doc_id = os.path.basename(subdir)
                     
@@ -591,91 +417,65 @@ JSON:
                         with open(metadata_path, "r", encoding="utf-8-sig") as f:
                             metadata = json.load(f)
                         
-                        if "chunks" in metadata:
-                            for chunk in metadata["chunks"]:
-                                chunk_id = chunk.get("chunk_id", "unknown")
-                                file_path = chunk.get("file_path", "")
-                                
-                                # Tìm file chunk
-                                if file_path.startswith("/data/") or file_path.startswith("data/"):
-                                    filename = os.path.basename(file_path)
-                                    abs_file_path = os.path.join(subdir, filename)
-                                else:
-                                    # Fallback: tìm file chunk_*.md
-                                    for i in range(1, 11):
-                                        test_path = os.path.join(subdir, f"chunk_{i}.md")
-                                        if os.path.exists(test_path):
-                                            abs_file_path = test_path
-                                            break
-                                    else:
-                                        continue
-                                
-                                if os.path.exists(abs_file_path):
-                                    with open(abs_file_path, "r", encoding="utf-8-sig") as f:
-                                        content = f.read()
-                                    doc = Document(content=content, meta={"doc_id": doc_id, "chunk_id": chunk_id})
-                                    all_docs.append(doc)
+                        for chunk in metadata.get("chunks", []):
+                            chunk_id = chunk.get("chunk_id", "unknown")
+                            file_path = chunk.get("file_path", "")
+                            
+                            if file_path.startswith("/data/") or file_path.startswith("data/"):
+                                abs_file_path = os.path.join(subdir, os.path.basename(file_path))
+                            else:
+                                abs_file_path = os.path.join(subdir, f"chunk_{len(all_docs)+1}.md")
+                            
+                            if os.path.exists(abs_file_path):
+                                with open(abs_file_path, "r", encoding="utf-8-sig") as f:
+                                    content = f.read()
+                                doc = Document(content=content, meta={"doc_id": doc_id, "chunk_id": chunk_id})
+                                all_docs.append(doc)
             
             if not all_docs:
-                processing_time = time.time() - start_time
-                return "No documents found for Haystack", [], processing_time
+                return "No documents found for Haystack", [], time.time() - start_time
             
-            # Khởi tạo document store và retriever
             document_store = InMemoryDocumentStore()
             document_store.write_documents(all_docs)
             retriever = InMemoryBM25Retriever(document_store, top_k=5)
             
-            # Retrieve documents
             retrieved_docs = retriever.run(query=question)
             
-            time.sleep(0.5)  # Delay giữa retrieval và generation
+            time.sleep(0.5)
             
-            chunk_ids = []
-            context_parts = []
-            for doc in retrieved_docs["documents"]:
-                doc_id = doc.meta.get("doc_id", "unknown")
-                chunk_id = doc.meta.get("chunk_id", "unknown")
-                chunk_ids.append(f"{chunk_id} (doc: {doc_id}, type: BM25)")
-                context_parts.append(doc.content)
+            chunk_ids = [f"{doc.meta.get('chunk_id', 'unknown')} (doc: {doc.meta.get('doc_id', 'unknown')}, type: BM25)" 
+                        for doc in retrieved_docs["documents"]]
+            context_text = "\n\n---\n\n".join([doc.content for doc in retrieved_docs["documents"]])
             
-            # Generate answer
-            context_text = "\n\n---\n\n".join(context_parts)
             prompt = self.prompt_template.format(context=context_text, question=question)
-            
             model = genai.GenerativeModel('gemini-2.0-flash')
             response = model.generate_content(prompt)
             answer = response.text
             
-            processing_time = time.time() - start_time
-            return answer, chunk_ids, processing_time
+            return answer, chunk_ids, time.time() - start_time
             
         except Exception as e:
-            processing_time = time.time() - start_time
-            print(f"Error in process_haystack: {str(e)}")
-            return f"ERROR: {str(e)}", [], processing_time
+            return f"ERROR: {str(e)}", [], time.time() - start_time
 
     def process_chatgpt(self, question):
         """Xử lý câu hỏi bằng ChatGPT"""
         start_time = time.time()
         
         try:
-            # Sử dụng retrieval từ hệ thống chính để lấy context
             retrieval_result = retrieval_service.retrieve(question, use_cache=False)
             context_items = retrieval_result.get("context_items", [])
             
-            time.sleep(0.5)  # Delay giữa retrieval và generation
+            time.sleep(0.5)
             
             if not context_items:
-                processing_time = time.time() - start_time
-                return "No relevant context found", [], processing_time
+                return "No relevant context found", [], time.time() - start_time
             
             context_text = "\n\n---\n\n".join(context_items)
             prompt = self.prompt_template.format(context=context_text, question=question)
             
             openai_api_key = os.getenv("OPENAI_API_KEY")
             if not openai_api_key:
-                processing_time = time.time() - start_time
-                return "OpenAI API key not configured", [], processing_time
+                return "OpenAI API key not configured", [], time.time() - start_time
             
             client = OpenAI(api_key=openai_api_key)
             response = client.chat.completions.create(
@@ -686,13 +486,10 @@ JSON:
             )
             
             answer = response.choices[0].message.content
-            processing_time = time.time() - start_time
-            return answer, [], processing_time
+            return answer, [], time.time() - start_time
             
         except Exception as e:
-            processing_time = time.time() - start_time
-            print(f"Error in process_chatgpt: {str(e)}")
-            return f"ERROR: {str(e)}", [], processing_time
+            return f"ERROR: {str(e)}", [], time.time() - start_time
 
     def save_uploaded_benchmark(self, file_content, filename):
         """Save uploaded benchmark file"""
@@ -706,7 +503,7 @@ JSON:
             raise Exception(f"Failed to save benchmark file: {str(e)}")
 
     def run_benchmark(self, benchmark_file="benchmark.json", progress_callback=None):
-        """Chạy benchmark so sánh 4 models với entity extraction và tracking chi tiết"""
+        """Chạy benchmark so sánh 4 models với entity extraction tối ưu"""
         try:
             benchmark_path = os.path.join(BENCHMARK_DIR, benchmark_file)
             if not os.path.exists(benchmark_path):
@@ -726,31 +523,25 @@ JSON:
             
             results = []
             total_questions = len(benchmark_data)
-            total_times = {'current': [], 'langchain': [], 'haystack': [], 'chatgpt': []}
             
-            # Bước 1: Trích xuất entities từ benchmark answers
+            # Bước 1: Trích xuất entities từ benchmark
             print("Bước 1: Đang trích xuất entities từ benchmark answers...")
             benchmark_entities = []
             for i, entry in enumerate(benchmark_data):
-                expected = entry.get("ground_truth", entry.get("answer", ""))
-                
                 if progress_callback:
                     progress_callback({
                         'phase': 'extracting_benchmark_entities',
                         'current_step': i + 1,
                         'total_steps': total_questions,
-                        'progress': (i + 1) / total_questions * 10  # 10% cho việc extract benchmark
+                        'progress': (i + 1) / total_questions * 10
                     })
                 
-                if isinstance(expected, dict):
-                    benchmark_text = expected.get("current_citation", str(expected))
-                else:
-                    benchmark_text = str(expected)
+                expected = entry.get("ground_truth", entry.get("answer", ""))
+                benchmark_text = expected.get("current_citation", str(expected)) if isinstance(expected, dict) else str(expected)
                 
                 entities = self.extract_entities(benchmark_text)
                 benchmark_entities.append(entities)
-                
-                time.sleep(0.3)  # Delay ngắn hơn cho extraction
+                time.sleep(0.3)
             
             # Bước 2: Chạy benchmark cho 4 models
             print("Bước 2: Đang chạy benchmark cho 4 models...")
@@ -758,7 +549,7 @@ JSON:
             with open(output_path, "w", encoding="utf-8-sig", newline="") as csvfile:
                 writer = csv.writer(csvfile)
                 
-                # Header với thêm cột entity similarity
+                # Header
                 writer.writerow([
                     "STT", "question", "benchmark_answer", 
                     "current_answer", "current_cosine_sim", "current_entity_sim", "current_retrieval_accuracy", "current_processing_time",
@@ -779,186 +570,121 @@ JSON:
                             'phase': 'processing_models',
                             'current_step': i,
                             'total_steps': total_questions,
-                            'progress': 10 + (i / total_questions * 85)  # 10% đã xong, 85% cho models
+                            'progress': 10 + (i / total_questions * 85)
                         })
                     
                     print(f"Processing question {i}/{total_questions}: {question[:50]}...")
                     
-                    # Process với Current System
+                    # Process với tất cả 4 models
+                    models_data = {}
+                    
+                    # Current System
                     if progress_callback:
-                        progress_callback({
-                            'phase': 'current_system',
-                            'current_step': i,
-                            'total_steps': total_questions,
-                            'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.1
-                        })
+                        progress_callback({'phase': 'current_system', 'current_step': i, 'total_steps': total_questions, 'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.1})
                     
                     current_answer, current_chunks, current_time = self.process_current_system(question)
                     current_cosine_sim, benchmark_text = self.calculate_cosine_similarity(current_answer, expected)
                     current_retrieval_acc, _ = self.evaluate_retrieval_accuracy(current_chunks, benchmark_chunks)
-                    total_times['current'].append(current_time)
-                    
-                    # Extract entities và tính entity similarity cho Current
                     current_entities = self.extract_entities(current_answer)
                     current_entity_sim = self.calculate_entity_similarity(benchmark_entity, current_entities)
                     
-                    # Process với LangChain
+                    models_data['current'] = {
+                        'answer': current_answer, 'cosine_sim': current_cosine_sim, 'entity_sim': current_entity_sim,
+                        'retrieval_acc': current_retrieval_acc, 'time': current_time
+                    }
+                    
+                    # LangChain
                     if progress_callback:
-                        progress_callback({
-                            'phase': 'langchain',
-                            'current_step': i,
-                            'total_steps': total_questions,
-                            'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.3
-                        })
+                        progress_callback({'phase': 'langchain', 'current_step': i, 'total_steps': total_questions, 'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.3})
                     
                     langchain_answer, langchain_chunks, langchain_time = self.process_langchain(question)
                     langchain_cosine_sim, _ = self.calculate_cosine_similarity(langchain_answer, expected)
                     langchain_retrieval_acc, _ = self.evaluate_retrieval_accuracy(langchain_chunks, benchmark_chunks)
-                    total_times['langchain'].append(langchain_time)
-                    
-                    # Extract entities và tính entity similarity cho LangChain
                     langchain_entities = self.extract_entities(langchain_answer)
                     langchain_entity_sim = self.calculate_entity_similarity(benchmark_entity, langchain_entities)
                     
-                    # Process với Haystack
+                    models_data['langchain'] = {
+                        'answer': langchain_answer, 'cosine_sim': langchain_cosine_sim, 'entity_sim': langchain_entity_sim,
+                        'retrieval_acc': langchain_retrieval_acc, 'time': langchain_time
+                    }
+                    
+                    # Haystack
                     if progress_callback:
-                        progress_callback({
-                            'phase': 'haystack',
-                            'current_step': i,
-                            'total_steps': total_questions,
-                            'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.6
-                        })
+                        progress_callback({'phase': 'haystack', 'current_step': i, 'total_steps': total_questions, 'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.6})
                     
                     haystack_answer, haystack_chunks, haystack_time = self.process_haystack(question)
                     haystack_cosine_sim, _ = self.calculate_cosine_similarity(haystack_answer, expected)
                     haystack_retrieval_acc, _ = self.evaluate_retrieval_accuracy(haystack_chunks, benchmark_chunks)
-                    total_times['haystack'].append(haystack_time)
-                    
-                    # Extract entities và tính entity similarity cho Haystack
                     haystack_entities = self.extract_entities(haystack_answer)
                     haystack_entity_sim = self.calculate_entity_similarity(benchmark_entity, haystack_entities)
                     
-                    # Process với ChatGPT
+                    models_data['haystack'] = {
+                        'answer': haystack_answer, 'cosine_sim': haystack_cosine_sim, 'entity_sim': haystack_entity_sim,
+                        'retrieval_acc': haystack_retrieval_acc, 'time': haystack_time
+                    }
+                    
+                    # ChatGPT
                     if progress_callback:
-                        progress_callback({
-                            'phase': 'chatgpt',
-                            'current_step': i,
-                            'total_steps': total_questions,
-                            'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.9
-                        })
+                        progress_callback({'phase': 'chatgpt', 'current_step': i, 'total_steps': total_questions, 'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.9})
                     
                     chatgpt_answer, _, chatgpt_time = self.process_chatgpt(question)
                     chatgpt_cosine_sim, _ = self.calculate_cosine_similarity(chatgpt_answer, expected)
-                    total_times['chatgpt'].append(chatgpt_time)
-                    
-                    # Extract entities và tính entity similarity cho ChatGPT
                     chatgpt_entities = self.extract_entities(chatgpt_answer)
                     chatgpt_entity_sim = self.calculate_entity_similarity(benchmark_entity, chatgpt_entities)
                     
-                    # Ghi kết quả với entity similarity
+                    models_data['chatgpt'] = {
+                        'answer': chatgpt_answer, 'cosine_sim': chatgpt_cosine_sim, 'entity_sim': chatgpt_entity_sim,
+                        'time': chatgpt_time
+                    }
+                    
+                    # Ghi kết quả
                     writer.writerow([
                         i, question, benchmark_text,
-                        current_answer, f"{current_cosine_sim:.4f}", f"{current_entity_sim:.4f}", f"{current_retrieval_acc:.4f}", f"{current_time:.3f}",
-                        langchain_answer, f"{langchain_cosine_sim:.4f}", f"{langchain_entity_sim:.4f}", f"{langchain_retrieval_acc:.4f}", f"{langchain_time:.3f}",
-                        haystack_answer, f"{haystack_cosine_sim:.4f}", f"{haystack_entity_sim:.4f}", f"{haystack_retrieval_acc:.4f}", f"{haystack_time:.3f}",
-                        chatgpt_answer, f"{chatgpt_cosine_sim:.4f}", f"{chatgpt_entity_sim:.4f}", f"{chatgpt_time:.3f}",
+                        models_data['current']['answer'], f"{models_data['current']['cosine_sim']:.4f}", f"{models_data['current']['entity_sim']:.4f}", f"{models_data['current']['retrieval_acc']:.4f}", f"{models_data['current']['time']:.3f}",
+                        models_data['langchain']['answer'], f"{models_data['langchain']['cosine_sim']:.4f}", f"{models_data['langchain']['entity_sim']:.4f}", f"{models_data['langchain']['retrieval_acc']:.4f}", f"{models_data['langchain']['time']:.3f}",
+                        models_data['haystack']['answer'], f"{models_data['haystack']['cosine_sim']:.4f}", f"{models_data['haystack']['entity_sim']:.4f}", f"{models_data['haystack']['retrieval_acc']:.4f}", f"{models_data['haystack']['time']:.3f}",
+                        models_data['chatgpt']['answer'], f"{models_data['chatgpt']['cosine_sim']:.4f}", f"{models_data['chatgpt']['entity_sim']:.4f}", f"{models_data['chatgpt']['time']:.3f}",
                         " | ".join(benchmark_chunks)
                     ])
                     
-                    results.append({
-                        'current_cosine_sim': current_cosine_sim,
-                        'current_entity_sim': current_entity_sim,
-                        'current_retrieval_acc': current_retrieval_acc,
-                        'current_time': current_time,
-                        'langchain_cosine_sim': langchain_cosine_sim,
-                        'langchain_entity_sim': langchain_entity_sim,
-                        'langchain_retrieval_acc': langchain_retrieval_acc,
-                        'langchain_time': langchain_time,
-                        'haystack_cosine_sim': haystack_cosine_sim,
-                        'haystack_entity_sim': haystack_entity_sim,
-                        'haystack_retrieval_acc': haystack_retrieval_acc,
-                        'haystack_time': haystack_time,
-                        'chatgpt_cosine_sim': chatgpt_cosine_sim,
-                        'chatgpt_entity_sim': chatgpt_entity_sim,
-                        'chatgpt_time': chatgpt_time
-                    })
-                    
-                    # Delay ngắn giữa các câu hỏi
-                    time.sleep(1)
+                    results.append(models_data)
+                    time.sleep(1)  # Delay giữa các câu hỏi
                 
-                # Bước 3: Tính toán thống kê cuối cùng
+                # Tính toán và ghi thống kê cuối
                 if progress_callback:
-                    progress_callback({
-                        'phase': 'finalizing',
-                        'current_step': total_questions,
-                        'total_steps': total_questions,
-                        'progress': 95
-                    })
+                    progress_callback({'phase': 'finalizing', 'current_step': total_questions, 'total_steps': total_questions, 'progress': 95})
                 
-                # Tính statistics đầy đủ
-                avg_current_time = sum(total_times['current']) / len(total_times['current'])
-                avg_langchain_time = sum(total_times['langchain']) / len(total_times['langchain'])
-                avg_haystack_time = sum(total_times['haystack']) / len(total_times['haystack'])
-                avg_chatgpt_time = sum(total_times['chatgpt']) / len(total_times['chatgpt'])
+                # Tính averages
+                averages = {}
+                for model in ['current', 'langchain', 'haystack', 'chatgpt']:
+                    avg_cosine = sum(r[model]['cosine_sim'] for r in results) / len(results)
+                    avg_entity = sum(r[model]['entity_sim'] for r in results) / len(results)
+                    avg_time = sum(r[model]['time'] for r in results) / len(results)
+                    
+                    averages[f'{model}_avg_cosine'] = float(avg_cosine)
+                    averages[f'{model}_avg_entity'] = float(avg_entity)
+                    averages[f'{model}_avg_time'] = float(avg_time)
+                    
+                    if model in ['current', 'langchain', 'haystack']:
+                        avg_retrieval = sum(r[model]['retrieval_acc'] for r in results) / len(results)
+                        averages[f'{model}_avg_retrieval'] = float(avg_retrieval)
                 
-                # Thêm dòng SUMMARY với entity similarity
+                # Ghi dòng SUMMARY
                 writer.writerow([
-                    "SUMMARY", 
-                    f"Average results from {total_questions} questions",
-                    "Statistical Summary",
-                    "See individual results above",
-                    f"{sum(r['current_cosine_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['current_entity_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['current_retrieval_acc'] for r in results) / len(results):.4f}",
-                    f"{avg_current_time:.3f}",
-                    "See individual results above",
-                    f"{sum(r['langchain_cosine_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['langchain_entity_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['langchain_retrieval_acc'] for r in results) / len(results):.4f}",
-                    f"{avg_langchain_time:.3f}",
-                    "See individual results above",
-                    f"{sum(r['haystack_cosine_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['haystack_entity_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['haystack_retrieval_acc'] for r in results) / len(results):.4f}",
-                    f"{avg_haystack_time:.3f}",
-                    "See individual results above",
-                    f"{sum(r['chatgpt_cosine_sim'] for r in results) / len(results):.4f}",
-                    f"{sum(r['chatgpt_entity_sim'] for r in results) / len(results):.4f}",
-                    f"{avg_chatgpt_time:.3f}",
+                    "SUMMARY", f"Average results from {total_questions} questions", "Statistical Summary",
+                    "See individual results above", f"{averages['current_avg_cosine']:.4f}", f"{averages['current_avg_entity']:.4f}", f"{averages['current_avg_retrieval']:.4f}", f"{averages['current_avg_time']:.3f}",
+                    "See individual results above", f"{averages['langchain_avg_cosine']:.4f}", f"{averages['langchain_avg_entity']:.4f}", f"{averages['langchain_avg_retrieval']:.4f}", f"{averages['langchain_avg_time']:.3f}",
+                    "See individual results above", f"{averages['haystack_avg_cosine']:.4f}", f"{averages['haystack_avg_entity']:.4f}", f"{averages['haystack_avg_retrieval']:.4f}", f"{averages['haystack_avg_time']:.3f}",
+                    "See individual results above", f"{averages['chatgpt_avg_cosine']:.4f}", f"{averages['chatgpt_avg_entity']:.4f}", f"{averages['chatgpt_avg_time']:.3f}",
                     "All benchmark chunks across questions"
                 ])
             
-            # Tính toán statistics trả về với entity similarity
-            stats = {
-                'current_avg_cosine': float(sum(r['current_cosine_sim'] for r in results) / len(results)),
-                'current_avg_entity': float(sum(r['current_entity_sim'] for r in results) / len(results)),
-                'current_avg_retrieval': float(sum(r['current_retrieval_acc'] for r in results) / len(results)),
-                'current_avg_time': float(avg_current_time),
-                'langchain_avg_cosine': float(sum(r['langchain_cosine_sim'] for r in results) / len(results)),
-                'langchain_avg_entity': float(sum(r['langchain_entity_sim'] for r in results) / len(results)),
-                'langchain_avg_retrieval': float(sum(r['langchain_retrieval_acc'] for r in results) / len(results)),
-                'langchain_avg_time': float(avg_langchain_time),
-                'haystack_avg_cosine': float(sum(r['haystack_cosine_sim'] for r in results) / len(results)),
-                'haystack_avg_entity': float(sum(r['haystack_entity_sim'] for r in results) / len(results)),
-                'haystack_avg_retrieval': float(sum(r['haystack_retrieval_acc'] for r in results) / len(results)),
-                'haystack_avg_time': float(avg_haystack_time),
-                'chatgpt_avg_cosine': float(sum(r['chatgpt_cosine_sim'] for r in results) / len(results)),
-                'chatgpt_avg_entity': float(sum(r['chatgpt_entity_sim'] for r in results) / len(results)),
-                'chatgpt_avg_time': float(avg_chatgpt_time),
-                'total_questions': int(total_questions),
-                'output_file': output_file
-            }
-            
-            # Convert numpy types
+            # Return statistics
+            stats = {**averages, 'total_questions': int(total_questions), 'output_file': output_file}
             stats = self._convert_numpy_types(stats)
             
             if progress_callback:
-                progress_callback({
-                    'phase': 'completed',
-                    'current_step': total_questions,
-                    'total_steps': total_questions,
-                    'progress': 100
-                })
+                progress_callback({'phase': 'completed', 'current_step': total_questions, 'total_steps': total_questions, 'progress': 100})
             
             return stats
             
