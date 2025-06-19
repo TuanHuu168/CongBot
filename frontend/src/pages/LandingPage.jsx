@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -13,30 +13,85 @@ import {
   Search,
   Clock,
   FileText,
-  Star
+  Star,
+  User,
+  LogOut,
+  ChevronDown
 } from 'lucide-react';
+import { useChat } from '../ChatContext';
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const { user, fetchUserInfo } = useChat();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+
+  // Check login status
+  useEffect(() => {
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      
+      if (token && userId) {
+        setIsLoggedIn(true);
+        
+        // Fetch user info if not already available
+        if (user) {
+          setUserInfo(user);
+        } else {
+          try {
+            const userData = await fetchUserInfo(userId);
+            if (userData) {
+              setUserInfo({
+                name: userData.fullName || userData.username,
+                email: userData.email
+              });
+            }
+          } catch (error) {
+            console.error('Error fetching user info:', error);
+          }
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserInfo(null);
+      }
+    };
+
+    checkAuthStatus();
+  }, [user, fetchUserInfo]);
+
+  // Handle logout
+  const handleLogout = () => {
+    // Clear auth data
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('user_id');
+    sessionStorage.removeItem('auth_token');
+    sessionStorage.removeItem('user_id');
+    
+    // Update state
+    setIsLoggedIn(false);
+    setUserInfo(null);
+    setShowUserDropdown(false);
+    
+    // Optionally redirect to home
+    navigate('/');
+  };
 
   const features = [
     {
-      icon: <MessageSquare className="h-10 w-10 text-green-500" />,
       title: 'Trò chuyện thông minh',
       description: 'Tương tác tự nhiên với hệ thống trí tuệ nhân tạo được huấn luyện đặc biệt để hiểu và trả lời các câu hỏi về chính sách người có công.'
     },
     {
-      icon: <Book className="h-10 w-10 text-green-500" />,
       title: 'Thông tin chính xác',
       description: 'Dữ liệu được tổng hợp từ các văn bản pháp luật chính thức về chính sách ưu đãi người có công với cách mạng.'
     },
     {
-      icon: <Award className="h-10 w-10 text-green-500" />,
       title: 'Cập nhật liên tục',
       description: 'Hệ thống được cập nhật thường xuyên theo các chính sách mới nhất, đảm bảo thông tin luôn chính xác và đáp ứng nhu cầu người dùng.'
     },
     {
-      icon: <Users className="h-10 w-10 text-green-500" />,
       title: 'Hỗ trợ mọi đối tượng',
       description: 'Thiết kế thân thiện, dễ sử dụng với mọi đối tượng người dùng, không cần kiến thức chuyên môn về công nghệ.'
     }
@@ -112,19 +167,86 @@ const LandingPage = () => {
               <a href="#benefits" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Lợi ích</a>
               <a href="#faq" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Hỏi đáp</a>
             </nav>
+            
+            {/* Authentication section */}
             <div className="flex items-center space-x-4">
-              <button
-                onClick={() => navigate('/login')}
-                className="text-green-600 hover:text-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-              >
-                Đăng nhập
-              </button>
-              <button
-                onClick={() => navigate('/register')}
-                className="bg-gradient-to-r from-green-500 to-teal-600 hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all"
-              >
-                Đăng ký
-              </button>
+              {isLoggedIn ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserDropdown(!showUserDropdown)}
+                    className="flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 transition-colors rounded-lg py-2 px-3"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
+                      <User size={16} className="text-white" />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">
+                      {userInfo?.name || 'Người dùng'}
+                    </span>
+                    <ChevronDown size={16} className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Dropdown menu */}
+                  {showUserDropdown && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-100">
+                      <button
+                        onClick={() => {
+                          setShowUserDropdown(false);
+                          navigate('/chat');
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <MessageSquare size={16} className="mr-2 text-gray-500" />
+                        <span>Vào trang chat</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowUserDropdown(false);
+                          navigate('/profile');
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <User size={16} className="mr-2 text-gray-500" />
+                        <span>Hồ sơ cá nhân</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowUserDropdown(false);
+                          navigate('/history');
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                      >
+                        <Clock size={16} className="mr-2 text-gray-500" />
+                        <span>Lịch sử trò chuyện</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setShowUserDropdown(false);
+                          handleLogout();
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100 mt-1"
+                      >
+                        <LogOut size={16} className="mr-2" />
+                        <span>Đăng xuất</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="text-green-600 hover:text-green-700 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  >
+                    Đăng nhập
+                  </button>
+                  <button
+                    onClick={() => navigate('/register')}
+                    className="bg-gradient-to-r from-green-500 to-teal-600 hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all"
+                  >
+                    Đăng ký
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -148,19 +270,31 @@ const LandingPage = () => {
                 Tra cứu thông tin chính sách dễ dàng thông qua trò chuyện thông minh. Tiếp cận thông tin chính xác về quyền lợi và thủ tục dành cho người có công với cách mạng.
               </p>
               <div className="pt-4 flex flex-col sm:flex-row gap-4">
-                <button
-                  onClick={() => navigate('/register')}
-                  className="inline-flex items-center justify-center bg-white text-green-700 font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] transition-all"
-                >
-                  Bắt đầu ngay
-                  <ChevronRight className="ml-2 h-5 w-5" />
-                </button>
-                <button
-                  onClick={() => navigate('/chat')}
-                  className="inline-flex items-center justify-center bg-green-700 bg-opacity-30 text-white border border-white border-opacity-30 backdrop-blur-sm font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-opacity-40 transition-all"
-                >
-                  Dùng thử
-                </button>
+                {isLoggedIn ? (
+                  <button
+                    onClick={() => navigate('/chat')}
+                    className="inline-flex items-center justify-center bg-white text-green-700 font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] transition-all"
+                  >
+                    Vào trang chat
+                    <ChevronRight className="ml-2 h-5 w-5" />
+                  </button>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => navigate('/register')}
+                      className="inline-flex items-center justify-center bg-white text-green-700 font-bold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] transition-all"
+                    >
+                      Bắt đầu ngay
+                      <ChevronRight className="ml-2 h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => navigate('/chat')}
+                      className="inline-flex items-center justify-center bg-green-700 bg-opacity-30 text-white border border-white border-opacity-30 backdrop-blur-sm font-bold py-3 px-6 rounded-lg shadow-lg hover:bg-opacity-40 transition-all"
+                    >
+                      Dùng thử
+                    </button>
+                  </>
+                )}
               </div>
             </motion.div>
             <motion.div
@@ -245,7 +379,10 @@ const LandingPage = () => {
                 variants={itemVariants}
               >
                 <div className="w-16 h-16 bg-green-50 rounded-lg flex items-center justify-center mb-4">
-                  {feature.icon}
+                  {index === 0 && <MessageSquare className="h-10 w-10 text-green-500" />}
+                  {index === 1 && <Book className="h-10 w-10 text-green-500" />}
+                  {index === 2 && <Award className="h-10 w-10 text-green-500" />}
+                  {index === 3 && <Users className="h-10 w-10 text-green-500" />}
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
                 <p className="text-gray-600">{feature.description}</p>
@@ -525,19 +662,31 @@ const LandingPage = () => {
               Bắt đầu sử dụng Chatbot Hỗ Trợ Chính Sách Người Có Công ngay hôm nay
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button
-                onClick={() => navigate('/register')}
-                className="inline-flex items-center justify-center bg-white text-green-700 font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] transition-all"
-              >
-                Đăng ký tài khoản
-                <ChevronRight className="ml-2 h-5 w-5" />
-              </button>
-              <button
-                onClick={() => navigate('/login')}
-                className="inline-flex items-center justify-center bg-green-500 bg-opacity-20 text-white border border-white border-opacity-30 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-opacity-30 transition-all"
-              >
-                Đăng nhập
-              </button>
+              {isLoggedIn ? (
+                <button
+                  onClick={() => navigate('/chat')}
+                  className="inline-flex items-center justify-center bg-white text-green-700 font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] transition-all"
+                >
+                  Vào trang chat
+                  <ChevronRight className="ml-2 h-5 w-5" />
+                </button>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate('/register')}
+                    className="inline-flex items-center justify-center bg-white text-green-700 font-bold py-3 px-8 rounded-lg shadow-lg hover:shadow-xl transform hover:translate-y-[-2px] transition-all"
+                  >
+                    Đăng ký tài khoản
+                    <ChevronRight className="ml-2 h-5 w-5" />
+                  </button>
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="inline-flex items-center justify-center bg-green-500 bg-opacity-20 text-white border border-white border-opacity-30 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-opacity-30 transition-all"
+                  >
+                    Đăng nhập
+                  </button>
+                </>
+              )}
             </div>
           </motion.div>
 
