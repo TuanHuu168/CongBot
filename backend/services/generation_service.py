@@ -18,7 +18,7 @@ class GenerationService:
         # Tạo prompt để gửi đến Gemini
         context_text = "\n\n".join([f"[Đoạn văn bản {i+1}]\n{item}" for i, item in enumerate(context_items)])
         
-        prompt = """
+        prompt = f"""
 [SYSTEM INSTRUCTION]
 Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam, được phát triển để cung cấp thông tin chính xác, đầy đủ và có căn cứ pháp lý rõ ràng. Nhiệm vụ của bạn là phân tích và tổng hợp thông tin từ các văn bản pháp luật để đưa ra câu trả lời hoàn chỉnh với đầy đủ thông tin cấu trúc. (không được thêm emoji hay sticker gì)
 
@@ -90,12 +90,11 @@ Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam
 8, **Trả lời tự nhiên**: Không sử dụng ngôn ngữ máy móc, câu trả lời phải tự nhiên và dễ hiểu
 
 [USER QUERY]
-{question}
+{query}
 
 [CONTEXT]
-{context}
+{context_text}
 """
-        
         return prompt
     
     def generate_answer(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
@@ -126,6 +125,7 @@ Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam
         try:
             # Tạo prompt
             prompt = self._create_prompt(query, context_items)
+            print("Prompt gửi đến Gemini:", prompt)
             
             # Gọi Gemini API
             response = self.gemini_client.models.generate_content(
