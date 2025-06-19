@@ -40,7 +40,7 @@ const ChatPage = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
   const [localError, setLocalError] = useState(null);
   const [textareaHeight, setTextareaHeight] = useState(46);
-  const [formKey, setFormKey] = useState(Date.now()); // Thêm key để buộc render lại form
+  const [formKey, setFormKey] = useState(Date.now());
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
@@ -84,7 +84,6 @@ const ChatPage = () => {
       }
     };
 
-    // Debounce để giảm số lần gọi hàm
     let timeoutId;
     const debouncedResize = () => {
       clearTimeout(timeoutId);
@@ -358,7 +357,7 @@ const ChatPage = () => {
           title={getCurrentChatTitle()}
           user={user}
           onMenuClick={() => setIsSidebarOpen(true)}
-          type="chat"
+          variant="chat"
         />
 
         {/* Content area - Flex container for sidebar and chat area */}
@@ -381,7 +380,7 @@ const ChatPage = () => {
           <div className="flex-1 flex flex-col h-full overflow-hidden relative">
             {/* Chat Messages */}
             <div
-              className="flex-1 overflow-y-auto p-4 pt-20 bg-transparent"
+              className="flex-1 overflow-y-auto p-4 pt-6 bg-transparent"
               ref={chatContainerRef}
             >
               <div className="max-w-3xl mx-auto">

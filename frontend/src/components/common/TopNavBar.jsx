@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, LogOut, History, ChevronDown, Menu, MessageSquare,
-  ChevronLeft, Settings, Shield
+  User, LogOut, History, ChevronDown, Menu,
+  ChevronLeft, Settings, Shield, BookOpen, Award
 } from 'lucide-react';
 import { showError } from '../../apiService';
 import { ROUTES, STORAGE_KEYS } from '../../utils/formatUtils';
@@ -19,8 +19,31 @@ const TopNavBar = ({
   variant = 'default' // 'default', 'chat', 'admin'
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
   const dropdownRef = useRef(null);
+
+  // Check login status
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      
+      if (token && userId) {
+        setIsLoggedIn(true);
+        if (user) {
+          setUserInfo(user);
+        }
+      } else {
+        setIsLoggedIn(false);
+        setUserInfo(null);
+      }
+    };
+
+    checkAuthStatus();
+  }, [user]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -45,30 +68,73 @@ const TopNavBar = ({
     }
   };
 
-  // Navigation items based on variant
+  // Check if user is admin - với debug log
+  const isAdmin = () => {
+    const isAdminRole = userInfo?.role === 'admin' || user?.role === 'admin';
+    console.log('Admin check:', {
+      userInfo: userInfo,
+      user: user,
+      userInfoRole: userInfo?.role,
+      userRole: user?.role,
+      isAdminRole: isAdminRole
+    });
+    return isAdminRole;
+  };
+
+  // Get current path to determine which menu items to show
+  const getCurrentPath = () => {
+    return location.pathname;
+  };
+
+  // Navigation items based on user role and current page
   const getNavigationItems = () => {
-    const baseItems = [
-      { icon: User, label: 'Hồ sơ cá nhân', onClick: () => navigate(ROUTES.PROFILE) },
-      { icon: History, label: 'Lịch sử trò chuyện', onClick: () => navigate(ROUTES.HISTORY) },
-      { icon: Settings, label: 'Cài đặt', onClick: () => navigate(ROUTES.SETTINGS) },
-      { icon: Shield, label: 'Trang quản trị', onClick: () => navigate(ROUTES.ADMIN) }
+    const currentPath = getCurrentPath();
+    const allItems = [
+      { 
+        icon: Settings, 
+        label: 'Cài đặt', 
+        onClick: () => navigate(ROUTES.PROFILE),
+        path: ROUTES.PROFILE
+      },
+      { 
+        icon: History, 
+        label: 'Lịch sử trò chuyện', 
+        onClick: () => navigate(ROUTES.HISTORY),
+        path: ROUTES.HISTORY
+      }
     ];
 
-    if (user?.role === 'admin') {
-      baseItems.push({ icon: Shield, label: 'Trang quản trị', onClick: () => navigate(ROUTES.ADMIN) });
+    // Add admin option if user is admin
+    if (isAdmin()) {
+      allItems.push({ 
+        icon: Shield, 
+        label: 'Quản trị hệ thống', 
+        onClick: () => navigate(ROUTES.ADMIN),
+        path: ROUTES.ADMIN
+      });
     }
 
-    return baseItems;
+    // Filter out current page from menu
+    const filteredItems = allItems.filter(item => item.path !== currentPath);
+    
+    console.log('Menu items:', {
+      currentPath,
+      allItems,
+      filteredItems,
+      isAdmin: isAdmin()
+    });
+
+    return filteredItems;
   };
 
   return (
-    <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 shadow-md sticky top-0 z-50">
+    <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="px-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between h-16">
           {/* Left Section */}
           <div className="flex items-center">
             {onMenuClick && (
-              <button className="md:hidden mr-3 text-white" onClick={onMenuClick}>
+              <button className="md:hidden mr-3 text-gray-600 hover:text-gray-900" onClick={onMenuClick}>
                 <Menu size={24} />
               </button>
             )}
@@ -76,88 +142,115 @@ const TopNavBar = ({
             {showBackButton ? (
               <button
                 onClick={() => navigate(backButtonDestination)}
-                className="flex items-center text-white hover:text-green-100 transition-colors"
+                className="flex items-center text-gray-600 hover:text-green-600 transition-colors"
               >
                 <ChevronLeft size={20} />
                 <span className="ml-1 font-medium">{backButtonText}</span>
               </button>
             ) : (
               <button onClick={() => navigate(ROUTES.HOME)} className="flex items-center">
-                <div className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center mr-2 backdrop-blur-sm">
-                  <MessageSquare size={20} className="text-white" />
+                <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center mr-3 shadow-md">
+                  <div className="relative">
+                    <Award size={20} className="text-white" />
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border border-white"></div>
+                  </div>
                 </div>
-                <h1 className="text-lg font-bold text-white">CongBot</h1>
+                <div>
+                  <h1 className="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">CongBot</h1>
+                  <p className="text-xs text-gray-500 -mt-1">Hỗ trợ người có công</p>
+                </div>
               </button>
             )}
           </div>
 
           {/* Center - Title */}
           <div className="flex-1 text-center mx-4">
-            <h1 className="text-lg font-semibold text-white truncate max-w-xs mx-auto">
+            <h1 className="text-lg font-semibold text-gray-800 truncate max-w-xs mx-auto">
               {title}
             </h1>
           </div>
 
           {/* Right - Custom content or User dropdown */}
           {customRight || (
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setShowUserDropdown(!showUserDropdown)}
-                className="flex items-center space-x-2 bg-white/10 hover:bg-white/20 transition-colors rounded-lg py-1.5 px-3 backdrop-blur-sm"
-              >
-                <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-white/20">
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt="User" className="w-full h-full object-cover" />
-                  ) : (
-                    <User size={16} className="text-white" />
-                  )}
-                </div>
-                <span className="text-sm font-medium text-white hidden sm:inline">
-                  {user?.name || 'Người dùng'}
-                </span>
-                <ChevronDown
-                  size={16}
-                  className={`text-white/80 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`}
-                />
-              </button>
-
-              <AnimatePresence mode="sync">
-                {showUserDropdown && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-1 z-50"
+            <>
+              {isLoggedIn ? (
+                <div className="relative" ref={dropdownRef}>
+                  <button
+                    onClick={() => setShowUserDropdown(!showUserDropdown)}
+                    className="flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 transition-colors rounded-xl py-2 px-3 border border-gray-200"
                   >
-                    {getNavigationItems().map((item, index) => (
-                      <button
-                        key={index}
-                        className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                        onClick={() => {
-                          setShowUserDropdown(false);
-                          item.onClick();
-                        }}
-                      >
-                        <item.icon size={16} className="mr-2 text-gray-500" />
-                        <span>{item.label}</span>
-                      </button>
-                    ))}
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-500 to-teal-600">
+                      {userInfo?.avatar ? (
+                        <img src={userInfo.avatar} alt="User" className="w-full h-full object-cover" />
+                      ) : (
+                        <User size={16} className="text-white" />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">
+                      {userInfo?.name || user?.name || 'Người dùng'}
+                    </span>
+                    <ChevronDown
+                      size={16}
+                      className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`}
+                    />
+                  </button>
 
-                    <button
-                      className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors border-t border-gray-100 mt-1"
-                      onClick={() => {
-                        setShowUserDropdown(false);
-                        handleLogout();
-                      }}
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      <span>Đăng xuất</span>
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                  <AnimatePresence mode="sync">
+                    {showUserDropdown && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-1 z-50 border border-gray-200"
+                      >
+                        {getNavigationItems().map((item, index) => (
+                          <button
+                            key={index}
+                            className="flex items-center w-full px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                            onClick={() => {
+                              setShowUserDropdown(false);
+                              item.onClick();
+                            }}
+                          >
+                            <item.icon size={16} className="mr-3 text-gray-500" />
+                            <span>{item.label}</span>
+                          </button>
+                        ))}
+
+                        <div className="border-t border-gray-100 mt-1">
+                          <button
+                            className="flex items-center w-full px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                            onClick={() => {
+                              setShowUserDropdown(false);
+                              handleLogout();
+                            }}
+                          >
+                            <LogOut size={16} className="mr-3" />
+                            <span>Đăng xuất</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={() => navigate('/login')}
+                    className="text-green-600 hover:text-green-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    Đăng nhập
+                  </button>
+                  <button
+                    onClick={() => navigate('/register')}
+                    className="bg-gradient-to-r from-green-500 to-teal-600 hover:opacity-90 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all"
+                  >
+                    Đăng ký
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

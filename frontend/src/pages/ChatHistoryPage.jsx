@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronLeft, Search, Calendar, Trash2, Filter, Download, Clock, ArrowUpDown, RefreshCw, Grid, BookOpen } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../ChatContext';
 import { getUserChats, getChatMessages, deleteChat, deleteChatsBatch } from '../apiService';
 import Swal from 'sweetalert2';
+import {
+  Search, Calendar, Trash2, Filter, Download, Clock, ArrowUpDown, RefreshCw, Grid, BookOpen, MessageSquare
+} from 'lucide-react';
 
 // Import components
 import TopNavBar from '../components/common/TopNavBar';
@@ -17,6 +19,7 @@ import { formatDate, getDateLabel } from '../utils/formatUtils';
 const ChatHistoryPage = () => {
   const navigate = useNavigate();
   const {
+    user,
     chatHistory,
     setChatHistory,
     switchChat,
@@ -318,7 +321,6 @@ const ChatHistoryPage = () => {
           setChatHistory(prevHistory =>
             prevHistory.filter(chat => chat.id !== chatId)
           );
-
           Swal.fire({
             title: 'Đã xóa!',
             text: 'Cuộc trò chuyện đã được xóa',
@@ -386,15 +388,7 @@ const ChatHistoryPage = () => {
         showBackButton={true}
         backButtonDestination="/chat"
         backButtonText="Quay lại chat"
-        customRight={
-          <button
-            onClick={handleRefresh}
-            className={`p-2 rounded-full hover:bg-white/10 transition-colors ${refreshing ? 'animate-spin' : ''}`}
-            disabled={refreshing}
-          >
-            <RefreshCw size={18} />
-          </button>
-        }
+        user={user}
       />
 
       {/* Main content */}
@@ -606,7 +600,6 @@ const ChatHistoryPage = () => {
                       onClick={() => navigateToChat()}
                       className="mt-6 px-4 py-2 bg-gradient-to-r from-green-500 to-teal-600 text-white text-sm font-medium rounded-lg hover:opacity-90 transition-opacity inline-flex items-center"
                     >
-                      <ChevronLeft size={16} className="mr-1.5" />
                       <span>Trở về trang chat</span>
                     </button>
                   </motion.div>

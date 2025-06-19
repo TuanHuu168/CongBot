@@ -27,19 +27,22 @@ export const ChatProvider = ({ children }) => {
   // Fetch user info with error handling
   const fetchUserInfo = useCallback(async (userId) => {
     if (!userId) return null;
-    
+
     try {
       setIsLoading(true);
       const userInfo = await userAPI.getInfo(userId);
-      
+
+      console.log('User info fetched:', userInfo); // Debug log
+
       setUser({
         id: userId,
         name: userInfo.fullName || userInfo.username,
         email: userInfo.email,
         username: userInfo.username,
-        phoneNumber: userInfo.phoneNumber
+        phoneNumber: userInfo.phoneNumber,
+        role: userInfo.role || 'user' // Đảm bảo có role
       });
-      
+
       return userInfo;
     } catch (error) {
       console.error('Error fetching user info:', error);
@@ -68,12 +71,12 @@ export const ChatProvider = ({ children }) => {
       return formattedChats;
     } catch (error) {
       console.error('Error fetching chat history:', error);
-      
+
       if (retries > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         return fetchChatHistory(retries - 1);
       }
-      
+
       setError('Không thể tải lịch sử trò chuyện');
       return [];
     } finally {
@@ -86,7 +89,7 @@ export const ChatProvider = ({ children }) => {
     try {
       setIsLoading(true);
       const { userId } = getStoredAuth();
-      
+
       if (!userId) throw new Error('Bạn cần đăng nhập để tạo cuộc trò chuyện');
 
       const response = await chatAPI.create(title);
@@ -139,12 +142,12 @@ export const ChatProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Error switching chat:', error);
-      
+
       if (retries > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         return switchChat(chatId, retries - 1);
       }
-      
+
       showError('Không thể tải tin nhắn của cuộc trò chuyện');
       throw error;
     } finally {
@@ -192,7 +195,7 @@ export const ChatProvider = ({ children }) => {
     currentChatId,
     isLoading,
     error,
-    
+
     // Setters
     setUser,
     setChatHistory,
@@ -200,7 +203,7 @@ export const ChatProvider = ({ children }) => {
     setCurrentChatId,
     setIsLoading,
     setError,
-    
+
     // Actions
     createNewChat,
     switchChat,

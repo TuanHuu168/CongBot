@@ -9,17 +9,13 @@ import {
   Phone,
   Key,
   Shield,
-  Settings,
   Save,
-  ChevronLeft,
   Camera,
   Clock,
   Calendar,
   AlertTriangle,
   Info,
   Check,
-  X,
-  LogOut,
   MessageSquare,
   Award,
   FileText,
@@ -27,10 +23,10 @@ import {
   HeartHandshake,
   ArrowRight,
   Eye,
-  EyeOff,
-  ChevronDown
+  EyeOff
 } from 'lucide-react';
 import { useChat } from '../ChatContext';
+import TopNavBar from '../components/common/TopNavBar';
 
 // URL cơ sở của API backend
 const API_BASE_URL = 'http://localhost:8001';
@@ -60,7 +56,6 @@ const ProfilePage = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -296,31 +291,6 @@ const ProfilePage = () => {
     });
   };
 
-  const handleLogout = () => {
-    // Hiện thông báo xác nhận
-    Swal.fire({
-      title: 'Đăng xuất',
-      text: 'Bạn có chắc chắn muốn đăng xuất?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Đăng xuất',
-      cancelButtonText: 'Hủy',
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#9ca3af'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        // Xóa token trong localStorage và sessionStorage
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_id');
-        sessionStorage.removeItem('auth_token');
-        sessionStorage.removeItem('user_id');
-
-        // Chuyển hướng về trang đăng nhập
-        navigate('/login');
-      }
-    });
-  };
-
   // Xử lý khi click vào một cuộc trò chuyện gần đây
   const handleChatClick = (chatId) => {
     switchChat(chatId).then(() => {
@@ -366,7 +336,6 @@ const ProfilePage = () => {
   const toggleCurrentPasswordVisibility = () => setShowCurrentPassword(!showCurrentPassword);
   const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
   const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-  const toggleDropdown = () => setShowDropdown(!showDropdown);
 
   // Animation variants
   const pageVariants = {
@@ -427,63 +396,14 @@ const ProfilePage = () => {
       exit="exit"
       variants={pageVariants}
     >
-      {/* Topnav - compact style */}
-      <div className="bg-gradient-to-r from-green-600 to-teal-600 text-white py-3 shadow-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center">
-            {/* Back to chat button */}
-            <button
-              onClick={navigateToChat}
-              className="flex items-center text-white hover:text-green-100 transition-colors"
-            >
-              <ChevronLeft size={20} />
-              <span className="ml-1 font-medium">Quay lại chat</span>
-            </button>
-
-            {/* User dropdown */}
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className="flex items-center space-x-2 hover:bg-white/10 py-1 px-2 rounded-lg transition-colors"
-              >
-                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center overflow-hidden">
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    <User size={16} className="text-white" />
-                  )}
-                </div>
-                <span className="font-medium hidden sm:inline">{formData.fullName || 'Người dùng'}</span>
-                <ChevronDown size={16} className={`transform transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
-              </button>
-
-              {/* Dropdown menu */}
-              <AnimatePresence>
-                {showDropdown && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50"
-                  >
-                    <button
-                      onClick={() => {
-                        setShowDropdown(false);
-                        handleLogout();
-                      }}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
-                    >
-                      <LogOut size={16} className="mr-2" />
-                      <span>Đăng xuất</span>
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Header */}
+      <TopNavBar
+        title="Cài đặt"
+        showBackButton={true}
+        backButtonDestination="/chat"
+        backButtonText="Quay lại chat"
+        user={user}
+      />
 
       {/* User profile info section */}
       <div className="bg-white shadow-md border-b border-gray-200 mb-6">
@@ -530,8 +450,7 @@ const ProfilePage = () => {
                   onClick={() => setEditMode(true)}
                   className="bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-medium px-3 py-1 rounded-full flex items-center transition-all"
                 >
-                  <Settings size={14} className="mr-1" />
-                  Chỉnh sửa
+                  <span>Chỉnh sửa</span>
                 </button>
               </div>
             </div>
@@ -557,7 +476,8 @@ const ProfilePage = () => {
                     onClick={() => setEditMode(false)}
                     className="text-gray-400 hover:text-gray-500"
                   >
-                    <X size={20} />
+                    <span className="sr-only">Đóng</span>
+                    <span className="text-xl">&times;</span>
                   </button>
                 </div>
               </div>
@@ -932,7 +852,7 @@ const ProfilePage = () => {
                             <MessageSquare className="h-5 w-5 text-green-600" />
                           </div>
                           <div className="ml-3 flex-1 min-w-0">
-                            <h3 className="text-sm font-medium text-gray-900 truncate">
+                            <h3 className="text-sm font-medium text-gray-900 truncate max-w-[250px] sm:max-w-md">
                               {formatChatTitle(chat.title)}
                             </h3>
                             <p className="text-xs text-gray-500">

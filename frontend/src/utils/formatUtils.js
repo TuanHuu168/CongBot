@@ -107,7 +107,8 @@ export const ROUTES = {
   CHAT: '/chat',
   HISTORY: '/history',
   PROFILE: '/profile',
-  ADMIN: '/admin'
+  ADMIN: '/admin',
+  SETTINGS: '/profile'  // Alias for profile page
 };
 
 export const STORAGE_KEYS = {
