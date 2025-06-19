@@ -32,6 +32,7 @@ const ChatPage = () => {
     createNewChat,
     switchChat,
     fetchChatHistory,
+    resetAuthState // Thêm resetAuthState
   } = useChat();
 
   const [input, setInput] = useState('');
@@ -57,6 +58,30 @@ const ChatPage = () => {
     const currentChat = chatHistory.find(chat => chat.id === currentChatId);
     return getDisplayTitle(currentChat);
   };
+
+  // Kiểm tra auth state - theo dõi đăng xuất từ tab khác
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      
+      // Nếu không có token hoặc userId, chuyển về login
+      if (!token || !userId) {
+        console.log('No auth data found, redirecting to login...');
+        resetAuthState();
+        navigate('/login');
+        return;
+      }
+    };
+
+    // Kiểm tra ngay khi component mount
+    checkAuthStatus();
+
+    // Kiểm tra mỗi 3 giây để phát hiện logout từ tab khác
+    const interval = setInterval(checkAuthStatus, 3000);
+
+    return () => clearInterval(interval);
+  }, [resetAuthState, navigate]);
 
   // Kiểm tra xem nếu đến từ trang đăng nhập
   useEffect(() => {

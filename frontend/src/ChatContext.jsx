@@ -24,6 +24,17 @@ export const ChatProvider = ({ children }) => {
     token: localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token')
   });
 
+  // Function để reset toàn bộ state sau khi đăng xuất
+  const resetAuthState = useCallback(() => {
+    console.log('Resetting auth state...');
+    setUser(null);
+    setChatHistory([]);
+    setActiveChatMessages([]);
+    setCurrentChatId(null);
+    setIsLoading(false);
+    setError(null);
+  }, []);
+
   // Fetch user info with error handling
   const fetchUserInfo = useCallback(async (userId) => {
     if (!userId) return null;
@@ -174,6 +185,24 @@ export const ChatProvider = ({ children }) => {
     setActiveChatMessages(prev => [...prev, userMsg, botMsg]);
   }, []);
 
+  // Kiểm tra auth state thay đổi - theo dõi logout từ tab khác
+  useEffect(() => {
+    const checkAuthState = () => {
+      const { userId, token } = getStoredAuth();
+      
+      // Nếu không có auth data mà vẫn có user state, reset state
+      if ((!userId || !token) && user) {
+        console.log('Auth data cleared, resetting state...');
+        resetAuthState();
+      }
+    };
+
+    // Kiểm tra mỗi 2 giây
+    const interval = setInterval(checkAuthState, 2000);
+
+    return () => clearInterval(interval);
+  }, [user, resetAuthState]);
+
   // Initialize on mount
   useEffect(() => {
     const { userId, token } = getStoredAuth();
@@ -207,7 +236,8 @@ export const ChatProvider = ({ children }) => {
     switchChat,
     addExchange,
     fetchChatHistory,
-    fetchUserInfo
+    fetchUserInfo,
+    resetAuthState // Thêm function reset
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

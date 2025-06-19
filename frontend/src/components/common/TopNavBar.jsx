@@ -5,8 +5,9 @@ import {
   User, LogOut, History, ChevronDown, Menu,
   ChevronLeft, Settings, Shield, BookOpen, Award
 } from 'lucide-react';
-import { showError } from '../../apiService';
+import Swal from 'sweetalert2';
 import { ROUTES, STORAGE_KEYS } from '../../utils/formatUtils';
+import { useChat } from '../../ChatContext';
 
 const TopNavBar = ({
   title,
@@ -20,12 +21,13 @@ const TopNavBar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { setUser, setCurrentChatId, setActiveChatMessages, setChatHistory } = useChat(); // Thêm ChatContext
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Check login status
+  // Kiểm tra trạng thái đăng nhập
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
@@ -45,7 +47,7 @@ const TopNavBar = ({
     checkAuthStatus();
   }, [user]);
 
-  // Close dropdown when clicking outside
+  // Đóng dropdown khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -57,29 +59,67 @@ const TopNavBar = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle logout with confirmation
+  // Xử lý đăng xuất với SweetAlert2 và cập nhật state
   const handleLogout = () => {
-    if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-      // Clear all auth data
-      [localStorage, sessionStorage].forEach(storage => {
-        Object.values(STORAGE_KEYS).forEach(key => storage.removeItem(key));
-      });
-      navigate(ROUTES.LOGIN);
-    }
+    Swal.fire({
+      title: 'Đăng xuất',
+      text: 'Bạn có chắc chắn muốn đăng xuất?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      backdrop: true,
+      allowOutsideClick: true
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Xóa dữ liệu auth từ storage
+        [localStorage, sessionStorage].forEach(storage => {
+          Object.values(STORAGE_KEYS).forEach(key => storage.removeItem(key));
+        });
+
+        // Cập nhật state local
+        setIsLoggedIn(false);
+        setUserInfo(null);
+        setShowUserDropdown(false);
+
+        // Cập nhật ChatContext state
+        setUser(null);
+        setCurrentChatId(null);
+        setActiveChatMessages([]);
+        setChatHistory([]);
+
+        // Hiển thị thông báo thành công
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng xuất thành công',
+          text: 'Bạn đã đăng xuất khỏi hệ thống',
+          confirmButtonColor: '#10b981',
+          timer: 1500,
+          showConfirmButton: false
+        });
+
+        // Chuyển hướng sau khi hiển thị thông báo
+        setTimeout(() => {
+          navigate(ROUTES.HOME);
+        }, 1500);
+      }
+    });
   };
 
-  // Check if user is admin - với debug log
+  // Kiểm tra xem user có phải admin không
   const isAdmin = () => {
     const isAdminRole = userInfo?.role === 'admin' || user?.role === 'admin';
     return isAdminRole;
   };
 
-  // Get current path to determine which menu items to show
+  // Lấy đường dẫn hiện tại
   const getCurrentPath = () => {
     return location.pathname;
   };
 
-  // Navigation items based on user role and current page
+  // Các mục điều hướng dựa trên vai trò người dùng và trang hiện tại
   const getNavigationItems = () => {
     const currentPath = getCurrentPath();
     const allItems = [
@@ -97,7 +137,7 @@ const TopNavBar = ({
       }
     ];
 
-    // Add admin option if user is admin
+    // Thêm tùy chọn admin nếu là admin
     if (isAdmin()) {
       allItems.push({ 
         icon: Shield, 
@@ -107,7 +147,7 @@ const TopNavBar = ({
       });
     }
 
-    // Filter out current page from menu
+    // Lọc bỏ trang hiện tại khỏi menu
     const filteredItems = allItems.filter(item => item.path !== currentPath);
 
     return filteredItems;
@@ -117,7 +157,7 @@ const TopNavBar = ({
     <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Left Section */}
+          {/* Phần bên trái */}
           <div className="flex items-center">
             {onMenuClick && (
               <button className="md:hidden mr-3 text-gray-600 hover:text-gray-900" onClick={onMenuClick}>
@@ -149,14 +189,14 @@ const TopNavBar = ({
             )}
           </div>
 
-          {/* Center - Title */}
+          {/* Phần giữa - Tiêu đề */}
           <div className="flex-1 text-center mx-4">
             <h1 className="text-lg font-semibold text-gray-800 truncate max-w-xs mx-auto">
               {title}
             </h1>
           </div>
 
-          {/* Right - Custom content or User dropdown */}
+          {/* Phần bên phải - Nội dung tùy chỉnh hoặc Dropdown người dùng */}
           {customRight || (
             <>
               {isLoggedIn ? (

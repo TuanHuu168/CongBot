@@ -19,6 +19,7 @@ import {
   ChevronDown
 } from 'lucide-react';
 import { useChat } from '../ChatContext';
+import Swal from 'sweetalert2';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -63,19 +64,46 @@ const LandingPage = () => {
 
   // Handle logout
   const handleLogout = () => {
-    // Clear auth data
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_id');
-    sessionStorage.removeItem('auth_token');
-    sessionStorage.removeItem('user_id');
+    Swal.fire({
+      title: 'Đăng xuất',
+      text: 'Bạn có chắc chắn muốn đăng xuất?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Đăng xuất',
+      cancelButtonText: 'Hủy',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Xóa dữ liệu auth
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_id');
+        sessionStorage.removeItem('auth_token');
+        sessionStorage.removeItem('user_id');
 
-    // Update state
-    setIsLoggedIn(false);
-    setUserInfo(null);
-    setShowUserDropdown(false);
+        // Cập nhật state local
+        setIsLoggedIn(false);
+        setUserInfo(null);
+        setShowUserDropdown(false);
 
-    // Optionally redirect to home
-    navigate('/');
+        // Hiển thị thông báo thành công
+        Swal.fire({
+          icon: 'success',
+          title: 'Đăng xuất thành công',
+          text: 'Bạn đã đăng xuất khỏi hệ thống',
+          confirmButtonColor: '#10b981',
+          timer: 1500,
+          showConfirmButton: false
+        });
+
+        // Chuyển hướng về trang chủ sau khi hiển thị thông báo
+        setTimeout(() => {
+          navigate('/');
+          // Force reload để đảm bảo state được reset
+          window.location.reload();
+        }, 1500);
+      }
+    });
   };
 
   const features = [
