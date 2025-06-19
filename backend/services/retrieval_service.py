@@ -11,6 +11,7 @@ from config import TOP_K, MAX_TOKENS_PER_DOC
 from database.chroma_client import chroma_client
 from database.mongodb_client import mongodb_client
 from models.cache import CacheModel, CacheCreate, CacheStatus
+from services.activity_service import activity_service, ActivityType
 
 class RetrievalService:
     def __init__(self):
@@ -481,18 +482,22 @@ class RetrievalService:
         return cache_id
     
     def invalidate_document_cache(self, doc_id: str) -> int:
-        """
-        Vô hiệu hóa tất cả cache liên quan đến một văn bản
-        
-        Args:
-            doc_id: ID của văn bản
-            
-        Returns:
-            Số lượng cache entries đã vô hiệu hóa
-        """
+        """Vô hiệu hóa tất cả cache liên quan đến một văn bản"""
         print(f"Đang vô hiệu hóa cache cho văn bản: {doc_id}")
         result = self._invalidate_cache_for_document(doc_id)
         print(f"Đã vô hiệu hóa {result} cache entries")
+        
+        # Log activity
+        activity_service.log_activity(
+            ActivityType.CACHE_INVALIDATE,
+            f"Vô hiệu hóa cache cho văn bản {doc_id}: {result} entries",
+            metadata={
+                "doc_id": doc_id,
+                "affected_count": result,
+                "action": "invalidate_document_cache"
+            }
+        )
+        
         return result
     
     def delete_expired_cache(self) -> int:
@@ -545,10 +550,29 @@ class RetrievalService:
             except Exception as ce:
                 print(f"Lỗi khi xóa cache từ ChromaDB: {str(ce)}")
             
+            # Log activity
+            activity_service.log_activity(
+                ActivityType.CACHE_CLEAR,
+                f"Đã xóa toàn bộ cache: {deleted_count} entries từ MongoDB",
+                metadata={
+                    "mongodb_deleted": deleted_count,
+                    "mongodb_before": total_before,
+                    "mongodb_after": total_after,
+                    "chromadb_before": chroma_count_before if 'chroma_count_before' in locals() else 0,
+                    "chromadb_after": chroma_count_after if 'chroma_count_after' in locals() else 0
+                }
+            )
+            
             return deleted_count
             
         except Exception as e:
             print(f"Lỗi khi xóa toàn bộ cache: {str(e)}")
+            # Log error activity
+            activity_service.log_activity(
+                ActivityType.CACHE_CLEAR,
+                f"Lỗi khi xóa cache: {str(e)}",
+                metadata={"error": str(e), "success": False}
+            )
             raise e
 
     def clear_all_invalid_cache(self) -> int:
@@ -596,13 +620,32 @@ class RetrievalService:
             except Exception as ce:
                 print(f"Lỗi khi xóa cache không hợp lệ từ ChromaDB: {str(ce)}")
             
+            # Log activity
+            activity_service.log_activity(
+                ActivityType.CACHE_CLEAR,
+                f"Đã xóa cache không hợp lệ: {deleted_count_mongo} entries",
+                metadata={
+                    "invalid_count": invalid_count,
+                    "deleted_count": deleted_count_mongo,
+                    "invalid_cache_ids": invalid_cache_ids,
+                    "action": "clear_invalid_cache"
+                }
+            )
+            
             # Báo cáo kết quả
             return deleted_count_mongo
             
         except Exception as e:
             print(f"Lỗi khi xóa cache không hợp lệ: {str(e)}")
+            # Log error
+            activity_service.log_activity(
+                ActivityType.CACHE_CLEAR,
+                f"Lỗi khi xóa cache không hợp lệ: {str(e)}",
+                metadata={"error": str(e), "success": False}
+            )
             # Raise exception thay vì trả về 0 để FastAPI có thể xử lý lỗi
             raise e
+
 
     def get_cache_stats(self) -> Dict[str, Any]:
         """

@@ -18,6 +18,7 @@ import numpy as np
 from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from services.benchmark_service import benchmark_service
+from services.activity_service import activity_service, ActivityType
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
 
@@ -86,6 +87,12 @@ async def get_admin_status():
         }
     except Exception as e:
         print(f"Error in get_admin_status: {str(e)}")
+        # Chỉ log khi có lỗi
+        activity_service.log_activity(
+            ActivityType.SYSTEM_STATUS,
+            f"Lỗi khi kiểm tra trạng thái hệ thống: {str(e)}",
+            metadata={"error": str(e), "success": False}
+        )
         return {
             "status": "error",
             "message": f"Hệ thống gặp sự cố: {str(e)}",
@@ -95,6 +102,18 @@ async def get_admin_status():
             },
             "cache_stats": None
         }
+        
+@router.get("/recent-activities")
+async def get_recent_activities(limit: int = 10):
+    try:
+        activities = activity_service.get_recent_activities(limit)
+        return {
+            "activities": activities,
+            "count": len(activities)
+        }
+    except Exception as e:
+        print(f"Error in get_recent_activities: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/cache/stats")
 async def get_cache_detailed_stats():
@@ -304,6 +323,17 @@ async def run_benchmark_4models(config: BenchmarkConfig):
     try:
         benchmark_id = str(uuid.uuid4())
         
+        # Log benchmark start
+        activity_service.log_activity(
+            ActivityType.BENCHMARK_START,
+            f"Bắt đầu chạy benchmark với file {config.file_path}",
+            metadata={
+                "benchmark_id": benchmark_id,
+                "file_path": config.file_path,
+                "output_dir": config.output_dir
+            }
+        )
+        
         progress_queue = queue.Queue()
         result_queue = queue.Queue()
         
@@ -358,6 +388,19 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                         'stats': result
                     })
                     benchmark_results_cache[benchmark_id] = result
+                    
+                    # Log successful completion
+                    activity_service.log_activity(
+                        ActivityType.BENCHMARK_COMPLETE,
+                        f"Hoàn thành benchmark {benchmark_id}: {result.get('total_questions', 0)} câu hỏi",
+                        metadata={
+                            "benchmark_id": benchmark_id,
+                            "total_questions": result.get('total_questions', 0),
+                            "output_file": result.get('output_file', ''),
+                            "file_path": config.file_path,
+                            "duration_minutes": (datetime.now() - datetime.fromisoformat(benchmark_progress[benchmark_id]['start_time'])).total_seconds() / 60
+                        }
+                    )
                 else:
                     benchmark_progress[benchmark_id].update({
                         'status': 'failed',
@@ -365,6 +408,17 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                         'end_time': datetime.now().isoformat(),
                         'error': result
                     })
+                    
+                    # Log failure
+                    activity_service.log_activity(
+                        ActivityType.BENCHMARK_FAIL,
+                        f"Thất bại khi chạy benchmark {benchmark_id}: {result}",
+                        metadata={
+                            "benchmark_id": benchmark_id,
+                            "error": result,
+                            "file_path": config.file_path
+                        }
+                    )
             except queue.Empty:
                 benchmark_progress[benchmark_id].update({
                     'status': 'failed',
@@ -372,6 +426,17 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                     'end_time': datetime.now().isoformat(),
                     'error': 'Benchmark timed out'
                 })
+                
+                # Log timeout
+                activity_service.log_activity(
+                    ActivityType.BENCHMARK_FAIL,
+                    f"Benchmark {benchmark_id} timeout",
+                    metadata={
+                        "benchmark_id": benchmark_id,
+                        "error": "timeout",
+                        "file_path": config.file_path
+                    }
+                )
         
         monitor_thread = threading.Thread(target=monitor_progress)
         monitor_thread.daemon = True
@@ -385,6 +450,12 @@ async def run_benchmark_4models(config: BenchmarkConfig):
         
     except Exception as e:
         print(f"Error starting benchmark: {str(e)}")
+        # Log error
+        activity_service.log_activity(
+            ActivityType.BENCHMARK_FAIL,
+            f"Lỗi khi khởi động benchmark: {str(e)}",
+            metadata={"error": str(e), "file_path": config.file_path}
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/benchmark-progress/{benchmark_id}")

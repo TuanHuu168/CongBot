@@ -1,13 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Users, FileText, Database, BarChart2, Activity } from 'lucide-react';
 import StatCard from '../../components/admin/StatCard';
 import { formatDate } from '../../utils/formatUtils';
 
 const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoading }) => {
+    const [recentActivities, setRecentActivities] = useState([]);
+    const [activitiesLoading, setActivitiesLoading] = useState(false);
+
     const fadeInVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+    };
+
+    // Fetch recent activities
+    useEffect(() => {
+        const fetchRecentActivities = async () => {
+            try {
+                setActivitiesLoading(true);
+                const response = await fetch('http://localhost:8001/recent-activities?limit=8');
+                if (response.ok) {
+                    const data = await response.json();
+                    setRecentActivities(data.activities || []);
+                } else {
+                    console.error('Failed to fetch recent activities');
+                }
+            } catch (error) {
+                console.error('Error fetching recent activities:', error);
+            } finally {
+                setActivitiesLoading(false);
+            }
+        };
+
+        fetchRecentActivities();
+    }, []);
+
+    // Helper function to get activity icon and color
+    const getActivityIconAndColor = (activityType) => {
+        switch (activityType) {
+            case 'login':
+                return { icon: Users, color: 'text-blue-600', bgColor: 'bg-blue-100' };
+            case 'cache_clear':
+            case 'cache_invalidate':
+                return { icon: Database, color: 'text-red-600', bgColor: 'bg-red-100' };
+            case 'benchmark_start':
+            case 'benchmark_complete':
+                return { icon: BarChart2, color: 'text-amber-600', bgColor: 'bg-amber-100' };
+            case 'benchmark_fail':
+                return { icon: BarChart2, color: 'text-red-600', bgColor: 'bg-red-100' };
+            case 'document_upload':
+            case 'document_delete':
+                return { icon: FileText, color: 'text-green-600', bgColor: 'bg-green-100' };
+            case 'system_status':
+                return { icon: Activity, color: 'text-purple-600', bgColor: 'bg-purple-100' };
+            default:
+                return { icon: Activity, color: 'text-gray-600', bgColor: 'bg-gray-100' };
+        }
     };
 
     return (
@@ -164,7 +212,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                 </div>
             </motion.div>
 
-            {/* Recent Activity */}
+            {/* Recent Activity - Updated to use real data */}
             <motion.div
                 className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                 variants={fadeInVariants}
@@ -179,79 +227,44 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                 </div>
 
                 <div className="p-5">
-                    <div className="space-y-4">
-                        {/* Recent logins */}
-                        <div className="py-2 px-3 bg-gray-50 rounded-lg">
-                            <div className="flex items-center">
-                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                                    <Users size={14} className="text-blue-600" />
-                                </div>
-                                <div className="ml-3">
-                                    <p className="text-sm text-gray-700">
-                                        <span className="font-medium">{users[0]?.email || 'admin@example.com'}</span> đã đăng nhập
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        {formatDate(users[0]?.lastLogin || new Date().toISOString())}
-                                    </p>
-                                </div>
-                            </div>
+                    {activitiesLoading ? (
+                        <div className="py-4 flex justify-center">
+                            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-green-500"></div>
                         </div>
-
-                        {/* Recent document upload */}
-                        {documents.length > 0 && (
-                            <div className="py-2 px-3 bg-gray-50 rounded-lg">
-                                <div className="flex items-center">
-                                    <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                        <FileText size={14} className="text-green-600" />
+                    ) : recentActivities.length > 0 ? (
+                        <div className="space-y-4">
+                            {recentActivities.map((activity, index) => {
+                                const { icon: Icon, color, bgColor } = getActivityIconAndColor(activity.activity_type);
+                                return (
+                                    <div key={index} className="py-2 px-3 bg-gray-50 rounded-lg">
+                                        <div className="flex items-center">
+                                            <div className={`w-8 h-8 rounded-full ${bgColor} flex items-center justify-center flex-shrink-0`}>
+                                                <Icon size={14} className={color} />
+                                            </div>
+                                            <div className="ml-3">
+                                                <p className="text-sm text-gray-700">
+                                                    {activity.description}
+                                                </p>
+                                                <p className="text-xs text-gray-500">
+                                                    {formatDate(activity.timestamp)}
+                                                    {activity.user_email && (
+                                                        <span className="ml-2">• {activity.user_email}</span>
+                                                    )}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="ml-3">
-                                        <p className="text-sm text-gray-700">
-                                            <span className="font-medium">{documents[0]?.doc_id || 'Document'}</span> đã được tải lên
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            {formatDate(new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString())}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Recent benchmark */}
-                        {benchmarkResults.length > 0 && (
-                            <div className="py-2 px-3 bg-gray-50 rounded-lg">
-                                <div className="flex items-center">
-                                    <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                                        <BarChart2 size={14} className="text-amber-600" />
-                                    </div>
-                                    <div className="ml-3">
-                                        <p className="text-sm text-gray-700">
-                                            <span className="font-medium">Benchmark</span> đã được chạy
-                                        </p>
-                                        <p className="text-xs text-gray-500">
-                                            {formatDate(benchmarkResults[0]?.created_at || new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString())}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Recent cache clear */}
-                        <div className="py-2 px-3 bg-gray-50 rounded-lg">
-                            <div className="flex items-center">
-                                <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                                    <Database size={14} className="text-red-600" />
-                                </div>
-                                <div className="ml-3">
-                                    <p className="text-sm text-gray-700">
-                                        <span className="font-medium">Cache</span> đã được xóa
-                                    </p>
-                                    <p className="text-xs text-gray-500">
-                                        {formatDate(new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString())}
-                                    </p>
-                                </div>
-                            </div>
+                                );
+                            })}
                         </div>
-                    </div>
+                    ) : (
+                        <div className="py-10 text-center">
+                            <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
+                                <Activity size={24} className="text-gray-400" />
+                            </div>
+                            <p className="text-gray-500 text-sm">Chưa có hoạt động nào được ghi nhận</p>
+                        </div>
+                    )}
                 </div>
             </motion.div>
         </div>
