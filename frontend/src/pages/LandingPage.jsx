@@ -32,10 +32,10 @@ const LandingPage = () => {
     const checkAuthStatus = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      
+
       if (token && userId) {
         setIsLoggedIn(true);
-        
+
         // Fetch user info if not already available
         if (user) {
           setUserInfo(user);
@@ -68,12 +68,12 @@ const LandingPage = () => {
     localStorage.removeItem('user_id');
     sessionStorage.removeItem('auth_token');
     sessionStorage.removeItem('user_id');
-    
+
     // Update state
     setIsLoggedIn(false);
     setUserInfo(null);
     setShowUserDropdown(false);
-    
+
     // Optionally redirect to home
     navigate('/');
   };
@@ -154,21 +154,27 @@ const LandingPage = () => {
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-white" />
+                {/* Sửa logo để giống TopNavBar */}
+                <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md">
+                  <div className="relative">
+                    <Award size={20} className="text-white" />
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border border-white"></div>
+                  </div>
                 </div>
               </div>
               <div className="ml-2">
                 <span className="text-xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">CongBot</span>
+                <p className="text-xs text-gray-500 -mt-1">Hỗ trợ người có công</p>
               </div>
             </div>
+            {/* Phần navigation và auth section giữ nguyên */}
             <nav className="hidden md:flex space-x-8">
               <a href="#features" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Tính năng</a>
               <a href="#benefits" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Lợi ích</a>
               <a href="#faq" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Hỏi đáp</a>
             </nav>
-            
-            {/* Authentication section */}
+
+            {/* Authentication section giữ nguyên */}
             <div className="flex items-center space-x-4">
               {isLoggedIn ? (
                 <div className="relative">
@@ -185,7 +191,7 @@ const LandingPage = () => {
                     <ChevronDown size={16} className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* Dropdown menu */}
+                  {/* Dropdown menu giữ nguyên */}
                   {showUserDropdown && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-100">
                       <button
@@ -723,8 +729,12 @@ const LandingPage = () => {
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mb-8 md:mb-0">
               <div className="flex items-center">
+                {/* Sửa logo footer */}
                 <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-white" />
+                  <div className="relative">
+                    <Award size={20} className="text-white" />
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full border border-white"></div>
+                  </div>
                 </div>
                 <span className="ml-2 text-xl font-bold bg-gradient-to-r from-green-400 to-teal-400 bg-clip-text text-transparent">CongBot</span>
               </div>
@@ -775,4 +785,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default LandingPage; 
