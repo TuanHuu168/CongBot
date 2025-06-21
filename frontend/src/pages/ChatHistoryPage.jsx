@@ -280,7 +280,7 @@ const ChatHistoryPage = () => {
     if (chatId) {
       // Navigate to specific chat
       switchChat(chatId).then(() => {
-        navigate('/chat');
+        navigate('/chat', { state: { chatId: chatId, fromHistory: true } });
       }).catch(error => {
         console.error('Error switching chat:', error);
         Swal.fire({

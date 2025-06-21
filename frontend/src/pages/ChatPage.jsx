@@ -61,7 +61,7 @@ const ChatPage = () => {
     const initializeUser = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      
+
       if (!token || !userId) {
         console.log('No auth data found, redirecting to login...');
         resetAuthState();
@@ -88,7 +88,7 @@ const ChatPage = () => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      
+
       if (!token || !userId) {
         console.log('Auth data cleared, redirecting to login...');
         resetAuthState();
@@ -103,14 +103,20 @@ const ChatPage = () => {
 
   // Xử lý khi đến từ trang đăng nhập
   useEffect(() => {
-    if (state?.freshLogin) {
-      fetchChatHistory();
-    }
+  if (state?.freshLogin) {
+    fetchChatHistory();
+  }
 
-    if (state?.suggestedQuestion) {
-      setInput(state.suggestedQuestion);
-    }
-  }, [state, fetchChatHistory]);
+  if (state?.suggestedQuestion) {
+    setInput(state.suggestedQuestion);
+  }
+
+  // Reset currentChatId nếu không đến từ ChatHistoryPage với chatId cụ thể
+  if (!state?.chatId && !state?.freshLogin) {
+    setCurrentChatId(null);
+    setActiveChatMessages([]);
+  }
+}, [state, fetchChatHistory, setCurrentChatId, setActiveChatMessages]);
 
   useEffect(() => {
     scrollToBottom();
@@ -402,7 +408,7 @@ const ChatPage = () => {
           <div className="flex-1 flex flex-col h-full overflow-hidden relative">
             {/* Chat Messages - FIX: Thêm padding-top để không bị header che */}
             <div
-              className="flex-1 overflow-y-auto p-4 pb-32 bg-transparent"
+              className="flex-1 overflow-y-auto p-4 pb-4 bg-transparent"
               ref={chatContainerRef}
               style={{ paddingTop: '1rem' }}
             >
@@ -420,10 +426,10 @@ const ChatPage = () => {
                 ) : (
                   <div>
                     {activeChatMessages.map((message, index) => (
-                      <MessageItem 
-                        key={message.id || `msg_${index}`} 
-                        message={message} 
-                        messageVariants={messageVariants} 
+                      <MessageItem
+                        key={message.id || `msg_${index}`}
+                        message={message}
+                        messageVariants={messageVariants}
                       />
                     ))}
                   </div>
@@ -458,8 +464,8 @@ const ChatPage = () => {
             </div>
 
             {/* Floating Chat Input - FIX: Cách đáy nhiều hơn */}
-            <div className="absolute bottom-0 left-0 right-0 md:left-72">
-              <div className="max-w-3xl mx-auto px-4 pb-8">
+            <div className="fixed bottom-0 left-0 right-0 md:left-72 z-40">
+              <div className="max-w-3xl mx-auto px-4 py-4 bg-gradient-to-t from-green-50 via-teal-50 to-transparent">
                 <div className="bg-white rounded-[20px] shadow-xl border border-gray-100 p-1.5 overflow-hidden">
                   <form key={formKey} onSubmit={handleSend} className="flex items-center">
                     <div className="flex-1 relative">
