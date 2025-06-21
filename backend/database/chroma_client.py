@@ -69,17 +69,27 @@ class ChromaDBClient:
             return
             
         try:
-            self.main_collection = self.client.get_or_create_collection(
-                name=self.main_collection_name,
-                embedding_function=self.embedding_function
-            )
+            # Main collection
+            try:
+                self.main_collection = self.client.get_collection(name=self.main_collection_name)
+            except Exception:
+                self.main_collection = self.client.create_collection(
+                    name=self.main_collection_name,
+                    embedding_function=self.embedding_function
+                )
+            
             main_count = self.main_collection.count()
             print(f"Main collection '{self.main_collection_name}' ready with {main_count} documents")
             
-            self.cache_collection = self.client.get_or_create_collection(
-                name=self.cache_collection_name,
-                embedding_function=self.embedding_function
-            )
+            # Cache collection  
+            try:
+                self.cache_collection = self.client.get_collection(name=self.cache_collection_name)
+            except Exception:
+                self.cache_collection = self.client.create_collection(
+                    name=self.cache_collection_name,
+                    embedding_function=self.embedding_function
+                )
+            
             cache_count = self.cache_collection.count()
             print(f"Cache collection '{self.cache_collection_name}' ready with {cache_count} documents")
                 
@@ -227,7 +237,7 @@ class ChromaDBClient:
         """Xóa toàn bộ cache collection và tạo lại"""
         try:
             self.delete_collection(self.cache_collection_name)
-            self.cache_collection = self.client.get_or_create_collection(
+            self.cache_collection = self.client.create_collection(
                 name=self.cache_collection_name,
                 embedding_function=self.embedding_function
             )
@@ -241,7 +251,7 @@ class ChromaDBClient:
         """Xóa toàn bộ main collection và tạo lại"""
         try:
             self.delete_collection(self.main_collection_name)
-            self.main_collection = self.client.get_or_create_collection(
+            self.main_collection = self.client.create_collection(
                 name=self.main_collection_name,
                 embedding_function=self.embedding_function
             )

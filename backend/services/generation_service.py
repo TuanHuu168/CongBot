@@ -14,22 +14,71 @@ class GenerationService:
         self.retrieval = retrieval_service
         self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
     
-    def _create_prompt(self, query: str, context_items: List[str]) -> str:
-        # Tạo prompt để gửi đến Gemini
+    def generate_answer_with_context(self, query: str, context_items: List[str], conversation_context: List[Dict[str, str]] = None, use_cache: bool = True) -> Dict[str, Any]:
+        start_time = time.time()
+        
+        try:
+            # Tạo prompt với conversation context
+            prompt = self._create_prompt_with_context(query, context_items, conversation_context or [])
+            print("Prompt gửi đến Gemini với conversation context:", prompt)
+            
+            # Gọi Gemini API
+            response = self.gemini_client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt
+            )
+            
+            answer = response.text
+            generation_time = time.time() - start_time
+            
+            return {
+                "answer": answer,
+                "source": "generated_with_context",
+                "generation_time": generation_time,
+                "total_time": time.time() - start_time
+            }
+        
+        except Exception as e:
+            print(f"Lỗi khi gọi Gemini API với context: {str(e)}")
+            error_answer = "Xin lỗi, tôi đang gặp sự cố khi xử lý yêu cầu của bạn. Vui lòng thử lại sau."
+            
+            return {
+                "answer": error_answer,
+                "source": "error",
+                "error": str(e),
+                "generation_time": time.time() - start_time,
+                "total_time": time.time() - start_time
+            }
+
+    def _create_prompt_with_context(self, query: str, context_items: List[str], conversation_context: List[Dict[str, str]]) -> str:
+        # Tạo phần conversation history
+        conversation_history = ""
+        if conversation_context:
+            conversation_history = "\n### LỊCH SỬ CUỘC TSRÒ CHUYỆN TRƯỚC ĐÓ:\n"
+            for i, exchange in enumerate(conversation_context, 1):
+                conversation_history += f"\n**Câu hỏi {i}:** {exchange['question']}\n"
+                conversation_history += f"**Trả lời {i}:** {exchange['answer']}\n"
+            conversation_history += "\n### CÂU HỎI HIỆN TẠI:\n"
+        
+        # Tạo context text
         context_text = "\n\n".join([f"[Đoạn văn bản {i+1}]\n{item}" for i, item in enumerate(context_items)])
         
         prompt = f"""
 [SYSTEM INSTRUCTION]
 Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam, được phát triển để cung cấp thông tin chính xác, đầy đủ và có căn cứ pháp lý rõ ràng. Nhiệm vụ của bạn là phân tích và tổng hợp thông tin từ các văn bản pháp luật để đưa ra câu trả lời hoàn chỉnh với đầy đủ thông tin cấu trúc. (không được thêm emoji hay sticker gì)
 
-### NGUYÊN TẮC XỬ LÝ THÔNG TIN
+### NGUYÊN TẮC XỬ LÝ THÔNG TIN VÀ CONVERSATION CONTEXT
 1. **Phân tích toàn diện**: Đọc kỹ TẤT CẢ đoạn văn bản được cung cấp, không bỏ sót thông tin nào.
-2. **Tổng hợp logic**: Kết hợp thông tin từ nhiều văn bản theo thứ tự ưu tiên:
+2. **Sử dụng conversation context**: Tham khảo lịch sử cuộc trò chuyện để hiểu rõ ngữ cảnh và đưa ra câu trả lời phù hợp. Nếu câu hỏi hiện tại liên quan đến các câu hỏi trước đó, hãy tham chiếu và kết nối thông tin.
+3. **Tổng hợp logic**: Kết hợp thông tin từ nhiều văn bản theo thứ tự ưu tiên:
    - Văn bản mới nhất > văn bản cũ hơn
    - Văn bản cấp cao hơn > văn bản cấp thấp hơn (Luật > Nghị định > Thông tư > Quyết định)
    - Văn bản chuyên biệt > văn bản tổng quát
    - Văn bản còn hiệu lực > văn bản đã hết hiệu lực
-3. **Xử lý mâu thuẫn**: Khi có thông tin khác nhau, nêu rõ sự khác biệt và giải thích căn cứ áp dụng.
+4. **Xử lý mâu thuẫn**: Khi có thông tin khác nhau, nêu rõ sự khác biệt và giải thích căn cứ áp dụng.
+5. **Nhất quán trong cuộc trò chuyện**: Đảm bảo câu trả lời nhất quán với các thông tin đã cung cấp trước đó trong cuộc trò chuyện.
+
+{conversation_history}
 
 ### CẤU TRÚC CÂU TRẢ LỜI BẮT BUỘC - 17 THÀNH PHẦN
 **Format chính**: "Theo [tên văn bản + số hiệu + điều khoản cụ thể], thì [nội dung trả lời chi tiết]."
@@ -98,70 +147,7 @@ Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam
         return prompt
     
     def generate_answer(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        start_time = time.time()
-        
-        # Bước 1: Retrieval - lấy thông tin liên quan
-        retrieval_result = self.retrieval.retrieve(query, use_cache=False)  # Tắt cache vì đã check ở endpoint
-        context_items = retrieval_result.get("context_items", [])
-        retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
-        retrieval_source = retrieval_result.get("source", "unknown")  # Đổi tên biến để tránh nhầm lẫn
-        retrieval_time = retrieval_result.get("execution_time", 0)
-        
-        # Nếu không có context nào được tìm thấy
-        if not context_items:
-            no_info_answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu. Vui lòng thử cách diễn đạt khác hoặc hỏi một câu hỏi khác về chính sách người có công."
-            return {
-                "answer": no_info_answer,
-                "source": "no_context",
-                "retrieved_chunks": [],
-                "retrieval_time": retrieval_time,
-                "generation_time": 0,
-                "total_time": time.time() - start_time
-            }
-        
-        # Bước 2: Generation - tạo câu trả lời
-        gen_start_time = time.time()
-        
-        try:
-            # Tạo prompt
-            prompt = self._create_prompt(query, context_items)
-            print("Prompt gửi đến Gemini:", prompt)
-            
-            # Gọi Gemini API
-            response = self.gemini_client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt
-            )
-            
-            answer = response.text
-            generation_time = time.time() - gen_start_time
-            
-            # Bước 3: Caching - lưu kết quả vào cache nếu chưa có
-            if retrieval_source != "cache" and answer:
-                relevance_scores = retrieval_result.get("relevance_scores", {})
-                cache_id = self.retrieval.add_to_cache(query, answer, retrieved_chunks, relevance_scores)
-            
-            return {
-                "answer": answer,
-                "source": "generated",
-                "retrieved_chunks": retrieved_chunks,
-                "retrieval_time": retrieval_time,
-                "generation_time": generation_time,
-                "total_time": time.time() - start_time
-            }
-        
-        except Exception as e:
-            print(f"Lỗi khi gọi Gemini API: {str(e)}")
-            error_answer = "Xin lỗi, tôi đang gặp sự cố khi xử lý yêu cầu của bạn. Vui lòng thử lại sau."
-            
-            return {
-                "answer": error_answer,
-                "source": "error",
-                "error": str(e),
-                "retrieved_chunks": retrieved_chunks,
-                "retrieval_time": retrieval_time,
-                "generation_time": time.time() - gen_start_time,
-                "total_time": time.time() - start_time
-            }
+        # Method này dùng làm wrapper để giữ backward compatibility
+        return self.generate_answer_with_context(query, [], [], use_cache)
 
 generation_service = GenerationService()

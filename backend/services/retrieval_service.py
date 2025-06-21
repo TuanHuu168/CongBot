@@ -5,9 +5,11 @@ import os
 import re
 from typing import List, Dict, Tuple, Optional, Any
 from datetime import datetime
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import TOP_K, MAX_TOKENS_PER_DOC
+from config import TOP_K, MAX_TOKENS_PER_DOC, EMBEDDING_MODEL_NAME
 from database.chroma_client import chroma_client
 from database.mongodb_client import mongodb_client
 from models.cache import CacheModel, CacheCreate, CacheStatus
@@ -20,285 +22,204 @@ class RetrievalService:
         self.db = mongodb_client.get_database()
         self.text_cache_collection = self.db.text_cache
         
+        # Log thông tin khởi tạo
+        print(f"RetrievalService khởi tạo với embedding model: {EMBEDDING_MODEL_NAME}")
+        
+        # Kiểm tra cache collections
         try:
             cache_count = self.text_cache_collection.count_documents({})
-            print(f"Cache collection hiện có {cache_count} documents")
+            print(f"MongoDB cache collection: {cache_count} documents")
             
-            indexes = list(self.text_cache_collection.list_indexes())
-            print(f"Cache collection có {len(indexes)} indexes")
-            
-            try:
-                cache_collection = self.chroma.get_cache_collection()
-                if cache_collection:
-                    chroma_count = cache_collection.count()
-                    print(f"ChromaDB cache collection có {chroma_count} documents")
-            except Exception as e:
-                print(f"Không thể lấy thông tin ChromaDB cache: {str(e)}")
-                
+            cache_collection = self.chroma.get_cache_collection()
+            if cache_collection:
+                chroma_count = cache_collection.count()
+                print(f"ChromaDB cache collection: {chroma_count} documents")
         except Exception as e:
-            print(f"Lỗi khi kiểm tra cache collection: {str(e)}")
+            print(f"Lỗi kiểm tra cache: {str(e)}")
     
     def _normalize_question(self, query: str) -> str:
-        # Loại bỏ dấu câu
+        """Chuẩn hóa câu hỏi để so sánh"""
         normalized = re.sub(r'[.,;:!?()"\']', '', query.lower())
-
-        # Loại bỏ khoảng trắng thừa
-        normalized = re.sub(r'\s+', ' ', normalized).strip()
-        return normalized
+        return re.sub(r'\s+', ' ', normalized).strip()
     
     def _extract_keywords(self, query: str) -> List[str]:
-        # Đây là bản triển khai đơn giản, có thể cải thiện bằng NLP
+        """Trích xuất từ khóa từ câu hỏi"""
         normalized = self._normalize_question(query)
-        # Chỉ lấy các từ có độ dài >= 3
         keywords = [word for word in normalized.split() if len(word) >= 3]
-        # Loại bỏ các từ trùng lặp
         return list(set(keywords))
     
     def _format_context(self, results: Dict[str, Any]) -> Tuple[List[str], List[str]]:
+        """Format kết quả retrieval thành context và chunks"""
         context_items = []
         retrieved_chunks = []
         
         if results.get("documents") and len(results["documents"]) > 0:
-            documents = results["documents"][0]  # Lấy kết quả của query đầu tiên
+            documents = results["documents"][0]
             metadatas = results["metadatas"][0]
             
-            for i, (doc, meta) in enumerate(zip(documents, metadatas)):
-                # Bỏ tiền tố "passage: " nếu có
+            for doc, meta in zip(documents, metadatas):
+                # Loại bỏ prefix "passage: "
                 if doc.startswith("passage: "):
                     doc = doc[9:]
                 
-                # Xây dựng thông tin nguồn dựa trên metadata
+                # Tạo thông tin nguồn
                 source_info = f"(Nguồn: {meta.get('doc_type', '')} {meta.get('doc_id', '')}"
-                if "effective_date" in meta:
-                    source_info += f", có hiệu lực từ {meta.get('effective_date', '')}"
+                if meta.get('effective_date'):
+                    source_info += f", có hiệu lực từ {meta['effective_date']}"
                 source_info += ")"
                 
-                # Lưu chunk_id
+                # Lưu chunk_id và context
                 if 'chunk_id' in meta:
                     retrieved_chunks.append(meta['chunk_id'])
                 
-                # Tạo một mục context với nội dung và nguồn
-                context_item = f"{doc} {source_info}"
-                context_items.append(context_item)
+                context_items.append(f"{doc} {source_info}")
         
         return context_items, retrieved_chunks
     
     def _check_cache(self, query: str) -> Optional[Dict[str, Any]]:
-        """
-        Kiểm tra cache dựa trên ngữ nghĩa (semantic) của câu hỏi.
-        """
-        print(f"Đang kiểm tra cache cho query: '{query}'")
+        """Kiểm tra cache cho câu hỏi"""
+        print(f"Kiểm tra cache cho: '{query}'")
         
-        # 1. Chuẩn hóa câu hỏi
         normalized_query = self._normalize_question(query)
-        print(f"Normalized query: '{normalized_query}'")
         
         try:
-            # 2. Kiểm tra exact match trong MongoDB (phương pháp 1)
-            print(f"Đang kiểm tra exact match trong MongoDB (phương pháp 1)...")
-            # Thêm điều kiện validityStatus nếu có trong schema
+            # 1. Exact match trong MongoDB
             exact_match = self.text_cache_collection.find_one({
-                "normalizedQuestion": normalized_query,
+                "$or": [
+                    {"normalizedQuestion": normalized_query},
+                    {"questionText": query}
+                ],
                 "validityStatus": CacheStatus.VALID
             })
             
             if exact_match:
-                print(f"Tìm thấy exact match trong cache cho query: '{query}'")
-                # Cập nhật hitCount và lastUsed (nếu có)
-                try:
-                    self.text_cache_collection.update_one(
-                        {"_id": exact_match["_id"]},
-                        {
-                            "$inc": {"hitCount": 1},
-                            "$set": {"lastUsed": datetime.now()}
-                        }
-                    )
-                except Exception as e:
-                    print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
-                    
+                print("Tìm thấy exact match trong MongoDB cache")
+                self._update_cache_usage(exact_match["_id"])
                 return dict(exact_match)
+            
+            # 2. Semantic search trong ChromaDB
+            print("Không có exact match, thực hiện semantic search...")
+            cache_collection = self.chroma.get_cache_collection()
+            
+            if not cache_collection:
+                print("Không thể lấy cache collection")
+                return None
+            
+            query_text = f"query: {query}"
+            cache_results = cache_collection.query(
+                query_texts=[query_text],
+                n_results=1,
+                include=["documents", "metadatas", "distances"]
+            )
+            
+            if (cache_results["ids"] and len(cache_results["ids"][0]) > 0 and
+                cache_results["distances"] and len(cache_results["distances"][0]) > 0):
                 
-            # 3. Kiểm tra exact match trong MongoDB (phương pháp 2 - chuỗi chính xác)
-            print(f"Đang kiểm tra exact match (phương pháp 2)...")
-            exact_match_raw = self.text_cache_collection.find_one({
-                "questionText": query,
-                "validityStatus": CacheStatus.VALID
-            })
-            
-            if exact_match_raw:
-                print(f"Tìm thấy exact match (raw) trong cache cho query: '{query}'")
-                # Cập nhật hitCount và lastUsed (nếu có)
-                try:
-                    self.text_cache_collection.update_one(
-                        {"_id": exact_match_raw["_id"]},
-                        {
-                            "$inc": {"hitCount": 1},
-                            "$set": {"lastUsed": datetime.now()}
-                        }
-                    )
-                except Exception as e:
-                    print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
-                    
-                return dict(exact_match_raw)
-            
-            print("Không tìm thấy exact match, thực hiện semantic search...")
-            
-            # 4. Kiểm tra semantic match trong ChromaDB
-            try:
-                print("Đang kiểm tra cache trong ChromaDB...")
-                # Định dạng query theo chuẩn
-                query_text = f"query: {query}"
+                cache_id = cache_results["ids"][0][0]
+                distance = cache_results["distances"][0][0]
+                similarity_score = 1.0 - min(distance, 1.0)
                 
-                # Tìm kiếm trong collection cache_questions
-                try:
-                    cache_collection = self.chroma.get_or_create_collection(
-                        "cache_questions",
-                        self.chroma.embedding_function
-                    )
-                    
-                    if cache_collection:
-                        # Thực hiện similarity search
-                        cache_results = cache_collection.query(
-                            query_texts=[query_text],
-                            n_results=1,  # Chỉ lấy kết quả tương đồng nhất
-                            include=["documents", "metadatas", "distances"]
-                        )
+                print(f"ChromaDB semantic match: score={similarity_score:.4f}")
+                
+                # Ngưỡng tương đồng
+                if similarity_score >= 0.85:
+                    metadata = cache_results["metadatas"][0][0] if cache_results["metadatas"] else {}
+                    if metadata.get("validityStatus") != "invalid":
+                        cache_result = self.text_cache_collection.find_one({
+                            "cacheId": cache_id,
+                            "validityStatus": CacheStatus.VALID
+                        })
                         
-                        # Kiểm tra xem có kết quả nào không
-                        if (cache_results["ids"] and len(cache_results["ids"][0]) > 0 and
-                            cache_results["distances"] and len(cache_results["distances"][0]) > 0):
-                            
-                            # Lấy cache_id và distance
-                            cache_id = cache_results["ids"][0][0]
-                            distance = cache_results["distances"][0][0]
-                            
-                            # Chuyển đổi distance thành similarity score
-                            similarity_score = 1.0 - min(distance, 1.0)
-                            
-                            # Ngưỡng tương đồng (có thể điều chỉnh)
-                            SIMILARITY_THRESHOLD = 0.85
-                            
-                            print(f"ChromaDB cache match: id={cache_id}, score={similarity_score:.4f}")
-                            
-                            # Kiểm tra xem độ tương đồng có vượt ngưỡng không
-                            if similarity_score >= SIMILARITY_THRESHOLD:
-                                # Kiểm tra metadata để đảm bảo cache hợp lệ
-                                metadata = cache_results["metadatas"][0][0] if cache_results["metadatas"] else {}
-                                if metadata.get("validityStatus", "") != "invalid":
-                                    # Lấy thông tin cache từ MongoDB, thêm điều kiện validityStatus
-                                    cache_result = self.text_cache_collection.find_one({
-                                        "cacheId": cache_id,
-                                        "validityStatus": CacheStatus.VALID
-                                    })
-                                    
-                                    if cache_result:
-                                        print(f"Tìm thấy semantic match trong cache với score {similarity_score:.4f}")
-                                        # Cập nhật hitCount và lastUsed
-                                        try:
-                                            self.text_cache_collection.update_one(
-                                                {"_id": cache_result["_id"]},
-                                                {
-                                                    "$inc": {"hitCount": 1},
-                                                    "$set": {"lastUsed": datetime.now()}
-                                                }
-                                            )
-                                        except Exception as e:
-                                            print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
-                                        
-                                        return dict(cache_result)
-                                    else:
-                                        print(f"Tìm thấy trong ChromaDB nhưng không tìm thấy trong MongoDB hoặc cache không hợp lệ: {cache_id}")
-                    else:
-                        print("Không thể tạo cache collection")
-                    
-                except Exception as ce:
-                    print(f"Lỗi khi truy vấn cache collection trong ChromaDB: {str(ce)}")
-                
-                print("Không tìm thấy semantic match, tiếp tục với text search...")
-                
-            except Exception as e:
-                print(f"Lỗi khi thực hiện semantic search: {str(e)}")
+                        if cache_result:
+                            print(f"Tìm thấy semantic match với score {similarity_score:.4f}")
+                            self._update_cache_usage(cache_result["_id"])
+                            return dict(cache_result)
+            
+            print("Không tìm thấy cache phù hợp")
+            return None
             
         except Exception as e:
-            print(f"Lỗi khi kiểm tra cache: {str(e)}")
-        
-        return None
+            print(f"Lỗi kiểm tra cache: {str(e)}")
+            return None
+    
+    def _update_cache_usage(self, cache_id):
+        """Cập nhật thống kê sử dụng cache"""
+        try:
+            self.text_cache_collection.update_one(
+                {"_id": cache_id},
+                {
+                    "$inc": {"hitCount": 1},
+                    "$set": {"lastUsed": datetime.now()}
+                }
+            )
+        except Exception as e:
+            print(f"Lỗi cập nhật cache usage: {str(e)}")
     
     def _extract_document_ids(self, chunk_ids: List[str]) -> List[str]:
+        """Trích xuất document IDs từ chunk IDs"""
         doc_ids = []
         for chunk_id in chunk_ids:
-            # Định dạng chunk_id: {doc_id}_{chunk_specific_part}
             parts = chunk_id.split('_', 1)
             if len(parts) > 0:
                 doc_id_parts = []
-                for part in parts[:-1]:  # Bỏ phần cuối cùng (chunk specific)
+                for part in parts[:-1]:
                     doc_id_parts.append(part)
                 doc_id = "_".join(doc_id_parts)
                 if doc_id not in doc_ids:
                     doc_ids.append(doc_id)
-        
         return doc_ids
     
     def _create_cache_entry(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
-        # Tạo cache ID ngẫu nhiên
+        """Tạo entry cache mới"""
         cache_id = f"cache_{int(time.time() * 1000)}"
+        print(f"Tạo cache entry: {cache_id}")
         
-        print(f"Tạo cache entry mới với ID {cache_id}")
-        
-        # Tạo danh sách tài liệu liên quan với điểm số
-        relevant_documents = []
-        for chunk_id in chunks:
-            score = relevance_scores.get(chunk_id, 0.5)  # Mặc định 0.5 nếu không có điểm
-            relevant_documents.append({"chunkId": chunk_id, "score": score})
-        
-        # Trích xuất ID văn bản
+        # Chuẩn bị dữ liệu
+        relevant_documents = [
+            {"chunkId": chunk_id, "score": relevance_scores.get(chunk_id, 0.5)}
+            for chunk_id in chunks
+        ]
         doc_ids = self._extract_document_ids(chunks)
-        
-        # Trích xuất từ khóa
         keywords = self._extract_keywords(query)
         
-        # Tạo cache entry - thêm trường validityStatus
         cache_data = {
             "cacheId": cache_id,
             "questionText": query,
             "normalizedQuestion": self._normalize_question(query),
             "answer": answer,
             "relevantDocuments": relevant_documents,
-            "validityStatus": CacheStatus.VALID,  # Thêm trường validityStatus
+            "validityStatus": CacheStatus.VALID,
             "relatedDocIds": doc_ids,
             "keywords": keywords,
             "hitCount": 0,
             "createdAt": datetime.now(),
             "updatedAt": datetime.now(),
             "lastUsed": datetime.now(),
-            "expiresAt": None  # Hoặc có thể thêm thời gian hết hạn
+            "expiresAt": None
         }
         
-        # Lưu vào MongoDB
         try:
+            # Lưu vào MongoDB
             self.text_cache_collection.insert_one(cache_data)
-            print(f"Đã lưu cache entry vào MongoDB")
+            print("Đã lưu cache vào MongoDB")
+            
+            # Lưu vào ChromaDB
+            self._add_to_chroma_cache(cache_id, query, doc_ids)
+            return cache_id
+            
         except Exception as e:
-            print(f"Lỗi khi lưu cache vào MongoDB: {str(e)}")
+            print(f"Lỗi tạo cache: {str(e)}")
             return ""
-        
-        # Tạo vector embedding và lưu vào ChromaDB
-        success = self._add_to_chroma_cache(cache_id, query, doc_ids)
-        if not success:
-            print("Không thể thêm vào ChromaDB cache, nhưng vẫn lưu trong MongoDB")
-        
-        return cache_id
     
     def _add_to_chroma_cache(self, cache_id: str, query: str, related_doc_ids: List[str]) -> bool:
+        """Thêm cache vào ChromaDB"""
         query_text = f"query: {query}"
-        
         metadata = {
             "validityStatus": str(CacheStatus.VALID),
             "relatedDocIds": ",".join(related_doc_ids) if related_doc_ids else ""
         }
         
         try:
-            # Sử dụng add_documents_to_cache
             success = self.chroma.add_documents_to_cache(
                 ids=[cache_id],
                 documents=[query_text],
@@ -306,110 +227,63 @@ class RetrievalService:
             )
             
             if success:
-                print(f"Đã thêm cache entry vào ChromaDB thành công")
+                print("Đã thêm cache vào ChromaDB")
                 return True
             else:
-                print("Không thể thêm cache vào ChromaDB")
+                print("Lỗi thêm cache vào ChromaDB")
                 return False
+                
         except Exception as e:
-            print(f"Lỗi khi thêm cache vào ChromaDB: {str(e)}")
+            print(f"Lỗi ChromaDB cache: {str(e)}")
             return False
     
-    def _invalidate_cache_for_document(self, doc_id: str) -> int:
-        """Vô hiệu hóa cache liên quan đến một văn bản cụ thể"""
-        result = self.text_cache_collection.update_many(
-            {"relatedDocIds": doc_id},
-            {"$set": {"validityStatus": CacheStatus.INVALID}}
-        )
-        
-        # Đánh dấu là invalid trong ChromaDB
-        try:
-            cache_collection = self.chroma.client.get_collection(
-                name="cache_questions",
-                embedding_function=self.chroma.embedding_function
-            )
-            
-            # Lấy tất cả cache IDs bị ảnh hưởng
-            affected_caches = self.text_cache_collection.find(
-                {"relatedDocIds": doc_id},
-                {"cacheId": 1}
-            )
-            
-            cache_ids = [cache["cacheId"] for cache in affected_caches]
-            
-            # Cập nhật metadata trong ChromaDB
-            for cache_id in cache_ids:
-                try:
-                    cache_collection.update(
-                        ids=[cache_id],
-                        metadatas=[{"validityStatus": CacheStatus.INVALID}]
-                    )
-                except Exception as e:
-                    print(f"Lỗi khi cập nhật cache {cache_id} trong ChromaDB: {str(e)}")
-        
-        except Exception as e:
-            print(f"Lỗi khi vô hiệu hóa cache trong ChromaDB: {str(e)}")
-        
-        return result.modified_count
-    
     def retrieve(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
+        """Thực hiện retrieval chính"""
         start_time = time.time()
+        print(f"Bắt đầu retrieval với embedding model: {EMBEDDING_MODEL_NAME}")
         
-        # Kiểm tra cache nếu cần
+        # Kiểm tra cache
         if use_cache:
-            try:
-                print("Bắt đầu kiểm tra cache...")
-                cache_result = self._check_cache(query)
-                if cache_result:
-                    print("Tìm thấy kết quả trong cache, trả về kết quả cache.")
-                    
-                    # Lấy retrieved_chunks từ relevantDocuments nếu có
-                    retrieved_chunks = []
-                    for doc in cache_result.get("relevantDocuments", []):
-                        if "chunkId" in doc:
-                            retrieved_chunks.append(doc["chunkId"])
-                    
-                    return {
-                        "answer": cache_result["answer"],
-                        "context_items": [],  # Không cần context_items khi dùng cache
-                        "retrieved_chunks": retrieved_chunks,  # Thêm retrieved_chunks vào kết quả
-                        "source": "cache",
-                        "cache_id": cache_result["cacheId"],
-                        "execution_time": time.time() - start_time
-                    }
-                    
-                print("Không tìm thấy trong cache, tiếp tục với ChromaDB.")
-            except Exception as e:
-                print(f"Lỗi khi kiểm tra cache, bỏ qua và tiếp tục tìm kiếm: {str(e)}")
-        else:
-            print("Bỏ qua kiểm tra cache theo yêu cầu.")
+            cache_result = self._check_cache(query)
+            if cache_result:
+                print("Trả về kết quả từ cache")
+                retrieved_chunks = [
+                    doc["chunkId"] for doc in cache_result.get("relevantDocuments", [])
+                    if "chunkId" in doc
+                ]
+                
+                return {
+                    "answer": cache_result["answer"],
+                    "context_items": [],
+                    "retrieved_chunks": retrieved_chunks,
+                    "source": "cache",
+                    "cache_id": cache_result["cacheId"],
+                    "execution_time": time.time() - start_time
+                }
         
-        # Nếu không có trong cache, truy vấn từ ChromaDB
+        # Retrieval từ ChromaDB
+        print("Thực hiện retrieval từ ChromaDB")
         try:
-            # Chuẩn bị query
             query_text = f"query: {query}"
-            
-            # Thực hiện truy vấn
             results = self.chroma.search_main(
                 query_text=query_text,
                 n_results=TOP_K,
                 include=["documents", "metadatas", "distances"]
             )
             
-            # Xử lý kết quả
             context_items, retrieved_chunks = self._format_context(results)
             
-            # Tạo map giữa chunk_id và relevance score
+            # Tính relevance scores
             relevance_scores = {}
             if results.get("distances") and len(results["distances"]) > 0:
                 distances = results["distances"][0]
                 metadatas = results["metadatas"][0]
                 
-                for i, (distance, meta) in enumerate(zip(distances, metadatas)):
+                for distance, meta in zip(distances, metadatas):
                     if 'chunk_id' in meta:
-                        # Chuyển đổi distance thành relevance score (1.0 - distance)
-                        # Giả sử khoảng cách cosine, nên càng nhỏ càng tốt
                         relevance_scores[meta['chunk_id']] = 1.0 - min(distance, 1.0)
+            
+            print(f"Retrieval hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} chunks")
             
             return {
                 "context_items": context_items,
@@ -418,8 +292,9 @@ class RetrievalService:
                 "relevance_scores": relevance_scores,
                 "execution_time": time.time() - start_time
             }
+            
         except Exception as e:
-            print(f"Lỗi khi truy vấn ChromaDB: {str(e)}")
+            print(f"Lỗi retrieval: {str(e)}")
             return {
                 "context_items": [],
                 "retrieved_chunks": [],
@@ -428,235 +303,177 @@ class RetrievalService:
                 "execution_time": time.time() - start_time
             }
     
-    def search_keyword(self, keyword: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Tìm kiếm cache bằng từ khóa"""
-        try:
-            # Tìm kiếm trong text_cache với điều kiện validityStatus hợp lệ
-            results = self.text_cache_collection.find(
-                {"$text": {"$search": keyword}, "validityStatus": CacheStatus.VALID},
-                {"score": {"$meta": "textScore"}}
-            ).sort([("score", {"$meta": "textScore"})]).limit(limit)
-            
-            return list(results)
-        except Exception as e:
-            print(f"Lỗi khi tìm kiếm từ khóa: {str(e)}")
-            return []
-    
     def add_to_cache(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
-        """
-        Thêm kết quả mới vào cache
-        
-        Args:
-            query: Câu hỏi gốc
-            answer: Câu trả lời
-            chunks: Danh sách chunk_id đã truy xuất
-            relevance_scores: Điểm số liên quan của mỗi chunk
-            
-        Returns:
-            Cache ID mới hoặc chuỗi rỗng nếu có lỗi
-        """
-        print(f"Đang thêm kết quả vào cache cho query: '{query}'")
+        """Thêm kết quả vào cache"""
+        print(f"Thêm kết quả vào cache cho: '{query}'")
         cache_id = self._create_cache_entry(query, answer, chunks, relevance_scores)
         if cache_id:
-            print(f"Đã thêm vào cache với ID: {cache_id}")
-        else:
-            print("Không thể thêm vào cache")
+            print(f"Cache ID: {cache_id}")
         return cache_id
     
     def invalidate_document_cache(self, doc_id: str) -> int:
-        """Vô hiệu hóa tất cả cache liên quan đến một văn bản"""
-        print(f"Đang vô hiệu hóa cache cho văn bản: {doc_id}")
-        result = self._invalidate_cache_for_document(doc_id)
-        print(f"Đã vô hiệu hóa {result} cache entries")
+        """Vô hiệu hóa cache liên quan đến document"""
+        print(f"Vô hiệu hóa cache cho document: {doc_id}")
+        
+        # Vô hiệu hóa trong MongoDB
+        result = self.text_cache_collection.update_many(
+            {"relatedDocIds": doc_id},
+            {"$set": {"validityStatus": CacheStatus.INVALID}}
+        )
+        
+        # Vô hiệu hóa trong ChromaDB
+        try:
+            affected_caches = list(self.text_cache_collection.find(
+                {"relatedDocIds": doc_id},
+                {"cacheId": 1}
+            ))
+            
+            cache_ids = [cache["cacheId"] for cache in affected_caches]
+            
+            if cache_ids:
+                cache_collection = self.chroma.get_cache_collection()
+                if cache_collection:
+                    for cache_id in cache_ids:
+                        try:
+                            cache_collection.update(
+                                ids=[cache_id],
+                                metadatas=[{"validityStatus": CacheStatus.INVALID}]
+                            )
+                        except Exception as e:
+                            print(f"Lỗi update ChromaDB cache {cache_id}: {str(e)}")
+        
+        except Exception as e:
+            print(f"Lỗi vô hiệu hóa ChromaDB cache: {str(e)}")
         
         # Log activity
         activity_service.log_activity(
             ActivityType.CACHE_INVALIDATE,
-            f"Vô hiệu hóa cache cho văn bản {doc_id}: {result} entries",
+            f"Vô hiệu hóa cache cho document {doc_id}: {result.modified_count} entries",
             metadata={
                 "doc_id": doc_id,
-                "affected_count": result,
+                "affected_count": result.modified_count,
                 "action": "invalidate_document_cache"
             }
         )
         
-        return result
-    
-    def delete_expired_cache(self) -> int:
-        """
-        Xóa tất cả cache đã hết hạn
-        
-        Returns:
-            Số lượng cache entries đã xóa
-        """
-        now = datetime.now()
-        result = self.text_cache_collection.delete_many({
-            "expiresAt": {"$lt": now}
-        })
-        return result.deleted_count
+        print(f"Đã vô hiệu hóa {result.modified_count} cache entries")
+        return result.modified_count
     
     def clear_all_cache(self) -> int:
+        """Xóa toàn bộ cache"""
         try:
-            # In thông tin trước khi xóa từ MongoDB
-            total_before = self.text_cache_collection.count_documents({})
+            print("Đang xóa toàn bộ cache...")
             
-            # Xóa cache từ MongoDB
+            # Xóa MongoDB cache
+            total_before = self.text_cache_collection.count_documents({})
             result = self.text_cache_collection.delete_many({})
             deleted_count = result.deleted_count
             print(f"Đã xóa {deleted_count} entries trong MongoDB")
             
-            # Xác nhận số lượng sau khi xóa
-            total_after = self.text_cache_collection.count_documents({})
-            
-            # Xóa cache từ ChromaDB
+            # Xóa ChromaDB cache
             try:
-                print("Bắt đầu xóa cache từ ChromaDB...")
-                cache_collection = self.chroma.client.get_collection(
-                    name="cache_questions",
-                    embedding_function=self.chroma.embedding_function
-                )
-                
-                # Đếm số lượng cache trong ChromaDB trước khi xóa
-                chroma_count_before = cache_collection.count()
-                
-                # Xóa toàn bộ cache từ ChromaDB collection
-                # Lấy danh sách tất cả các cache ID
-                all_ids = cache_collection.get(include=[])["ids"]
-                if all_ids and len(all_ids) > 0:
-                    cache_collection.delete(ids=all_ids)
-                    print(f"Đã xóa {len(all_ids)} cache entries từ ChromaDB")
-                
-                # Kiểm tra số lượng sau khi xóa
-                chroma_count_after = cache_collection.count()
-                
+                cache_collection = self.chroma.get_cache_collection()
+                if cache_collection:
+                    chroma_count_before = cache_collection.count()
+                    all_ids = cache_collection.get(include=[])["ids"]
+                    if all_ids:
+                        cache_collection.delete(ids=all_ids)
+                        print(f"Đã xóa {len(all_ids)} cache từ ChromaDB")
             except Exception as ce:
-                print(f"Lỗi khi xóa cache từ ChromaDB: {str(ce)}")
+                print(f"Lỗi xóa ChromaDB cache: {str(ce)}")
             
             # Log activity
             activity_service.log_activity(
                 ActivityType.CACHE_CLEAR,
-                f"Đã xóa toàn bộ cache: {deleted_count} entries từ MongoDB",
+                f"Đã xóa toàn bộ cache: {deleted_count} entries",
                 metadata={
                     "mongodb_deleted": deleted_count,
-                    "mongodb_before": total_before,
-                    "mongodb_after": total_after,
-                    "chromadb_before": chroma_count_before if 'chroma_count_before' in locals() else 0,
-                    "chromadb_after": chroma_count_after if 'chroma_count_after' in locals() else 0
+                    "mongodb_before": total_before
                 }
             )
             
             return deleted_count
             
         except Exception as e:
-            print(f"Lỗi khi xóa toàn bộ cache: {str(e)}")
-            # Log error activity
+            print(f"Lỗi xóa cache: {str(e)}")
             activity_service.log_activity(
                 ActivityType.CACHE_CLEAR,
-                f"Lỗi khi xóa cache: {str(e)}",
+                f"Lỗi xóa cache: {str(e)}",
                 metadata={"error": str(e), "success": False}
             )
             raise e
-
+    
     def clear_all_invalid_cache(self) -> int:
+        """Xóa cache không hợp lệ"""
         try:
-            # Log thông tin trước khi xóa
             print("Đang xóa cache không hợp lệ...")
-            print(f"Collection: {self.text_cache_collection is not None}")
             
-            # Đếm số lượng cache không hợp lệ trước khi xóa trong MongoDB
-            invalid_count = self.text_cache_collection.count_documents({"validityStatus": "invalid"})
-            
-            # Lấy danh sách các cache ID không hợp lệ từ MongoDB
-            invalid_cache_ids = []
-            invalid_caches = self.text_cache_collection.find(
+            # Lấy danh sách cache IDs không hợp lệ
+            invalid_caches = list(self.text_cache_collection.find(
                 {"validityStatus": "invalid"}, 
                 {"cacheId": 1}
-            )
+            ))
+            invalid_cache_ids = [cache["cacheId"] for cache in invalid_caches if "cacheId" in cache]
             
-            for cache in invalid_caches:
-                if "cacheId" in cache:
-                    invalid_cache_ids.append(cache["cacheId"])
+            print(f"Tìm thấy {len(invalid_cache_ids)} cache không hợp lệ")
             
-            print(f"Danh sách {len(invalid_cache_ids)} cache IDs không hợp lệ: {invalid_cache_ids}")
-            
-            # Xóa trong MongoDB - chỉ xóa những entry có validityStatus = invalid
+            # Xóa trong MongoDB
             result = self.text_cache_collection.delete_many({"validityStatus": "invalid"})
-            deleted_count_mongo = result.deleted_count
-            print(f"Đã xóa {deleted_count_mongo} entries không hợp lệ trong MongoDB")
+            deleted_count = result.deleted_count
+            print(f"Đã xóa {deleted_count} cache không hợp lệ trong MongoDB")
             
-            # Xóa các cache không hợp lệ từ ChromaDB
-            try:
-                if invalid_cache_ids:
-                    print("Bắt đầu xóa cache không hợp lệ từ ChromaDB...")
-                    cache_collection = self.chroma.client.get_collection(
-                        name="cache_questions",
-                        embedding_function=self.chroma.embedding_function
-                    )
-                    
-                    # Xóa các cache không hợp lệ từ ChromaDB
-                    cache_collection.delete(ids=invalid_cache_ids)
-                    print(f"Đã xóa {len(invalid_cache_ids)} cache không hợp lệ từ ChromaDB")
-                else:
-                    print("Không có cache không hợp lệ để xóa từ ChromaDB")
-                    
-            except Exception as ce:
-                print(f"Lỗi khi xóa cache không hợp lệ từ ChromaDB: {str(ce)}")
+            # Xóa trong ChromaDB
+            if invalid_cache_ids:
+                try:
+                    cache_collection = self.chroma.get_cache_collection()
+                    if cache_collection:
+                        cache_collection.delete(ids=invalid_cache_ids)
+                        print(f"Đã xóa {len(invalid_cache_ids)} cache không hợp lệ trong ChromaDB")
+                except Exception as ce:
+                    print(f"Lỗi xóa ChromaDB invalid cache: {str(ce)}")
             
             # Log activity
             activity_service.log_activity(
                 ActivityType.CACHE_CLEAR,
-                f"Đã xóa cache không hợp lệ: {deleted_count_mongo} entries",
+                f"Đã xóa cache không hợp lệ: {deleted_count} entries",
                 metadata={
-                    "invalid_count": invalid_count,
-                    "deleted_count": deleted_count_mongo,
+                    "deleted_count": deleted_count,
                     "invalid_cache_ids": invalid_cache_ids,
                     "action": "clear_invalid_cache"
                 }
             )
             
-            # Báo cáo kết quả
-            return deleted_count_mongo
+            return deleted_count
             
         except Exception as e:
-            print(f"Lỗi khi xóa cache không hợp lệ: {str(e)}")
-            # Log error
+            print(f"Lỗi xóa cache không hợp lệ: {str(e)}")
             activity_service.log_activity(
                 ActivityType.CACHE_CLEAR,
-                f"Lỗi khi xóa cache không hợp lệ: {str(e)}",
+                f"Lỗi xóa cache không hợp lệ: {str(e)}",
                 metadata={"error": str(e), "success": False}
             )
-            # Raise exception thay vì trả về 0 để FastAPI có thể xử lý lỗi
             raise e
-
-
+    
     def get_cache_stats(self) -> Dict[str, Any]:
-        """
-        Lấy thống kê về cache
-        
-        Returns:
-            Dict chứa thống kê về cache
-        """
+        """Lấy thống kê cache"""
         try:
             total_count = self.text_cache_collection.count_documents({})
             valid_count = self.text_cache_collection.count_documents({"validityStatus": CacheStatus.VALID})
             invalid_count = self.text_cache_collection.count_documents({"validityStatus": CacheStatus.INVALID})
             
-            # Tính hit rate (nếu có trường hitCount)
+            # Tính hit rate
             hits_sum = 0
             try:
-                pipeline = [
-                    {"$group": {"_id": None, "totalHits": {"$sum": "$hitCount"}}}
-                ]
+                pipeline = [{"$group": {"_id": None, "totalHits": {"$sum": "$hitCount"}}}]
                 result = list(self.text_cache_collection.aggregate(pipeline))
                 if result:
                     hits_sum = result[0]["totalHits"]
             except Exception as e:
-                print(f"Lỗi khi tính tổng hitCount: {str(e)}")
+                print(f"Lỗi tính hitCount: {str(e)}")
             
-            # Tính hit rate dựa trên hitCount và tổng số truy vấn (nếu có)
             hit_rate = 0
             if total_count > 0 and hits_sum > 0:
-                hit_rate = hits_sum / (hits_sum + total_count)  # Công thức tạm thời
+                hit_rate = hits_sum / (hits_sum + total_count)
             
             return {
                 "total_count": total_count,
@@ -664,8 +481,9 @@ class RetrievalService:
                 "invalid_count": invalid_count,
                 "hit_rate": hit_rate
             }
+            
         except Exception as e:
-            print(f"Lỗi khi lấy thống kê cache: {str(e)}")
+            print(f"Lỗi lấy cache stats: {str(e)}")
             return {
                 "total_count": 0,
                 "valid_count": 0,

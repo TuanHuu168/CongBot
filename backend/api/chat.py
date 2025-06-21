@@ -53,6 +53,25 @@ async def ask(input: QueryInput):
         start_time = time.time()
         print(f"Processing query: '{input.query}' with session_id: {input.session_id}")
         
+        # Lấy conversation history nếu có session_id
+        conversation_context = []
+        if input.session_id:
+            try:
+                db = mongodb_client.get_database()
+                chat = db.chats.find_one({"_id": ObjectId(input.session_id)})
+                if chat and "exchanges" in chat:
+                    # Lấy 5 exchanges gần nhất để làm context (giới hạn để tránh prompt quá dài)
+                    recent_exchanges = chat["exchanges"][-5:] if len(chat["exchanges"]) > 5 else chat["exchanges"]
+                    for exchange in recent_exchanges:
+                        conversation_context.append({
+                            "question": exchange.get("question", ""),
+                            "answer": exchange.get("answer", "")
+                        })
+                    print(f"Loaded {len(conversation_context)} previous exchanges for context")
+            except Exception as e:
+                print(f"Error loading conversation context: {str(e)}")
+                conversation_context = []
+        
         # 1. Retrieval - lấy thông tin liên quan với cache
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
         source = retrieval_result.get("source", "unknown")
@@ -68,10 +87,15 @@ async def ask(input: QueryInput):
             answer = retrieval_result.get("answer", "")
             print(f"Sử dụng câu trả lời từ cache")
         else:
-            # Nếu không phải từ cache, gọi generation_service
-            print(f"Không tìm thấy trong cache, gọi generation_service")
+            # Nếu không phải từ cache, gọi generation_service với conversation context
+            print(f"Không tìm thấy trong cache, gọi generation_service với conversation context")
             if context_items:
-                generation_result = generation_service.generate_answer(input.query, use_cache=False)
+                generation_result = generation_service.generate_answer_with_context(
+                    input.query, 
+                    context_items, 
+                    conversation_context,
+                    use_cache=False
+                )
                 answer = generation_result.get("answer", "")
                 generation_time = generation_result.get("generation_time", 0)
                 # Cập nhật retrieved_chunks nếu cần
