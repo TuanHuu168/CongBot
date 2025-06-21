@@ -156,62 +156,65 @@ class RetrievalService:
                 
                 # Tìm kiếm trong collection cache_questions
                 try:
-                    cache_collection = self.chroma.client.get_or_create_collection(
-                        name="cache_questions",
-                        embedding_function=self.chroma.embedding_function
+                    cache_collection = self.chroma.get_or_create_collection(
+                        "cache_questions",
+                        self.chroma.embedding_function
                     )
                     
-                    # Thực hiện similarity search
-                    cache_results = cache_collection.query(
-                        query_texts=[query_text],
-                        n_results=1,  # Chỉ lấy kết quả tương đồng nhất
-                        include=["documents", "metadatas", "distances"]
-                    )
-                    
-                    # Kiểm tra xem có kết quả nào không
-                    if (cache_results["ids"] and len(cache_results["ids"][0]) > 0 and
-                        cache_results["distances"] and len(cache_results["distances"][0]) > 0):
+                    if cache_collection:
+                        # Thực hiện similarity search
+                        cache_results = cache_collection.query(
+                            query_texts=[query_text],
+                            n_results=1,  # Chỉ lấy kết quả tương đồng nhất
+                            include=["documents", "metadatas", "distances"]
+                        )
                         
-                        # Lấy cache_id và distance
-                        cache_id = cache_results["ids"][0][0]
-                        distance = cache_results["distances"][0][0]
-                        
-                        # Chuyển đổi distance thành similarity score
-                        similarity_score = 1.0 - min(distance, 1.0)
-                        
-                        # Ngưỡng tương đồng (có thể điều chỉnh)
-                        SIMILARITY_THRESHOLD = 0.85
-                        
-                        print(f"ChromaDB cache match: id={cache_id}, score={similarity_score:.4f}")
-                        
-                        # Kiểm tra xem độ tương đồng có vượt ngưỡng không
-                        if similarity_score >= SIMILARITY_THRESHOLD:
-                            # Kiểm tra metadata để đảm bảo cache hợp lệ
-                            metadata = cache_results["metadatas"][0][0] if cache_results["metadatas"] else {}
-                            if metadata.get("validityStatus", "") != "invalid":
-                                # Lấy thông tin cache từ MongoDB, thêm điều kiện validityStatus
-                                cache_result = self.text_cache_collection.find_one({
-                                    "cacheId": cache_id,
-                                    "validityStatus": CacheStatus.VALID
-                                })
-                                
-                                if cache_result:
-                                    print(f"Tìm thấy semantic match trong cache với score {similarity_score:.4f}")
-                                    # Cập nhật hitCount và lastUsed
-                                    try:
-                                        self.text_cache_collection.update_one(
-                                            {"_id": cache_result["_id"]},
-                                            {
-                                                "$inc": {"hitCount": 1},
-                                                "$set": {"lastUsed": datetime.now()}
-                                            }
-                                        )
-                                    except Exception as e:
-                                        print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
+                        # Kiểm tra xem có kết quả nào không
+                        if (cache_results["ids"] and len(cache_results["ids"][0]) > 0 and
+                            cache_results["distances"] and len(cache_results["distances"][0]) > 0):
+                            
+                            # Lấy cache_id và distance
+                            cache_id = cache_results["ids"][0][0]
+                            distance = cache_results["distances"][0][0]
+                            
+                            # Chuyển đổi distance thành similarity score
+                            similarity_score = 1.0 - min(distance, 1.0)
+                            
+                            # Ngưỡng tương đồng (có thể điều chỉnh)
+                            SIMILARITY_THRESHOLD = 0.85
+                            
+                            print(f"ChromaDB cache match: id={cache_id}, score={similarity_score:.4f}")
+                            
+                            # Kiểm tra xem độ tương đồng có vượt ngưỡng không
+                            if similarity_score >= SIMILARITY_THRESHOLD:
+                                # Kiểm tra metadata để đảm bảo cache hợp lệ
+                                metadata = cache_results["metadatas"][0][0] if cache_results["metadatas"] else {}
+                                if metadata.get("validityStatus", "") != "invalid":
+                                    # Lấy thông tin cache từ MongoDB, thêm điều kiện validityStatus
+                                    cache_result = self.text_cache_collection.find_one({
+                                        "cacheId": cache_id,
+                                        "validityStatus": CacheStatus.VALID
+                                    })
                                     
-                                    return dict(cache_result)
-                                else:
-                                    print(f"Tìm thấy trong ChromaDB nhưng không tìm thấy trong MongoDB hoặc cache không hợp lệ: {cache_id}")
+                                    if cache_result:
+                                        print(f"Tìm thấy semantic match trong cache với score {similarity_score:.4f}")
+                                        # Cập nhật hitCount và lastUsed
+                                        try:
+                                            self.text_cache_collection.update_one(
+                                                {"_id": cache_result["_id"]},
+                                                {
+                                                    "$inc": {"hitCount": 1},
+                                                    "$set": {"lastUsed": datetime.now()}
+                                                }
+                                            )
+                                        except Exception as e:
+                                            print(f"Không thể cập nhật hitCount/lastUsed: {str(e)}")
+                                        
+                                        return dict(cache_result)
+                                    else:
+                                        print(f"Tìm thấy trong ChromaDB nhưng không tìm thấy trong MongoDB hoặc cache không hợp lệ: {cache_id}")
+                    else:
+                        print("Không thể tạo cache collection")
                     
                 except Exception as ce:
                     print(f"Lỗi khi truy vấn cache collection trong ChromaDB: {str(ce)}")
@@ -299,24 +302,28 @@ class RetrievalService:
         
         # Bao gồm validityStatus trong metadata
         metadata = {
-            "validityStatus": str(CacheStatus.VALID),  # Thêm trường validityStatus
+            "validityStatus": str(CacheStatus.VALID),
             "relatedDocIds": ",".join(related_doc_ids) if related_doc_ids else ""
         }
         
         # Sử dụng collection riêng cho cache
         try:
-            cache_collection = self.chroma.client.get_or_create_collection(
-                name="cache_questions",
-                embedding_function=self.chroma.embedding_function
+            cache_collection = self.chroma.get_or_create_collection(
+                "cache_questions",
+                self.chroma.embedding_function
             )
             
-            cache_collection.add(
-                ids=[cache_id],
-                documents=[query_text],
-                metadatas=[metadata]
-            )
-            print(f"Đã thêm cache entry vào ChromaDB thành công")
-            return True
+            if cache_collection:
+                cache_collection.add(
+                    ids=[cache_id],
+                    documents=[query_text],
+                    metadatas=[metadata]
+                )
+                print(f"Đã thêm cache entry vào ChromaDB thành công")
+                return True
+            else:
+                print("Không thể tạo cache collection")
+                return False
         except Exception as e:
             print(f"Lỗi khi thêm cache vào ChromaDB: {str(e)}")
             return False

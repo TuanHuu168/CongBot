@@ -16,9 +16,12 @@ MONGODB_HOST = os.getenv("MONGODB_HOST")
 MONGO_DB_NAME = os.getenv("MONGODB_DATABASE", "chatbot_db")
 MONGO_URI = f"mongodb+srv://{MONGODB_USERNAME}:{MONGODB_PASSWORD}{MONGODB_HOST}/{MONGO_DB_NAME}?retryWrites=true&w=majority"
 
-CHROMA_HOST = os.environ["CHROMA_HOST"]
-CHROMA_PORT = int(os.environ["CHROMA_PORT"])
-CHROMA_COLLECTION = os.environ["COLLECTION_NAME"]
+# ChromaDB Local Configuration
+CHROMA_PERSIST_PATH = os.getenv("CHROMA_PERSIST_PATH", "./chroma_db")
+CHROMA_COLLECTION = os.getenv("COLLECTION_NAME", "law_data")
+
+# Tạo đường dẫn tuyệt đối cho ChromaDB
+CHROMA_PERSIST_DIRECTORY = os.path.join(ROOT_DIR, CHROMA_PERSIST_PATH.lstrip('./'))
 
 EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL")
 USE_GPU = os.getenv("USE_GPU", "True").lower() == "true"
@@ -26,7 +29,7 @@ USE_GPU = os.getenv("USE_GPU", "True").lower() == "true"
 API_HOST = os.getenv("API_HOST")
 API_PORT = int(os.getenv("API_PORT"))
 
-GEMINI_API_KEY = os.environ["GEMINI_API_KEY"]
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL = os.getenv("GEMINI_MODEL")
 
 TOP_K = int(os.getenv("TOP_K"))

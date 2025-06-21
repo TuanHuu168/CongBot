@@ -16,7 +16,7 @@ from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunct
 import re
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import GEMINI_API_KEY, BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, CHROMA_HOST, CHROMA_PORT, CHROMA_COLLECTION, EMBEDDING_MODEL_NAME, USE_GPU
+from config import GEMINI_API_KEY, BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, CHROMA_PERSIST_DIRECTORY, CHROMA_COLLECTION, EMBEDDING_MODEL_NAME, USE_GPU
 from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from database.chroma_client import chroma_client
@@ -186,12 +186,12 @@ JSON:
     def _init_langchain_client(self):
         """Khởi tạo ChromaDB client cho LangChain"""
         try:
-            self.langchain_chroma_client = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+            self.langchain_chroma_client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIRECTORY)
             device = "cuda" if USE_GPU and self._check_gpu() else "cpu"
             self.langchain_embedding_function = SentenceTransformerEmbeddingFunction(
                 model_name=EMBEDDING_MODEL_NAME, device=device
             )
-            print(f"LangChain ChromaDB client initialized: {CHROMA_HOST}:{CHROMA_PORT}")
+            print(f"LangChain ChromaDB client initialized: {CHROMA_PERSIST_DIRECTORY}")
         except Exception as e:
             print(f"Lỗi khởi tạo LangChain ChromaDB client: {str(e)}")
             self.langchain_chroma_client = None

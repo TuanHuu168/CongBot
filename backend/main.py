@@ -46,13 +46,21 @@ async def root():
 @app.get("/status")
 async def status():
     try:
-        from database.chroma_client import chroma_client
+        from database.chroma_client import get_chroma_client
         from database.mongodb_client import mongodb_client
         
         # Kiểm tra ChromaDB
+        chroma_client = get_chroma_client()
         collection = chroma_client.get_collection()
-        collection_count = collection.count()
-        chroma_status = "connected"
+        
+        if collection:
+            collection_count = collection.count()
+            chroma_status = "connected"
+            collection_name = collection.name
+        else:
+            collection_count = 0
+            chroma_status = "disconnected"
+            collection_name = "none"
         
         # Kiểm tra MongoDB
         db = mongodb_client.get_database()
@@ -63,13 +71,14 @@ async def status():
             mongodb_status = f"disconnected: {str(e)}"
         
         return {
-            "status": "ok", 
-            "message": "API đang hoạt động bình thường",
+            "status": "ok" if chroma_status == "connected" else "warning", 
+            "message": "API đang hoạt động bình thường" if chroma_status == "connected" else "API hoạt động nhưng ChromaDB có vấn đề",
             "database": {
                 "chromadb": {
                     "status": chroma_status,
-                    "collection": collection.name,
-                    "documents_count": collection_count
+                    "collection": collection_name,
+                    "documents_count": collection_count,
+                    "storage_type": "local_persistent"
                 },
                 "mongodb": {
                     "status": mongodb_status
@@ -77,11 +86,13 @@ async def status():
             }
         }
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return {
             "status": "error",
             "message": f"API gặp sự cố: {str(e)}",
             "database": {
-                "chromadb": {"status": "disconnected"},
+                "chromadb": {"status": "error", "error": str(e)},
                 "mongodb": {"status": "disconnected"}
             }
         }
