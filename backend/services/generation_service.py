@@ -20,7 +20,7 @@ class GenerationService:
         try:
             # Tạo prompt với conversation context
             prompt = self._create_prompt_with_context(query, context_items, conversation_context or [])
-            print("Prompt gửi đến Gemini với conversation context:", prompt)
+            # print("Prompt gửi đến Gemini với conversation context:", prompt)
             
             # Gọi Gemini API
             response = self.gemini_client.models.generate_content(

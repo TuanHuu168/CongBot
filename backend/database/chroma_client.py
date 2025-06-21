@@ -43,7 +43,23 @@ class ChromaDBClient:
             self.persist_directory = CHROMA_PERSIST_DIRECTORY
             print(f"ChromaDB persist directory: {self.persist_directory}")
 
+            # Debug embedding model
+            print(f"Config EMBEDDING_MODEL_NAME: {EMBEDDING_MODEL_NAME}")
+            if not EMBEDDING_MODEL_NAME:
+                raise ValueError("EMBEDDING_MODEL_NAME is None or empty! Check your .env file")
+
             device = "cuda" if USE_GPU and torch.cuda.is_available() else "cpu"
+            
+            # Test model trước khi tạo embedding function
+            try:
+                from sentence_transformers import SentenceTransformer
+                test_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
+                test_embedding = test_model.encode(["test"])
+                print(f"Model {EMBEDDING_MODEL_NAME} loaded successfully, dimension: {test_embedding.shape[1]}")
+            except Exception as e:
+                print(f"Error loading model {EMBEDDING_MODEL_NAME}: {str(e)}")
+                raise e
+            
             self.embedding_function = SentenceTransformerEmbeddingFunction(
                 model_name=EMBEDDING_MODEL_NAME,
                 device=device

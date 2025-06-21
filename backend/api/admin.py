@@ -24,6 +24,7 @@ from database.chroma_client import chroma_client
 
 # Import config
 from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR
+from config import EMBEDDING_MODEL_NAME
 
 benchmark_progress = {}
 benchmark_results_cache = {}
@@ -164,61 +165,122 @@ async def get_cache_detailed_stats():
 async def clear_cache():
     try:
         print("Bắt đầu xóa toàn bộ cache...")
-        # Đếm số lượng trước khi xóa
-        db = mongodb_client.get_database()
-        before_count = db.text_cache.count_documents({})
-        print(f"Số lượng documents trước khi xóa: {before_count}")
         
-        # Gọi service để xóa
+        # Log thông tin trước khi xóa
+        db = mongodb_client.get_database()
+        mongo_before = db.text_cache.count_documents({})
+        
+        # Kiểm tra ChromaDB trước khi xóa
+        chroma_before = 0
+        try:
+            cache_collection = retrieval_service.chroma.get_cache_collection()
+            if cache_collection:
+                chroma_before = cache_collection.count()
+        except Exception as e:
+            print(f"Không thể đếm ChromaDB cache: {str(e)}")
+        
+        print(f"Trước khi xóa - MongoDB: {mongo_before}, ChromaDB: {chroma_before}")
+        
+        # Gọi service để xóa toàn bộ
         deleted_count = retrieval_service.clear_all_cache()
         
-        # Đếm lại sau khi xóa
-        after_count = db.text_cache.count_documents({})
-        print(f"Số lượng documents sau khi xóa: {after_count}")
+        # Kiểm tra sau khi xóa
+        mongo_after = db.text_cache.count_documents({})
+        chroma_after = 0
+        try:
+            cache_collection = retrieval_service.chroma.get_cache_collection()
+            if cache_collection:
+                chroma_after = cache_collection.count()
+        except Exception as e:
+            print(f"Không thể đếm ChromaDB cache sau xóa: {str(e)}")
         
-        # Kiểm tra xem có xóa thành công không
-        if before_count == after_count and before_count > 0:
-            print("Xóa qua service không thành công, thử xóa trực tiếp từ MongoDB...")
-            result = db.text_cache.delete_many({})
-            direct_deleted = result.deleted_count
-            after_direct = db.text_cache.count_documents({})
-            print(f"Đã xóa trực tiếp {direct_deleted} entries")
-            
-            return {
-                "message": f"Đã xóa {direct_deleted} cache entries bằng phương pháp trực tiếp",
-                "deleted_count": direct_deleted,
-                "verification": {
-                    "before_count": before_count,
-                    "after_service": after_count,
-                    "after_direct": after_direct
-                }
+        print(f"Sau khi xóa - MongoDB: {mongo_after}, ChromaDB: {chroma_after}")
+        
+        # Log activity với thông tin chi tiết
+        activity_service.log_activity(
+            ActivityType.CACHE_CLEAR,
+            f"Admin xóa toàn bộ cache: MongoDB {deleted_count} entries, ChromaDB {chroma_before - chroma_after} entries",
+            metadata={
+                "action": "admin_clear_all_cache",
+                "mongodb_before": mongo_before,
+                "mongodb_after": mongo_after,
+                "mongodb_deleted": deleted_count,
+                "chromadb_before": chroma_before,
+                "chromadb_after": chroma_after,
+                "chromadb_deleted": chroma_before - chroma_after
             }
+        )
         
         return {
-            "message": f"Đã xóa {deleted_count} cache entries",
-            "deleted_count": deleted_count,
-            "verification": {
-                "before_count": before_count,
-                "after_count": after_count,
-                "verified_deleted": before_count - after_count
-            }
+            "message": f"Đã xóa toàn bộ cache thành công",
+            "mongodb": {
+                "deleted_count": deleted_count,
+                "before": mongo_before,
+                "after": mongo_after
+            },
+            "chromadb": {
+                "before": chroma_before,
+                "after": chroma_after,
+                "deleted": chroma_before - chroma_after
+            },
+            "total_deleted": deleted_count + (chroma_before - chroma_after)
         }
+        
     except Exception as e:
         print(f"Error in clear_cache: {str(e)}")
+        activity_service.log_activity(
+            ActivityType.CACHE_CLEAR,
+            f"Lỗi xóa cache: {str(e)}",
+            metadata={"error": str(e), "success": False}
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/clear-invalid-cache")
 async def clear_invalid_cache():
     try:
-        # Sử dụng phương thức mới từ retrieval_service
+        print("Bắt đầu xóa cache không hợp lệ...")
+        
+        # Đếm cache không hợp lệ trước khi xóa
+        db = mongodb_client.get_database()
+        invalid_before = db.text_cache.count_documents({"validityStatus": "invalid"})
+        print(f"Tìm thấy {invalid_before} cache không hợp lệ")
+        
+        # Gọi service để xóa
         deleted_count = retrieval_service.clear_all_invalid_cache()
+        
+        # Kiểm tra sau khi xóa
+        invalid_after = db.text_cache.count_documents({"validityStatus": "invalid"})
+        print(f"Còn lại {invalid_after} cache không hợp lệ")
+        
+        # Log activity
+        activity_service.log_activity(
+            ActivityType.CACHE_CLEAR,
+            f"Admin xóa cache không hợp lệ: {deleted_count} entries",
+            metadata={
+                "action": "admin_clear_invalid_cache",
+                "invalid_before": invalid_before,
+                "invalid_after": invalid_after,
+                "deleted_count": deleted_count
+            }
+        )
         
         return {
             "message": f"Đã xóa {deleted_count} cache entries không hợp lệ",
-            "deleted_count": deleted_count
+            "deleted_count": deleted_count,
+            "verification": {
+                "invalid_before": invalid_before,
+                "invalid_after": invalid_after,
+                "actually_deleted": invalid_before - invalid_after
+            }
         }
+        
     except Exception as e:
         print(f"Error in clear_invalid_cache: {str(e)}")
+        activity_service.log_activity(
+            ActivityType.CACHE_CLEAR,
+            f"Lỗi xóa cache không hợp lệ: {str(e)}",
+            metadata={"error": str(e), "success": False}
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/invalidate-cache/{doc_id}")
@@ -234,49 +296,144 @@ async def invalidate_cache(doc_id: str):
     except Exception as e:
         print(f"Error in invalidate_cache: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/cache/detailed-status")
+async def get_cache_detailed_status():
+    """Lấy thông tin chi tiết về cache trong cả MongoDB và ChromaDB"""
+    try:
+        # MongoDB stats
+        db = mongodb_client.get_database()
+        mongo_total = db.text_cache.count_documents({})
+        mongo_valid = db.text_cache.count_documents({"validityStatus": "valid"})
+        mongo_invalid = db.text_cache.count_documents({"validityStatus": "invalid"})
+        
+        # ChromaDB stats
+        chroma_total = 0
+        chroma_error = None
+        try:
+            cache_collection = retrieval_service.chroma.get_cache_collection()
+            if cache_collection:
+                chroma_total = cache_collection.count()
+            else:
+                chroma_error = "Cache collection not found"
+        except Exception as e:
+            chroma_error = str(e)
+        
+        # Retrieval service stats
+        service_stats = retrieval_service.get_cache_stats()
+        
+        return {
+            "mongodb": {
+                "total": mongo_total,
+                "valid": mongo_valid,
+                "invalid": mongo_invalid,
+                "status": "connected"
+            },
+            "chromadb": {
+                "total": chroma_total,
+                "status": "connected" if not chroma_error else "error",
+                "error": chroma_error
+            },
+            "service_stats": service_stats,
+            "sync_status": {
+                "in_sync": mongo_total == chroma_total,
+                "difference": abs(mongo_total - chroma_total)
+            }
+        }
+        
+    except Exception as e:
+        print(f"Error getting detailed cache status: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
 
-# Thêm endpoint mới để xóa cache đã hết hạn
 @router.post("/delete-expired-cache")
 async def delete_expired_cache():
     try:
+        print("Admin yêu cầu xóa cache đã hết hạn...")
+        
+        # Đếm trước khi xóa
+        db = mongodb_client.get_database()
+        from datetime import datetime
+        expired_before = db.text_cache.count_documents({"expiresAt": {"$lt": datetime.now()}})
+        
+        # Thực hiện xóa
         deleted_count = retrieval_service.delete_expired_cache()
+        
+        # Log activity
+        activity_service.log_activity(
+            ActivityType.CACHE_CLEAR,
+            f"Admin xóa cache đã hết hạn: {deleted_count} entries",
+            metadata={
+                "action": "delete_expired_cache",
+                "expired_before": expired_before,
+                "deleted_count": deleted_count
+            }
+        )
         
         return {
             "message": f"Đã xóa {deleted_count} cache entries đã hết hạn",
-            "deleted_count": deleted_count
+            "deleted_count": deleted_count,
+            "expired_found": expired_before
         }
+        
     except Exception as e:
         print(f"Error in delete_expired_cache: {str(e)}")
+        activity_service.log_activity(
+            ActivityType.CACHE_CLEAR,
+            f"Lỗi xóa expired cache: {str(e)}",
+            metadata={"error": str(e), "success": False}
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
-# Thêm endpoint để tìm kiếm cache theo từ khóa
 @router.get("/search-cache/{keyword}")
 async def search_cache(keyword: str, limit: int = 10):
     try:
-        results = retrieval_service.search_keyword(keyword, limit)
+        print(f"Admin tìm kiếm cache với từ khóa: '{keyword}'")
+        
+        if not keyword.strip():
+            raise HTTPException(status_code=400, detail="Từ khóa không được để trống")
+        
+        # Gọi service search
+        results = retrieval_service.search_keyword(keyword.strip(), limit)
         
         # Chuẩn bị dữ liệu trả về
         cache_results = []
         for result in results:
-            # Chuyển đổi ObjectId sang string
-            result["_id"] = str(result["_id"])
-            # Chuyển đổi datetime sang string nếu có
-            if "createdAt" in result:
-                result["createdAt"] = result["createdAt"].isoformat()
-            if "updatedAt" in result:
-                result["updatedAt"] = result["updatedAt"].isoformat()
-            if "lastUsed" in result:
-                result["lastUsed"] = result["lastUsed"].isoformat()
-            if "expiresAt" in result and result["expiresAt"]:
-                result["expiresAt"] = result["expiresAt"].isoformat()
+            try:
+                # Chuyển đổi ObjectId và datetime
+                processed_result = {
+                    "id": str(result["_id"]),
+                    "cacheId": result.get("cacheId", ""),
+                    "questionText": result.get("questionText", ""),
+                    "answer": result.get("answer", "")[:200] + "..." if len(result.get("answer", "")) > 200 else result.get("answer", ""),
+                    "validityStatus": result.get("validityStatus", ""),
+                    "hitCount": result.get("hitCount", 0),
+                    "keywords": result.get("keywords", []),
+                    "relatedDocIds": result.get("relatedDocIds", [])
+                }
                 
-            cache_results.append(result)
+                # Xử lý datetime fields
+                for date_field in ["createdAt", "updatedAt", "lastUsed", "expiresAt"]:
+                    if date_field in result and result[date_field]:
+                        processed_result[date_field] = result[date_field].isoformat()
+                    else:
+                        processed_result[date_field] = None
+                
+                cache_results.append(processed_result)
+                
+            except Exception as e:
+                print(f"Lỗi xử lý cache result: {str(e)}")
+                continue
         
         return {
             "keyword": keyword,
+            "limit": limit,
             "count": len(cache_results),
+            "total_found": len(results),
             "results": cache_results
         }
+        
+    except HTTPException as he:
+        raise he
     except Exception as e:
         print(f"Error in search_cache: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -738,14 +895,21 @@ async def list_benchmark_files():
 @router.post("/invalidate-cache/{doc_id}")
 async def invalidate_cache(doc_id: str):
     try:
+        print(f"Admin yêu cầu vô hiệu hóa cache cho document: {doc_id}")
         count = retrieval_service.invalidate_document_cache(doc_id)
         
         return {
             "message": f"Đã vô hiệu hóa {count} cache entries liên quan đến văn bản {doc_id}",
-            "affected_count": count
+            "affected_count": count,
+            "doc_id": doc_id
         }
     except Exception as e:
         print(f"Error in invalidate_cache: {str(e)}")
+        activity_service.log_activity(
+            ActivityType.CACHE_INVALIDATE,
+            f"Lỗi vô hiệu hóa cache cho {doc_id}: {str(e)}",
+            metadata={"error": str(e), "doc_id": doc_id, "success": False}
+        )
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/upload-document")

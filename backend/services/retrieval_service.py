@@ -491,6 +491,88 @@ class RetrievalService:
                 "hit_rate": 0,
                 "error": str(e)
             }
+            
+    def delete_expired_cache(self) -> int:
+        """Xóa tất cả cache đã hết hạn"""
+        try:
+            print("Đang xóa cache đã hết hạn...")
+            now = datetime.now()
+            
+            # Tìm cache đã hết hạn
+            expired_caches = list(self.text_cache_collection.find(
+                {"expiresAt": {"$lt": now}},
+                {"cacheId": 1}
+            ))
+            expired_cache_ids = [cache["cacheId"] for cache in expired_caches if "cacheId" in cache]
+            
+            print(f"Tìm thấy {len(expired_cache_ids)} cache đã hết hạn")
+            
+            # Xóa trong MongoDB
+            result = self.text_cache_collection.delete_many({"expiresAt": {"$lt": now}})
+            deleted_count = result.deleted_count
+            
+            # Xóa trong ChromaDB
+            if expired_cache_ids:
+                try:
+                    cache_collection = self.chroma.get_cache_collection()
+                    if cache_collection:
+                        cache_collection.delete(ids=expired_cache_ids)
+                        print(f"Đã xóa {len(expired_cache_ids)} expired cache trong ChromaDB")
+                except Exception as e:
+                    print(f"Lỗi xóa expired cache trong ChromaDB: {str(e)}")
+            
+            print(f"Đã xóa {deleted_count} cache entries đã hết hạn")
+            return deleted_count
+            
+        except Exception as e:
+            print(f"Lỗi xóa expired cache: {str(e)}")
+            raise e
+
+    def search_keyword(self, keyword: str, limit: int = 10) -> List[Dict[str, Any]]:
+        """Tìm kiếm cache bằng từ khóa"""
+        try:
+            print(f"Tìm kiếm cache với từ khóa: '{keyword}'")
+            
+            # Tìm kiếm bằng text search và keyword matching
+            results = []
+            
+            # Method 1: Text search nếu có text index
+            try:
+                text_results = list(self.text_cache_collection.find(
+                    {"$text": {"$search": keyword}, "validityStatus": CacheStatus.VALID},
+                    {"score": {"$meta": "textScore"}}
+                ).sort([("score", {"$meta": "textScore"})]).limit(limit))
+                results.extend(text_results)
+            except Exception as e:
+                print(f"Text search không khả dụng: {str(e)}")
+            
+            # Method 2: Regex search nếu text search không hoạt động
+            if not results:
+                regex_pattern = {"$regex": keyword, "$options": "i"}
+                regex_results = list(self.text_cache_collection.find({
+                    "$or": [
+                        {"questionText": regex_pattern},
+                        {"normalizedQuestion": regex_pattern},
+                        {"keywords": {"$in": [keyword.lower()]}}
+                    ],
+                    "validityStatus": CacheStatus.VALID
+                }).limit(limit))
+                results.extend(regex_results)
+            
+            # Method 3: Keyword array search
+            if not results:
+                keyword_results = list(self.text_cache_collection.find({
+                    "keywords": {"$in": [keyword.lower()]},
+                    "validityStatus": CacheStatus.VALID
+                }).limit(limit))
+                results.extend(keyword_results)
+            
+            print(f"Tìm thấy {len(results)} cache entries cho từ khóa '{keyword}'")
+            return results
+            
+        except Exception as e:
+            print(f"Lỗi tìm kiếm cache: {str(e)}")
+            return []
 
 # Singleton instance
 retrieval_service = RetrievalService()
