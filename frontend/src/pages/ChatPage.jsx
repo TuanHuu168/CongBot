@@ -61,7 +61,7 @@ const ChatPage = () => {
     const initializeUser = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-
+      
       if (!token || !userId) {
         console.log('No auth data found, redirecting to login...');
         resetAuthState();
@@ -88,7 +88,7 @@ const ChatPage = () => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-
+      
       if (!token || !userId) {
         console.log('Auth data cleared, redirecting to login...');
         resetAuthState();
@@ -101,22 +101,22 @@ const ChatPage = () => {
     return () => clearInterval(interval);
   }, [resetAuthState, navigate]);
 
-  // Xử lý khi đến từ trang đăng nhập
+  // Xử lý khi đến từ trang đăng nhập và navigation state
   useEffect(() => {
-  if (state?.freshLogin) {
-    fetchChatHistory();
-  }
+    if (state?.freshLogin) {
+      fetchChatHistory();
+    }
 
-  if (state?.suggestedQuestion) {
-    setInput(state.suggestedQuestion);
-  }
+    if (state?.suggestedQuestion) {
+      setInput(state.suggestedQuestion);
+    }
 
-  // Reset currentChatId nếu không đến từ ChatHistoryPage với chatId cụ thể
-  if (!state?.chatId && !state?.freshLogin) {
-    setCurrentChatId(null);
-    setActiveChatMessages([]);
-  }
-}, [state, fetchChatHistory, setCurrentChatId, setActiveChatMessages]);
+    // Reset currentChatId nếu không đến từ ChatHistoryPage với chatId cụ thể
+    if (!state?.chatId && !state?.freshLogin) {
+      setCurrentChatId(null);
+      setActiveChatMessages([]);
+    }
+  }, [state, fetchChatHistory, setCurrentChatId, setActiveChatMessages]);
 
   useEffect(() => {
     scrollToBottom();
@@ -275,7 +275,7 @@ const ChatPage = () => {
         icon: 'error',
         title: 'Lỗi kết nối',
         text: error.detail || 'Có lỗi khi kết nối với máy chủ. Vui lòng thử lại sau.',
-        confirmButtonColor: '//10b981'
+        confirmButtonColor: '#10b981'
       });
     } finally {
       setIsLoading(false);
@@ -354,27 +354,19 @@ const ChatPage = () => {
         .markdown-content ul { list-style-type: disc; }
         .markdown-content ol { list-style-type: decimal; }
         .markdown-content table { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
-        .markdown-content th, .markdown-content td { border: 1px solid //e2e8f0; padding: 0.25rem 0.5rem; text-align: left; }
-        .markdown-content a { color: //0ea5e9; text-decoration: underline; }
+        .markdown-content th, .markdown-content td { border: 1px solid #e2e8f0; padding: 0.25rem 0.5rem; text-align: left; }
+        .markdown-content a { color: #0ea5e9; text-decoration: underline; }
         .markdown-content strong { font-weight: bold; }
         .markdown-content em { font-style: italic; }
-        .markdown-content code { background-color: //f1f5f9; padding: 0.1rem 0.2rem; border-radius: 0.2rem; font-size: 0.875em; }
-        .markdown-content pre { background-color: //f1f5f9; padding: 0.5rem; border-radius: 0.375rem; overflow-x: auto; margin: 0.75rem 0; }
-        .markdown-content blockquote { border-left: 3px solid //10b981; padding-left: 0.75rem; margin: 0.75rem 0; color: //4b5563; background-color: //f0fdf4; border-radius: 0.25rem; }
+        .markdown-content code { background-color: #f1f5f9; padding: 0.1rem 0.2rem; border-radius: 0.2rem; font-size: 0.875em; }
+        .markdown-content pre { background-color: #f1f5f9; padding: 0.5rem; border-radius: 0.375rem; overflow-x: auto; margin: 0.75rem 0; }
+        .markdown-content blockquote { border-left: 3px solid #10b981; padding-left: 0.75rem; margin: 0.75rem 0; color: #4b5563; background-color: #f0fdf4; border-radius: 0.25rem; }
       `}</style>
 
       {/* Error notification */}
       <AnimatePresence mode="sync">
         {localError && <ErrorMessage message={localError} onClose={() => setLocalError(null)} />}
       </AnimatePresence>
-
-      {/* Mobile overlay */}
-      {isSidebarOpen && isMobile && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm z-40"
-          onClick={() => setIsSidebarOpen(false)}
-        />
-      )}
 
       {/* Main container */}
       <div className="flex flex-col w-full h-full">
@@ -389,7 +381,7 @@ const ChatPage = () => {
         </div>
 
         {/* Content area */}
-        <div className="flex flex-1 overflow-hidden">
+        <div className="flex flex-1 overflow-hidden relative">
           {/* Chat Sidebar */}
           <ChatSidebar
             isMobile={isMobile}
@@ -402,13 +394,22 @@ const ChatPage = () => {
             switchChat={switchChat}
             handleNewChat={handleNewChat}
             getDisplayTitle={getDisplayTitle}
+            fetchChatHistory={fetchChatHistory}
           />
+
+          {/* Mobile overlay - Di chuyển vào trong content area */}
+          {isSidebarOpen && isMobile && (
+            <div
+              className="fixed inset-0 bg-white/10 backdrop-blur-md z-45 md:hidden"
+              onClick={() => setIsSidebarOpen(false)}
+            />
+          )}
 
           {/* Main Chat Area */}
           <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-            {/* Chat Messages - FIX: Thêm padding-top để không bị header che */}
+            {/* Chat Messages */}
             <div
-              className="flex-1 overflow-y-auto p-4 pb-4 bg-transparent"
+              className="flex-1 overflow-y-auto p-4 pb-32 bg-transparent"
               ref={chatContainerRef}
               style={{ paddingTop: '1rem' }}
             >
@@ -426,10 +427,10 @@ const ChatPage = () => {
                 ) : (
                   <div>
                     {activeChatMessages.map((message, index) => (
-                      <MessageItem
-                        key={message.id || `msg_${index}`}
-                        message={message}
-                        messageVariants={messageVariants}
+                      <MessageItem 
+                        key={message.id || `msg_${index}`} 
+                        message={message} 
+                        messageVariants={messageVariants} 
                       />
                     ))}
                   </div>
@@ -463,7 +464,7 @@ const ChatPage = () => {
               </div>
             </div>
 
-            {/* Floating Chat Input - FIX: Cách đáy nhiều hơn */}
+            {/* Floating Chat Input */}
             <div className="fixed bottom-0 left-0 right-0 md:left-72 z-40">
               <div className="max-w-3xl mx-auto px-4 py-4 bg-gradient-to-t from-green-50 via-teal-50 to-transparent">
                 <div className="bg-white rounded-[20px] shadow-xl border border-gray-100 p-1.5 overflow-hidden">

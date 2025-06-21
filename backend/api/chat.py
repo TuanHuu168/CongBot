@@ -390,14 +390,17 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/chats/{user_id}")
-async def get_chats(user_id: str, limit: int = 20):
+async def get_chats(user_id: str, limit: int = None):
     try:
         db = mongodb_client.get_database()
         
-        chats = list(db.chats.find(
-            {"user_id": user_id, "status": "active"},
-            {"title": 1, "created_at": 1, "updated_at": 1}
-        ).sort("updated_at", -1).limit(limit))
+        query = {"user_id": user_id, "status": "active"}
+        projection = {"title": 1, "created_at": 1, "updated_at": 1}
+        
+        if limit:
+            chats = list(db.chats.find(query, projection).sort("updated_at", -1).limit(limit))
+        else:
+            chats = list(db.chats.find(query, projection).sort("updated_at", -1))
         
         # Chuyển đổi ObjectId sang string
         for chat in chats:
