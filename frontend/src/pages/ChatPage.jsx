@@ -6,13 +6,10 @@ import { useChat } from '../ChatContext';
 import { askQuestion, updateChatTitle } from '../apiService';
 import Swal from 'sweetalert2';
 
-// Import components
 import TopNavBar from '../components/common/TopNavBar';
 import ChatSidebar from '../components/chat/ChatSidebar';
 import MessageItem from '../components/chat/MessageItem';
 import ErrorMessage from '../components/common/ErrorMessage';
-
-// Import utils
 import { getDisplayTitle } from '../utils/formatUtils';
 
 const ChatPage = () => {
@@ -32,7 +29,8 @@ const ChatPage = () => {
     createNewChat,
     switchChat,
     fetchChatHistory,
-    resetAuthState // Thêm resetAuthState
+    fetchUserInfo,
+    resetAuthState
   } = useChat();
 
   const [input, setInput] = useState('');
@@ -46,7 +44,6 @@ const ChatPage = () => {
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
-  const sendButtonRef = useRef(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -59,37 +56,57 @@ const ChatPage = () => {
     return getDisplayTitle(currentChat);
   };
 
-  // Kiểm tra auth state - theo dõi đăng xuất từ tab khác
+  // Kiểm tra auth và load user info ngay khi mount
   useEffect(() => {
-    const checkAuthStatus = () => {
+    const initializeUser = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
       
-      // Nếu không có token hoặc userId, chuyển về login
       if (!token || !userId) {
         console.log('No auth data found, redirecting to login...');
         resetAuthState();
         navigate('/login');
         return;
       }
+
+      // Nếu chưa có user info, fetch ngay lập tức
+      if (!user && userId) {
+        console.log('Fetching user info for userId:', userId);
+        try {
+          await fetchUserInfo(userId);
+        } catch (error) {
+          console.error('Error fetching user info:', error);
+        }
+      }
     };
 
-    // Kiểm tra ngay khi component mount
-    checkAuthStatus();
+    initializeUser();
+  }, [user, fetchUserInfo, resetAuthState, navigate]);
 
-    // Kiểm tra mỗi 3 giây để phát hiện logout từ tab khác
+  // Kiểm tra auth state liên tục để phát hiện logout từ tab khác
+  useEffect(() => {
+    const checkAuthStatus = () => {
+      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      
+      if (!token || !userId) {
+        console.log('Auth data cleared, redirecting to login...');
+        resetAuthState();
+        navigate('/login');
+        return;
+      }
+    };
+
     const interval = setInterval(checkAuthStatus, 3000);
-
     return () => clearInterval(interval);
   }, [resetAuthState, navigate]);
 
-  // Kiểm tra xem nếu đến từ trang đăng nhập
+  // Xử lý khi đến từ trang đăng nhập
   useEffect(() => {
     if (state?.freshLogin) {
       fetchChatHistory();
     }
 
-    // Kiểm tra nếu có suggested question từ ProfilePage
     if (state?.suggestedQuestion) {
       setInput(state.suggestedQuestion);
     }
@@ -99,7 +116,7 @@ const ChatPage = () => {
     scrollToBottom();
   }, [activeChatMessages]);
 
-  // Thêm debounce cho resize event
+  // Responsive handling
   useEffect(() => {
     const handleResize = () => {
       const isMobileView = window.innerWidth < 768;
@@ -122,46 +139,37 @@ const ChatPage = () => {
     };
   }, []);
 
-  // Auto-adjust textarea height - FIX
+  // Auto-adjust textarea height
   const adjustTextareaHeight = useCallback(() => {
     if (!textareaRef.current) return;
 
-    // Đặt lại chiều cao về mặc định khi input rỗng
     if (input === '') {
       textareaRef.current.style.height = '50px';
       setTextareaHeight(50);
       return;
     }
 
-    // Reset height to calculate proper scrollHeight
     textareaRef.current.style.height = '50px';
-
-    // Calculate new height (min 50px, max 200px)
     const newHeight = Math.min(Math.max(textareaRef.current.scrollHeight, 50), 200);
-
-    // Set new height
     textareaRef.current.style.height = `${newHeight}px`;
     setTextareaHeight(newHeight);
   }, [input]);
 
-  // Update textarea height when input changes
   useEffect(() => {
     adjustTextareaHeight();
   }, [input, adjustTextareaHeight]);
 
-  // Focus textarea when needed
   useEffect(() => {
     if (textareaRef.current && !isMobile) {
       textareaRef.current.focus();
     }
   }, [isMobile, currentChatId]);
 
-  // Xử lý input change
   const handleInputChange = (e) => {
     setInput(e.target.value);
   };
 
-  // Tách hàm xử lý gửi tin nhắn
+  // Xử lý gửi tin nhắn
   const prepareAndSendMessage = async (userQuestion) => {
     if (userQuestion.trim() === '' || isLoading) return;
 
@@ -169,7 +177,6 @@ const ChatPage = () => {
       setIsLoading(true);
       setLocalError(null);
 
-      // Đóng sidebar trên mobile
       if (isMobile) {
         setIsSidebarOpen(false);
       }
@@ -206,14 +213,12 @@ const ChatPage = () => {
       while (retryCount < 3) {
         try {
           response = await askQuestion(userQuestion, chatId);
-          break; // Nếu thành công thì thoát loop
+          break;
         } catch (error) {
           retryCount++;
           if (retryCount >= 3) {
-            // Hết số lần retry -> fail
             throw error;
           }
-          // Đợi trước khi retry (backoff tăng dần)
           await new Promise(resolve => setTimeout(resolve, retryCount * 1000));
         }
       }
@@ -233,7 +238,7 @@ const ChatPage = () => {
         context: response.top_chunks || []
       }]);
 
-      // Xác định xem có phải tin nhắn đầu tiên không để cập nhật tiêu đề
+      // Cập nhật tiêu đề nếu là tin nhắn đầu tiên
       const isFirstMessage = activeChatMessages.length <= 2;
 
       if (isFirstMessage && response.id) {
@@ -243,7 +248,6 @@ const ChatPage = () => {
 
         try {
           await updateChatTitle(response.id, newTitle);
-          // Refetch chat history (sử dụng setTimeout để tránh block UI)
           setTimeout(() => fetchChatHistory(), 100);
         } catch (titleError) {
           console.error('Lỗi khi cập nhật tiêu đề:', titleError);
@@ -254,7 +258,6 @@ const ChatPage = () => {
       console.error('Error getting response:', error);
       setLocalError(error.detail || 'Có lỗi khi kết nối với máy chủ');
 
-      // Thêm thông báo lỗi vào UI
       setActiveChatMessages(prev => [...prev, {
         id: `error_${Date.now()}`,
         sender: 'bot',
@@ -262,12 +265,11 @@ const ChatPage = () => {
         timestamp: new Date().toISOString()
       }]);
 
-      // Hiển thị thông báo lỗi với SweetAlert2
       Swal.fire({
         icon: 'error',
         title: 'Lỗi kết nối',
         text: error.detail || 'Có lỗi khi kết nối với máy chủ. Vui lòng thử lại sau.',
-        confirmButtonColor: '#10b981'
+        confirmButtonColor: '//10b981'
       });
     } finally {
       setIsLoading(false);
@@ -275,23 +277,19 @@ const ChatPage = () => {
     }
   };
 
-  // Xử lý form submit
   const handleSend = (e) => {
     e.preventDefault();
 
     const messageText = input.trim();
     if (messageText === '' || isLoading) return;
 
-    // Lưu lại tin nhắn trước khi xóa input
     const messageToSend = messageText;
     setInput('');
-    setFormKey(Date.now()); // Đổi key để buộc render lại form
+    setFormKey(Date.now());
 
-    // Gửi tin nhắn bất đồng bộ
     prepareAndSendMessage(messageToSend);
   };
 
-  // Xử lý phím Enter
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -313,7 +311,6 @@ const ChatPage = () => {
     }
   };
 
-  // Animation variants
   const pageVariants = {
     initial: { opacity: 0 },
     animate: { opacity: 1, transition: { duration: 0.4 } },
@@ -334,7 +331,6 @@ const ChatPage = () => {
       variants={pageVariants}
     >
       <style jsx>{`
-        /* Hide all scrollbars */
         * {
           scrollbar-width: none;
           -ms-overflow-style: none;
@@ -343,7 +339,6 @@ const ChatPage = () => {
           display: none;
         }
         
-        /* Markdown styles */
         .markdown-content p { margin-bottom: 0.75rem; }
         .markdown-content h1, .markdown-content h2, .markdown-content h3 { font-weight: bold; margin: 0.75rem 0; }
         .markdown-content h1 { font-size: 1.25rem; }
@@ -353,13 +348,13 @@ const ChatPage = () => {
         .markdown-content ul { list-style-type: disc; }
         .markdown-content ol { list-style-type: decimal; }
         .markdown-content table { border-collapse: collapse; width: 100%; margin: 0.75rem 0; }
-        .markdown-content th, .markdown-content td { border: 1px solid #e2e8f0; padding: 0.25rem 0.5rem; text-align: left; }
-        .markdown-content a { color: #0ea5e9; text-decoration: underline; }
+        .markdown-content th, .markdown-content td { border: 1px solid //e2e8f0; padding: 0.25rem 0.5rem; text-align: left; }
+        .markdown-content a { color: //0ea5e9; text-decoration: underline; }
         .markdown-content strong { font-weight: bold; }
         .markdown-content em { font-style: italic; }
-        .markdown-content code { background-color: #f1f5f9; padding: 0.1rem 0.2rem; border-radius: 0.2rem; font-size: 0.875em; }
-        .markdown-content pre { background-color: #f1f5f9; padding: 0.5rem; border-radius: 0.375rem; overflow-x: auto; margin: 0.75rem 0; }
-        .markdown-content blockquote { border-left: 3px solid #10b981; padding-left: 0.75rem; margin: 0.75rem 0; color: #4b5563; background-color: #f0fdf4; border-radius: 0.25rem; }
+        .markdown-content code { background-color: //f1f5f9; padding: 0.1rem 0.2rem; border-radius: 0.2rem; font-size: 0.875em; }
+        .markdown-content pre { background-color: //f1f5f9; padding: 0.5rem; border-radius: 0.375rem; overflow-x: auto; margin: 0.75rem 0; }
+        .markdown-content blockquote { border-left: 3px solid //10b981; padding-left: 0.75rem; margin: 0.75rem 0; color: //4b5563; background-color: //f0fdf4; border-radius: 0.25rem; }
       `}</style>
 
       {/* Error notification */}
@@ -375,17 +370,19 @@ const ChatPage = () => {
         />
       )}
 
-      {/* Container div spanning the entire viewport */}
+      {/* Main container */}
       <div className="flex flex-col w-full h-full">
-        {/* Top Navigation Bar - Fixed at the top of the page */}
-        <TopNavBar
-          title={getCurrentChatTitle()}
-          user={user}
-          onMenuClick={() => setIsSidebarOpen(true)}
-          variant="chat"
-        />
+        {/* Top Navigation Bar - Fixed */}
+        <div className="flex-shrink-0">
+          <TopNavBar
+            title={getCurrentChatTitle()}
+            user={user}
+            onMenuClick={() => setIsSidebarOpen(true)}
+            variant="chat"
+          />
+        </div>
 
-        {/* Content area - Flex container for sidebar and chat area */}
+        {/* Content area */}
         <div className="flex flex-1 overflow-hidden">
           {/* Chat Sidebar */}
           <ChatSidebar
@@ -403,10 +400,11 @@ const ChatPage = () => {
 
           {/* Main Chat Area */}
           <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-            {/* Chat Messages */}
+            {/* Chat Messages - FIX: Thêm padding-top để không bị header che */}
             <div
-              className="flex-1 overflow-y-auto p-4 pt-6 bg-transparent"
+              className="flex-1 overflow-y-auto p-4 pb-32 bg-transparent"
               ref={chatContainerRef}
+              style={{ paddingTop: '1rem' }}
             >
               <div className="max-w-3xl mx-auto">
                 {activeChatMessages.length === 0 ? (
@@ -431,7 +429,7 @@ const ChatPage = () => {
                   </div>
                 )}
 
-                {/* Loading animation - Only show when isLoading is true AND we have messages */}
+                {/* Loading animation */}
                 {isLoading && activeChatMessages.length > 0 && (
                   <div className="flex justify-start mb-4">
                     <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md">
@@ -441,7 +439,7 @@ const ChatPage = () => {
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.target.onerror = null;
-                          e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2310b981' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zM6.023 15.416C7.491 17.606 9.695 19 12.16 19c2.464 0 4.669-1.393 6.136-3.584A8.968 8.968 0 0120 12.16c0-2.465-1.393-4.669-3.584-6.136A8.968 8.968 0 0112.16 4c-2.465 0-4.67 1.393-6.137 3.584A8.968 8.968 0 014 12.16c0 1.403.453 2.75 1.254 3.876l-.001.001c.244.349.477.685.77 1.379zM8 13a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2zm-4-3a1 1 0 110-2 1 1 0 010 2zm0 6a1 1 0 110-2 1 1 0 010 2z'/%3E%3C/svg%3E";
+                          e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2310b981' viewBox='0 0 24 24'%3E%3Cpath d='M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2z'/%3E%3C/svg%3E";
                         }}
                       />
                     </div>
@@ -459,13 +457,12 @@ const ChatPage = () => {
               </div>
             </div>
 
-            {/* Floating Chat Input */}
-            <div className="fixed bottom-0 left-0 right-0 md:left-72">
-              <div className="max-w-3xl mx-auto px-4 pb-6">
+            {/* Floating Chat Input - FIX: Cách đáy nhiều hơn */}
+            <div className="absolute bottom-0 left-0 right-0 md:left-72">
+              <div className="max-w-3xl mx-auto px-4 pb-8">
                 <div className="bg-white rounded-[20px] shadow-xl border border-gray-100 p-1.5 overflow-hidden">
                   <form key={formKey} onSubmit={handleSend} className="flex items-center">
                     <div className="flex-1 relative">
-                      {/* Improved textarea handling */}
                       <textarea
                         ref={textareaRef}
                         value={input}
@@ -483,7 +480,6 @@ const ChatPage = () => {
 
                     <div className="flex items-center ml-2">
                       <button
-                        ref={sendButtonRef}
                         type="submit"
                         disabled={input.trim() === '' || isLoading}
                         className={`p-2.5 h-[46px] min-w-[46px] flex items-center justify-center rounded-full transition-all duration-200 ${input.trim() === '' || isLoading

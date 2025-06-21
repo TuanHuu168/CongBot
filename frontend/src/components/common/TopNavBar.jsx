@@ -17,26 +17,57 @@ const TopNavBar = ({
   user = null,
   onMenuClick = null,
   customRight = null,
-  variant = 'default' // 'default', 'chat', 'admin'
+  variant = 'default'
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUser, setCurrentChatId, setActiveChatMessages, setChatHistory } = useChat(); // Thêm ChatContext
+  const { setUser, setCurrentChatId, setActiveChatMessages, setChatHistory, fetchUserInfo } = useChat();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
+  const [isLoadingUser, setIsLoadingUser] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Kiểm tra trạng thái đăng nhập
+  // Kiểm tra trạng thái đăng nhập và load user info
   useEffect(() => {
-    const checkAuthStatus = () => {
+    const checkAuthStatus = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
       
       if (token && userId) {
         setIsLoggedIn(true);
-        if (user) {
+        
+        // Nếu có user từ context, dùng ngay
+        if (user && user.name) {
           setUserInfo(user);
+        } else {
+          // Nếu chưa có user, fetch từ API
+          setIsLoadingUser(true);
+          try {
+            const userData = await fetchUserInfo(userId);
+            if (userData) {
+              const formattedUser = {
+                id: userId,
+                name: userData.fullName || userData.username || 'Người dùng',
+                email: userData.email,
+                username: userData.username,
+                role: userData.role || 'user'
+              };
+              setUserInfo(formattedUser);
+            }
+          } catch (error) {
+            console.error('Error fetching user info in TopNavBar:', error);
+            // Fallback với thông tin cơ bản
+            setUserInfo({
+              id: userId,
+              name: 'Người dùng',
+              email: '',
+              username: '',
+              role: 'user'
+            });
+          } finally {
+            setIsLoadingUser(false);
+          }
         }
       } else {
         setIsLoggedIn(false);
@@ -45,7 +76,7 @@ const TopNavBar = ({
     };
 
     checkAuthStatus();
-  }, [user]);
+  }, [user, fetchUserInfo]);
 
   // Đóng dropdown khi click bên ngoài
   useEffect(() => {
@@ -59,7 +90,7 @@ const TopNavBar = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Xử lý đăng xuất với SweetAlert2 và cập nhật state
+  // Xử lý đăng xuất
   const handleLogout = () => {
     Swal.fire({
       title: 'Đăng xuất',
@@ -68,8 +99,8 @@ const TopNavBar = ({
       showCancelButton: true,
       confirmButtonText: 'Đăng xuất',
       cancelButtonText: 'Hủy',
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#64748b',
+      confirmButtonColor: '//ef4444',
+      cancelButtonColor: '//64748b',
       backdrop: true,
       allowOutsideClick: true
     }).then((result) => {
@@ -90,17 +121,15 @@ const TopNavBar = ({
         setActiveChatMessages([]);
         setChatHistory([]);
 
-        // Hiển thị thông báo thành công
         Swal.fire({
           icon: 'success',
           title: 'Đăng xuất thành công',
           text: 'Bạn đã đăng xuất khỏi hệ thống',
-          confirmButtonColor: '#10b981',
+          confirmButtonColor: '//10b981',
           timer: 1500,
           showConfirmButton: false
         });
 
-        // Chuyển hướng sau khi hiển thị thông báo
         setTimeout(() => {
           navigate(ROUTES.HOME);
         }, 1500);
@@ -108,10 +137,9 @@ const TopNavBar = ({
     });
   };
 
-  // Kiểm tra xem user có phải admin không
+  // Kiểm tra quyền admin
   const isAdmin = () => {
-    const isAdminRole = userInfo?.role === 'admin' || user?.role === 'admin';
-    return isAdminRole;
+    return userInfo?.role === 'admin' || user?.role === 'admin';
   };
 
   // Lấy đường dẫn hiện tại
@@ -119,7 +147,7 @@ const TopNavBar = ({
     return location.pathname;
   };
 
-  // Các mục điều hướng dựa trên vai trò người dùng và trang hiện tại
+  // Các mục điều hướng
   const getNavigationItems = () => {
     const currentPath = getCurrentPath();
     const allItems = [
@@ -137,7 +165,6 @@ const TopNavBar = ({
       }
     ];
 
-    // Thêm tùy chọn admin nếu là admin
     if (isAdmin()) {
       allItems.push({ 
         icon: Shield, 
@@ -147,10 +174,15 @@ const TopNavBar = ({
       });
     }
 
-    // Lọc bỏ trang hiện tại khỏi menu
-    const filteredItems = allItems.filter(item => item.path !== currentPath);
+    return allItems.filter(item => item.path !== currentPath);
+  };
 
-    return filteredItems;
+  // Lấy tên hiển thị - FIX: Logic đơn giản hơn
+  const getDisplayName = () => {
+    if (isLoadingUser) return 'Đang tải...';
+    if (userInfo?.name && userInfo.name !== 'Người dùng') return userInfo.name;
+    if (user?.name && user.name !== 'Người dùng') return user.name;
+    return 'Người dùng';
   };
 
   return (
@@ -196,7 +228,7 @@ const TopNavBar = ({
             </h1>
           </div>
 
-          {/* Phần bên phải - Nội dung tùy chỉnh hoặc Dropdown người dùng */}
+          {/* Phần bên phải */}
           {customRight || (
             <>
               {isLoggedIn ? (
@@ -206,14 +238,10 @@ const TopNavBar = ({
                     className="flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 transition-colors rounded-xl py-2 px-3 border border-gray-200"
                   >
                     <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-500 to-teal-600">
-                      {userInfo?.avatar ? (
-                        <img src={userInfo.avatar} alt="User" className="w-full h-full object-cover" />
-                      ) : (
-                        <User size={16} className="text-white" />
-                      )}
+                      <User size={16} className="text-white" />
                     </div>
                     <span className="text-sm font-medium text-gray-700 hidden sm:inline">
-                      {userInfo?.name || user?.name || 'Người dùng'}
+                      {getDisplayName()}
                     </span>
                     <ChevronDown
                       size={16}
