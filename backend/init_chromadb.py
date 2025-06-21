@@ -9,19 +9,23 @@ def init_chromadb():
     try:
         print("Khởi tạo ChromaDB Local...")
         
-        # Lấy client và collection
         client = chroma_client.get_client()
-        collection = chroma_client.get_collection()
+        main_collection = chroma_client.get_main_collection()
+        cache_collection = chroma_client.get_cache_collection()
         
-        if client and collection:
+        if client and main_collection and cache_collection:
             print(f"ChromaDB đã khởi tạo thành công!")
-            print(f"Collection: {collection.name}")
-            print(f"Số documents: {collection.count()}")
+            
+            stats = chroma_client.get_collection_stats()
+            print(f"Main collection: {stats['main_collection']['name']} ({stats['main_collection']['count']} documents)")
+            print(f"Cache collection: {stats['cache_collection']['name']} ({stats['cache_collection']['count']} documents)")
             print(f"Storage path: {chroma_client.persist_directory}")
             
-            # Kiểm tra danh sách collections
-            collections = chroma_client.list_collections()
-            print(f"Tất cả collections: {[c.name for c in collections]}")
+            try:
+                collections_info = chroma_client.list_collections()
+                print(f"Tất cả collections: {collections_info}")
+            except Exception as e:
+                print(f"Lỗi khi liệt kê collections: {str(e)}")
             
             return True
         else:
@@ -30,6 +34,8 @@ def init_chromadb():
             
     except Exception as e:
         print(f"Lỗi: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return False
 
 if __name__ == "__main__":

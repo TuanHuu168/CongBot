@@ -20,23 +20,18 @@ class RetrievalService:
         self.db = mongodb_client.get_database()
         self.text_cache_collection = self.db.text_cache
         
-        # Kiểm tra cache collection
         try:
             cache_count = self.text_cache_collection.count_documents({})
             print(f"Cache collection hiện có {cache_count} documents")
             
-            # Kiểm tra index
             indexes = list(self.text_cache_collection.list_indexes())
             print(f"Cache collection có {len(indexes)} indexes")
             
-            # Kiểm tra ChromaDB cache collection
             try:
-                cache_collection = self.chroma.client.get_or_create_collection(
-                    name="cache_questions",
-                    embedding_function=self.chroma.embedding_function
-                )
-                chroma_count = cache_collection.count()
-                print(f"ChromaDB cache collection có {chroma_count} documents")
+                cache_collection = self.chroma.get_cache_collection()
+                if cache_collection:
+                    chroma_count = cache_collection.count()
+                    print(f"ChromaDB cache collection có {chroma_count} documents")
             except Exception as e:
                 print(f"Không thể lấy thông tin ChromaDB cache: {str(e)}")
                 
@@ -297,32 +292,24 @@ class RetrievalService:
     def _add_to_chroma_cache(self, cache_id: str, query: str, related_doc_ids: List[str]) -> bool:
         query_text = f"query: {query}"
         
-        # Chuyển list thành string để tránh lỗi với ChromaDB
-        related_docs_str = ",".join(related_doc_ids) if related_doc_ids else ""
-        
-        # Bao gồm validityStatus trong metadata
         metadata = {
             "validityStatus": str(CacheStatus.VALID),
             "relatedDocIds": ",".join(related_doc_ids) if related_doc_ids else ""
         }
         
-        # Sử dụng collection riêng cho cache
         try:
-            cache_collection = self.chroma.get_or_create_collection(
-                "cache_questions",
-                self.chroma.embedding_function
+            # Sử dụng add_documents_to_cache
+            success = self.chroma.add_documents_to_cache(
+                ids=[cache_id],
+                documents=[query_text],
+                metadatas=[metadata]
             )
             
-            if cache_collection:
-                cache_collection.add(
-                    ids=[cache_id],
-                    documents=[query_text],
-                    metadatas=[metadata]
-                )
+            if success:
                 print(f"Đã thêm cache entry vào ChromaDB thành công")
                 return True
             else:
-                print("Không thể tạo cache collection")
+                print("Không thể thêm cache vào ChromaDB")
                 return False
         except Exception as e:
             print(f"Lỗi khi thêm cache vào ChromaDB: {str(e)}")
@@ -366,19 +353,7 @@ class RetrievalService:
         return result.modified_count
     
     def retrieve(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        """
-        Thực hiện truy xuất thông tin từ ChromaDB với cache
-        
-        Args:
-            query: Câu hỏi của người dùng
-            use_cache: Sử dụng cache hay không
-            
-        Returns:
-            Dict chứa kết quả truy xuất (context_items, source, etc.)
-        """
         start_time = time.time()
-        
-        print(f"Thực hiện truy vấn: '{query}', use_cache={use_cache}")
         
         # Kiểm tra cache nếu cần
         if use_cache:
@@ -415,8 +390,8 @@ class RetrievalService:
             query_text = f"query: {query}"
             
             # Thực hiện truy vấn
-            results = self.chroma.collection.query(
-                query_texts=[query_text],
+            results = self.chroma.search_main(
+                query_text=query_text,
                 n_results=TOP_K,
                 include=["documents", "metadatas", "distances"]
             )

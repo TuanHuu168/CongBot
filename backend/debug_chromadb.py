@@ -14,7 +14,7 @@ except ImportError:
     CHROMA_PERSIST_DIRECTORY = "chroma_db"
     CHROMA_COLLECTION = "legal_documents"
     EMBEDDING_MODEL_NAME = "keepitreal/vietnamese-sbert"
-    USE_GPU = False
+    USE_GPU = TRUE
 
 def debug_chromadb():
     """Debug ChromaDB và sửa lỗi"""
