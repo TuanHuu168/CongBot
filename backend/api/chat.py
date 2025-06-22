@@ -57,6 +57,7 @@ async def ask(input: QueryInput):
         conversation_context = []
         if input.session_id:
             try:
+                context_load_start = time.time()
                 db = mongodb_client.get_database()
                 chat = db.chats.find_one({"_id": ObjectId(input.session_id)})
                 if chat and "exchanges" in chat:
@@ -68,12 +69,17 @@ async def ask(input: QueryInput):
                             "answer": exchange.get("answer", "")
                         })
                     print(f"Loaded {len(conversation_context)} previous exchanges for context")
+                context_load_end = time.time()
+                print(f"Loading conversation context took: {context_load_end - context_load_start:.3f} seconds")
             except Exception as e:
                 print(f"Error loading conversation context: {str(e)}")
                 conversation_context = []
         
         # 1. Retrieval - lấy thông tin liên quan với cache
+        retrieval_start = time.time()
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
+        retrieval_end = time.time()
+        print(f"Retrieval took: {retrieval_end - retrieval_start:.3f} seconds")
         source = retrieval_result.get("source", "unknown")
         context_items = retrieval_result.get("context_items", [])
         retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
@@ -98,6 +104,7 @@ async def ask(input: QueryInput):
                 )
                 answer = generation_result.get("answer", "")
                 generation_time = generation_result.get("generation_time", 0)
+                print(f"Generation took: {generation_time:.3f} seconds")
                 # Cập nhật retrieved_chunks nếu cần
                 if "retrieved_chunks" in generation_result:
                     retrieved_chunks = generation_result.get("retrieved_chunks", retrieved_chunks)
@@ -219,11 +226,16 @@ async def ask(input: QueryInput):
         # 4. Trả về kết quả
         total_time = time.time() - start_time
         
+        print(f"TIMING SUMMARY:")
+        print(f" - Retrieval: {retrieval_time:.3f}s (source: {source})")
+        print(f" - Generation: {generation_time:.3f}s")  
+        print(f" - Total processing: {total_time:.3f}s")
+        print(f" - Cache hit: {'Yes' if source == 'cache' else 'No'}")
         return {
             "id": chat_id,
             "query": input.query,
             "answer": answer,
-            "top_chunks": context_items[:3],  # Trả về 3 đoạn văn bản liên quan nhất
+            "top_chunks": context_items[:5],  # Trả về 3 đoạn văn bản liên quan nhất
             "retrieval_time": retrieval_time,
             "generation_time": generation_time,
             "total_time": total_time
