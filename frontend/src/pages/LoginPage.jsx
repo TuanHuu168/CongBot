@@ -1,9 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, User, Lock, ChevronRight } from 'lucide-react';
-import { userAPI, showError, showSuccess } from '../apiService';
-import { validateUsername, validatePassword, pageVariants, containerVariants, itemVariants, ROUTES, STORAGE_KEYS } from '../utils/formatUtils';
+import { userAPI } from '../apiService';
+import { validateUsername, validatePassword, pageVariants, containerVariants, itemVariants, ROUTES, STORAGE_KEYS, showError, showSuccess } from '../utils/formatUtils';
+
+const FormField = React.memo(({ name, type = 'text', placeholder, icon: Icon, showToggle = false, toggleState, onToggle, value, onChange, error }) => (
+  <motion.div className="space-y-1" variants={itemVariants}>
+    <div className="relative">
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
+        <Icon size={18} />
+      </div>
+      <input
+        type={showToggle ? (toggleState ? 'text' : type) : type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        className={`w-full px-10 py-3 border ${error ? 'border-red-500' : 'border-gray-200'} 
+          rounded-xl focus:outline-none focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-green-500'} 
+          shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white`}
+      />
+      {showToggle && onToggle && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
+        >
+          {toggleState ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      )}
+    </div>
+    {error && <p className="text-red-500 text-sm ml-1">{error}</p>}
+  </motion.div>
+));
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -13,11 +43,11 @@ const LoginPage = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
-  };
+  }, [errors]);
 
   const validateForm = () => {
     const newErrors = {
@@ -52,36 +82,6 @@ const LoginPage = () => {
       setIsLoading(false);
     }
   };
-
-  const FormField = ({ name, type = 'text', placeholder, icon: Icon, showToggle = false }) => (
-    <motion.div className="space-y-1" variants={itemVariants}>
-      <div className="relative">
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-          <Icon size={18} />
-        </div>
-        <input
-          type={showToggle && showPassword ? 'text' : type}
-          name={name}
-          value={formData[name]}
-          onChange={handleChange}
-          placeholder={placeholder}
-          className={`w-full px-10 py-3 border ${errors[name] ? 'border-red-500' : 'border-gray-200'} 
-            rounded-xl focus:outline-none focus:ring-2 ${errors[name] ? 'focus:ring-red-500' : 'focus:ring-green-500'} 
-            shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white`}
-        />
-        {showToggle && (
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
-          >
-            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        )}
-      </div>
-      {errors[name] && <p className="text-red-500 text-sm ml-1">{errors[name]}</p>}
-    </motion.div>
-  );
 
   return (
     <motion.div
@@ -132,8 +132,26 @@ const LoginPage = () => {
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <FormField name="username" placeholder="Tên đăng nhập" icon={User} />
-            <FormField name="password" type="password" placeholder="Mật khẩu" icon={Lock} showToggle />
+            <FormField 
+              name="username" 
+              placeholder="Tên đăng nhập" 
+              icon={User} 
+              value={formData.username}
+              onChange={handleChange}
+              error={errors.username}
+            />
+            <FormField 
+              name="password" 
+              type="password" 
+              placeholder="Mật khẩu" 
+              icon={Lock} 
+              showToggle 
+              toggleState={showPassword}
+              onToggle={() => setShowPassword(!showPassword)}
+              value={formData.password}
+              onChange={handleChange}
+              error={errors.password}
+            />
 
             <motion.div className="flex items-center justify-between" variants={itemVariants}>
               <label className="flex items-center group cursor-pointer">

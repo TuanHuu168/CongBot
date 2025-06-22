@@ -43,8 +43,6 @@ class ChromaDBClient:
             self.persist_directory = CHROMA_PERSIST_DIRECTORY
             print(f"ChromaDB persist directory: {self.persist_directory}")
 
-            # Debug embedding model
-            print(f"Config EMBEDDING_MODEL_NAME: {EMBEDDING_MODEL_NAME}")
             if not EMBEDDING_MODEL_NAME:
                 raise ValueError("EMBEDDING_MODEL_NAME is None or empty! Check your .env file")
 
@@ -67,7 +65,6 @@ class ChromaDBClient:
             print(f"Embedding function initialized on device: {device} using model: {EMBEDDING_MODEL_NAME}")
 
             self.client = chromadb.PersistentClient(path=self.persist_directory)
-            print(f"ChromaDB PersistentClient initialized at: {self.persist_directory}")
             
             self._create_all_collections()
                 

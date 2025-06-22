@@ -1,9 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Eye, EyeOff, User, Lock, ChevronRight, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { userAPI, showError, showSuccess } from '../apiService';
-import { validateUsername, validateEmail, validatePassword, validateFullName, validatePhoneNumber, validateConfirmPassword, pageVariants, containerVariants, itemVariants, ROUTES } from '../utils/formatUtils';
+import { userAPI } from '../apiService';
+import { validateUsername, validateEmail, validatePassword, validateFullName, validatePhoneNumber, validateConfirmPassword, pageVariants, containerVariants, itemVariants, ROUTES, showError, showSuccess } from '../utils/formatUtils';
+
+const FormField = React.memo(({ name, type = 'text', placeholder, icon: Icon, showToggle = false, toggleState, onToggle, value, onChange, onBlur, error }) => (
+  <motion.div className="space-y-1" variants={itemVariants}>
+    <div className="relative">
+      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
+        <Icon size={18} />
+      </div>
+      <input
+        type={showToggle ? (toggleState ? "text" : "password") : type}
+        name={name}
+        value={value}
+        onChange={onChange}
+        onBlur={onBlur}
+        placeholder={placeholder}
+        className={`w-full px-10 py-3 border ${error ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
+      />
+      {showToggle && onToggle && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
+        >
+          {toggleState ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      )}
+    </div>
+    {error && <p className="text-red-500 text-sm ml-1">{error}</p>}
+  </motion.div>
+));
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -28,10 +57,10 @@ const RegisterPage = () => {
     }
   };
 
-  const handleBlur = (field) => {
+  const handleBlur = useCallback((field) => {
     const error = validateField(field, formData[field]);
-    setErrors({ ...errors, [field]: error });
-  };
+    setErrors(prev => ({ ...prev, [field]: error }));
+  }, [formData]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -42,11 +71,12 @@ const RegisterPage = () => {
     return !Object.values(newErrors).some(error => error !== '');
   };
 
-  const handleChange = (e) => {
+  // SỬA: Sử dụng useCallback để tránh re-render
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-    if (errors[name]) setErrors({ ...errors, [name]: '' });
-  };
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+  }, [errors]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,35 +109,6 @@ const RegisterPage = () => {
       setIsLoading(false);
     }
   };
-
-  const FormField = ({ name, type = 'text', placeholder, icon: Icon, showToggle = false, toggleState, onToggle }) => (
-    <motion.div className="space-y-1" variants={itemVariants}>
-      <div className="relative">
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-          <Icon size={18} />
-        </div>
-        <input
-          type={showToggle ? (toggleState ? "text" : "password") : type}
-          name={name}
-          value={formData[name]}
-          onChange={handleChange}
-          onBlur={() => handleBlur(name)}
-          placeholder={placeholder}
-          className={`w-full px-10 py-3 border ${errors[name] ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors[name] ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-        />
-        {showToggle && (
-          <button
-            type="button"
-            onClick={onToggle}
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
-          >
-            {toggleState ? <EyeOff size={18} /> : <Eye size={18} />}
-          </button>
-        )}
-      </div>
-      {errors[name] && <p className="text-red-500 text-sm ml-1">{errors[name]}</p>}
-    </motion.div>
-  );
 
   return (
     <motion.div 
@@ -157,10 +158,44 @@ const RegisterPage = () => {
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <FormField name="username" placeholder="Tên đăng nhập" icon={User} />
-            <FormField name="fullName" placeholder="Họ và tên" icon={User} />
-            <FormField name="email" type="email" placeholder="Email" icon={Mail} />
-            <FormField name="phoneNumber" type="tel" placeholder="Số điện thoại" icon={Phone} />
+            <FormField 
+              name="username" 
+              placeholder="Tên đăng nhập" 
+              icon={User} 
+              value={formData.username}
+              onChange={handleChange}
+              onBlur={() => handleBlur('username')}
+              error={errors.username}
+            />
+            <FormField 
+              name="fullName" 
+              placeholder="Họ và tên" 
+              icon={User} 
+              value={formData.fullName}
+              onChange={handleChange}
+              onBlur={() => handleBlur('fullName')}
+              error={errors.fullName}
+            />
+            <FormField 
+              name="email" 
+              type="email" 
+              placeholder="Email" 
+              icon={Mail} 
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={() => handleBlur('email')}
+              error={errors.email}
+            />
+            <FormField 
+              name="phoneNumber" 
+              type="tel" 
+              placeholder="Số điện thoại" 
+              icon={Phone} 
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              onBlur={() => handleBlur('phoneNumber')}
+              error={errors.phoneNumber}
+            />
             <FormField 
               name="password" 
               placeholder="Mật khẩu" 
@@ -168,6 +203,10 @@ const RegisterPage = () => {
               showToggle 
               toggleState={showPassword}
               onToggle={() => setShowPassword(!showPassword)}
+              value={formData.password}
+              onChange={handleChange}
+              onBlur={() => handleBlur('password')}
+              error={errors.password}
             />
             <FormField 
               name="confirmPassword" 
@@ -176,6 +215,10 @@ const RegisterPage = () => {
               showToggle 
               toggleState={showConfirmPassword}
               onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              onBlur={() => handleBlur('confirmPassword')}
+              error={errors.confirmPassword}
             />
 
             <motion.div className="flex items-start" variants={itemVariants}>
