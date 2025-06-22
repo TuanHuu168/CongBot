@@ -7,50 +7,36 @@ import { validateUsername, validatePassword, pageVariants, containerVariants, it
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error when typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
-    }
+    if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   };
 
-  // Validate form
   const validateForm = () => {
     const newErrors = {
       username: validateUsername(formData.username),
       password: validatePassword(formData.password)
     };
-    
     setErrors(newErrors);
     return !Object.values(newErrors).some(error => error);
   };
 
-  // Handle login submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
 
     setIsLoading(true);
-    
     try {
       const response = await userAPI.login(formData);
       const { access_token, user_id } = response;
 
-      // Store auth data
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem(STORAGE_KEYS.AUTH_TOKEN, access_token);
       storage.setItem(STORAGE_KEYS.USER_ID, user_id);
@@ -58,11 +44,8 @@ const LoginPage = () => {
       showSuccess('Chào mừng bạn quay trở lại hệ thống!', 'Đăng nhập thành công');
       
       setTimeout(() => {
-        navigate(ROUTES.CHAT, {
-          state: { freshLogin: true, userId: user_id }
-        });
+        navigate(ROUTES.CHAT, { state: { freshLogin: true, userId: user_id } });
       }, 1500);
-
     } catch (error) {
       showError(error.detail || 'Đăng nhập thất bại', 'Lỗi đăng nhập');
     } finally {
@@ -70,7 +53,6 @@ const LoginPage = () => {
     }
   };
 
-  // Form field component
   const FormField = ({ name, type = 'text', placeholder, icon: Icon, showToggle = false }) => (
     <motion.div className="space-y-1" variants={itemVariants}>
       <div className="relative">
@@ -109,7 +91,6 @@ const LoginPage = () => {
       animate="animate"
       exit="exit"
     >
-      {/* Left side - Branding */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
         <motion.div
           className="relative h-full flex flex-col justify-center z-10"
@@ -133,7 +114,6 @@ const LoginPage = () => {
         </motion.div>
       </div>
 
-      {/* Right side - Login form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6">
         <motion.div
           className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
@@ -152,19 +132,8 @@ const LoginPage = () => {
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            <FormField 
-              name="username" 
-              placeholder="Tên đăng nhập" 
-              icon={User} 
-            />
-            
-            <FormField 
-              name="password" 
-              type="password" 
-              placeholder="Mật khẩu" 
-              icon={Lock} 
-              showToggle 
-            />
+            <FormField name="username" placeholder="Tên đăng nhập" icon={User} />
+            <FormField name="password" type="password" placeholder="Mật khẩu" icon={Lock} showToggle />
 
             <motion.div className="flex items-center justify-between" variants={itemVariants}>
               <label className="flex items-center group cursor-pointer">

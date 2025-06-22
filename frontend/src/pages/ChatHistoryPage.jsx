@@ -3,29 +3,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../ChatContext';
 import { getUserChats, getChatMessages, deleteChat, deleteChatsBatch } from '../apiService';
-import Swal from 'sweetalert2';
 import {
   Search, Calendar, Trash2, Filter, Download, Clock, ArrowUpDown, RefreshCw, Grid, BookOpen, MessageSquare
 } from 'lucide-react';
 
-// Import components
 import TopNavBar from '../components/common/TopNavBar';
 import ErrorMessage from '../components/common/ErrorMessage';
 import HistoryItem from '../components/history/HistoryItem';
-
-// Import utils
-import { formatDate, getDateLabel } from '../utils/formatUtils';
+import { formatDate, getDateLabel, pageVariants, itemVariants, showConfirm, showSuccess, showError } from '../utils/formatUtils';
 
 const ChatHistoryPage = () => {
   const navigate = useNavigate();
-  const {
-    user,
-    chatHistory,
-    setChatHistory,
-    switchChat,
-    isLoading: contextLoading,
-    setIsLoading: setContextLoading
-  } = useChat();
+  const { user, chatHistory, setChatHistory, switchChat, isLoading: contextLoading, setIsLoading: setContextLoading } = useChat();
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPeriod, setSelectedPeriod] = useState('all');
@@ -34,13 +23,12 @@ const ChatHistoryPage = () => {
   const [localError, setLocalError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [chatDetails, setChatDetails] = useState({});
-  const [viewMode, setViewMode] = useState('list'); // 'list' or 'grid'
-  const [sortBy, setSortBy] = useState('date'); // 'date', 'title', 'messages'
-  const [sortOrder, setSortOrder] = useState('desc'); // 'asc' or 'desc'
+  const [viewMode, setViewMode] = useState('list');
+  const [sortBy, setSortBy] = useState('date');
+  const [sortOrder, setSortOrder] = useState('desc');
   const [refreshing, setRefreshing] = useState(false);
   const itemsPerPage = 8;
 
-  // Fetch chat history when component mounts
   useEffect(() => {
     loadChatHistory();
   }, []);
@@ -55,8 +43,6 @@ const ChatHistoryPage = () => {
       }
 
       const chatsData = await getUserChats(userId);
-
-      // Format dữ liệu cho UI
       const formattedChats = chatsData.map(chat => ({
         id: chat.id,
         title: chat.title || "Cuộc trò chuyện mới",
@@ -68,30 +54,25 @@ const ChatHistoryPage = () => {
 
       setChatHistory(formattedChats);
 
-      // Load message counts for each chat
-      const loadMessageCounts = async () => {
-        const details = {};
-        for (const chat of formattedChats.slice(0, 12)) { // Giới hạn 12 chat đầu tiên để tránh quá nhiều request
-          try {
-            const chatData = await getChatMessages(chat.id);
-            if (chatData && chatData.messages) {
-              details[chat.id] = {
-                messageCount: chatData.messages.length,
-                snippet: chatData.messages.length > 0 ? (
-                  chatData.messages[0].text.substring(0, 150) + (chatData.messages[0].text.length > 150 ? '...' : '')
-                ) : "",
-                lastMessageDate: chatData.messages.length > 0 ? chatData.messages[chatData.messages.length - 1].timestamp : null
-              };
-            }
-          } catch (error) {
-            console.error(`Error fetching details for chat ${chat.id}:`, error);
-            details[chat.id] = { messageCount: 0, snippet: "" };
+      const details = {};
+      for (const chat of formattedChats.slice(0, 12)) {
+        try {
+          const chatData = await getChatMessages(chat.id);
+          if (chatData && chatData.messages) {
+            details[chat.id] = {
+              messageCount: chatData.messages.length,
+              snippet: chatData.messages.length > 0 ? (
+                chatData.messages[0].text.substring(0, 150) + (chatData.messages[0].text.length > 150 ? '...' : '')
+              ) : "",
+              lastMessageDate: chatData.messages.length > 0 ? chatData.messages[chatData.messages.length - 1].timestamp : null
+            };
           }
+        } catch (error) {
+          console.error(`Error fetching details for chat ${chat.id}:`, error);
+          details[chat.id] = { messageCount: 0, snippet: "" };
         }
-        setChatDetails(details);
-      };
-
-      loadMessageCounts();
+      }
+      setChatDetails(details);
     } catch (error) {
       console.error('Error fetching chat history:', error);
       setLocalError('Không thể tải lịch sử trò chuyện. Vui lòng thử lại sau.');
@@ -107,22 +88,17 @@ const ChatHistoryPage = () => {
     setRefreshing(false);
   };
 
-  // Filter chat history based on search term and time period
   const filteredChats = useMemo(() => {
     return (chatHistory || []).filter(chat => {
-      // Filter by search term
       const title = chat.title || "";
       const matchSearch = searchTerm ? title.toLowerCase().includes(searchTerm.toLowerCase()) : true;
 
-      // Filter by time period
       const chatDate = new Date(chat.updated_at || chat.date);
       const today = new Date();
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
-
       const lastWeek = new Date(today);
       lastWeek.setDate(lastWeek.getDate() - 7);
-
       const lastMonth = new Date(today);
       lastMonth.setMonth(lastMonth.getMonth() - 1);
 
@@ -141,7 +117,6 @@ const ChatHistoryPage = () => {
     });
   }, [chatHistory, searchTerm, selectedPeriod]);
 
-  // Sort chats
   const sortedFilteredChats = useMemo(() => {
     return [...filteredChats].sort((a, b) => {
       if (sortBy === 'date') {
@@ -151,15 +126,12 @@ const ChatHistoryPage = () => {
       } else if (sortBy === 'title') {
         const titleA = a.title || "";
         const titleB = b.title || "";
-        return sortOrder === 'desc'
-          ? titleB.localeCompare(titleA)
-          : titleA.localeCompare(titleB);
+        return sortOrder === 'desc' ? titleB.localeCompare(titleA) : titleA.localeCompare(titleB);
       }
       return 0;
     });
   }, [filteredChats, sortBy, sortOrder]);
 
-  // Pagination
   const totalPages = Math.ceil(sortedFilteredChats.length / itemsPerPage);
   const currentChats = sortedFilteredChats.slice(
     (currentPage - 1) * itemsPerPage,
@@ -167,188 +139,62 @@ const ChatHistoryPage = () => {
   );
 
   const toggleSelectChat = (chatId) => {
-    if (selectedChats.includes(chatId)) {
-      setSelectedChats(selectedChats.filter(id => id !== chatId));
-    } else {
-      setSelectedChats([...selectedChats, chatId]);
-    }
+    setSelectedChats(prev => prev.includes(chatId) 
+      ? prev.filter(id => id !== chatId) 
+      : [...prev, chatId]
+    );
   };
 
   const selectAllChats = () => {
-    if (selectedChats.length === currentChats.length) {
-      setSelectedChats([]);
-    } else {
-      setSelectedChats(currentChats.map(chat => chat.id));
-    }
-  };
-
-  const toggleSortOrder = () => {
-    setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
-  };
-
-  const toggleViewMode = () => {
-    setViewMode(viewMode === 'list' ? 'grid' : 'list');
+    setSelectedChats(selectedChats.length === currentChats.length ? [] : currentChats.map(chat => chat.id));
   };
 
   const handleDeleteSelected = () => {
-    Swal.fire({
-      title: 'Xác nhận xóa',
-      text: `Bạn có chắc chắn muốn xóa ${selectedChats.length} cuộc trò chuyện đã chọn?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#10b981',
-      cancelButtonColor: '#ef4444',
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-      background: '#fff',
-      customClass: {
-        popup: 'rounded-xl shadow-xl'
-      }
-    }).then(async (result) => {
+    showConfirm(`Bạn có chắc chắn muốn xóa ${selectedChats.length} cuộc trò chuyện đã chọn?`, 'Xác nhận xóa').then(async (result) => {
       if (result.isConfirmed) {
         try {
           setIsLoading(true);
-          // Gọi API xóa hàng loạt
           await deleteChatsBatch(selectedChats);
-
-          // Cập nhật state chatHistory
-          setChatHistory(prevHistory =>
-            prevHistory.filter(chat => !selectedChats.includes(chat.id))
-          );
-
-          Swal.fire({
-            title: 'Đã xóa!',
-            text: `Đã xóa ${selectedChats.length} cuộc trò chuyện`,
-            icon: 'success',
-            confirmButtonColor: '#10b981',
-            timer: 1500,
-            background: '#fff',
-            customClass: {
-              popup: 'rounded-xl shadow-xl'
-            }
-          });
-
-          // Reset selection
+          setChatHistory(prevHistory => prevHistory.filter(chat => !selectedChats.includes(chat.id)));
+          showSuccess(`Đã xóa ${selectedChats.length} cuộc trò chuyện`);
           setSelectedChats([]);
         } catch (error) {
           console.error('Error deleting chats:', error);
-          Swal.fire({
-            title: 'Lỗi!',
-            text: error.detail || 'Không thể xóa cuộc trò chuyện. Vui lòng thử lại sau.',
-            icon: 'error',
-            confirmButtonColor: '#10b981',
-            background: '#fff',
-            customClass: {
-              popup: 'rounded-xl shadow-xl'
-            }
-          });
+          showError(error.detail || 'Không thể xóa cuộc trò chuyện. Vui lòng thử lại sau.');
         } finally {
           setIsLoading(false);
         }
       }
-    });
-  };
-
-  const handleExportSelected = () => {
-    Swal.fire({
-      title: 'Đang xuất dữ liệu',
-      text: 'Đang chuẩn bị dữ liệu để tải xuống...',
-      timer: 1500,
-      timerProgressBar: true,
-      didOpen: () => {
-        Swal.showLoading();
-      },
-      background: '#fff',
-      customClass: {
-        popup: 'rounded-xl shadow-xl'
-      }
-    }).then(() => {
-      Swal.fire({
-        icon: 'success',
-        title: 'Xuất thành công',
-        text: `Đã xuất ${selectedChats.length} cuộc trò chuyện`,
-        confirmButtonColor: '#10b981',
-        background: '#fff',
-        customClass: {
-          popup: 'rounded-xl shadow-xl'
-        }
-      });
     });
   };
 
   const navigateToChat = (chatId = null) => {
     if (chatId) {
-      // Navigate to specific chat
       switchChat(chatId).then(() => {
         navigate('/chat', { state: { chatId: chatId, fromHistory: true } });
       }).catch(error => {
         console.error('Error switching chat:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Lỗi',
-          text: 'Không thể tải nội dung cuộc trò chuyện này. Vui lòng thử lại sau.',
-          confirmButtonColor: '#10b981'
-        });
+        showError('Không thể tải nội dung cuộc trò chuyện này. Vui lòng thử lại sau.');
       });
     } else {
-      // Navigate to main chat page
       navigate('/chat');
     }
   };
 
   const handleDeleteChat = (chatId, title) => {
-    Swal.fire({
-      title: 'Xác nhận xóa',
-      text: `Bạn có chắc chắn muốn xóa cuộc trò chuyện "${title}"?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#10b981',
-      cancelButtonColor: '#ef4444',
-      confirmButtonText: 'Xóa',
-      cancelButtonText: 'Hủy',
-      background: '#fff',
-      customClass: {
-        popup: 'rounded-xl shadow-xl'
-      }
-    }).then(async (result) => {
+    showConfirm(`Bạn có chắc chắn muốn xóa cuộc trò chuyện "${title}"?`, 'Xác nhận xóa').then(async (result) => {
       if (result.isConfirmed) {
         try {
           setIsLoading(true);
-          // Gọi API xóa cuộc trò chuyện
           await deleteChat(chatId);
-
-          // Cập nhật state chatHistory
-          setChatHistory(prevHistory =>
-            prevHistory.filter(chat => chat.id !== chatId)
-          );
-          Swal.fire({
-            title: 'Đã xóa!',
-            text: 'Cuộc trò chuyện đã được xóa',
-            icon: 'success',
-            confirmButtonColor: '#10b981',
-            timer: 1500,
-            background: '#fff',
-            customClass: {
-              popup: 'rounded-xl shadow-xl'
-            }
-          });
-
-          // Remove from selected if it was selected
+          setChatHistory(prevHistory => prevHistory.filter(chat => chat.id !== chatId));
+          showSuccess('Cuộc trò chuyện đã được xóa');
           if (selectedChats.includes(chatId)) {
             setSelectedChats(selectedChats.filter(id => id !== chatId));
           }
         } catch (error) {
           console.error('Error deleting chat:', error);
-          Swal.fire({
-            title: 'Lỗi!',
-            text: error.detail || 'Không thể xóa cuộc trò chuyện. Vui lòng thử lại sau.',
-            icon: 'error',
-            confirmButtonColor: '#10b981',
-            background: '#fff',
-            customClass: {
-              popup: 'rounded-xl shadow-xl'
-            }
-          });
+          showError(error.detail || 'Không thể xóa cuộc trò chuyện. Vui lòng thử lại sau.');
         } finally {
           setIsLoading(false);
         }
@@ -356,33 +202,18 @@ const ChatHistoryPage = () => {
     });
   };
 
-  // Animation variants
-  const pageVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.4 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } }
-  };
-
-  const itemVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-    exit: { opacity: 0, y: 10, transition: { duration: 0.2 } }
-  };
-
   return (
     <motion.div
       className="min-h-screen bg-gray-50 flex flex-col"
+      variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={pageVariants}
     >
-      {/* Error notification */}
       <AnimatePresence>
         {localError && <ErrorMessage message={localError} onClose={() => setLocalError(null)} />}
       </AnimatePresence>
 
-      {/* Header */}
       <TopNavBar
         title="Lịch sử trò chuyện"
         showBackButton={true}
@@ -391,17 +222,14 @@ const ChatHistoryPage = () => {
         user={user}
       />
 
-      {/* Main content */}
       <main className="flex-1 max-w-7xl mx-auto py-6 px-4 sm:px-6 w-full">
         <div className="flex flex-col md:flex-row gap-6">
-          {/* Left sidebar - Search and filters */}
           <motion.div
             className="md:w-72 lg:w-80 flex-shrink-0 space-y-5"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2 }}
           >
-            {/* Search box */}
             <div className="bg-white rounded-xl shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
                 <Search size={14} className="mr-2 text-green-600" />
@@ -421,7 +249,6 @@ const ChatHistoryPage = () => {
               </div>
             </div>
 
-            {/* Filters */}
             <div className="bg-white rounded-xl shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
                 <Filter size={14} className="mr-2 text-green-600" />
@@ -429,7 +256,6 @@ const ChatHistoryPage = () => {
               </h2>
 
               <div className="space-y-4">
-                {/* Time filter */}
                 <div>
                   <label className="text-xs font-medium text-gray-500 mb-1.5 block">Thời gian</label>
                   <div className="relative">
@@ -450,7 +276,6 @@ const ChatHistoryPage = () => {
                   </div>
                 </div>
 
-                {/* Sort by */}
                 <div>
                   <label className="text-xs font-medium text-gray-500 mb-1.5 block">Sắp xếp theo</label>
                   <div className="flex">
@@ -465,7 +290,7 @@ const ChatHistoryPage = () => {
                       </select>
                     </div>
                     <button
-                      onClick={toggleSortOrder}
+                      onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
                       className="flex-shrink-0 px-3 py-2 bg-gray-100 border border-gray-200 rounded-r-lg hover:bg-gray-200 transition-colors duration-200"
                     >
                       <ArrowUpDown size={16} className={`transform transition-transform ${sortOrder === 'asc' ? 'rotate-0' : 'rotate-180'}`} />
@@ -475,7 +300,6 @@ const ChatHistoryPage = () => {
               </div>
             </div>
 
-            {/* Statistics */}
             <div className="bg-white rounded-xl shadow-sm p-4">
               <h2 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
                 <Clock size={14} className="mr-2 text-green-600" />
@@ -497,13 +321,12 @@ const ChatHistoryPage = () => {
               </div>
             </div>
 
-            {/* Action buttons */}
             {selectedChats.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm p-4">
                 <h2 className="text-sm font-semibold text-gray-700 mb-3">Thao tác</h2>
                 <div className="grid grid-cols-2 gap-2">
                   <button
-                    onClick={handleExportSelected}
+                    onClick={() => showSuccess('Tính năng xuất dữ liệu sẽ được cập nhật trong phiên bản tới')}
                     className="flex items-center justify-center px-3 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-medium"
                   >
                     <Download size={14} className="mr-1.5" />
@@ -521,9 +344,7 @@ const ChatHistoryPage = () => {
             )}
           </motion.div>
 
-          {/* Right side - Chat history list */}
           <div className="flex-1">
-            {/* Loading indicator */}
             {isLoading && (
               <div className="flex flex-col items-center justify-center py-16 bg-white rounded-xl shadow-sm">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mb-4"></div>
@@ -531,10 +352,8 @@ const ChatHistoryPage = () => {
               </div>
             )}
 
-            {/* Chat history list or grid */}
             {!isLoading && (
               <>
-                {/* Select all checkbox */}
                 {currentChats.length > 0 && (
                   <div className="flex justify-between items-center mb-4 bg-white p-3 rounded-xl shadow-sm">
                     <div className="flex items-center">
@@ -560,7 +379,7 @@ const ChatHistoryPage = () => {
                       </span>
                     </div>
                     <div className="flex items-center text-sm text-gray-500">
-                      <button onClick={toggleViewMode} className="flex items-center hover:text-green-600 transition-colors">
+                      <button onClick={() => setViewMode(viewMode === 'list' ? 'grid' : 'list')} className="flex items-center hover:text-green-600 transition-colors">
                         {viewMode === 'list' ? (
                           <>
                             <Grid size={16} className="mr-1" />
@@ -577,7 +396,6 @@ const ChatHistoryPage = () => {
                   </div>
                 )}
 
-                {/* No results message */}
                 {currentChats.length === 0 && (
                   <motion.div
                     variants={itemVariants}
@@ -605,7 +423,6 @@ const ChatHistoryPage = () => {
                   </motion.div>
                 )}
 
-                {/* List View */}
                 {viewMode === 'list' && currentChats.length > 0 && (
                   <div className="space-y-3">
                     {currentChats.map((chat, index) => (
@@ -631,7 +448,6 @@ const ChatHistoryPage = () => {
                   </div>
                 )}
 
-                {/* Grid View */}
                 {viewMode === 'grid' && currentChats.length > 0 && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {currentChats.map((chat, index) => (
@@ -657,7 +473,6 @@ const ChatHistoryPage = () => {
                   </div>
                 )}
 
-                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="mt-8 flex justify-center">
                     <nav className="flex items-center space-x-1.5">

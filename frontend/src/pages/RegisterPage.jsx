@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff, User, Lock, ChevronRight, Mail, Phone } from 'lucide-react';
-import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import axios from 'axios';
-
-// URL cơ sở của API backend
-const API_BASE_URL = 'http://localhost:8001';
+import { userAPI, showError, showSuccess } from '../apiService';
+import { validateUsername, validateEmail, validatePassword, validateFullName, validatePhoneNumber, validateConfirmPassword, pageVariants, containerVariants, itemVariants, ROUTES } from '../utils/formatUtils';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -14,140 +11,56 @@ const RegisterPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
-    fullName: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: ''
+    username: '', fullName: '', email: '', phoneNumber: '', password: '', confirmPassword: ''
   });
-  const [errors, setErrors] = useState({
-    username: '',
-    fullName: '',
-    email: '',
-    phoneNumber: '',
-    password: '',
-    confirmPassword: ''
-  });
+  const [errors, setErrors] = useState({});
   const [agreedToTerms, setAgreedToTerms] = useState(false);
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.3
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: { type: 'spring', stiffness: 300, damping: 24 }
-    }
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const toggleConfirmPasswordVisibility = () => {
-    setShowConfirmPassword(!showConfirmPassword);
-  };
 
   const validateField = (field, value) => {
     switch (field) {
-      case 'username':
-        return !value ? 'Vui lòng nhập tên đăng nhập' : 
-               value.length < 3 ? 'Tên đăng nhập phải có ít nhất 3 ký tự' : '';
-      case 'fullName':
-        return !value ? 'Vui lòng nhập họ và tên' : '';
-      case 'email':
-        return !value ? 'Vui lòng nhập email' : 
-               !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? 'Email không hợp lệ' : '';
-      case 'phoneNumber':
-        return !value ? 'Vui lòng nhập số điện thoại' : '';
-      case 'password':
-        return !value ? 'Vui lòng nhập mật khẩu' : 
-                value.length < 6 ? 'Mật khẩu phải có ít nhất 6 ký tự' : '';
-      case 'confirmPassword':
-        return !value ? 'Vui lòng xác nhận mật khẩu' : 
-               value !== formData.password ? 'Mật khẩu không khớp' : '';
-      default:
-        return '';
+      case 'username': return validateUsername(value);
+      case 'fullName': return validateFullName(value);
+      case 'email': return validateEmail(value);
+      case 'phoneNumber': return validatePhoneNumber(value);
+      case 'password': return validatePassword(value);
+      case 'confirmPassword': return validateConfirmPassword(formData.password, value);
+      default: return '';
     }
   };
 
   const handleBlur = (field) => {
     const error = validateField(field, formData[field]);
-    setErrors({
-      ...errors,
-      [field]: error
-    });
+    setErrors({ ...errors, [field]: error });
   };
 
   const validateForm = () => {
-    const newErrors = {
-      username: validateField('username', formData.username),
-      fullName: validateField('fullName', formData.fullName),
-      email: validateField('email', formData.email),
-      phoneNumber: validateField('phoneNumber', formData.phoneNumber),
-      password: validateField('password', formData.password),
-      confirmPassword: validateField('confirmPassword', formData.confirmPassword)
-    };
-    
+    const newErrors = {};
+    Object.keys(formData).forEach(field => {
+      newErrors[field] = validateField(field, formData[field]);
+    });
     setErrors(newErrors);
     return !Object.values(newErrors).some(error => error !== '');
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-    
-    // Clear error when typing
-    if (errors[name]) {
-      setErrors({
-        ...errors,
-        [name]: ''
-      });
-    }
-  };
-
-  const handleLoginClick = (e) => {
-    e.preventDefault();
-    navigate('/login');
+    setFormData({ ...formData, [name]: value });
+    if (errors[name]) setErrors({ ...errors, [name]: '' });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
     
     if (!agreedToTerms) {
-      Swal.fire({
-        icon: 'warning',
-        title: 'Điều khoản dịch vụ',
-        text: 'Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục',
-        confirmButtonColor: '#10b981'
-      });
+      showError('Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục', 'Điều khoản dịch vụ');
       return;
     }
     
-    // Begin registration process
     setIsLoading(true);
     
     try {
-      // Chuẩn bị dữ liệu gửi lên server
       const userData = {
         username: formData.username,
         email: formData.email,
@@ -156,54 +69,53 @@ const RegisterPage = () => {
         phoneNumber: formData.phoneNumber
       };
       
-      // Gửi request đăng ký đến API
-      const response = await axios.post(`${API_BASE_URL}/users/register`, userData);
+      await userAPI.register(userData);
       
-      if (response.status === 200) {
-        // Đăng ký thành công
-        Swal.fire({
-          icon: 'success',
-          title: 'Đăng ký thành công',
-          text: 'Đang chuyển hướng đến trang đăng nhập...',
-          showConfirmButton: false,
-          timer: 1500,
-          background: '#fff',
-          iconColor: '#10b981'
-        }).then(() => {
-          // Redirect to login page
-          navigate('/login');
-        });
-      }
+      showSuccess('Đăng ký thành công', 'Đang chuyển hướng đến trang đăng nhập...');
+      setTimeout(() => navigate('/login'), 1500);
     } catch (error) {
-      console.error('Đăng ký thất bại:', error);
-      
-      let errorMessage = 'Đã có lỗi xảy ra khi đăng ký';
-      
-      // Xử lý thông báo lỗi từ server
-      if (error.response) {
-        if (error.response.status === 400 && error.response.data.detail) {
-          errorMessage = error.response.data.detail;
-        }
-      }
-      
-      Swal.fire({
-        icon: 'error',
-        title: 'Đăng ký thất bại',
-        text: errorMessage,
-        confirmButtonColor: '#10b981'
-      });
+      showError(error.detail || 'Đã có lỗi xảy ra khi đăng ký', 'Đăng ký thất bại');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const FormField = ({ name, type = 'text', placeholder, icon: Icon, showToggle = false, toggleState, onToggle }) => (
+    <motion.div className="space-y-1" variants={itemVariants}>
+      <div className="relative">
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
+          <Icon size={18} />
+        </div>
+        <input
+          type={showToggle ? (toggleState ? "text" : "password") : type}
+          name={name}
+          value={formData[name]}
+          onChange={handleChange}
+          onBlur={() => handleBlur(name)}
+          placeholder={placeholder}
+          className={`w-full px-10 py-3 border ${errors[name] ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors[name] ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
+        />
+        {showToggle && (
+          <button
+            type="button"
+            onClick={onToggle}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
+          >
+            {toggleState ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        )}
+      </div>
+      {errors[name] && <p className="text-red-500 text-sm ml-1">{errors[name]}</p>}
+    </motion.div>
+  );
+
   return (
     <motion.div 
       className="flex min-h-screen bg-gradient-to-br from-green-50 via-emerald-50 to-teal-100"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
     >
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
         <motion.div 
@@ -219,13 +131,10 @@ const RegisterPage = () => {
           </div>
           
           <h2 className="text-4xl font-bold text-white mb-6">Tạo tài khoản mới</h2>
-          
           <p className="text-white/80 text-lg mb-8 max-w-lg">
             Đăng ký để trải nghiệm Chatbot hỗ trợ chính sách người có công với cách mạng tại Việt Nam.
           </p>
-          
           <div className="w-20 h-1 bg-gradient-to-r from-white/40 to-white/10 rounded mb-8"></div>
-          
           <p className="text-white/90 italic">
             "Uống nước nhớ nguồn, ăn quả nhớ người trồng cây."
           </p>
@@ -235,15 +144,9 @@ const RegisterPage = () => {
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 relative z-10">
         <motion.div 
           className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
-          initial={{ x: -100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          exit={{ x: 100, opacity: 0 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 260, 
-            damping: 20 
-          }}
           variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
           <motion.div className="text-center mb-8" variants={itemVariants}>
             <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl mx-auto mb-4 shadow-lg flex items-center justify-center">
@@ -254,128 +157,26 @@ const RegisterPage = () => {
           </motion.div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username field */}
-            <motion.div className="space-y-1" variants={itemVariants}>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <User size={18} />
-                </div>
-                <input
-                  type="text"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur('username')}
-                  placeholder="Tên đăng nhập"
-                  className={`w-full px-10 py-3 border ${errors.username ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.username ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-                />
-              </div>
-              {errors.username && <p className="text-red-500 text-sm ml-1">{errors.username}</p>}
-            </motion.div>
-
-            <motion.div className="space-y-1" variants={itemVariants}>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <User size={18} />
-                </div>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur('fullName')}
-                  placeholder="Họ và tên"
-                  className={`w-full px-10 py-3 border ${errors.fullName ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.fullName ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-                />
-              </div>
-              {errors.fullName && <p className="text-red-500 text-sm ml-1">{errors.fullName}</p>}
-            </motion.div>
-
-            <motion.div className="space-y-1" variants={itemVariants}>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <Mail size={18} />
-                </div>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur('email')}
-                  placeholder="Email"
-                  className={`w-full px-10 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.email ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-                />
-              </div>
-              {errors.email && <p className="text-red-500 text-sm ml-1">{errors.email}</p>}
-            </motion.div>
-
-            <motion.div className="space-y-1" variants={itemVariants}>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <Phone size={18} />
-                </div>
-                <input
-                  type="tel"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur('phoneNumber')}
-                  placeholder="Số điện thoại"
-                  className={`w-full px-10 py-3 border ${errors.phoneNumber ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.phoneNumber ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-                />
-              </div>
-              {errors.phoneNumber && <p className="text-red-500 text-sm ml-1">{errors.phoneNumber}</p>}
-            </motion.div>
-
-            <motion.div className="space-y-1" variants={itemVariants}>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <Lock size={18} />
-                </div>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur('password')}
-                  placeholder="Mật khẩu"
-                  className={`w-full px-10 py-3 border ${errors.password ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.password ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-                />
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {errors.password && <p className="text-red-500 text-sm ml-1">{errors.password}</p>}
-            </motion.div>
-
-            <motion.div className="space-y-1" variants={itemVariants}>
-              <div className="relative">
-                <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-                  <Lock size={18} />
-                </div>
-                <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  name="confirmPassword"
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  onBlur={() => handleBlur('confirmPassword')}
-                  placeholder="Xác nhận mật khẩu"
-                  className={`w-full px-10 py-3 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${errors.confirmPassword ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-                />
-                <button
-                  type="button"
-                  onClick={toggleConfirmPasswordVisibility}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
-                >
-                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-              {errors.confirmPassword && <p className="text-red-500 text-sm ml-1">{errors.confirmPassword}</p>}
-            </motion.div>
+            <FormField name="username" placeholder="Tên đăng nhập" icon={User} />
+            <FormField name="fullName" placeholder="Họ và tên" icon={User} />
+            <FormField name="email" type="email" placeholder="Email" icon={Mail} />
+            <FormField name="phoneNumber" type="tel" placeholder="Số điện thoại" icon={Phone} />
+            <FormField 
+              name="password" 
+              placeholder="Mật khẩu" 
+              icon={Lock} 
+              showToggle 
+              toggleState={showPassword}
+              onToggle={() => setShowPassword(!showPassword)}
+            />
+            <FormField 
+              name="confirmPassword" 
+              placeholder="Xác nhận mật khẩu" 
+              icon={Lock} 
+              showToggle 
+              toggleState={showConfirmPassword}
+              onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
 
             <motion.div className="flex items-start" variants={itemVariants}>
               <label className="flex items-center group cursor-pointer">
@@ -385,10 +186,9 @@ const RegisterPage = () => {
                   onChange={() => setAgreedToTerms(!agreedToTerms)}
                   className="opacity-0 absolute h-5 w-5 cursor-pointer"
                 />
-                <div className="relative w-5 h-5 flex flex-shrink-0">
-                  <div className={`w-5 h-5 border border-gray-300 rounded transition-all duration-300 ${agreedToTerms ? 'bg-gradient-to-r from-green-500 to-teal-500 border-green-500' : ''}`}></div>
+                <div className={`w-5 h-5 border border-gray-300 rounded transition-all duration-300 ${agreedToTerms ? 'bg-gradient-to-r from-green-500 to-teal-500 border-green-500' : ''}`}>
                   {agreedToTerms && (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex items-center justify-center h-full">
                       <div className="w-2 h-3.5 border-r-2 border-b-2 border-white transform rotate-45 translate-y-[-1px]"></div>
                     </div>
                   )}
@@ -425,13 +225,12 @@ const RegisterPage = () => {
           <motion.div className="mt-2 text-center" variants={itemVariants}>
             <p className="text-gray-600">
               Đã có tài khoản?{' '}
-              <a 
-                href="#" 
-                onClick={handleLoginClick}
+              <button 
+                onClick={() => navigate('/login')}
                 className="text-green-600 hover:text-green-800 font-medium transition-colors duration-300 hover:underline px-2 py-1"
               >
                 Đăng nhập ngay
-              </a>
+              </button>
             </p>
           </motion.div>
         </motion.div>

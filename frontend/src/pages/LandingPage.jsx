@@ -2,24 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-  MessageSquare,
-  Book,
-  Award,
-  Users,
-  ArrowRight,
-  Check,
-  ChevronRight,
-  Shield,
-  Search,
-  Clock,
-  FileText,
-  Star,
-  User,
-  LogOut,
-  ChevronDown
+  MessageSquare, Book, Award, Users, ArrowRight, Check, ChevronRight,
+  Shield, Search, Clock, FileText, Star, User, LogOut, ChevronDown
 } from 'lucide-react';
 import { useChat } from '../ChatContext';
-import Swal from 'sweetalert2';
+import { getAuthData, clearAuthData, showConfirm, showSuccess } from '../utils/formatUtils';
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -28,16 +15,13 @@ const LandingPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
-  // Check login status
   useEffect(() => {
     const checkAuthStatus = async () => {
-      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+      const { token, userId } = getAuthData();
 
       if (token && userId) {
         setIsLoggedIn(true);
 
-        // Fetch user info if not already available
         if (user) {
           setUserInfo(user);
         } else {
@@ -62,44 +46,18 @@ const LandingPage = () => {
     checkAuthStatus();
   }, [user, fetchUserInfo]);
 
-  // Handle logout
   const handleLogout = () => {
-    Swal.fire({
-      title: 'Đăng xuất',
-      text: 'Bạn có chắc chắn muốn đăng xuất?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Đăng xuất',
-      cancelButtonText: 'Hủy',
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#64748b'
-    }).then((result) => {
+    showConfirm('Bạn có chắc chắn muốn đăng xuất?', 'Đăng xuất').then((result) => {
       if (result.isConfirmed) {
-        // Xóa dữ liệu auth
-        localStorage.removeItem('auth_token');
-        localStorage.removeItem('user_id');
-        sessionStorage.removeItem('auth_token');
-        sessionStorage.removeItem('user_id');
-
-        // Cập nhật state local
+        clearAuthData();
         setIsLoggedIn(false);
         setUserInfo(null);
         setShowUserDropdown(false);
 
-        // Hiển thị thông báo thành công
-        Swal.fire({
-          icon: 'success',
-          title: 'Đăng xuất thành công',
-          text: 'Bạn đã đăng xuất khỏi hệ thống',
-          confirmButtonColor: '#10b981',
-          timer: 1500,
-          showConfirmButton: false
-        });
+        showSuccess('Bạn đã đăng xuất khỏi hệ thống', 'Đăng xuất thành công');
 
-        // Chuyển hướng về trang chủ sau khi hiển thị thông báo
         setTimeout(() => {
           navigate('/');
-          // Force reload để đảm bảo state được reset
           window.location.reload();
         }, 1500);
       }
@@ -153,7 +111,6 @@ const LandingPage = () => {
     }
   ];
 
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -176,13 +133,11 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-gray-50">
-      {/* Header/Navigation */}
       <header className="w-full bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                {/* Sửa logo để giống TopNavBar */}
                 <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md">
                   <div className="relative">
                     <Award size={20} className="text-white" />
@@ -195,14 +150,13 @@ const LandingPage = () => {
                 <p className="text-xs text-gray-500 -mt-1">Hỗ trợ người có công</p>
               </div>
             </div>
-            {/* Phần navigation và auth section giữ nguyên */}
+            
             <nav className="hidden md:flex space-x-8">
               <a href="#features" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Tính năng</a>
               <a href="#benefits" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Lợi ích</a>
               <a href="#faq" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Hỏi đáp</a>
             </nav>
 
-            {/* Authentication section giữ nguyên */}
             <div className="flex items-center space-x-4">
               {isLoggedIn ? (
                 <div className="relative">
@@ -219,7 +173,6 @@ const LandingPage = () => {
                     <ChevronDown size={16} className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* Dropdown menu giữ nguyên */}
                   {showUserDropdown && (
                     <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-100">
                       <button
@@ -286,7 +239,6 @@ const LandingPage = () => {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-teal-700 clip-hero-shape"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28 md:pt-32 md:pb-40">
@@ -359,19 +311,6 @@ const LandingPage = () => {
                           Theo quy định mới nhất tại Nghị định 55/2023/NĐ-CP có hiệu lực từ ngày 05/09/2023, mức trợ cấp hàng tháng cho thương binh hạng 1/4 (tỷ lệ tổn thương cơ thể 81-100%) dao động từ 5.335.000 đồng đến 6.589.000 đồng tùy theo tỷ lệ thương tật chính xác.
                         </div>
                       </div>
-                      <div className="flex justify-end">
-                        <div className="bg-green-100 text-green-800 p-3 rounded-xl max-w-xs">
-                          Ngoài trợ cấp hàng tháng, thương binh hạng 1/4 còn được hưởng những ưu đãi gì?
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex-shrink-0 mr-2 flex items-center justify-center">
-                          <MessageSquare className="h-4 w-4 text-white" />
-                        </div>
-                        <div className="bg-white text-gray-800 p-3 rounded-xl max-w-xs shadow-sm border border-gray-100">
-                          Ngoài trợ cấp hàng tháng, thương binh hạng 1/4 còn được hưởng các chế độ ưu đãi như: phụ cấp thêm 1.031.000đ/tháng, trợ cấp người phục vụ, ưu đãi giáo dục, y tế, nhà ở, điều dưỡng phục hồi sức khỏe định kỳ, và miễn giảm một số loại thuế, phí theo quy định.
-                        </div>
-                      </div>
                     </div>
                   </div>
                 </div>
@@ -382,7 +321,6 @@ const LandingPage = () => {
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-green-50"></div>
       </section>
 
-      {/* Features Section */}
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -426,7 +364,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -444,61 +381,34 @@ const LandingPage = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8 relative">
-            {/* Connecting Line */}
             <div className="absolute top-24 left-1/2 transform -translate-x-1/2 w-4/5 h-0.5 bg-green-200 hidden md:block"></div>
 
-            <motion.div
-              className="text-center z-1"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white text-green-600 mb-6 shadow-md border border-green-100">
-                <Search className="h-7 w-7" />
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-xl font-semibold mb-3 text-gray-900">Đặt câu hỏi</h3>
-                <p className="text-gray-600">Nhập câu hỏi của bạn về chính sách người có công vào chatbot một cách tự nhiên, như đang trò chuyện với chuyên gia.</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="text-center z-1"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white text-green-600 mb-6 shadow-md border border-green-100">
-                <Shield className="h-7 w-7" />
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-xl font-semibold mb-3 text-gray-900">Xử lý thông minh</h3>
-                <p className="text-gray-600">Hệ thống sử dụng công nghệ RAG để tìm kiếm thông tin chính xác từ cơ sở dữ liệu văn bản pháp luật.</p>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="text-center z-1"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white text-green-600 mb-6 shadow-md border border-green-100">
-                <FileText className="h-7 w-7" />
-              </div>
-              <div className="bg-white p-6 rounded-xl shadow-md">
-                <h3 className="text-xl font-semibold mb-3 text-gray-900">Nhận câu trả lời</h3>
-                <p className="text-gray-600">Nhận được câu trả lời rõ ràng, dễ hiểu với tham chiếu đến các văn bản pháp luật chính thức.</p>
-              </div>
-            </motion.div>
+            {[
+              { icon: Search, title: 'Đặt câu hỏi', desc: 'Nhập câu hỏi của bạn về chính sách người có công vào chatbot một cách tự nhiên, như đang trò chuyện với chuyên gia.' },
+              { icon: Shield, title: 'Xử lý thông minh', desc: 'Hệ thống sử dụng công nghệ RAG để tìm kiếm thông tin chính xác từ cơ sở dữ liệu văn bản pháp luật.' },
+              { icon: FileText, title: 'Nhận câu trả lời', desc: 'Nhận được câu trả lời rõ ràng, dễ hiểu với tham chiếu đến các văn bản pháp luật chính thức.' }
+            ].map((step, index) => (
+              <motion.div
+                key={index}
+                className="text-center z-1"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white text-green-600 mb-6 shadow-md border border-green-100">
+                  <step.icon className="h-7 w-7" />
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-md">
+                  <h3 className="text-xl font-semibold mb-3 text-gray-900">{step.title}</h3>
+                  <p className="text-gray-600">{step.desc}</p>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Benefits Section */}
       <section id="benefits" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -545,7 +455,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -583,7 +492,6 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -601,88 +509,56 @@ const LandingPage = () => {
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              className="bg-green-50 p-6 rounded-xl shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
+            {[
+              {
+                content: "Tôi là thương binh hạng 2/4 và thường xuyên cần tìm hiểu về các chính sách ưu đãi. Chatbot này giúp tôi tiết kiệm rất nhiều thời gian và luôn cung cấp thông tin chính xác.",
+                name: "Nguyễn Văn A",
+                role: "Thương binh hạng 2/4"
+              },
+              {
+                content: "Là cán bộ phụ trách chính sách người có công, tôi thường xuyên sử dụng công cụ này để tra cứu thông tin. Rất nhanh chóng và thuận tiện, giúp tôi tư vấn cho người dân được tốt hơn.",
+                name: "Trần Thị B",
+                role: "Cán bộ phòng LĐTBXH"
+              },
+              {
+                content: "Tôi đang tìm hiểu chính sách hỗ trợ cho bố mẹ là người có công. Chatbot đã cung cấp thông tin rất chi tiết, giúp tôi hiểu rõ các quyền lợi gia đình được hưởng.",
+                name: "Hoàng Văn C",
+                role: "Con của người có công"
+              }
+            ].map((testimonial, index) => (
+              <motion.div
+                key={index}
+                className="bg-green-50 p-6 rounded-xl shadow-md"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: (index + 1) * 0.1, duration: 0.5 }}
+                viewport={{ once: true }}
+              >
+                <div className="flex items-center mb-4">
+                  <div className="flex text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} fill="currentColor" />
+                    ))}
+                  </div>
                 </div>
-              </div>
-              <p className="text-gray-700 mb-4">
-                "Tôi là thương binh hạng 2/4 và thường xuyên cần tìm hiểu về các chính sách ưu đãi. Chatbot này giúp tôi tiết kiệm rất nhiều thời gian và luôn cung cấp thông tin chính xác."
-              </p>
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-lg">N</div>
-                <div className="ml-3">
-                  <h4 className="text-sm font-medium text-gray-900">Nguyễn Văn A</h4>
-                  <p className="text-xs text-gray-500">Thương binh hạng 2/4</p>
+                <p className="text-gray-700 mb-4">
+                  "{testimonial.content}"
+                </p>
+                <div className="flex items-center">
+                  <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-lg">
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div className="ml-3">
+                    <h4 className="text-sm font-medium text-gray-900">{testimonial.name}</h4>
+                    <p className="text-xs text-gray-500">{testimonial.role}</p>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="bg-green-50 p-6 rounded-xl shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill="currentColor" />
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 mb-4">
-                "Là cán bộ phụ trách chính sách người có công, tôi thường xuyên sử dụng công cụ này để tra cứu thông tin. Rất nhanh chóng và thuận tiện, giúp tôi tư vấn cho người dân được tốt hơn."
-              </p>
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-lg">T</div>
-                <div className="ml-3">
-                  <h4 className="text-sm font-medium text-gray-900">Trần Thị B</h4>
-                  <p className="text-xs text-gray-500">Cán bộ phòng LĐTBXH</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              className="bg-green-50 p-6 rounded-xl shadow-md"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.5 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex items-center mb-4">
-                <div className="flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={16} fill={i < 4 ? "currentColor" : "none"} />
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 mb-4">
-                "Tôi đang tìm hiểu chính sách hỗ trợ cho bố mẹ là người có công. Chatbot đã cung cấp thông tin rất chi tiết, giúp tôi hiểu rõ các quyền lợi gia đình được hưởng."
-              </p>
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full bg-green-500 flex items-center justify-center text-white font-bold text-lg">H</div>
-                <div className="ml-3">
-                  <h4 className="text-sm font-medium text-gray-900">Hoàng Văn C</h4>
-                  <p className="text-xs text-gray-500">Con của người có công</p>
-                </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-green-600 to-teal-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -751,13 +627,11 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between">
             <div className="mb-8 md:mb-0">
               <div className="flex items-center">
-                {/* Sửa logo footer */}
                 <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
                   <div className="relative">
                     <Award size={20} className="text-white" />
@@ -803,7 +677,6 @@ const LandingPage = () => {
         </div>
       </footer>
 
-      {/* CSS cho clip-path */}
       <style jsx>{`
         .clip-hero-shape {
           clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
@@ -813,4 +686,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage; 
+export default LandingPage;

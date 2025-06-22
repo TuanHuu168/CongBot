@@ -4,13 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Send, MessageSquare } from 'lucide-react';
 import { useChat } from '../ChatContext';
 import { askQuestion, updateChatTitle } from '../apiService';
-import Swal from 'sweetalert2';
-
 import TopNavBar from '../components/common/TopNavBar';
 import ChatSidebar from '../components/chat/ChatSidebar';
 import MessageItem from '../components/chat/MessageItem';
 import ErrorMessage from '../components/common/ErrorMessage';
-import { getDisplayTitle } from '../utils/formatUtils';
+import { getDisplayTitle, pageVariants, showError } from '../utils/formatUtils';
 
 const ChatPage = () => {
   const navigate = useNavigate();
@@ -18,19 +16,9 @@ const ChatPage = () => {
   const { state } = location;
 
   const {
-    user,
-    chatHistory,
-    isLoading,
-    setIsLoading,
-    activeChatMessages,
-    setActiveChatMessages,
-    currentChatId,
-    setCurrentChatId,
-    createNewChat,
-    switchChat,
-    fetchChatHistory,
-    fetchUserInfo,
-    resetAuthState
+    user, chatHistory, isLoading, setIsLoading, activeChatMessages, setActiveChatMessages,
+    currentChatId, setCurrentChatId, createNewChat, switchChat, fetchChatHistory,
+    fetchUserInfo, resetAuthState
   } = useChat();
 
   const [input, setInput] = useState('');
@@ -49,14 +37,12 @@ const ChatPage = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Lấy tiêu đề cuộc trò chuyện hiện tại
   const getCurrentChatTitle = () => {
     if (!currentChatId || !chatHistory) return "Cuộc trò chuyện mới";
     const currentChat = chatHistory.find(chat => chat.id === currentChatId);
     return getDisplayTitle(currentChat);
   };
 
-  // Kiểm tra auth và load user info ngay khi mount
   useEffect(() => {
     const initializeUser = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
@@ -69,7 +55,6 @@ const ChatPage = () => {
         return;
       }
 
-      // Nếu chưa có user info, fetch ngay lập tức
       if (!user && userId) {
         console.log('Fetching user info for userId:', userId);
         try {
@@ -83,7 +68,6 @@ const ChatPage = () => {
     initializeUser();
   }, [user, fetchUserInfo, resetAuthState, navigate]);
 
-  // Kiểm tra auth state liên tục để phát hiện logout từ tab khác
   useEffect(() => {
     const checkAuthStatus = () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
@@ -101,7 +85,6 @@ const ChatPage = () => {
     return () => clearInterval(interval);
   }, [resetAuthState, navigate]);
 
-  // Xử lý khi đến từ trang đăng nhập và navigation state
   useEffect(() => {
     if (state?.freshLogin) {
       fetchChatHistory();
@@ -111,7 +94,6 @@ const ChatPage = () => {
       setInput(state.suggestedQuestion);
     }
 
-    // Reset currentChatId nếu không đến từ ChatHistoryPage với chatId cụ thể
     if (!state?.chatId && !state?.freshLogin) {
       setCurrentChatId(null);
       setActiveChatMessages([]);
@@ -122,7 +104,6 @@ const ChatPage = () => {
     scrollToBottom();
   }, [activeChatMessages]);
 
-  // Responsive handling
   useEffect(() => {
     const handleResize = () => {
       const isMobileView = window.innerWidth < 768;
@@ -145,7 +126,6 @@ const ChatPage = () => {
     };
   }, []);
 
-  // Auto-adjust textarea height
   const adjustTextareaHeight = useCallback(() => {
     if (!textareaRef.current) return;
 
@@ -175,7 +155,6 @@ const ChatPage = () => {
     setInput(e.target.value);
   };
 
-  // Xử lý gửi tin nhắn
   const prepareAndSendMessage = async (userQuestion) => {
     if (userQuestion.trim() === '' || isLoading) return;
 
@@ -189,7 +168,6 @@ const ChatPage = () => {
 
       let chatId = currentChatId;
 
-      // Tạo chat mới nếu cần
       if (!chatId) {
         try {
           const newChatResult = await createNewChat();
@@ -203,7 +181,6 @@ const ChatPage = () => {
         }
       }
 
-      // Thêm tin nhắn user vào UI ngay lập tức
       const userMessageId = `user_${Date.now()}`;
       setActiveChatMessages(prev => [...prev, {
         id: userMessageId,
@@ -212,7 +189,6 @@ const ChatPage = () => {
         timestamp: new Date().toISOString()
       }]);
 
-      // Gọi API với retry logic
       let retryCount = 0;
       let response = null;
 
@@ -233,7 +209,6 @@ const ChatPage = () => {
         throw new Error("Không thể kết nối đến máy chủ sau nhiều lần thử");
       }
 
-      // Thêm tin nhắn bot vào UI
       const botMessageId = `bot_${Date.now()}`;
       setActiveChatMessages(prev => [...prev, {
         id: botMessageId,
@@ -244,7 +219,6 @@ const ChatPage = () => {
         context: response.top_chunks || []
       }]);
 
-      // Cập nhật tiêu đề nếu là tin nhắn đầu tiên
       const isFirstMessage = activeChatMessages.length <= 2;
 
       if (isFirstMessage && response.id) {
@@ -271,12 +245,7 @@ const ChatPage = () => {
         timestamp: new Date().toISOString()
       }]);
 
-      Swal.fire({
-        icon: 'error',
-        title: 'Lỗi kết nối',
-        text: error.detail || 'Có lỗi khi kết nối với máy chủ. Vui lòng thử lại sau.',
-        confirmButtonColor: '#10b981'
-      });
+      showError(error.detail || 'Có lỗi khi kết nối với máy chủ. Vui lòng thử lại sau.', 'Lỗi kết nối');
     } finally {
       setIsLoading(false);
       scrollToBottom();
@@ -317,24 +286,13 @@ const ChatPage = () => {
     }
   };
 
-  const pageVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.4 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } }
-  };
-
-  const messageVariants = {
-    initial: { opacity: 0, y: 10 },
-    animate: { opacity: 1, y: 0, transition: { duration: 0.3 } }
-  };
-
   return (
     <motion.div
       className="flex h-screen w-screen overflow-hidden bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50"
+      variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={pageVariants}
     >
       <style jsx>{`
         * {
@@ -363,14 +321,11 @@ const ChatPage = () => {
         .markdown-content blockquote { border-left: 3px solid #10b981; padding-left: 0.75rem; margin: 0.75rem 0; color: #4b5563; background-color: #f0fdf4; border-radius: 0.25rem; }
       `}</style>
 
-      {/* Error notification */}
       <AnimatePresence mode="sync">
         {localError && <ErrorMessage message={localError} onClose={() => setLocalError(null)} />}
       </AnimatePresence>
 
-      {/* Main container */}
       <div className="flex flex-col w-full h-full">
-        {/* Top Navigation Bar - Fixed */}
         <div className="flex-shrink-0">
           <TopNavBar
             title={getCurrentChatTitle()}
@@ -380,9 +335,7 @@ const ChatPage = () => {
           />
         </div>
 
-        {/* Content area */}
         <div className="flex flex-1 overflow-hidden relative">
-          {/* Chat Sidebar */}
           <ChatSidebar
             isMobile={isMobile}
             isSidebarOpen={isSidebarOpen}
@@ -397,7 +350,6 @@ const ChatPage = () => {
             fetchChatHistory={fetchChatHistory}
           />
 
-          {/* Mobile overlay - Di chuyển vào trong content area */}
           {isSidebarOpen && isMobile && (
             <div
               className="fixed inset-0 bg-white/10 backdrop-blur-md z-45 md:hidden"
@@ -405,9 +357,7 @@ const ChatPage = () => {
             />
           )}
 
-          {/* Main Chat Area */}
           <div className="flex-1 flex flex-col h-full overflow-hidden relative">
-            {/* Chat Messages */}
             <div
               className="flex-1 overflow-y-auto p-4 pb-32 bg-transparent"
               ref={chatContainerRef}
@@ -430,13 +380,11 @@ const ChatPage = () => {
                       <MessageItem 
                         key={message.id || `msg_${index}`} 
                         message={message} 
-                        messageVariants={messageVariants} 
                       />
                     ))}
                   </div>
                 )}
 
-                {/* Loading animation */}
                 {isLoading && activeChatMessages.length > 0 && (
                   <div className="flex justify-start mb-4">
                     <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md">
@@ -464,7 +412,6 @@ const ChatPage = () => {
               </div>
             </div>
 
-            {/* Floating Chat Input */}
             <div className="fixed bottom-0 left-0 right-0 md:left-72 z-40">
               <div className="max-w-3xl mx-auto px-4 py-4 bg-gradient-to-t from-green-50 via-teal-50 to-transparent">
                 <div className="bg-white rounded-[20px] shadow-xl border border-gray-100 p-1.5 overflow-hidden">

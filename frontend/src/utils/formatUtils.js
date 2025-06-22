@@ -1,11 +1,11 @@
+import Swal from 'sweetalert2';
+
 // Date formatting utilities
 export const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
-
   const date = new Date(dateString);
   const now = new Date();
   
-  // Helper to check if dates are same day
   const isSameDay = (d1, d2) => d1.toDateString() === d2.toDateString();
   
   if (isSameDay(date, now)) {
@@ -20,11 +20,8 @@ export const formatDate = (dateString) => {
   }
 
   return date.toLocaleDateString('vi-VN', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    day: '2-digit', month: '2-digit', year: 'numeric',
+    hour: '2-digit', minute: '2-digit'
   });
 };
 
@@ -42,20 +39,21 @@ export const getDateLabel = (dateString) => {
 // Chat title utilities
 export const getDisplayTitle = (chat) => {
   if (!chat?.title || chat.title.trim() === '') return "Cuộc trò chuyện mới";
-  
-  // Check if title is MongoDB ObjectId
   const isMongoId = /^[0-9a-fA-F]{24}$/.test(chat.title);
   return isMongoId ? "Cuộc trò chuyện mới" : chat.title;
 };
 
-// Text utilities
 export const truncateText = (text, maxLength = 150) => {
   if (!text || text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
 };
 
 // Validation utilities
-export const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+export const validateEmail = (email) => {
+  if (!email) return 'Vui lòng nhập email';
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Email không hợp lệ';
+  return '';
+};
 
 export const validatePassword = (password) => {
   if (!password) return 'Vui lòng nhập mật khẩu';
@@ -69,7 +67,23 @@ export const validateUsername = (username) => {
   return '';
 };
 
-// Animation variants for reuse across components
+export const validateFullName = (fullName) => {
+  if (!fullName) return 'Vui lòng nhập họ và tên';
+  return '';
+};
+
+export const validatePhoneNumber = (phoneNumber) => {
+  if (!phoneNumber) return 'Vui lòng nhập số điện thoại';
+  return '';
+};
+
+export const validateConfirmPassword = (password, confirmPassword) => {
+  if (!confirmPassword) return 'Vui lòng xác nhận mật khẩu';
+  if (password !== confirmPassword) return 'Mật khẩu không khớp';
+  return '';
+};
+
+// Animation variants
 export const pageVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.4 } },
@@ -79,8 +93,7 @@ export const pageVariants = {
 export const slideUpVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
-    opacity: 1, 
-    y: 0, 
+    opacity: 1, y: 0, 
     transition: { type: "spring", stiffness: 260, damping: 20 }
   }
 };
@@ -99,16 +112,55 @@ export const containerVariants = {
   }
 };
 
-// Common constants
+// Alert utilities
+export const showError = (message, title = 'Lỗi') => {
+  return Swal.fire({
+    icon: 'error', title, text: message,
+    confirmButtonColor: '#10b981',
+    customClass: { popup: 'rounded-xl shadow-xl' }
+  });
+};
+
+export const showSuccess = (message, title = 'Thành công') => {
+  return Swal.fire({
+    icon: 'success', title, text: message,
+    confirmButtonColor: '#10b981', timer: 2000,
+    customClass: { popup: 'rounded-xl shadow-xl' }
+  });
+};
+
+export const showConfirm = (message, title = 'Xác nhận') => {
+  return Swal.fire({
+    title, text: message, icon: 'question',
+    showCancelButton: true, confirmButtonText: 'Xác nhận', cancelButtonText: 'Hủy',
+    confirmButtonColor: '#10b981', cancelButtonColor: '#64748b',
+    customClass: { popup: 'rounded-xl shadow-xl' }
+  });
+};
+
+// Auth utilities
+export const getAuthData = () => {
+  const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
+  const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
+  return { token, userId, isValid: !!(token && userId) };
+};
+
+export const clearAuthData = () => {
+  ['auth_token', 'user_id'].forEach(key => {
+    localStorage.removeItem(key);
+    sessionStorage.removeItem(key);
+  });
+};
+
+// Constants
 export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
-  REGISTER: '/register',
+  REGISTER: '/register', 
   CHAT: '/chat',
   HISTORY: '/history',
   PROFILE: '/profile',
-  ADMIN: '/admin',
-  SETTINGS: '/profile'  // Alias for profile page
+  ADMIN: '/admin'
 };
 
 export const STORAGE_KEYS = {

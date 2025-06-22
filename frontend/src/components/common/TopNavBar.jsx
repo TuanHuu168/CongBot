@@ -2,11 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  User, LogOut, History, ChevronDown, Menu,
-  ChevronLeft, Settings, Shield, BookOpen, Award
+  User, LogOut, History, ChevronDown, Menu, ChevronLeft, Settings, Shield, Award
 } from 'lucide-react';
-import Swal from 'sweetalert2';
-import { ROUTES, STORAGE_KEYS } from '../../utils/formatUtils';
+import { ROUTES, showConfirm, clearAuthData } from '../../utils/formatUtils';
 import { useChat } from '../../ChatContext';
 
 const TopNavBar = ({
@@ -16,8 +14,7 @@ const TopNavBar = ({
   backButtonText = 'Quay lại',
   user = null,
   onMenuClick = null,
-  customRight = null,
-  variant = 'default'
+  customRight = null
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -25,10 +22,8 @@ const TopNavBar = ({
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
-  const [isLoadingUser, setIsLoadingUser] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Kiểm tra trạng thái đăng nhập và load user info
   useEffect(() => {
     const checkAuthStatus = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
@@ -37,36 +32,25 @@ const TopNavBar = ({
       if (token && userId) {
         setIsLoggedIn(true);
         
-        // Nếu có user từ context, dùng ngay
         if (user && user.name) {
           setUserInfo(user);
         } else {
-          // Nếu chưa có user, fetch từ API
-          setIsLoadingUser(true);
           try {
             const userData = await fetchUserInfo(userId);
             if (userData) {
-              const formattedUser = {
+              setUserInfo({
                 id: userId,
                 name: userData.fullName || userData.username || 'Người dùng',
                 email: userData.email,
                 username: userData.username,
                 role: userData.role || 'user'
-              };
-              setUserInfo(formattedUser);
+              });
             }
           } catch (error) {
             console.error('Error fetching user info in TopNavBar:', error);
-            // Fallback với thông tin cơ bản
             setUserInfo({
-              id: userId,
-              name: 'Người dùng',
-              email: '',
-              username: '',
-              role: 'user'
+              id: userId, name: 'Người dùng', email: '', username: '', role: 'user'
             });
-          } finally {
-            setIsLoadingUser(false);
           }
         }
       } else {
@@ -78,7 +62,6 @@ const TopNavBar = ({
     checkAuthStatus();
   }, [user, fetchUserInfo]);
 
-  // Đóng dropdown khi click bên ngoài
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -90,96 +73,48 @@ const TopNavBar = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Xử lý đăng xuất
   const handleLogout = () => {
-    Swal.fire({
-      title: 'Đăng xuất',
-      text: 'Bạn có chắc chắn muốn đăng xuất?',
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonText: 'Đăng xuất',
-      cancelButtonText: 'Hủy',
-      confirmButtonColor: '//ef4444',
-      cancelButtonColor: '//64748b',
-      backdrop: true,
-      allowOutsideClick: true
-    }).then((result) => {
+    showConfirm('Bạn có chắc chắn muốn đăng xuất?', 'Đăng xuất').then((result) => {
       if (result.isConfirmed) {
-        // Xóa dữ liệu auth từ storage
-        [localStorage, sessionStorage].forEach(storage => {
-          Object.values(STORAGE_KEYS).forEach(key => storage.removeItem(key));
-        });
-
-        // Cập nhật state local
+        clearAuthData();
         setIsLoggedIn(false);
         setUserInfo(null);
         setShowUserDropdown(false);
-
-        // Cập nhật ChatContext state
         setUser(null);
         setCurrentChatId(null);
         setActiveChatMessages([]);
         setChatHistory([]);
-
-        Swal.fire({
-          icon: 'success',
-          title: 'Đăng xuất thành công',
-          text: 'Bạn đã đăng xuất khỏi hệ thống',
-          confirmButtonColor: '//10b981',
-          timer: 1500,
-          showConfirmButton: false
-        });
-
-        setTimeout(() => {
-          navigate(ROUTES.HOME);
-        }, 1500);
+        navigate(ROUTES.HOME);
       }
     });
   };
 
-  // Kiểm tra quyền admin
-  const isAdmin = () => {
-    return userInfo?.role === 'admin' || user?.role === 'admin';
-  };
+  const isAdmin = () => userInfo?.role === 'admin' || user?.role === 'admin';
 
-  // Lấy đường dẫn hiện tại
-  const getCurrentPath = () => {
-    return location.pathname;
-  };
-
-  // Các mục điều hướng
   const getNavigationItems = () => {
-    const currentPath = getCurrentPath();
+    const currentPath = location.pathname;
     const allItems = [
       { 
-        icon: Settings, 
-        label: 'Cài đặt', 
-        onClick: () => navigate(ROUTES.PROFILE),
-        path: ROUTES.PROFILE
+        icon: Settings, label: 'Cài đặt', 
+        onClick: () => navigate(ROUTES.PROFILE), path: ROUTES.PROFILE
       },
       { 
-        icon: History, 
-        label: 'Lịch sử trò chuyện', 
-        onClick: () => navigate(ROUTES.HISTORY),
-        path: ROUTES.HISTORY
+        icon: History, label: 'Lịch sử trò chuyện', 
+        onClick: () => navigate(ROUTES.HISTORY), path: ROUTES.HISTORY
       }
     ];
 
     if (isAdmin()) {
       allItems.push({ 
-        icon: Shield, 
-        label: 'Quản trị hệ thống', 
-        onClick: () => navigate(ROUTES.ADMIN),
-        path: ROUTES.ADMIN
+        icon: Shield, label: 'Quản trị hệ thống', 
+        onClick: () => navigate(ROUTES.ADMIN), path: ROUTES.ADMIN
       });
     }
 
     return allItems.filter(item => item.path !== currentPath);
   };
 
-  // Lấy tên hiển thị - FIX: Logic đơn giản hơn
   const getDisplayName = () => {
-    if (isLoadingUser) return 'Đang tải...';
     if (userInfo?.name && userInfo.name !== 'Người dùng') return userInfo.name;
     if (user?.name && user.name !== 'Người dùng') return user.name;
     return 'Người dùng';
@@ -189,7 +124,6 @@ const TopNavBar = ({
     <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Phần bên trái */}
           <div className="flex items-center">
             {onMenuClick && (
               <button className="md:hidden mr-3 text-gray-600 hover:text-gray-900" onClick={onMenuClick}>
@@ -221,14 +155,12 @@ const TopNavBar = ({
             )}
           </div>
 
-          {/* Phần giữa - Tiêu đề */}
           <div className="flex-1 text-center mx-4">
             <h1 className="text-lg font-semibold text-gray-800 truncate max-w-xs mx-auto">
               {title}
             </h1>
           </div>
 
-          {/* Phần bên phải */}
           {customRight || (
             <>
               {isLoggedIn ? (

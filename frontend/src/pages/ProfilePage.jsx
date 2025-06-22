@@ -1,54 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import Swal from 'sweetalert2';
-import axios from 'axios';
 import {
-  User,
-  Mail,
-  Phone,
-  Key,
-  Shield,
-  Save,
-  Camera,
-  Clock,
-  Calendar,
-  AlertTriangle,
-  Info,
-  Check,
-  MessageSquare,
-  Award,
-  FileText,
-  BookOpen,
-  HeartHandshake,
-  ArrowRight,
-  Eye,
-  EyeOff
+  User, Mail, Phone, Key, Shield, Save, Camera, Clock, Calendar, AlertTriangle, Info, Check,
+  MessageSquare, Award, FileText, BookOpen, HeartHandshake, ArrowRight, Eye, EyeOff
 } from 'lucide-react';
 import { useChat } from '../ChatContext';
+import { userAPI } from '../apiService';
 import TopNavBar from '../components/common/TopNavBar';
-
-// URL cơ sở của API backend
-const API_BASE_URL = 'http://localhost:8001';
+import { formatDate, pageVariants, slideUpVariants, containerVariants, validatePassword, validateConfirmPassword, showError, showSuccess } from '../utils/formatUtils';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
   const { user, fetchUserInfo, chatHistory, switchChat, fetchChatHistory } = useChat();
 
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phoneNumber: '',
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
+    fullName: '', email: '', phoneNumber: '', personalInfo: '', avatarUrl: '',
+    currentPassword: '', newPassword: '', confirmPassword: ''
   });
 
   const [stats, setStats] = useState({
-    chatCount: 0,
-    messageCount: 0,
-    documentsAccessed: 0,
-    savedItems: 0
+    chatCount: 0, messageCount: 0, documentsAccessed: 0, savedItems: 0
   });
 
   const [recentChats, setRecentChats] = useState([]);
@@ -60,17 +32,11 @@ const ProfilePage = () => {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  // Lấy lịch sử trò chuyện và thông tin người dùng khi component mount
   useEffect(() => {
-    // Đây là cờ để ngăn chặn vòng lặp vô hạn
     if (!dataLoaded) {
-      // Lấy userId từ localStorage hoặc sessionStorage
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
       if (userId) {
-        Promise.all([
-          fetchUserInfo(userId),
-          fetchChatHistory()
-        ]).then(() => {
+        Promise.all([fetchUserInfo(userId), fetchChatHistory()]).then(() => {
           setDataLoaded(true);
         }).catch(error => {
           console.error("Error loading data:", error);
@@ -82,48 +48,34 @@ const ProfilePage = () => {
     }
   }, [fetchUserInfo, fetchChatHistory, navigate, dataLoaded]);
 
-  // Cập nhật stats và recentChats khi chatHistory thay đổi
   useEffect(() => {
     if (chatHistory && chatHistory.length > 0) {
-      // Đếm tổng số cuộc trò chuyện
       const chatCount = chatHistory.length;
-
-      // Lấy 3 cuộc trò chuyện gần nhất
       const sortedChats = [...chatHistory].sort((a, b) => {
         return new Date(b.updated_at || b.date) - new Date(a.updated_at || a.date);
       });
-
       const latest = sortedChats.slice(0, 3);
       setRecentChats(latest);
-
-      // Cập nhật thống kê
-      setStats({
-        chatCount,
-        messageCount: 0,
-        documentsAccessed: 0,
-        savedItems: 0
-      });
+      setStats({ chatCount, messageCount: 0, documentsAccessed: 0, savedItems: 0 });
     }
   }, [chatHistory]);
 
-  // Thiết lập formData từ thông tin user khi user thay đổi
   useEffect(() => {
     if (user) {
       setFormData(prevState => ({
         ...prevState,
         fullName: user.name || '',
         email: user.email || '',
-        phoneNumber: user.phoneNumber || ''
+        phoneNumber: user.phoneNumber || '',
+        personalInfo: user.personalInfo || '',
+        avatarUrl: user.avatarUrl || ''
       }));
     }
   }, [user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -138,46 +90,20 @@ const ProfilePage = () => {
         throw new Error('Không tìm thấy thông tin đăng nhập');
       }
 
-      // Gọi API cập nhật thông tin người dùng
-      const response = await axios.put(
-        `${API_BASE_URL}/users/${userId}`,
-        {
-          fullName: formData.fullName,
-          email: formData.email,
-          phoneNumber: formData.phoneNumber
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
+      await userAPI.update(userId, {
+        fullName: formData.fullName,
+        email: formData.email,
+        phoneNumber: formData.phoneNumber,
+        personalInfo: formData.personalInfo,
+        avatarUrl: formData.avatarUrl
+      });
 
-      if (response.status === 200) {
-        // Cập nhật thông tin người dùng trong context
-        await fetchUserInfo(userId);
-
-        // Thông báo thành công
-        Swal.fire({
-          title: 'Thành công!',
-          text: 'Thông tin cá nhân đã được cập nhật',
-          icon: 'success',
-          confirmButtonText: 'Đóng',
-          confirmButtonColor: '#16a34a'
-        });
-
-        setEditMode(false);
-      }
+      await fetchUserInfo(userId);
+      showSuccess('Thông tin cá nhân đã được cập nhật', 'Thành công!');
+      setEditMode(false);
     } catch (error) {
       console.error('Lỗi khi cập nhật thông tin:', error);
-
-      Swal.fire({
-        title: 'Lỗi!',
-        text: error.response?.data?.detail || 'Không thể cập nhật thông tin. Vui lòng thử lại sau.',
-        icon: 'error',
-        confirmButtonText: 'Thử lại',
-        confirmButtonColor: '#16a34a'
-      });
+      showError(error.detail || 'Không thể cập nhật thông tin. Vui lòng thử lại sau.', 'Lỗi!');
     } finally {
       setIsLoading(false);
     }
@@ -187,216 +113,75 @@ const ProfilePage = () => {
     e.preventDefault();
     setPasswordLoading(true);
 
-    // Kiểm tra mật khẩu mới và xác nhận mật khẩu
-    if (formData.newPassword !== formData.confirmPassword) {
-      Swal.fire({
-        title: 'Lỗi!',
-        text: 'Mật khẩu mới và xác nhận mật khẩu không khớp',
-        icon: 'error',
-        confirmButtonText: 'Thử lại',
-        confirmButtonColor: '#16a34a'
-      });
-      setPasswordLoading(false);
-      return;
-    }
+    const passwordError = validatePassword(formData.newPassword);
+    const confirmError = validateConfirmPassword(formData.newPassword, formData.confirmPassword);
 
-    // Kiểm tra độ mạnh yếu của mật khẩu
-    if (formData.newPassword.length < 6) {
-      Swal.fire({
-        title: 'Lỗi!',
-        text: 'Mật khẩu phải có ít nhất 6 ký tự',
-        icon: 'error',
-        confirmButtonText: 'Thử lại',
-        confirmButtonColor: '#16a34a'
-      });
+    if (passwordError || confirmError) {
+      showError(passwordError || confirmError, 'Lỗi!');
       setPasswordLoading(false);
       return;
     }
 
     try {
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
 
-      if (!userId || !token) {
-        throw new Error('Không tìm thấy thông tin đăng nhập');
-      }
+      await userAPI.changePassword(userId, {
+        currentPassword: formData.currentPassword,
+        newPassword: formData.newPassword
+      });
 
-      // Gọi API thay đổi mật khẩu
-      const response = await axios.put(
-        `${API_BASE_URL}/users/${userId}/password`,
-        {
-          currentPassword: formData.currentPassword,
-          newPassword: formData.newPassword
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
-
-      if (response.status === 200) {
-        // Thông báo thành công
-        Swal.fire({
-          title: 'Thành công!',
-          text: 'Mật khẩu đã được thay đổi',
-          icon: 'success',
-          confirmButtonText: 'Đóng',
-          confirmButtonColor: '#16a34a'
-        });
-
-        // Reset form
-        setFormData({
-          ...formData,
-          currentPassword: '',
-          newPassword: '',
-          confirmPassword: ''
-        });
-      }
+      showSuccess('Mật khẩu đã được thay đổi', 'Thành công!');
+      setFormData({
+        ...formData,
+        currentPassword: '', newPassword: '', confirmPassword: ''
+      });
     } catch (error) {
       console.error('Lỗi khi thay đổi mật khẩu:', error);
-
       let errorMessage = 'Không thể thay đổi mật khẩu. Vui lòng thử lại sau.';
-
       if (error.response?.status === 401) {
         errorMessage = 'Mật khẩu hiện tại không đúng';
-      } else if (error.response?.data?.detail) {
-        errorMessage = error.response.data.detail;
+      } else if (error.detail) {
+        errorMessage = error.detail;
       }
-
-      Swal.fire({
-        title: 'Lỗi!',
-        text: errorMessage,
-        icon: 'error',
-        confirmButtonText: 'Thử lại',
-        confirmButtonColor: '#16a34a'
-      });
+      showError(errorMessage, 'Lỗi!');
     } finally {
       setPasswordLoading(false);
     }
   };
 
-  const navigateToChat = () => {
-    navigate('/chat');
-  };
-
-  // Xử lý tải ảnh đại diện
   const handleAvatarChange = () => {
-    Swal.fire({
-      title: 'Thay đổi ảnh đại diện',
-      text: 'Tính năng này sẽ được cập nhật trong phiên bản tới',
-      icon: 'info',
-      confirmButtonText: 'Đóng',
-      confirmButtonColor: '#16a34a'
-    });
+    showSuccess('Tính năng này sẽ được cập nhật trong phiên bản tới', 'Thay đổi ảnh đại diện');
   };
 
-  // Xử lý khi click vào một cuộc trò chuyện gần đây
   const handleChatClick = (chatId) => {
     switchChat(chatId).then(() => {
       navigate('/chat');
     });
   };
 
-  // Hàm định dạng thời gian
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-
-    // Kiểm tra xem có phải là hôm nay không
-    if (date.toDateString() === now.toDateString()) {
-      return `Hôm nay, ${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
-    }
-
-    // Kiểm tra xem có phải là hôm qua không
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    if (date.toDateString() === yesterday.toDateString()) {
-      return `Hôm qua, ${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
-    }
-
-    // Trường hợp khác
-    return date.toLocaleDateString('vi-VN', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  // Hàm format tiêu đề chat
   const formatChatTitle = (title) => {
     if (!title || title.trim() === '') return "Cuộc trò chuyện mới";
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(title);
     return isMongoId ? "Cuộc trò chuyện mới" : title;
   };
 
-  // Toggle hiển thị mật khẩu
-  const toggleCurrentPasswordVisibility = () => setShowCurrentPassword(!showCurrentPassword);
-  const toggleNewPasswordVisibility = () => setShowNewPassword(!showNewPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
-
-  // Animation variants
-  const pageVariants = {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.4 } },
-    exit: { opacity: 0, transition: { duration: 0.3 } }
-  };
-
-  const slideUpVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 260,
-        damping: 20
-      }
-    }
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2
-      }
-    }
-  };
-
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30
-      }
+      opacity: 1, scale: 1,
+      transition: { type: "spring", stiffness: 300, damping: 30 }
     },
-    exit: {
-      opacity: 0,
-      scale: 0.9,
-      transition: {
-        duration: 0.2
-      }
-    }
+    exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } }
   };
 
   return (
     <motion.div
       className="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50"
+      variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
-      variants={pageVariants}
     >
-      {/* Header */}
       <TopNavBar
         title="Cài đặt"
         showBackButton={true}
@@ -405,15 +190,13 @@ const ProfilePage = () => {
         user={user}
       />
 
-      {/* User profile info section */}
       <div className="bg-white shadow-md border-b border-gray-200 mb-6">
         <div className="container mx-auto px-4 sm:px-6 py-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
-            {/* Avatar section */}
             <div className="relative">
               <div className="w-24 h-24 rounded-full border-4 border-green-100 shadow-md overflow-hidden bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
-                {user?.avatar ? (
-                  <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                {formData.avatarUrl ? (
+                  <img src={formData.avatarUrl} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <User size={36} className="text-white" />
                 )}
@@ -426,7 +209,6 @@ const ProfilePage = () => {
               </button>
             </div>
 
-            {/* User info */}
             <div className="flex-1 text-center sm:text-left">
               <h1 className="text-2xl font-bold text-gray-900">{formData.fullName}</h1>
 
@@ -458,7 +240,6 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      {/* Edit profile modal */}
       <AnimatePresence>
         {editMode && (
           <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 p-4">
@@ -532,6 +313,22 @@ const ProfilePage = () => {
                     />
                   </div>
 
+                  <div>
+                    <label htmlFor="personalInfo" className="block text-sm font-medium text-gray-700 mb-1">
+                      Thông tin cá nhân
+                    </label>
+                    <textarea
+                      id="personalInfo"
+                      name="personalInfo"
+                      value={formData.personalInfo}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                      rows="3"
+                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                      placeholder="VD: Thương binh hạng 1/4, Con liệt sĩ..."
+                    />
+                  </div>
+
                   <div className="flex justify-end pt-4 space-x-3">
                     <button
                       type="button"
@@ -566,10 +363,8 @@ const ProfilePage = () => {
         )}
       </AnimatePresence>
 
-      {/* Main content with grid layout */}
       <div className="container mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left column */}
           <div className="lg:col-span-1">
             <motion.div
               variants={containerVariants}
@@ -577,7 +372,6 @@ const ProfilePage = () => {
               animate="visible"
               className="space-y-6"
             >
-              {/* Security section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -594,7 +388,7 @@ const ProfilePage = () => {
                 <div className="p-5">
                   <form onSubmit={handlePasswordChange} className="space-y-4">
                     <div>
-                      <label htmlFor="currentPassword" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="currentPassword" className="block text-xs font-medium text-gray-700 mb-1.5">
                         Mật khẩu hiện tại
                       </label>
                       <div className="relative">
@@ -611,20 +405,16 @@ const ProfilePage = () => {
                         />
                         <button
                           type="button"
-                          onClick={toggleCurrentPasswordVisibility}
+                          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                           className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                         >
-                          {showCurrentPassword ? (
-                            <EyeOff size={16} />
-                          ) : (
-                            <Eye size={16} />
-                          )}
+                          {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="newPassword" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="newPassword" className="block text-xs font-medium text-gray-700 mb-1.5">
                         Mật khẩu mới
                       </label>
                       <div className="relative">
@@ -641,20 +431,16 @@ const ProfilePage = () => {
                         />
                         <button
                           type="button"
-                          onClick={toggleNewPasswordVisibility}
+                          onClick={() => setShowNewPassword(!showNewPassword)}
                           className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                         >
-                          {showNewPassword ? (
-                            <EyeOff size={16} />
-                          ) : (
-                            <Eye size={16} />
-                          )}
+                          {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-700 mb-1">
+                      <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-700 mb-1.5">
                         Xác nhận mật khẩu mới
                       </label>
                       <div className="relative">
@@ -671,14 +457,10 @@ const ProfilePage = () => {
                         />
                         <button
                           type="button"
-                          onClick={toggleConfirmPasswordVisibility}
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                           className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
                         >
-                          {showConfirmPassword ? (
-                            <EyeOff size={16} />
-                          ) : (
-                            <Eye size={16} />
-                          )}
+                          {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
                     </div>
@@ -715,7 +497,6 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
-              {/* App info section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -757,7 +538,6 @@ const ProfilePage = () => {
             </motion.div>
           </div>
 
-          {/* Middle and right columns */}
           <div className="lg:col-span-2">
             <motion.div
               variants={containerVariants}
@@ -765,7 +545,6 @@ const ProfilePage = () => {
               animate="visible"
               className="space-y-6"
             >
-              {/* Achievement section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -816,7 +595,6 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
-              {/* Activity section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -895,7 +673,6 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
-              {/* Suggested questions section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -972,7 +749,6 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
-              {/* Feedback section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
