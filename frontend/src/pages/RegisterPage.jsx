@@ -1,87 +1,53 @@
 import React, { useState, useCallback } from 'react';
-import { Eye, EyeOff, User, Lock, ChevronRight, Mail, Phone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { User, Lock, ChevronRight, Mail, Phone } from 'lucide-react';
 import { userAPI } from '../apiService';
-import { validateUsername, validateEmail, validatePassword, validateFullName, validatePhoneNumber, validateConfirmPassword, pageVariants, containerVariants, itemVariants, ROUTES, showError, showSuccess } from '../utils/formatUtils';
+import FormField from '../components/common/FormField';
+import { validateUsername, validateEmail, validatePassword, validateFullName, validatePhoneNumber, validateConfirmPassword, useFormValidation } from '../utils/validationUtils';
+import { pageVariants, containerVariants, itemVariants, ROUTES, showError, showSuccess } from '../utils/formatUtils';
 
-const FormField = React.memo(({ name, type = 'text', placeholder, icon: Icon, showToggle = false, toggleState, onToggle, value, onChange, onBlur, error }) => (
-  <motion.div className="space-y-1" variants={itemVariants}>
-    <div className="relative">
-      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-        <Icon size={18} />
-      </div>
-      <input
-        type={showToggle ? (toggleState ? "text" : "password") : type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        placeholder={placeholder}
-        className={`w-full px-10 py-3 border ${error ? 'border-red-500' : 'border-gray-200'} rounded-xl focus:outline-none focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-green-500'} shadow-sm bg-gray-50 focus:bg-white`}
-      />
-      {showToggle && onToggle && (
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
-        >
-          {toggleState ? <EyeOff size={18} /> : <Eye size={18} />}
-        </button>
-      )}
-    </div>
-    {error && <p className="text-red-500 text-sm ml-1">{error}</p>}
-  </motion.div>
-));
+// Validation rules cho register form
+const validationRules = {
+  username: validateUsername,
+  fullName: validateFullName,
+  email: validateEmail,
+  phoneNumber: validatePhoneNumber,
+  password: validatePassword,
+  confirmPassword: (value, allValues) => validateConfirmPassword(allValues.password, value)
+};
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: '', fullName: '', email: '', phoneNumber: '', password: '', confirmPassword: ''
   });
   const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { validateField, validateForm } = useFormValidation(validationRules);
 
-  const validateField = (field, value) => {
-    switch (field) {
-      case 'username': return validateUsername(value);
-      case 'fullName': return validateFullName(value);
-      case 'email': return validateEmail(value);
-      case 'phoneNumber': return validatePhoneNumber(value);
-      case 'password': return validatePassword(value);
-      case 'confirmPassword': return validateConfirmPassword(formData.password, value);
-      default: return '';
-    }
-  };
-
-  const handleBlur = useCallback((field) => {
-    const error = validateField(field, formData[field]);
-    setErrors(prev => ({ ...prev, [field]: error }));
-  }, [formData]);
-
-  const validateForm = () => {
-    const newErrors = {};
-    Object.keys(formData).forEach(field => {
-      newErrors[field] = validateField(field, formData[field]);
-    });
-    setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error !== '');
-  };
-
-  // SỬA: Sử dụng useCallback để tránh re-render
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   }, [errors]);
 
+  const handleBlur = useCallback((e) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value, formData);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  }, [validateField, formData]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!validateForm()) return;
+    const formErrors = validateForm(formData);
+    setErrors(formErrors);
+    if (Object.values(formErrors).some(error => error)) return;
     
     if (!agreedToTerms) {
       showError('Vui lòng đồng ý với điều khoản dịch vụ để tiếp tục', 'Điều khoản dịch vụ');
@@ -118,6 +84,7 @@ const RegisterPage = () => {
       animate="animate"
       exit="exit"
     >
+      {/* Left panel - Hero section */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
         <motion.div 
           className="relative h-full flex flex-col justify-center z-10"
@@ -142,6 +109,7 @@ const RegisterPage = () => {
         </motion.div>
       </div>
 
+      {/* Right panel - Register form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 relative z-10">
         <motion.div 
           className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
@@ -164,18 +132,22 @@ const RegisterPage = () => {
               icon={User} 
               value={formData.username}
               onChange={handleChange}
-              onBlur={() => handleBlur('username')}
+              onBlur={handleBlur}
               error={errors.username}
+              disabled={isLoading}
             />
+            
             <FormField 
               name="fullName" 
               placeholder="Họ và tên" 
               icon={User} 
               value={formData.fullName}
               onChange={handleChange}
-              onBlur={() => handleBlur('fullName')}
+              onBlur={handleBlur}
               error={errors.fullName}
+              disabled={isLoading}
             />
+            
             <FormField 
               name="email" 
               type="email" 
@@ -183,9 +155,11 @@ const RegisterPage = () => {
               icon={Mail} 
               value={formData.email}
               onChange={handleChange}
-              onBlur={() => handleBlur('email')}
+              onBlur={handleBlur}
               error={errors.email}
+              disabled={isLoading}
             />
+            
             <FormField 
               name="phoneNumber" 
               type="tel" 
@@ -193,9 +167,11 @@ const RegisterPage = () => {
               icon={Phone} 
               value={formData.phoneNumber}
               onChange={handleChange}
-              onBlur={() => handleBlur('phoneNumber')}
+              onBlur={handleBlur}
               error={errors.phoneNumber}
+              disabled={isLoading}
             />
+            
             <FormField 
               name="password" 
               placeholder="Mật khẩu" 
@@ -205,9 +181,11 @@ const RegisterPage = () => {
               onToggle={() => setShowPassword(!showPassword)}
               value={formData.password}
               onChange={handleChange}
-              onBlur={() => handleBlur('password')}
+              onBlur={handleBlur}
               error={errors.password}
+              disabled={isLoading}
             />
+            
             <FormField 
               name="confirmPassword" 
               placeholder="Xác nhận mật khẩu" 
@@ -217,8 +195,9 @@ const RegisterPage = () => {
               onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
               value={formData.confirmPassword}
               onChange={handleChange}
-              onBlur={() => handleBlur('confirmPassword')}
+              onBlur={handleBlur}
               error={errors.confirmPassword}
+              disabled={isLoading}
             />
 
             <motion.div className="flex items-start" variants={itemVariants}>
@@ -227,6 +206,7 @@ const RegisterPage = () => {
                   type="checkbox"
                   checked={agreedToTerms}
                   onChange={() => setAgreedToTerms(!agreedToTerms)}
+                  disabled={isLoading}
                   className="opacity-0 absolute h-5 w-5 cursor-pointer"
                 />
                 <div className={`w-5 h-5 border border-gray-300 rounded transition-all duration-300 ${agreedToTerms ? 'bg-gradient-to-r from-green-500 to-teal-500 border-green-500' : ''}`}>
@@ -246,7 +226,7 @@ const RegisterPage = () => {
             <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:opacity-90"
+              className="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:opacity-90 disabled:opacity-50"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -270,7 +250,8 @@ const RegisterPage = () => {
               Đã có tài khoản?{' '}
               <button 
                 onClick={() => navigate('/login')}
-                className="text-green-600 hover:text-green-800 font-medium transition-colors duration-300 hover:underline px-2 py-1"
+                disabled={isLoading}
+                className="text-green-600 hover:text-green-800 font-medium transition-colors duration-300 hover:underline px-2 py-1 disabled:opacity-50"
               >
                 Đăng nhập ngay
               </button>

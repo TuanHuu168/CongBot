@@ -1,20 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  User, LogOut, History, ChevronDown, Menu, ChevronLeft, Settings, Shield, Award
-} from 'lucide-react';
+import { User, LogOut, History, ChevronDown, Menu, ChevronLeft, Settings, Shield, Award } from 'lucide-react';
 import { ROUTES, showConfirm, clearAuthData } from '../../utils/formatUtils';
 import { useChat } from '../../ChatContext';
 
 const TopNavBar = ({
-  title,
-  showBackButton = false,
-  backButtonDestination = ROUTES.HOME,
-  backButtonText = 'Quay lại',
-  user = null,
-  onMenuClick = null,
-  customRight = null
+  title, showBackButton = false, backButtonDestination = ROUTES.HOME,
+  backButtonText = 'Quay lại', user = null, onMenuClick = null, customRight = null
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,6 +17,7 @@ const TopNavBar = ({
   const [userInfo, setUserInfo] = useState(null);
   const dropdownRef = useRef(null);
 
+  // Kiểm tra auth status và load user info
   useEffect(() => {
     const checkAuthStatus = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
@@ -32,7 +26,7 @@ const TopNavBar = ({
       if (token && userId) {
         setIsLoggedIn(true);
         
-        if (user && user.name) {
+        if (user?.name) {
           setUserInfo(user);
         } else {
           try {
@@ -47,10 +41,7 @@ const TopNavBar = ({
               });
             }
           } catch (error) {
-            console.error('Error fetching user info in TopNavBar:', error);
-            setUserInfo({
-              id: userId, name: 'Người dùng', email: '', username: '', role: 'user'
-            });
+            setUserInfo({ id: userId, name: 'Người dùng', email: '', username: '', role: 'user' });
           }
         }
       } else {
@@ -62,13 +53,13 @@ const TopNavBar = ({
     checkAuthStatus();
   }, [user, fetchUserInfo]);
 
+  // Click outside để đóng dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setShowUserDropdown(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -90,40 +81,32 @@ const TopNavBar = ({
   };
 
   const isAdmin = () => userInfo?.role === 'admin' || user?.role === 'admin';
-
-  const getNavigationItems = () => {
-    const currentPath = location.pathname;
-    const allItems = [
-      { 
-        icon: Settings, label: 'Cài đặt', 
-        onClick: () => navigate(ROUTES.PROFILE), path: ROUTES.PROFILE
-      },
-      { 
-        icon: History, label: 'Lịch sử trò chuyện', 
-        onClick: () => navigate(ROUTES.HISTORY), path: ROUTES.HISTORY
-      }
-    ];
-
-    if (isAdmin()) {
-      allItems.push({ 
-        icon: Shield, label: 'Quản trị hệ thống', 
-        onClick: () => navigate(ROUTES.ADMIN), path: ROUTES.ADMIN
-      });
-    }
-
-    return allItems.filter(item => item.path !== currentPath);
-  };
-
   const getDisplayName = () => {
     if (userInfo?.name && userInfo.name !== 'Người dùng') return userInfo.name;
     if (user?.name && user.name !== 'Người dùng') return user.name;
     return 'Người dùng';
   };
 
+  // Navigation items (loại bỏ current path)
+  const getNavigationItems = () => {
+    const currentPath = location.pathname;
+    const allItems = [
+      { icon: Settings, label: 'Cài đặt', onClick: () => navigate(ROUTES.PROFILE), path: ROUTES.PROFILE },
+      { icon: History, label: 'Lịch sử trò chuyện', onClick: () => navigate(ROUTES.HISTORY), path: ROUTES.HISTORY }
+    ];
+
+    if (isAdmin()) {
+      allItems.push({ icon: Shield, label: 'Quản trị hệ thống', onClick: () => navigate(ROUTES.ADMIN), path: ROUTES.ADMIN });
+    }
+
+    return allItems.filter(item => item.path !== currentPath);
+  };
+
   return (
     <div className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-50">
       <div className="px-4">
         <div className="flex items-center justify-between h-16">
+          {/* Left Section */}
           <div className="flex items-center">
             {onMenuClick && (
               <button className="md:hidden mr-3 text-gray-600 hover:text-gray-900" onClick={onMenuClick}>
@@ -155,12 +138,12 @@ const TopNavBar = ({
             )}
           </div>
 
+          {/* Center Title */}
           <div className="flex-1 text-center mx-4">
-            <h1 className="text-lg font-semibold text-gray-800 truncate max-w-xs mx-auto">
-              {title}
-            </h1>
+            <h1 className="text-lg font-semibold text-gray-800 truncate max-w-xs mx-auto">{title}</h1>
           </div>
 
+          {/* Right Section */}
           {customRight || (
             <>
               {isLoggedIn ? (
@@ -172,13 +155,8 @@ const TopNavBar = ({
                     <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-500 to-teal-600">
                       <User size={16} className="text-white" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">
-                      {getDisplayName()}
-                    </span>
-                    <ChevronDown
-                      size={16}
-                      className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`}
-                    />
+                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">{getDisplayName()}</span>
+                    <ChevronDown size={16} className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`} />
                   </button>
 
                   <AnimatePresence mode="sync">

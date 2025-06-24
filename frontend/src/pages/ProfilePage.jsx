@@ -1,169 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Phone, Key, Shield, Save, Camera, Clock, Calendar, AlertTriangle, Info, Check,
   MessageSquare, Award, FileText, BookOpen, HeartHandshake, ArrowRight, Eye, EyeOff
 } from 'lucide-react';
-import { useChat } from '../ChatContext';
-import { userAPI } from '../apiService';
+import { useProfileLogic } from '../hooks/useProfileLogic';
 import TopNavBar from '../components/common/TopNavBar';
-import { formatDate, pageVariants, slideUpVariants, containerVariants, validatePassword, validateConfirmPassword, showError, showSuccess } from '../utils/formatUtils';
+import { formatDate, pageVariants, slideUpVariants, containerVariants } from '../utils/formatUtils';
 
 const ProfilePage = () => {
   const navigate = useNavigate();
-  const { user, fetchUserInfo, chatHistory, switchChat, fetchChatHistory } = useChat();
-
-  const [formData, setFormData] = useState({
-    fullName: '', email: '', phoneNumber: '', personalInfo: '', avatarUrl: '',
-    currentPassword: '', newPassword: '', confirmPassword: ''
-  });
-
-  const [stats, setStats] = useState({
-    chatCount: 0, messageCount: 0, documentsAccessed: 0, savedItems: 0
-  });
-
-  const [recentChats, setRecentChats] = useState([]);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [passwordLoading, setPasswordLoading] = useState(false);
-  const [dataLoaded, setDataLoaded] = useState(false);
-
-  useEffect(() => {
-    if (!dataLoaded) {
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      if (userId) {
-        Promise.all([fetchUserInfo(userId), fetchChatHistory()]).then(() => {
-          setDataLoaded(true);
-        }).catch(error => {
-          console.error("Error loading data:", error);
-          setDataLoaded(true);
-        });
-      } else {
-        navigate('/login');
-      }
-    }
-  }, [fetchUserInfo, fetchChatHistory, navigate, dataLoaded]);
-
-  useEffect(() => {
-    if (chatHistory && chatHistory.length > 0) {
-      const chatCount = chatHistory.length;
-      const sortedChats = [...chatHistory].sort((a, b) => {
-        return new Date(b.updated_at || b.date) - new Date(a.updated_at || a.date);
-      });
-      const latest = sortedChats.slice(0, 3);
-      setRecentChats(latest);
-      setStats({ chatCount, messageCount: 0, documentsAccessed: 0, savedItems: 0 });
-    }
-  }, [chatHistory]);
-
-  useEffect(() => {
-    if (user) {
-      setFormData(prevState => ({
-        ...prevState,
-        fullName: user.name || '',
-        email: user.email || '',
-        phoneNumber: user.phoneNumber || '',
-        personalInfo: user.personalInfo || '',
-        avatarUrl: user.avatarUrl || ''
-      }));
-    }
-  }, [user]);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-
-      if (!userId || !token) {
-        throw new Error('Không tìm thấy thông tin đăng nhập');
-      }
-
-      await userAPI.update(userId, {
-        fullName: formData.fullName,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        personalInfo: formData.personalInfo,
-        avatarUrl: formData.avatarUrl
-      });
-
-      await fetchUserInfo(userId);
-      showSuccess('Thông tin cá nhân đã được cập nhật', 'Thành công!');
-      setEditMode(false);
-    } catch (error) {
-      console.error('Lỗi khi cập nhật thông tin:', error);
-      showError(error.detail || 'Không thể cập nhật thông tin. Vui lòng thử lại sau.', 'Lỗi!');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    setPasswordLoading(true);
-
-    const passwordError = validatePassword(formData.newPassword);
-    const confirmError = validateConfirmPassword(formData.newPassword, formData.confirmPassword);
-
-    if (passwordError || confirmError) {
-      showError(passwordError || confirmError, 'Lỗi!');
-      setPasswordLoading(false);
-      return;
-    }
-
-    try {
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-
-      await userAPI.changePassword(userId, {
-        currentPassword: formData.currentPassword,
-        newPassword: formData.newPassword
-      });
-
-      showSuccess('Mật khẩu đã được thay đổi', 'Thành công!');
-      setFormData({
-        ...formData,
-        currentPassword: '', newPassword: '', confirmPassword: ''
-      });
-    } catch (error) {
-      console.error('Lỗi khi thay đổi mật khẩu:', error);
-      let errorMessage = 'Không thể thay đổi mật khẩu. Vui lòng thử lại sau.';
-      if (error.response?.status === 401) {
-        errorMessage = 'Mật khẩu hiện tại không đúng';
-      } else if (error.detail) {
-        errorMessage = error.detail;
-      }
-      showError(errorMessage, 'Lỗi!');
-    } finally {
-      setPasswordLoading(false);
-    }
-  };
-
-  const handleAvatarChange = () => {
-    showSuccess('Tính năng này sẽ được cập nhật trong phiên bản tới', 'Thay đổi ảnh đại diện');
-  };
-
-  const handleChatClick = (chatId) => {
-    switchChat(chatId).then(() => {
-      navigate('/chat');
-    });
-  };
-
-  const formatChatTitle = (title) => {
-    if (!title || title.trim() === '') return "Cuộc trò chuyện mới";
-    const isMongoId = /^[0-9a-fA-F]{24}$/.test(title);
-    return isMongoId ? "Cuộc trò chuyện mới" : title;
-  };
+  const {
+    formData, stats, recentChats, passwordVisibility, editMode, isLoading, passwordLoading,
+    user, handleChange, handleSubmit, handlePasswordChange, handleAvatarChange, 
+    handleChatClick, formatChatTitle, togglePasswordVisibility, setEditMode
+  } = useProfileLogic();
 
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.9 },
@@ -190,6 +42,7 @@ const ProfilePage = () => {
         user={user}
       />
 
+      {/* User Header */}
       <div className="bg-white shadow-md border-b border-gray-200 mb-6">
         <div className="container mx-auto px-4 sm:px-6 py-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
@@ -240,6 +93,7 @@ const ProfilePage = () => {
         </div>
       </div>
 
+      {/* Edit Modal */}
       <AnimatePresence>
         {editMode && (
           <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 p-4">
@@ -265,69 +119,41 @@ const ProfilePage = () => {
 
               <div className="p-5">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
-                      Họ và tên
-                    </label>
-                    <input
-                      type="text"
-                      id="fullName"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={handleChange}
-                      disabled={isLoading}
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                      placeholder="Nhập họ và tên"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      disabled={isLoading}
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                      placeholder="Nhập email"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                      Số điện thoại
-                    </label>
-                    <input
-                      type="tel"
-                      id="phoneNumber"
-                      name="phoneNumber"
-                      value={formData.phoneNumber}
-                      onChange={handleChange}
-                      disabled={isLoading}
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                      placeholder="Nhập số điện thoại"
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor="personalInfo" className="block text-sm font-medium text-gray-700 mb-1">
-                      Thông tin cá nhân
-                    </label>
-                    <textarea
-                      id="personalInfo"
-                      name="personalInfo"
-                      value={formData.personalInfo}
-                      onChange={handleChange}
-                      disabled={isLoading}
-                      rows="3"
-                      className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
-                      placeholder="VD: Thương binh hạng 1/4, Con liệt sĩ..."
-                    />
-                  </div>
+                  {[
+                    { name: 'fullName', label: 'Họ và tên', placeholder: 'Nhập họ và tên' },
+                    { name: 'email', label: 'Email', placeholder: 'Nhập email', type: 'email' },
+                    { name: 'phoneNumber', label: 'Số điện thoại', placeholder: 'Nhập số điện thoại', type: 'tel' },
+                    { name: 'personalInfo', label: 'Thông tin cá nhân', placeholder: 'VD: Thương binh hạng 1/4, Con liệt sĩ...', isTextarea: true }
+                  ].map(({ name, label, placeholder, type = 'text', isTextarea = false }) => (
+                    <div key={name}>
+                      <label htmlFor={name} className="block text-sm font-medium text-gray-700 mb-1">
+                        {label}
+                      </label>
+                      {isTextarea ? (
+                        <textarea
+                          id={name}
+                          name={name}
+                          value={formData[name]}
+                          onChange={handleChange}
+                          disabled={isLoading}
+                          rows="3"
+                          className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                          placeholder={placeholder}
+                        />
+                      ) : (
+                        <input
+                          type={type}
+                          id={name}
+                          name={name}
+                          value={formData[name]}
+                          onChange={handleChange}
+                          disabled={isLoading}
+                          className="block w-full px-4 py-2 text-sm text-black border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors"
+                          placeholder={placeholder}
+                        />
+                      )}
+                    </div>
+                  ))}
 
                   <div className="flex justify-end pt-4 space-x-3">
                     <button
@@ -365,6 +191,7 @@ const ProfilePage = () => {
 
       <div className="container mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column - Security & About */}
           <div className="lg:col-span-1">
             <motion.div
               variants={containerVariants}
@@ -372,6 +199,7 @@ const ProfilePage = () => {
               animate="visible"
               className="space-y-6"
             >
+              {/* Security Section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -387,83 +215,37 @@ const ProfilePage = () => {
 
                 <div className="p-5">
                   <form onSubmit={handlePasswordChange} className="space-y-4">
-                    <div>
-                      <label htmlFor="currentPassword" className="block text-xs font-medium text-gray-700 mb-1.5">
-                        Mật khẩu hiện tại
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showCurrentPassword ? "text" : "password"}
-                          id="currentPassword"
-                          name="currentPassword"
-                          value={formData.currentPassword}
-                          onChange={handleChange}
-                          disabled={passwordLoading}
-                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
-                          placeholder="●●●●●●●●"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                        >
-                          {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                        </button>
+                    {[
+                      { name: 'currentPassword', label: 'Mật khẩu hiện tại', field: 'current' },
+                      { name: 'newPassword', label: 'Mật khẩu mới', field: 'new' },
+                      { name: 'confirmPassword', label: 'Xác nhận mật khẩu mới', field: 'confirm' }
+                    ].map(({ name, label, field }) => (
+                      <div key={name}>
+                        <label htmlFor={name} className="block text-xs font-medium text-gray-700 mb-1.5">
+                          {label}
+                        </label>
+                        <div className="relative">
+                          <input
+                            type={passwordVisibility[field] ? "text" : "password"}
+                            id={name}
+                            name={name}
+                            value={formData[name]}
+                            onChange={handleChange}
+                            disabled={passwordLoading}
+                            className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
+                            placeholder="●●●●●●●●"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() => togglePasswordVisibility(field)}
+                            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                          >
+                            {passwordVisibility[field] ? <EyeOff size={16} /> : <Eye size={16} />}
+                          </button>
+                        </div>
                       </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="newPassword" className="block text-xs font-medium text-gray-700 mb-1.5">
-                        Mật khẩu mới
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showNewPassword ? "text" : "password"}
-                          id="newPassword"
-                          name="newPassword"
-                          value={formData.newPassword}
-                          onChange={handleChange}
-                          disabled={passwordLoading}
-                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
-                          placeholder="●●●●●●●●"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowNewPassword(!showNewPassword)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                        >
-                          {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-700 mb-1.5">
-                        Xác nhận mật khẩu mới
-                      </label>
-                      <div className="relative">
-                        <input
-                          type={showConfirmPassword ? "text" : "password"}
-                          id="confirmPassword"
-                          name="confirmPassword"
-                          value={formData.confirmPassword}
-                          onChange={handleChange}
-                          disabled={passwordLoading}
-                          className="block w-full px-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 pr-10 transition-colors"
-                          placeholder="●●●●●●●●"
-                          required
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-                        >
-                          {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                        </button>
-                      </div>
-                    </div>
+                    ))}
 
                     <div className="flex items-start mt-3">
                       <div className="flex-shrink-0">
@@ -497,6 +279,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* About App Section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -538,6 +321,7 @@ const ProfilePage = () => {
             </motion.div>
           </div>
 
+          {/* Right Column - Stats & Activities */}
           <div className="lg:col-span-2">
             <motion.div
               variants={containerVariants}
@@ -545,6 +329,7 @@ const ProfilePage = () => {
               animate="visible"
               className="space-y-6"
             >
+              {/* Stats Section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -560,41 +345,25 @@ const ProfilePage = () => {
 
                 <div className="p-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 text-center">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white mb-2">
-                        <MessageSquare size={20} />
+                    {[
+                      { icon: MessageSquare, value: stats.chatCount, label: 'Cuộc trò chuyện' },
+                      { icon: BookOpen, value: 0, label: 'Văn bản đã truy cập' },
+                      { icon: HeartHandshake, value: 0, label: 'Phản hồi đã gửi' },
+                      { icon: FileText, value: 0, label: 'Tài liệu đã lưu' }
+                    ].map(({ icon: Icon, value, label }, index) => (
+                      <div key={index} className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 text-center">
+                        <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white mb-2">
+                          <Icon size={20} />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900">{value}</h3>
+                        <p className="text-xs text-gray-600">{label}</p>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900">{stats.chatCount}</h3>
-                      <p className="text-xs text-gray-600">Cuộc trò chuyện</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 text-center">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white mb-2">
-                        <BookOpen size={20} />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900">0</h3>
-                      <p className="text-xs text-gray-600">Văn bản đã truy cập</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 text-center">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white mb-2">
-                        <HeartHandshake size={20} />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900">0</h3>
-                      <p className="text-xs text-gray-600">Phản hồi đã gửi</p>
-                    </div>
-
-                    <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 text-center">
-                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white mb-2">
-                        <FileText size={20} />
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-900">0</h3>
-                      <p className="text-xs text-gray-600">Tài liệu đã lưu</p>
-                    </div>
+                    ))}
                   </div>
                 </div>
               </motion.div>
 
+              {/* Recent Activity */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -673,6 +442,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* Suggested Questions */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"
@@ -692,49 +462,24 @@ const ProfilePage = () => {
                   </p>
 
                   <div className="space-y-3">
-                    <div
-                      className="p-3 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg cursor-pointer hover:shadow-md transition-all"
-                      onClick={() => {
-                        navigate('/chat', {
-                          state: { suggestedQuestion: "Ai được xác nhận là người có công với cách mạng?" }
-                        });
-                      }}
-                    >
-                      <p className="text-sm text-green-700">Ai được xác nhận là người có công với cách mạng?</p>
-                    </div>
-
-                    <div
-                      className="p-3 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg cursor-pointer hover:shadow-md transition-all"
-                      onClick={() => {
-                        navigate('/chat', {
-                          state: { suggestedQuestion: "Mức trợ cấp ưu đãi hàng tháng cho thương binh hạng 1/4?" }
-                        });
-                      }}
-                    >
-                      <p className="text-sm text-green-700">Mức trợ cấp ưu đãi hàng tháng cho thương binh hạng 1/4?</p>
-                    </div>
-
-                    <div
-                      className="p-3 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg cursor-pointer hover:shadow-md transition-all"
-                      onClick={() => {
-                        navigate('/chat', {
-                          state: { suggestedQuestion: "Quy trình xác nhận liệt sĩ cần những giấy tờ gì?" }
-                        });
-                      }}
-                    >
-                      <p className="text-sm text-green-700">Quy trình xác nhận liệt sĩ cần những giấy tờ gì?</p>
-                    </div>
-
-                    <div
-                      className="p-3 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg cursor-pointer hover:shadow-md transition-all"
-                      onClick={() => {
-                        navigate('/chat', {
-                          state: { suggestedQuestion: "Chính sách ưu đãi về giáo dục đối với con của người có công?" }
-                        });
-                      }}
-                    >
-                      <p className="text-sm text-green-700">Chính sách ưu đãi về giáo dục đối với con của người có công?</p>
-                    </div>
+                    {[
+                      "Ai được xác nhận là người có công với cách mạng?",
+                      "Mức trợ cấp ưu đãi hàng tháng cho thương binh hạng 1/4?",
+                      "Quy trình xác nhận liệt sĩ cần những giấy tờ gì?",
+                      "Chính sách ưu đãi về giáo dục đối với con của người có công?"
+                    ].map((question, index) => (
+                      <div
+                        key={index}
+                        className="p-3 bg-gradient-to-r from-green-50 to-teal-50 rounded-lg cursor-pointer hover:shadow-md transition-all"
+                        onClick={() => {
+                          navigate('/chat', {
+                            state: { suggestedQuestion: question }
+                          });
+                        }}
+                      >
+                        <p className="text-sm text-green-700">{question}</p>
+                      </div>
+                    ))}
                   </div>
 
                   <div className="mt-4 text-center">
@@ -749,6 +494,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* Feedback Section */}
               <motion.div
                 variants={slideUpVariants}
                 className="bg-white rounded-2xl shadow-md overflow-hidden"

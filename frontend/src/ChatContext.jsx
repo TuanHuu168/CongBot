@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { chatAPI, userAPI } from './apiService';
-import { getAuthData, clearAuthData } from './utils/formatUtils';
+import { getAuthData } from './utils/formatUtils';
 
 const ChatContext = createContext();
 
@@ -44,7 +44,7 @@ export const ChatProvider = ({ children }) => {
       });
       return userInfo;
     } catch (error) {
-      console.error('Error fetching user info:', error);
+      console.error('Lỗi khi tải thông tin người dùng:', error);
       setError('Không thể tải thông tin người dùng');
       return null;
     } finally {
@@ -58,15 +58,16 @@ export const ChatProvider = ({ children }) => {
       const chats = await chatAPI.getAll();
       const formattedChats = chats.map(chat => ({
         id: chat.id,
-        title: chat.title,
+        title: chat.title || "Cuộc trò chuyện mới",
         date: new Date(chat.created_at).toLocaleDateString('vi-VN'),
-        updated_at: chat.updated_at,
+        updated_at: chat.updated_at || chat.created_at,
+        time: new Date(chat.updated_at || chat.created_at).toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' }),
         status: 'active'
       }));
       setChatHistory(formattedChats);
       return formattedChats;
     } catch (error) {
-      console.error('Error fetching chat history:', error);
+      console.error('Lỗi khi tải lịch sử trò chuyện:', error);
       if (retries > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         return fetchChatHistory(retries - 1);
@@ -99,7 +100,7 @@ export const ChatProvider = ({ children }) => {
       setActiveChatMessages([]);
       return { id: newChatId };
     } catch (error) {
-      console.error('Error creating chat:', error);
+      console.error('Lỗi khi tạo cuộc trò chuyện:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -129,7 +130,7 @@ export const ChatProvider = ({ children }) => {
       setCurrentChatId(chatId);
       return true;
     } catch (error) {
-      console.error('Error switching chat:', error);
+      console.error('Lỗi khi chuyển cuộc trò chuyện:', error);
       if (retries > 0) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         return switchChat(chatId, retries - 1);
@@ -160,7 +161,7 @@ export const ChatProvider = ({ children }) => {
     setActiveChatMessages(prev => [...prev, userMsg, botMsg]);
   }, []);
 
-  // Kiểm tra auth state thay đổi
+  // Kiểm tra auth state và khởi tạo
   useEffect(() => {
     const checkAuthState = () => {
       const { userId, token } = getAuthData();
@@ -173,7 +174,6 @@ export const ChatProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [user, resetAuthState]);
 
-  // Khởi tạo khi mount
   useEffect(() => {
     const { userId, token } = getAuthData();
     if (userId && token) {

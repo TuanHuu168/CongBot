@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 # Import các router
 from api.chat import router as chat_router
-from api.admin import router as admin_router
+from api.admin import router as admin_router  # Import từ admin package
 from api.user import router as user_router
 from database.mongodb_client import mongodb_client
 
@@ -22,7 +22,7 @@ app = FastAPI(
 # Thêm CORS để frontend có thể gọi API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -48,11 +48,11 @@ async def status():
     try:
         from database.chroma_client import get_chroma_client
         from database.mongodb_client import mongodb_client
-        
+       
         # Kiểm tra ChromaDB
         chroma_client = get_chroma_client()
         collection = chroma_client.get_collection()
-        
+       
         if collection:
             collection_count = collection.count()
             chroma_status = "connected"
@@ -61,7 +61,7 @@ async def status():
             collection_count = 0
             chroma_status = "disconnected"
             collection_name = "none"
-        
+       
         # Kiểm tra MongoDB
         db = mongodb_client.get_database()
         try:
@@ -69,9 +69,9 @@ async def status():
             mongodb_status = "connected"
         except Exception as e:
             mongodb_status = f"disconnected: {str(e)}"
-        
+       
         return {
-            "status": "ok" if chroma_status == "connected" else "warning", 
+            "status": "ok" if chroma_status == "connected" else "warning",
             "message": "API đang hoạt động bình thường" if chroma_status == "connected" else "API hoạt động nhưng ChromaDB có vấn đề",
             "database": {
                 "chromadb": {
@@ -99,6 +99,6 @@ async def status():
 
 if __name__ == "__main__":
     mongodb_client.create_indexes()
-    
+   
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)

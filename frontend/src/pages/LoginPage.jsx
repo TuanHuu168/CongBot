@@ -1,39 +1,17 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Eye, EyeOff, User, Lock, ChevronRight } from 'lucide-react';
+import { User, Lock, ChevronRight } from 'lucide-react';
 import { userAPI } from '../apiService';
-import { validateUsername, validatePassword, pageVariants, containerVariants, itemVariants, ROUTES, STORAGE_KEYS, showError, showSuccess } from '../utils/formatUtils';
+import FormField from '../components/common/FormField';
+import { validateUsername, validatePassword, useFormValidation } from '../utils/validationUtils';
+import { pageVariants, containerVariants, itemVariants, ROUTES, STORAGE_KEYS, showError, showSuccess } from '../utils/formatUtils';
 
-const FormField = React.memo(({ name, type = 'text', placeholder, icon: Icon, showToggle = false, toggleState, onToggle, value, onChange, error }) => (
-  <motion.div className="space-y-1" variants={itemVariants}>
-    <div className="relative">
-      <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
-        <Icon size={18} />
-      </div>
-      <input
-        type={showToggle ? (toggleState ? 'text' : type) : type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        className={`w-full px-10 py-3 border ${error ? 'border-red-500' : 'border-gray-200'} 
-          rounded-xl focus:outline-none focus:ring-2 ${error ? 'focus:ring-red-500' : 'focus:ring-green-500'} 
-          shadow-sm transition-all duration-300 bg-gray-50 focus:bg-white`}
-      />
-      {showToggle && onToggle && (
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-600 transition-colors duration-300"
-        >
-          {toggleState ? <EyeOff size={18} /> : <Eye size={18} />}
-        </button>
-      )}
-    </div>
-    {error && <p className="text-red-500 text-sm ml-1">{error}</p>}
-  </motion.div>
-));
+// Validation rules cho login form
+const validationRules = {
+  username: validateUsername,
+  password: validatePassword
+};
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -42,6 +20,8 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  const { validateField, validateForm } = useFormValidation(validationRules);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -49,18 +29,18 @@ const LoginPage = () => {
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   }, [errors]);
 
-  const validateForm = () => {
-    const newErrors = {
-      username: validateUsername(formData.username),
-      password: validatePassword(formData.password)
-    };
-    setErrors(newErrors);
-    return !Object.values(newErrors).some(error => error);
-  };
+  const handleBlur = useCallback((e) => {
+    const { name, value } = e.target;
+    const error = validateField(name, value);
+    setErrors(prev => ({ ...prev, [name]: error }));
+  }, [validateField]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateForm()) return;
+    
+    const formErrors = validateForm(formData);
+    setErrors(formErrors);
+    if (Object.values(formErrors).some(error => error)) return;
 
     setIsLoading(true);
     try {
@@ -91,6 +71,7 @@ const LoginPage = () => {
       animate="animate"
       exit="exit"
     >
+      {/* Left panel - Hero section */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
         <motion.div
           className="relative h-full flex flex-col justify-center z-10"
@@ -114,6 +95,7 @@ const LoginPage = () => {
         </motion.div>
       </div>
 
+      {/* Right panel - Login form */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6">
         <motion.div
           className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
@@ -138,8 +120,11 @@ const LoginPage = () => {
               icon={User} 
               value={formData.username}
               onChange={handleChange}
+              onBlur={handleBlur}
               error={errors.username}
+              disabled={isLoading}
             />
+            
             <FormField 
               name="password" 
               type="password" 
@@ -150,7 +135,9 @@ const LoginPage = () => {
               onToggle={() => setShowPassword(!showPassword)}
               value={formData.password}
               onChange={handleChange}
+              onBlur={handleBlur}
               error={errors.password}
+              disabled={isLoading}
             />
 
             <motion.div className="flex items-center justify-between" variants={itemVariants}>
@@ -159,6 +146,7 @@ const LoginPage = () => {
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
+                  disabled={isLoading}
                   className="opacity-0 absolute h-5 w-5 cursor-pointer"
                 />
                 <div className={`relative w-5 h-5 flex flex-shrink-0 transition-colors ${
@@ -179,6 +167,7 @@ const LoginPage = () => {
                 type="button"
                 className="text-sm text-green-600 hover:text-green-800 transition-colors hover:underline px-2 py-1"
                 onClick={() => showError('Tính năng này sẽ được cập nhật trong phiên bản tới', 'Quên mật khẩu')}
+                disabled={isLoading}
               >
                 Quên mật khẩu?
               </button>
@@ -187,7 +176,7 @@ const LoginPage = () => {
             <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:opacity-90"
+              className="w-full bg-gradient-to-r from-green-500 to-teal-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:opacity-90 disabled:opacity-50"
               variants={itemVariants}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
@@ -211,7 +200,8 @@ const LoginPage = () => {
               Chưa có tài khoản?{' '}
               <button
                 onClick={() => navigate(ROUTES.REGISTER)}
-                className="text-green-600 hover:text-green-800 font-medium transition-colors hover:underline px-2 py-1"
+                disabled={isLoading}
+                className="text-green-600 hover:text-green-800 font-medium transition-colors hover:underline px-2 py-1 disabled:opacity-50"
               >
                 Đăng ký ngay
               </button>
