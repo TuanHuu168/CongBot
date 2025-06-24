@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends, Body, UploadFile, File
 from fastapi.responses import FileResponse
 from typing import List, Dict, Optional, Any
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from datetime import datetime, timezone, timedelta
 import os
 import json
 import time
 import uuid
 import pandas as pd
-from datetime import datetime
 import shutil
 from pathlib import Path
 import threading
@@ -23,20 +23,19 @@ from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
 
 # Import config
-from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR
-from config import EMBEDDING_MODEL_NAME
+from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR, EMBEDDING_MODEL_NAME
+
+VN_TZ = timezone(timedelta(hours=7))
+
+def now_vn():
+    return datetime.now(VN_TZ)
 
 benchmark_progress = {}
 benchmark_results_cache = {}
 
-# Khởi tạo router
-router = APIRouter(
-    prefix="",
-    tags=["admin"],
-    responses={404: {"description": "Not found"}},
-)
+router = APIRouter(prefix="", tags=["admin"], responses={404: {"description": "Not found"}})
 
-# === MODELS ===
+# Models
 class BenchmarkConfig(BaseModel):
     file_path: str = "benchmark.json"
     output_dir: str = "benchmark_results"
@@ -55,18 +54,27 @@ class SystemStatus(BaseModel):
     database: Dict[str, Any]
     cache_stats: Optional[Dict[str, Any]] = None
 
-# === ENDPOINTS ===
+class UserFeedback(BaseModel):
+    chat_id: str
+    rating: int = Field(..., ge=1, le=5)
+    comment: Optional[str] = None
+    is_accurate: Optional[bool] = None
+    is_helpful: Optional[bool] = None
+
+class DeleteChatRequest(BaseModel):
+    user_id: str
+
+class BatchDeleteRequest(BaseModel):
+    user_id: str
+    chat_ids: List[str]
+
 @router.get("/status", response_model=SystemStatus)
 async def get_admin_status():
     try:
-        # Kiểm tra ChromaDB
         collection = chroma_client.get_collection()
         collection_count = collection.count()
         
-        # Kiểm tra MongoDB
         db = mongodb_client.get_database()
-        
-        # Thống kê cache từ retrieval_service
         cache_stats = retrieval_service.get_cache_stats()
         
         return {
@@ -88,7 +96,6 @@ async def get_admin_status():
         }
     except Exception as e:
         print(f"Error in get_admin_status: {str(e)}")
-        # Chỉ log khi có lỗi
         activity_service.log_activity(
             ActivityType.SYSTEM_STATUS,
             f"Lỗi khi kiểm tra trạng thái hệ thống: {str(e)}",
@@ -119,12 +126,10 @@ async def get_recent_activities(limit: int = 10):
 @router.get("/cache/stats")
 async def get_cache_detailed_stats():
     try:
-        # Lấy thống kê cơ bản từ retrieval_service
         basic_stats = retrieval_service.get_cache_stats()
-        
         db = mongodb_client.get_database()
         
-        # Thống kê cache theo văn bản liên quan
+        # Thống kê cache theo văn bản
         doc_stats = []
         pipeline = [
             {"$unwind": "$relatedDocIds"},
@@ -139,13 +144,13 @@ async def get_cache_detailed_stats():
                 "cache_count": result["count"]
             })
         
-        # Thống kê cache theo hitCount
+        # Cache phổ biến
         popular_cache = list(db.text_cache.find(
             {"validityStatus": "valid"},
             {"cacheId": 1, "questionText": 1, "hitCount": 1, "_id": 0}
         ).sort("hitCount", -1).limit(5))
         
-        # Thống kê cache theo thời gian tạo
+        # Cache gần đây
         recent_cache = list(db.text_cache.find(
             {},
             {"cacheId": 1, "questionText": 1, "createdAt": 1, "_id": 0}
@@ -166,11 +171,9 @@ async def clear_cache():
     try:
         print("Bắt đầu xóa toàn bộ cache...")
         
-        # Log thông tin trước khi xóa
         db = mongodb_client.get_database()
         mongo_before = db.text_cache.count_documents({})
         
-        # Kiểm tra ChromaDB trước khi xóa
         chroma_before = 0
         try:
             cache_collection = retrieval_service.chroma.get_cache_collection()
@@ -181,10 +184,8 @@ async def clear_cache():
         
         print(f"Trước khi xóa - MongoDB: {mongo_before}, ChromaDB: {chroma_before}")
         
-        # Gọi service để xóa toàn bộ
         deleted_count = retrieval_service.clear_all_cache()
         
-        # Kiểm tra sau khi xóa
         mongo_after = db.text_cache.count_documents({})
         chroma_after = 0
         try:
@@ -196,7 +197,6 @@ async def clear_cache():
         
         print(f"Sau khi xóa - MongoDB: {mongo_after}, ChromaDB: {chroma_after}")
         
-        # Log activity với thông tin chi tiết
         activity_service.log_activity(
             ActivityType.CACHE_CLEAR,
             f"Admin xóa toàn bộ cache: MongoDB {deleted_count} entries, ChromaDB {chroma_before - chroma_after} entries",
@@ -240,19 +240,15 @@ async def clear_invalid_cache():
     try:
         print("Bắt đầu xóa cache không hợp lệ...")
         
-        # Đếm cache không hợp lệ trước khi xóa
         db = mongodb_client.get_database()
         invalid_before = db.text_cache.count_documents({"validityStatus": "invalid"})
         print(f"Tìm thấy {invalid_before} cache không hợp lệ")
         
-        # Gọi service để xóa
         deleted_count = retrieval_service.clear_all_invalid_cache()
         
-        # Kiểm tra sau khi xóa
         invalid_after = db.text_cache.count_documents({"validityStatus": "invalid"})
         print(f"Còn lại {invalid_after} cache không hợp lệ")
         
-        # Log activity
         activity_service.log_activity(
             ActivityType.CACHE_CLEAR,
             f"Admin xóa cache không hợp lệ: {deleted_count} entries",
@@ -286,7 +282,6 @@ async def clear_invalid_cache():
 @router.post("/invalidate-cache/{doc_id}")
 async def invalidate_cache(doc_id: str):
     try:
-        # Sử dụng phương thức từ retrieval_service
         count = retrieval_service.invalidate_document_cache(doc_id)
         
         return {
@@ -299,15 +294,12 @@ async def invalidate_cache(doc_id: str):
     
 @router.get("/cache/detailed-status")
 async def get_cache_detailed_status():
-    """Lấy thông tin chi tiết về cache trong cả MongoDB và ChromaDB"""
     try:
-        # MongoDB stats
         db = mongodb_client.get_database()
         mongo_total = db.text_cache.count_documents({})
         mongo_valid = db.text_cache.count_documents({"validityStatus": "valid"})
         mongo_invalid = db.text_cache.count_documents({"validityStatus": "invalid"})
         
-        # ChromaDB stats
         chroma_total = 0
         chroma_error = None
         try:
@@ -319,7 +311,6 @@ async def get_cache_detailed_status():
         except Exception as e:
             chroma_error = str(e)
         
-        # Retrieval service stats
         service_stats = retrieval_service.get_cache_stats()
         
         return {
@@ -350,15 +341,11 @@ async def delete_expired_cache():
     try:
         print("Admin yêu cầu xóa cache đã hết hạn...")
         
-        # Đếm trước khi xóa
         db = mongodb_client.get_database()
-        from datetime import datetime
-        expired_before = db.text_cache.count_documents({"expiresAt": {"$lt": datetime.now()}})
+        expired_before = db.text_cache.count_documents({"expiresAt": {"$lt": now_vn()}})
         
-        # Thực hiện xóa
         deleted_count = retrieval_service.delete_expired_cache()
         
-        # Log activity
         activity_service.log_activity(
             ActivityType.CACHE_CLEAR,
             f"Admin xóa cache đã hết hạn: {deleted_count} entries",
@@ -392,14 +379,11 @@ async def search_cache(keyword: str, limit: int = 10):
         if not keyword.strip():
             raise HTTPException(status_code=400, detail="Từ khóa không được để trống")
         
-        # Gọi service search
         results = retrieval_service.search_keyword(keyword.strip(), limit)
         
-        # Chuẩn bị dữ liệu trả về
         cache_results = []
         for result in results:
             try:
-                # Chuyển đổi ObjectId và datetime
                 processed_result = {
                     "id": str(result["_id"]),
                     "cacheId": result.get("cacheId", ""),
@@ -411,7 +395,6 @@ async def search_cache(keyword: str, limit: int = 10):
                     "relatedDocIds": result.get("relatedDocIds", [])
                 }
                 
-                # Xử lý datetime fields
                 for date_field in ["createdAt", "updatedAt", "lastUsed", "expiresAt"]:
                     if date_field in result and result[date_field]:
                         processed_result[date_field] = result[date_field].isoformat()
@@ -444,11 +427,9 @@ async def upload_benchmark_file(file: UploadFile = File(...)):
         if not file.filename.endswith('.json'):
             raise HTTPException(status_code=400, detail="Only JSON files are allowed")
         
-        # Read file content
         content = await file.read()
         file_content = content.decode('utf-8')
         
-        # Validate JSON format
         try:
             json_data = json.loads(file_content)
             if "benchmark" not in json_data:
@@ -456,11 +437,9 @@ async def upload_benchmark_file(file: UploadFile = File(...)):
         except json.JSONDecodeError:
             raise HTTPException(status_code=400, detail="Invalid JSON format")
         
-        # Generate unique filename
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = now_vn().strftime("%Y%m%d_%H%M%S")
         filename = f"uploaded_benchmark_{timestamp}.json"
         
-        # Save file
         saved_filename = benchmark_service.save_uploaded_benchmark(file_content, filename)
         
         return {
@@ -480,7 +459,6 @@ async def run_benchmark_4models(config: BenchmarkConfig):
     try:
         benchmark_id = str(uuid.uuid4())
         
-        # Log benchmark start
         activity_service.log_activity(
             ActivityType.BENCHMARK_START,
             f"Bắt đầu chạy benchmark với file {config.file_path}",
@@ -500,14 +478,13 @@ async def run_benchmark_4models(config: BenchmarkConfig):
             'phase': 'starting',
             'current_step': 0,
             'total_steps': 0,
-            'start_time': datetime.now().isoformat()
+            'start_time': now_vn().isoformat()
         }
         
         def progress_callback(progress_info):
             if isinstance(progress_info, dict):
                 progress_queue.put(progress_info)
             else:
-                # Backwards compatibility - nếu chỉ là số
                 progress_queue.put({'progress': float(progress_info)})
         
         def run_benchmark_thread():
@@ -541,12 +518,11 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                         'status': 'completed',
                         'progress': 100.0,
                         'phase': 'completed',
-                        'end_time': datetime.now().isoformat(),
+                        'end_time': now_vn().isoformat(),
                         'stats': result
                     })
                     benchmark_results_cache[benchmark_id] = result
                     
-                    # Log successful completion
                     activity_service.log_activity(
                         ActivityType.BENCHMARK_COMPLETE,
                         f"Hoàn thành benchmark {benchmark_id}: {result.get('total_questions', 0)} câu hỏi",
@@ -555,18 +531,17 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                             "total_questions": result.get('total_questions', 0),
                             "output_file": result.get('output_file', ''),
                             "file_path": config.file_path,
-                            "duration_minutes": (datetime.now() - datetime.fromisoformat(benchmark_progress[benchmark_id]['start_time'])).total_seconds() / 60
+                            "duration_minutes": (datetime.now(VN_TZ) - datetime.fromisoformat(benchmark_progress[benchmark_id]['start_time'])).total_seconds() / 60
                         }
                     )
                 else:
                     benchmark_progress[benchmark_id].update({
                         'status': 'failed',
                         'phase': 'failed',
-                        'end_time': datetime.now().isoformat(),
+                        'end_time': now_vn().isoformat(),
                         'error': result
                     })
                     
-                    # Log failure
                     activity_service.log_activity(
                         ActivityType.BENCHMARK_FAIL,
                         f"Thất bại khi chạy benchmark {benchmark_id}: {result}",
@@ -580,11 +555,10 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                 benchmark_progress[benchmark_id].update({
                     'status': 'failed',
                     'phase': 'timeout',
-                    'end_time': datetime.now().isoformat(),
+                    'end_time': now_vn().isoformat(),
                     'error': 'Benchmark timed out'
                 })
                 
-                # Log timeout
                 activity_service.log_activity(
                     ActivityType.BENCHMARK_FAIL,
                     f"Benchmark {benchmark_id} timeout",
@@ -607,7 +581,6 @@ async def run_benchmark_4models(config: BenchmarkConfig):
         
     except Exception as e:
         print(f"Error starting benchmark: {str(e)}")
-        # Log error
         activity_service.log_activity(
             ActivityType.BENCHMARK_FAIL,
             f"Lỗi khi khởi động benchmark: {str(e)}",
@@ -623,7 +596,6 @@ async def get_benchmark_progress(benchmark_id: str):
         
         progress_data = benchmark_progress[benchmark_id].copy()
         
-        # Ensure all values are JSON serializable
         for key, value in progress_data.items():
             if isinstance(value, (np.floating, np.integer)):
                 progress_data[key] = float(value)
@@ -638,11 +610,9 @@ async def get_benchmark_progress(benchmark_id: str):
 @router.get("/benchmark-results")
 async def list_benchmark_results():
     try:
-        # Kiểm tra thư mục kết quả tồn tại
         if not os.path.exists(BENCHMARK_RESULTS_DIR):
             return {"results": []}
         
-        # Lấy danh sách file CSV trong thư mục
         results = []
         for file in os.listdir(BENCHMARK_RESULTS_DIR):
             if file.endswith('.csv'):
@@ -654,14 +624,11 @@ async def list_benchmark_results():
                     "size_kb": round(os.path.getsize(file_path) / 1024, 2)
                 }
                 
-                # Thử đọc file để lấy số lượng câu hỏi và thống kê
                 try:
                     df = pd.read_csv(file_path, encoding='utf-8-sig')
                     if not df.empty:
-                        # Đếm số câu hỏi (trừ header)
                         stats["questions_count"] = len(df)
                         
-                        # Tính average scores nếu có cột SUMMARY
                         if 'STT' in df.columns:
                             summary_rows = df[df['STT'] == 'SUMMARY']
                             if not summary_rows.empty:
@@ -677,7 +644,6 @@ async def list_benchmark_results():
                                     except:
                                         pass
                         else:
-                            # Nếu không có SUMMARY, tính trung bình từ tất cả rows
                             if 'current_cosine_sim' in df.columns:
                                 try:
                                     numeric_values = pd.to_numeric(df['current_cosine_sim'], errors='coerce')
@@ -686,12 +652,10 @@ async def list_benchmark_results():
                                     pass
                 except Exception as e:
                     print(f"Lỗi khi đọc file {file}: {str(e)}")
-                    # Nếu không đọc được file, vẫn thêm thông tin cơ bản
                     stats["questions_count"] = "Unknown"
                 
                 results.append(stats)
         
-        # Sắp xếp theo thời gian tạo mới nhất trước
         results.sort(key=lambda x: x["created_at"], reverse=True)
         
         return {"results": results}
@@ -724,11 +688,9 @@ async def view_benchmark_content(file_name: str):
     try:
         df = pd.read_csv(file_path, encoding='utf-8-sig')
         
-        # Lấy thông tin tổng quan
         total_rows = len(df)
         columns = list(df.columns)
         
-        # Lọc ra dòng SUMMARY nếu có
         summary_row = None
         data_rows = df
         
@@ -736,13 +698,10 @@ async def view_benchmark_content(file_name: str):
             summary_rows = df[df['STT'] == 'SUMMARY']
             if not summary_rows.empty:
                 summary_row = summary_rows.iloc[0].to_dict()
-                # Lọc ra chỉ data rows (không bao gồm SUMMARY)
                 data_rows = df[df['STT'] != 'SUMMARY']
         
-        # Tính toán chi tiết cho từng model
         model_stats = {}
         
-        # Định nghĩa các cột cho từng model
         models = {
             'current': {
                 'cosine_col': 'current_cosine_sim',
@@ -778,7 +737,6 @@ async def view_benchmark_content(file_name: str):
                 'processing_time': {'avg': 0, 'min': 0, 'max': 0, 'count': 0}
             }
             
-            # Tính toán Cosine Similarity
             if model_info['cosine_col'] in data_rows.columns:
                 cosine_values = pd.to_numeric(data_rows[model_info['cosine_col']], errors='coerce').dropna()
                 if not cosine_values.empty:
@@ -789,7 +747,6 @@ async def view_benchmark_content(file_name: str):
                         'count': int(len(cosine_values))
                     }
             
-            # Tính toán Retrieval Accuracy
             if model_info['retrieval_col'] in data_rows.columns:
                 retrieval_values = pd.to_numeric(data_rows[model_info['retrieval_col']], errors='coerce').dropna()
                 if not retrieval_values.empty:
@@ -800,7 +757,6 @@ async def view_benchmark_content(file_name: str):
                         'count': int(len(retrieval_values))
                     }
             
-            # Tính toán Processing Time
             if model_info['time_col'] in data_rows.columns:
                 time_values = pd.to_numeric(data_rows[model_info['time_col']], errors='coerce').dropna()
                 if not time_values.empty:
@@ -813,7 +769,6 @@ async def view_benchmark_content(file_name: str):
             
             model_stats[model_key] = stats
         
-        # Tìm model tốt nhất cho từng metric
         best_models = {
             'cosine_similarity': max(model_stats.items(), 
                                    key=lambda x: x[1]['cosine_similarity']['avg'] if x[1]['cosine_similarity']['count'] > 0 else 0),
@@ -823,7 +778,6 @@ async def view_benchmark_content(file_name: str):
                                  key=lambda x: x[1]['processing_time']['avg'] if x[1]['processing_time']['count'] > 0 else float('inf'))
         }
         
-        # Lấy 5 dòng đầu làm preview
         preview_data = data_rows.head(5).to_dict('records')
         
         return {
@@ -846,7 +800,7 @@ async def view_benchmark_content(file_name: str):
                 }
             },
             "summary_row": summary_row,
-            "preview": preview_data[:3]  # Chỉ 3 dòng đầu
+            "preview": preview_data[:3]
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Không thể đọc file: {str(e)}")
@@ -892,43 +846,20 @@ async def list_benchmark_files():
         print(f"Error listing benchmark files: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
-@router.post("/invalidate-cache/{doc_id}")
-async def invalidate_cache(doc_id: str):
-    try:
-        print(f"Admin yêu cầu vô hiệu hóa cache cho document: {doc_id}")
-        count = retrieval_service.invalidate_document_cache(doc_id)
-        
-        return {
-            "message": f"Đã vô hiệu hóa {count} cache entries liên quan đến văn bản {doc_id}",
-            "affected_count": count,
-            "doc_id": doc_id
-        }
-    except Exception as e:
-        print(f"Error in invalidate_cache: {str(e)}")
-        activity_service.log_activity(
-            ActivityType.CACHE_INVALIDATE,
-            f"Lỗi vô hiệu hóa cache cho {doc_id}: {str(e)}",
-            metadata={"error": str(e), "doc_id": doc_id, "success": False}
-        )
-        raise HTTPException(status_code=500, detail=str(e))
-
 @router.post("/upload-document")
 async def upload_document(
     metadata: DocumentUpload = Body(...),
     chunks: List[UploadFile] = File(...)
 ):
     try:
-        # Tạo thư mục cho văn bản mới
         doc_dir = os.path.join(DATA_DIR, metadata.doc_id)
         os.makedirs(doc_dir, exist_ok=True)
         
-        # Lưu các file chunk
         saved_chunks = []
         for i, chunk in enumerate(chunks):
             file_name = f"chunk_{i+1}.md"
             file_path = os.path.join(doc_dir, file_name)
             
-            # Lưu file
             with open(file_path, "wb") as f:
                 f.write(await chunk.read())
             
@@ -939,12 +870,11 @@ async def upload_document(
                 "content_summary": f"Phần {i+1} của {metadata.doc_type} {metadata.doc_id}"
             })
         
-        # Tạo metadata
         full_metadata = {
             "doc_id": metadata.doc_id,
             "doc_type": metadata.doc_type,
             "doc_title": metadata.doc_title,
-            "issue_date": datetime.now().strftime("%d-%m-%Y"),
+            "issue_date": now_vn().strftime("%d-%m-%Y"),
             "effective_date": metadata.effective_date,
             "expiry_date": None,
             "status": metadata.status,
@@ -958,12 +888,8 @@ async def upload_document(
             "chunks": saved_chunks
         }
         
-        # Lưu metadata
         with open(os.path.join(doc_dir, "metadata.json"), "w", encoding="utf-8") as f:
             json.dump(full_metadata, f, ensure_ascii=False, indent=2)
-        
-        # Tải văn bản vào ChromaDB
-        # Bổ sung sau phần này
         
         return {
             "message": f"Đã tải lên văn bản {metadata.doc_id} thành công với {len(saved_chunks)} chunks",
@@ -972,7 +898,6 @@ async def upload_document(
     except Exception as e:
         print(f"Error in upload_document: {str(e)}")
         
-        # Dọn dẹp nếu có lỗi
         if os.path.exists(doc_dir):
             shutil.rmtree(doc_dir)
             
@@ -994,10 +919,8 @@ async def list_documents():
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
                         
-                    # Đếm số lượng chunk
                     chunks_count = len(metadata.get("chunks", []))
                     
-                    # Thêm thông tin cơ bản
                     doc_info = {
                         "doc_id": metadata.get("doc_id", doc_dir),
                         "doc_type": metadata.get("doc_type", "Unknown"),
@@ -1011,7 +934,6 @@ async def list_documents():
                 except Exception as e:
                     print(f"Lỗi khi đọc metadata của {doc_dir}: {str(e)}")
         
-        # Sắp xếp theo ID văn bản
         documents.sort(key=lambda x: x["doc_id"])
         
         return {"documents": documents}
@@ -1031,7 +953,6 @@ async def get_document(doc_id: str):
         with open(metadata_path, 'r', encoding='utf-8') as f:
             metadata = json.load(f)
         
-        # Đọc nội dung chunks
         chunks = []
         for chunk_info in metadata.get("chunks", []):
             chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
@@ -1064,17 +985,12 @@ async def delete_document(doc_id: str, confirm: bool = False):
         raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
     
     try:
-        # Vô hiệu hóa cache trước
         try:
             retrieval_service.invalidate_document_cache(doc_id)
         except Exception as e:
             print(f"Cảnh báo: Không thể vô hiệu hóa cache cho {doc_id}: {str(e)}")
         
-        # Xóa thư mục văn bản
         shutil.rmtree(doc_dir)
-        
-        # Xóa trong ChromaDB
-        # Triển khai logic để xóa văn bản trong ChromaDB
         
         return {"message": f"Đã xóa văn bản {doc_id} thành công"}
     except Exception as e:
@@ -1086,12 +1002,10 @@ async def get_system_statistics():
     try:
         db = mongodb_client.get_database()
         
-        # Thống kê cơ bản
         total_users = db.users.count_documents({})
         total_chats = db.chats.count_documents({})
         total_exchanges = 0
         
-        # Đếm tổng số exchanges
         pipeline = [
             {"$project": {"exchange_count": {"$size": {"$ifNull": ["$exchanges", []]}}}},
             {"$group": {"_id": None, "total": {"$sum": "$exchange_count"}}}
@@ -1100,18 +1014,15 @@ async def get_system_statistics():
         if result:
             total_exchanges = result[0]["total"]
         
-        # Thống kê cache
         total_cache = db.text_cache.count_documents({})
         valid_cache = db.text_cache.count_documents({"validityStatus": "valid"})
         
-        # Thống kê tài liệu
         document_count = 0
         chunk_count = 0
         
         if os.path.exists(DATA_DIR):
             document_count = sum(1 for item in os.listdir(DATA_DIR) if os.path.isdir(os.path.join(DATA_DIR, item)))
             
-            # Đếm số lượng chunk
             for doc_dir in os.listdir(DATA_DIR):
                 doc_path = os.path.join(DATA_DIR, doc_dir)
                 metadata_path = os.path.join(doc_path, "metadata.json")
@@ -1124,7 +1035,6 @@ async def get_system_statistics():
                     except:
                         pass
         
-        # Thống kê ChromaDB
         chroma_count = 0
         try:
             collection = chroma_client.get_collection()
@@ -1132,7 +1042,6 @@ async def get_system_statistics():
         except Exception as e:
             print(f"Lỗi khi lấy thông tin ChromaDB: {str(e)}")
         
-        # Trả về thống kê
         return {
             "users": {
                 "total": total_users
@@ -1151,7 +1060,7 @@ async def get_system_statistics():
                 "chunks": chunk_count,
                 "indexed_in_chroma": chroma_count
             },
-            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": now_vn().strftime("%Y-%m-%d %H:%M:%S")
         }
     except Exception as e:
         print(f"Error in get_system_statistics: {str(e)}")

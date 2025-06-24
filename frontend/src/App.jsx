@@ -9,7 +9,6 @@ import ProfilePage from './pages/ProfilePage';
 import LandingPage from './pages/LandingPage';
 import AdminPage from './pages/AdminPage';
 
-// Tạo wrapper component để có thể sử dụng useLocation
 function AnimatedRoutes() {
   const location = useLocation();
   

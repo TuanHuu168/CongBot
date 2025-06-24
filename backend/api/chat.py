@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Body
 from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 import time
 import uuid
 from bson.objectid import ObjectId
@@ -11,12 +11,14 @@ from services.generation_service import generation_service
 from services.retrieval_service import retrieval_service
 from database.mongodb_client import mongodb_client
 
-router = APIRouter(
-    prefix="",
-    tags=["chat"],
-)
+router = APIRouter(prefix="", tags=["chat"])
 
-# === MODELS ===
+VN_TZ = timezone(timedelta(hours=7))
+
+def now_vn():
+    return datetime.now(VN_TZ)
+
+# Models
 class QueryInput(BaseModel):
     query: str
     user_id: Optional[str] = None
@@ -24,7 +26,7 @@ class QueryInput(BaseModel):
     client_info: Optional[Dict[str, str]] = None
 
 class ChatMessage(BaseModel):
-    sender: str  # 'user' hoặc 'bot'
+    sender: str
     text: str
     timestamp: Optional[datetime] = None
 
@@ -46,12 +48,11 @@ class BatchDeleteRequest(BaseModel):
     user_id: str
     chat_ids: List[str]
 
-# === ENDPOINTS ===
 @router.post("/ask")
 async def ask(input: QueryInput):
     try:
         start_time = time.time()
-        print(f"Processing query: '{input.query}' with session_id: {input.session_id}")
+        print(f"Processing query: '{input.query}' với session_id: {input.session_id}")
         
         # Lấy conversation history nếu có session_id
         conversation_context = []
@@ -61,21 +62,20 @@ async def ask(input: QueryInput):
                 db = mongodb_client.get_database()
                 chat = db.chats.find_one({"_id": ObjectId(input.session_id)})
                 if chat and "exchanges" in chat:
-                    # Lấy 5 exchanges gần nhất để làm context (giới hạn để tránh prompt quá dài)
                     recent_exchanges = chat["exchanges"][-5:] if len(chat["exchanges"]) > 5 else chat["exchanges"]
                     for exchange in recent_exchanges:
                         conversation_context.append({
                             "question": exchange.get("question", ""),
                             "answer": exchange.get("answer", "")
                         })
-                    print(f"Loaded {len(conversation_context)} previous exchanges for context")
+                    print(f"Loaded {len(conversation_context)} previous exchanges")
                 context_load_end = time.time()
-                print(f"Loading conversation context took: {context_load_end - context_load_start:.3f} seconds")
+                print(f"Loading context took: {context_load_end - context_load_start:.3f} seconds")
             except Exception as e:
                 print(f"Error loading conversation context: {str(e)}")
                 conversation_context = []
         
-        # 1. Retrieval - lấy thông tin liên quan với cache
+        # Retrieval
         retrieval_start = time.time()
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
         retrieval_end = time.time()
@@ -85,40 +85,33 @@ async def ask(input: QueryInput):
         retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
         retrieval_time = retrieval_result.get("execution_time", 0)
         
-        # 2. Xử lý câu trả lời
+        # Xử lý câu trả lời
         generation_time = 0
         
         if source == "cache":
-            # Nếu từ cache, lấy trực tiếp câu trả lời
             answer = retrieval_result.get("answer", "")
             print(f"Sử dụng câu trả lời từ cache")
         else:
-            # Nếu không phải từ cache, gọi generation_service với conversation context
-            print(f"Không tìm thấy trong cache, gọi generation_service với conversation context")
+            print(f"Gọi generation_service với conversation context")
             if context_items:
                 generation_result = generation_service.generate_answer_with_context(
-                    input.query, 
-                    context_items, 
-                    conversation_context,
-                    use_cache=False
+                    input.query, context_items, conversation_context, use_cache=False
                 )
                 answer = generation_result.get("answer", "")
                 generation_time = generation_result.get("generation_time", 0)
                 print(f"Generation took: {generation_time:.3f} seconds")
-                # Cập nhật retrieved_chunks nếu cần
                 if "retrieved_chunks" in generation_result:
                     retrieved_chunks = generation_result.get("retrieved_chunks", retrieved_chunks)
             else:
                 answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
         
-        # 3. Xử lý lưu trữ tin nhắn
+        # Lưu trữ tin nhắn với timezone Việt Nam
         chat_id = input.session_id
         
         if input.user_id:
-            # Chuẩn bị tin nhắn user và bot
             user_message = {
                 "text": input.query,
-                "timestamp": datetime.now()
+                "timestamp": now_vn()
             }
             
             bot_message = {
@@ -126,23 +119,20 @@ async def ask(input: QueryInput):
                 "retrieved_chunks": retrieved_chunks,
                 "context": context_items,
                 "processingTime": retrieval_time + generation_time,
-                "timestamp": datetime.now()
+                "timestamp": now_vn()
             }
             
             db = mongodb_client.get_database()
             
-            # Nếu có session_id, thêm tin nhắn vào cuộc trò chuyện đó
             if input.session_id:
                 print(f"Adding message to existing chat: {input.session_id}")
                 
-                # Kiểm tra xem cuộc trò chuyện có tồn tại không
                 try:
                     existing_chat = db.chats.find_one({"_id": ObjectId(input.session_id)})
                 except:
                     existing_chat = None
                 
                 if existing_chat:
-                    # Thêm cặp tin nhắn mới (kết hợp thành một exchange)
                     success = db.chats.update_one(
                         {"_id": ObjectId(input.session_id)},
                         {
@@ -151,29 +141,28 @@ async def ask(input: QueryInput):
                                     "exchangeId": str(uuid.uuid4()),
                                     "question": input.query,
                                     "answer": answer,
-                                    "timestamp": datetime.now(),
+                                    "timestamp": now_vn(),
                                     "sourceDocuments": retrieved_chunks,
                                     "processingTime": retrieval_time + generation_time,
                                     "clientInfo": input.client_info
                                 }
                             },
-                            "$set": {"updated_at": datetime.now()}
+                            "$set": {"updated_at": now_vn()}
                         }
                     )
                     if success.modified_count == 0:
                         print(f"Failed to add message to chat: {input.session_id}")
-                        # Tạo mới nếu không thành công
                         chat_data = {
                             "user_id": input.user_id,
                             "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                            "created_at": datetime.now(),
-                            "updated_at": datetime.now(),
+                            "created_at": now_vn(),
+                            "updated_at": now_vn(),
                             "status": "active",
                             "exchanges": [{
                                 "exchangeId": str(uuid.uuid4()),
                                 "question": input.query,
                                 "answer": answer,
-                                "timestamp": datetime.now(),
+                                "timestamp": now_vn(),
                                 "sourceDocuments": retrieved_chunks,
                                 "processingTime": retrieval_time + generation_time,
                                 "clientInfo": input.client_info
@@ -182,18 +171,17 @@ async def ask(input: QueryInput):
                         result = db.chats.insert_one(chat_data)
                         chat_id = str(result.inserted_id)
                 else:
-                    # Tạo mới nếu không tồn tại
                     chat_data = {
                         "user_id": input.user_id,
                         "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                        "created_at": datetime.now(),
-                        "updated_at": datetime.now(),
+                        "created_at": now_vn(),
+                        "updated_at": now_vn(),
                         "status": "active",
                         "exchanges": [{
                             "exchangeId": str(uuid.uuid4()),
                             "question": input.query,
                             "answer": answer,
-                            "timestamp": datetime.now(),
+                            "timestamp": now_vn(),
                             "sourceDocuments": retrieved_chunks,
                             "processingTime": retrieval_time + generation_time,
                             "clientInfo": input.client_info
@@ -202,19 +190,18 @@ async def ask(input: QueryInput):
                     result = db.chats.insert_one(chat_data)
                     chat_id = str(result.inserted_id)
             else:
-                # Tạo chat mới nếu không có session_id
                 print("Creating new chat")
                 chat_data = {
                     "user_id": input.user_id,
                     "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                    "created_at": datetime.now(),
-                    "updated_at": datetime.now(),
+                    "created_at": now_vn(),
+                    "updated_at": now_vn(),
                     "status": "active",
                     "exchanges": [{
                         "exchangeId": str(uuid.uuid4()),
                         "question": input.query,
                         "answer": answer,
-                        "timestamp": datetime.now(),
+                        "timestamp": now_vn(),
                         "sourceDocuments": retrieved_chunks,
                         "processingTime": retrieval_time + generation_time,
                         "clientInfo": input.client_info
@@ -223,7 +210,6 @@ async def ask(input: QueryInput):
                 result = db.chats.insert_one(chat_data)
                 chat_id = str(result.inserted_id)
         
-        # 4. Trả về kết quả
         total_time = time.time() - start_time
         
         print(f"TIMING SUMMARY:")
@@ -231,11 +217,12 @@ async def ask(input: QueryInput):
         print(f" - Generation: {generation_time:.3f}s")  
         print(f" - Total processing: {total_time:.3f}s")
         print(f" - Cache hit: {'Yes' if source == 'cache' else 'No'}")
+        
         return {
             "id": chat_id,
             "query": input.query,
             "answer": answer,
-            "top_chunks": context_items[:5],  # Trả về 3 đoạn văn bản liên quan nhất
+            "top_chunks": context_items[:5],
             "retrieval_time": retrieval_time,
             "generation_time": generation_time,
             "total_time": total_time
@@ -268,7 +255,7 @@ async def submit_feedback(feedback: UserFeedback):
         db = mongodb_client.get_database()
         
         feedback_data = feedback.dict()
-        feedback_data["timestamp"] = datetime.now()
+        feedback_data["timestamp"] = now_vn()
         
         result = db.feedback.insert_one(feedback_data)
         
@@ -288,8 +275,8 @@ async def create_chat(chat: ChatCreate):
         new_chat = {
             "user_id": chat.user_id,
             "title": chat.title,
-            "created_at": datetime.now(),
-            "updated_at": datetime.now(),
+            "created_at": now_vn(),
+            "updated_at": now_vn(),
             "status": "active",
             "exchanges": []
         }
@@ -319,20 +306,16 @@ async def get_chat_messages(chat_id: str):
             print(f"Chat with id {chat_id} not found")
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
         
-        # Xử lý dữ liệu để trả về theo định dạng mong muốn
         exchanges = chat.get("exchanges", [])
         messages = []
         
-        # Chuyển đổi từ exchanges sang messages phù hợp với giao diện
         for exchange in exchanges:
-            # Thêm tin nhắn user
             messages.append({
                 "sender": "user",
                 "text": exchange.get("question", ""),
                 "timestamp": exchange.get("timestamp")
             })
             
-            # Thêm tin nhắn bot
             messages.append({
                 "sender": "bot",
                 "text": exchange.get("answer", ""),
@@ -341,13 +324,12 @@ async def get_chat_messages(chat_id: str):
                 "timestamp": exchange.get("timestamp")
             })
         
-        # Chuyển đổi ObjectId sang string
         chat_data = {
             "id": str(chat["_id"]),
             "title": chat.get("title", "Cuộc trò chuyện"),
             "messages": messages,
-            "created_at": chat.get("created_at", datetime.now()),
-            "updated_at": chat.get("updated_at", datetime.now())
+            "created_at": chat.get("created_at", now_vn()),
+            "updated_at": chat.get("updated_at", now_vn())
         }
         
         return chat_data
@@ -362,7 +344,6 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
     try:
         db = mongodb_client.get_database()
         
-        # Kiểm tra chat tồn tại
         try:
             chat = db.chats.find_one({"_id": ObjectId(chat_id)})
         except:
@@ -371,11 +352,9 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
         if not chat:
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
         
-        # Thêm tin nhắn dựa vào loại (user hoặc bot)
         success = False
         
         if message.sender == "user":
-            # Tạo exchange mới với câu hỏi, chưa có câu trả lời
             exchange_id = str(uuid.uuid4())
             result = db.chats.update_one(
                 {"_id": ObjectId(chat_id)},
@@ -385,16 +364,15 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
                             "exchangeId": exchange_id,
                             "question": message.text,
                             "answer": "",
-                            "timestamp": datetime.now() if not message.timestamp else message.timestamp
+                            "timestamp": now_vn() if not message.timestamp else message.timestamp
                         }
                     },
-                    "$set": {"updated_at": datetime.now()}
+                    "$set": {"updated_at": now_vn()}
                 }
             )
             success = result.modified_count > 0
             
         elif message.sender == "bot":
-            # Tìm exchange cuối cùng và cập nhật câu trả lời
             exchanges = chat.get("exchanges", [])
             if not exchanges:
                 raise HTTPException(status_code=400, detail="Không có tin nhắn user trước đó để trả lời")
@@ -405,8 +383,8 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
                 {
                     "$set": {
                         "exchanges.$.answer": message.text,
-                        "exchanges.$.timestamp": datetime.now() if not message.timestamp else message.timestamp,
-                        "updated_at": datetime.now()
+                        "exchanges.$.timestamp": now_vn() if not message.timestamp else message.timestamp,
+                        "updated_at": now_vn()
                     }
                 }
             )
@@ -438,7 +416,6 @@ async def get_chats(user_id: str, limit: int = None):
         else:
             chats = list(db.chats.find(query, projection).sort("updated_at", -1))
         
-        # Chuyển đổi ObjectId sang string
         for chat in chats:
             chat["id"] = str(chat.pop("_id"))
         
@@ -458,7 +435,7 @@ async def update_chat_title(chat_id: str, title_data: dict = Body(...)):
         
         result = db.chats.update_one(
             {"_id": ObjectId(chat_id)},
-            {"$set": {"title": title, "updated_at": datetime.now()}}
+            {"$set": {"title": title, "updated_at": now_vn()}}
         )
         
         if result.modified_count == 0:
@@ -474,11 +451,9 @@ async def update_chat_title(chat_id: str, title_data: dict = Body(...)):
 
 @router.delete("/chats/{chat_id}")
 async def delete_chat(chat_id: str, request: DeleteChatRequest):
-    """Xóa một cuộc trò chuyện"""
     try:
         db = mongodb_client.get_database()
         
-        # Kiểm tra quyền xóa (người dùng chỉ được xóa chat của họ)
         chat = db.chats.find_one({"_id": ObjectId(chat_id)})
         if not chat:
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
@@ -486,10 +461,9 @@ async def delete_chat(chat_id: str, request: DeleteChatRequest):
         if chat.get("user_id") != request.user_id:
             raise HTTPException(status_code=403, detail="Bạn không có quyền xóa cuộc trò chuyện này")
         
-        # Thực hiện xóa (hoặc có thể chỉ đánh dấu là đã xóa bằng cách cập nhật status)
         result = db.chats.update_one(
             {"_id": ObjectId(chat_id)},
-            {"$set": {"status": "deleted", "updated_at": datetime.now()}}
+            {"$set": {"status": "deleted", "updated_at": now_vn()}}
         )
         
         if result.modified_count == 0:
@@ -513,19 +487,16 @@ async def delete_chats_batch(request: BatchDeleteRequest):
         if not request.chat_ids or len(request.chat_ids) == 0:
             raise HTTPException(status_code=400, detail="Danh sách chat_ids không được để trống")
         
-        # Chuyển đổi các id thành ObjectId
         chat_object_ids = []
         for chat_id in request.chat_ids:
             try:
                 chat_object_ids.append(ObjectId(chat_id))
             except:
-                # Bỏ qua ID không hợp lệ
                 continue
         
         if len(chat_object_ids) == 0:
             raise HTTPException(status_code=400, detail="Không có chat_id hợp lệ trong danh sách")
         
-        # Tìm tất cả chat thuộc về người dùng
         user_chats = list(db.chats.find(
             {"user_id": request.user_id, "_id": {"$in": chat_object_ids}},
             {"_id": 1}
@@ -536,10 +507,9 @@ async def delete_chats_batch(request: BatchDeleteRequest):
         if len(user_chat_ids) == 0:
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện nào thuộc về người dùng này")
         
-        # Cập nhật status thành "deleted" cho tất cả chat được tìm thấy
         result = db.chats.update_many(
             {"_id": {"$in": user_chat_ids}},
-            {"$set": {"status": "deleted", "updated_at": datetime.now()}}
+            {"$set": {"status": "deleted", "updated_at": now_vn()}}
         )
         
         return {

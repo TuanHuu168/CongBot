@@ -92,7 +92,9 @@ export const adminAPI = {
   clearCache: () => apiCall('post', '/clear-cache'),
   runBenchmark: (config) => apiCall('post', '/run-benchmark', config),
   getDocuments: () => apiCall('get', '/documents'),
-  deleteDocument: (docId) => apiCall('delete', `/documents/${docId}?confirm=true`)
+  deleteDocument: (docId) => apiCall('delete', `/documents/${docId}?confirm=true`),
+  getBenchmarkResults: () => apiCall('get', '/benchmark-results'),
+  getStatistics: () => apiCall('get', '/statistics')
 };
 
 // Legacy exports

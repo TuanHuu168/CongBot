@@ -160,7 +160,7 @@ export const ChatProvider = ({ children }) => {
     setActiveChatMessages(prev => [...prev, userMsg, botMsg]);
   }, []);
 
-  // Check auth state changes
+  // Kiểm tra auth state thay đổi
   useEffect(() => {
     const checkAuthState = () => {
       const { userId, token } = getAuthData();
@@ -173,7 +173,7 @@ export const ChatProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, [user, resetAuthState]);
 
-  // Initialize on mount
+  // Khởi tạo khi mount
   useEffect(() => {
     const { userId, token } = getAuthData();
     if (userId && token) {
