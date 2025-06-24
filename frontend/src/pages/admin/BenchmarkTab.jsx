@@ -3,14 +3,10 @@ import { motion } from 'framer-motion';
 import { Activity, Eye, Download, Upload, Info, CheckCircle, XCircle, Clock, File, X } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
+import { getApiBaseUrl } from '../../apiService';
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8001';
-
-const BenchmarkTab = ({
-    benchmarkResults,
-    isLoading
-}) => {
+const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
     const [runningBenchmark, setRunningBenchmark] = useState(false);
     const [benchmarkProgress, setBenchmarkProgress] = useState(0);
     const [currentBenchmarkId, setCurrentBenchmarkId] = useState(null);
@@ -20,9 +16,10 @@ const BenchmarkTab = ({
     const [currentStep, setCurrentStep] = useState(0);
     const [totalSteps, setTotalSteps] = useState(0);
     const [benchmarkMode, setBenchmarkMode] = useState('default');
-    const [selectedFile, setSelectedFile] = useState(null);
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [selectedBenchmarkFile, setSelectedBenchmarkFile] = useState('benchmark.json');
+
+    const API_BASE_URL = getApiBaseUrl();
 
     const fadeInVariants = {
         hidden: { opacity: 0, y: 10 },
@@ -43,7 +40,7 @@ const BenchmarkTab = ({
         }
     };
 
-    // Poll benchmark progress with enhanced tracking
+    // Poll benchmark progress
     useEffect(() => {
         let interval;
         if (currentBenchmarkId && runningBenchmark) {
@@ -148,7 +145,6 @@ const BenchmarkTab = ({
                 confirmButtonColor: '#10b981'
             });
 
-            setSelectedFile(null);
             setSelectedBenchmarkFile(response.data.filename);
             loadBenchmarkFiles();
             event.target.value = '';
@@ -252,7 +248,6 @@ const BenchmarkTab = ({
             const response = await axios.get(`${API_BASE_URL}/view-benchmark/${filename}`);
             const data = response.data;
 
-            // Enhanced display with entity similarity
             const modelStatsHtml = Object.entries(data.model_stats || {})
                 .map(([key, stats]) => {
                     const cosineAvg = stats.cosine_similarity?.avg || 0;
@@ -342,7 +337,7 @@ const BenchmarkTab = ({
                     </div>
 
                     <div className="p-5">
-                        {/* Enhanced benchmark status display */}
+                        {/* Benchmark status display */}
                         {runningBenchmark && (
                             <div className="mb-6 p-4 bg-blue-50 rounded-lg">
                                 <div className="flex items-center justify-between mb-2">
@@ -374,7 +369,7 @@ const BenchmarkTab = ({
                             </div>
                         )}
 
-                        {/* Enhanced benchmark stats with entity similarity */}
+                        {/* Benchmark stats với entity similarity */}
                         {benchmarkStats && (
                             <div className="mb-6 p-4 bg-green-50 rounded-lg">
                                 <h3 className="text-green-700 font-medium mb-3">Kết quả benchmark mới nhất</h3>
@@ -442,7 +437,7 @@ const BenchmarkTab = ({
                             </div>
                         )}
 
-                        {/* Historical results remain the same */}
+                        {/* Historical results */}
                         {isLoading ? (
                             <div className="py-4 flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-500"></div>
@@ -589,7 +584,7 @@ const BenchmarkTab = ({
                                 </div>
                             )}
 
-                            {/* Enhanced benchmark description */}
+                            {/* Benchmark description */}
                             <div className="p-4 bg-amber-50 rounded-lg">
                                 <h3 className="text-amber-700 text-base font-medium mb-2">Benchmark với Entity Extraction</h3>
                                 <p className="text-sm text-gray-600 mb-3">

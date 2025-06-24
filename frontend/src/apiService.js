@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { showError, showSuccess, getAuthData, clearAuthData } from './utils/formatUtils';
+import { showError, getAuthData, clearAuthData } from './utils/formatUtils';
 
-const API_BASE_URL = 'http://localhost:8001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -16,7 +16,7 @@ apiClient.interceptors.request.use(config => {
   return config;
 });
 
-// Response interceptor với error handling tự động
+// Response interceptor
 apiClient.interceptors.response.use(
   response => response,
   error => {
@@ -35,7 +35,6 @@ apiClient.interceptors.response.use(
   }
 );
 
-// API methods với error handling tích hợp
 const apiCall = async (method, url, data = null, config = {}) => {
   try {
     const response = await apiClient[method](url, data, config);
@@ -99,7 +98,6 @@ export const adminAPI = {
 
 // Legacy exports
 export const askQuestion = chatAPI.ask;
-export const createNewChat = chatAPI.create;
 export const getUserChats = chatAPI.getAll;
 export const getChatMessages = chatAPI.getMessages;
 export const updateChatTitle = chatAPI.updateTitle;
@@ -107,5 +105,5 @@ export const deleteChat = chatAPI.delete;
 export const deleteChatsBatch = chatAPI.deleteBatch;
 export const getUserInfo = userAPI.getInfo;
 
-// Export utilities
-export { showError, showSuccess };
+// Utility để get API base URL (có thể dùng ở các component khác)
+export const getApiBaseUrl = () => API_BASE_URL;
