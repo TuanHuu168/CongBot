@@ -1,12 +1,11 @@
 import Swal from 'sweetalert2';
 
-// Timezone utilities - convert UTC từ backend sang VN time
+// Timezone utilities
 const VN_TIMEZONE_OFFSET = 7 * 60; // GMT+7 in minutes
 
 const convertToVNTime = (utcDateString) => {
   if (!utcDateString) return null;
   const utcDate = new Date(utcDateString);
-  // Thêm 7 giờ cho múi giờ Việt Nam
   return new Date(utcDate.getTime() + VN_TIMEZONE_OFFSET * 60 * 1000);
 };
 
@@ -14,12 +13,10 @@ const convertToVNTime = (utcDateString) => {
 export const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   
-  // Convert từ UTC sang VN time
   const vnDate = convertToVNTime(dateString);
   if (!vnDate) return 'N/A';
   
   const now = convertToVNTime(new Date().toISOString());
-  
   const isSameDay = (d1, d2) => d1.toDateString() === d2.toDateString();
   
   if (isSameDay(vnDate, now)) {
@@ -41,21 +38,15 @@ export const formatDate = (dateString) => {
 
 export const formatDateOnly = (dateString) => {
   if (!dateString) return 'N/A';
-  
   const vnDate = convertToVNTime(dateString);
   if (!vnDate) return 'N/A';
-  
-  return vnDate.toLocaleDateString('vi-VN', {
-    day: '2-digit', month: '2-digit', year: 'numeric'
-  });
+  return vnDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' });
 };
 
 export const formatTimeOnly = (dateString) => {
   if (!dateString) return 'N/A';
-  
   const vnDate = convertToVNTime(dateString);
   if (!vnDate) return 'N/A';
-  
   return vnDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
 };
 
@@ -66,13 +57,12 @@ export const getDateLabel = (dateString) => {
   const chatDate = convertToVNTime(dateString);
   
   if (!chatDate) return 'Không xác định';
-  
   if (chatDate.toDateString() === today.toDateString()) return 'Hôm nay';
   if (chatDate.toDateString() === yesterday.toDateString()) return 'Hôm qua';
   return chatDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
 };
 
-// Chat title utilities
+// Chat utilities
 export const getDisplayTitle = (chat) => {
   if (!chat?.title || chat.title.trim() === '') return "Cuộc trò chuyện mới";
   const isMongoId = /^[0-9a-fA-F]{24}$/.test(chat.title);
@@ -93,10 +83,7 @@ export const pageVariants = {
 
 export const slideUpVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, y: 0, 
-    transition: { type: "spring", stiffness: 260, damping: 20 }
-  }
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 260, damping: 20 } }
 };
 
 export const itemVariants = {
@@ -107,35 +94,25 @@ export const itemVariants = {
 
 export const containerVariants = {
   hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1, delayChildren: 0.2 }
-  }
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
 };
 
 // Alert utilities
+const alertConfig = { confirmButtonColor: '#10b981', customClass: { popup: 'rounded-xl shadow-xl' } };
+
 export const showError = (message, title = 'Lỗi') => {
-  return Swal.fire({
-    icon: 'error', title, text: message,
-    confirmButtonColor: '#10b981',
-    customClass: { popup: 'rounded-xl shadow-xl' }
-  });
+  return Swal.fire({ icon: 'error', title, text: message, ...alertConfig });
 };
 
 export const showSuccess = (message, title = 'Thành công') => {
-  return Swal.fire({
-    icon: 'success', title, text: message,
-    confirmButtonColor: '#10b981', timer: 2000,
-    customClass: { popup: 'rounded-xl shadow-xl' }
-  });
+  return Swal.fire({ icon: 'success', title, text: message, timer: 2000, ...alertConfig });
 };
 
 export const showConfirm = (message, title = 'Xác nhận') => {
   return Swal.fire({
-    title, text: message, icon: 'question',
-    showCancelButton: true, confirmButtonText: 'Xác nhận', cancelButtonText: 'Hủy',
-    confirmButtonColor: '#10b981', cancelButtonColor: '#64748b',
-    customClass: { popup: 'rounded-xl shadow-xl' }
+    title, text: message, icon: 'question', showCancelButton: true, 
+    confirmButtonText: 'Xác nhận', cancelButtonText: 'Hủy',
+    confirmButtonColor: '#10b981', cancelButtonColor: '#64748b', ...alertConfig
   });
 };
 
@@ -155,23 +132,12 @@ export const clearAuthData = () => {
 
 // Constants
 export const ROUTES = {
-  HOME: '/',
-  LOGIN: '/login',
-  REGISTER: '/register', 
-  CHAT: '/chat',
-  HISTORY: '/history',
-  PROFILE: '/profile',
-  ADMIN: '/admin'
+  HOME: '/', LOGIN: '/login', REGISTER: '/register', CHAT: '/chat',
+  HISTORY: '/history', PROFILE: '/profile', ADMIN: '/admin'
 };
 
-export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'auth_token',
-  USER_ID: 'user_id'
-};
+export const STORAGE_KEYS = { AUTH_TOKEN: 'auth_token', USER_ID: 'user_id' };
 
-// Utility để lấy thời gian hiện tại VN
-export const getCurrentVNTime = () => {
-  return convertToVNTime(new Date().toISOString());
-};
-
+// Utility functions
+export const getCurrentVNTime = () => convertToVNTime(new Date().toISOString());
 export { convertToVNTime };

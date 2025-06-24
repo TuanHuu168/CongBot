@@ -2,12 +2,6 @@ import React, { memo } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff } from 'lucide-react';
 
-const itemVariants = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.3 } },
-  exit: { opacity: 0, y: 10, transition: { duration: 0.2 } }
-};
-
 const FormField = memo(({ 
   name, 
   type = 'text', 
@@ -22,7 +16,12 @@ const FormField = memo(({
   error,
   disabled = false 
 }) => (
-  <motion.div className="space-y-1" variants={itemVariants}>
+  <motion.div 
+    className="space-y-1" 
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0, transition: { duration: 0.3 } }}
+    exit={{ opacity: 0, y: 10, transition: { duration: 0.2 } }}
+  >
     <div className="relative">
       <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-green-600">
         <Icon size={18} />

@@ -4,9 +4,7 @@ from pydantic import BaseModel, Field, ConfigDict
 from bson import ObjectId
 
 class PyObjectId(ObjectId):
-    """
-    Lớp chuyển đổi ObjectId cho Pydantic v2
-    """
+    """Lớp chuyển đổi ObjectId cho Pydantic v2"""
     @classmethod
     def __get_validators__(cls):
         yield cls.validate
@@ -22,18 +20,13 @@ class PyObjectId(ObjectId):
         return {"type": "string"}
 
 class BaseModelWithId(BaseModel):
-    """
-    Base model với các trường chung cho tất cả collections
-    """
+    """Base model với các trường chung cho tất cả collections"""
     model_config = ConfigDict(
-        # Cho phép sử dụng alias trong field names
         populate_by_name=True,
-        # Cho phép các kiểu dữ liệu tùy chỉnh như ObjectId
         arbitrary_types_allowed=True,
-        # Định nghĩa cách encode JSON cho các kiểu đặc biệt
         json_encoders={
-            ObjectId: str,  # Chuyển ObjectId thành string
-            datetime: lambda dt: dt.isoformat(),  # Chuyển datetime thành ISO string
+            ObjectId: str,
+            datetime: lambda dt: dt.isoformat(),
         }
     )
     
@@ -42,15 +35,9 @@ class BaseModelWithId(BaseModel):
     updated_at: datetime = Field(default_factory=datetime.now)
 
 class BaseResponse(BaseModel):
-    """
-    Base response model cho API responses
-    Chuẩn hóa format trả về cho tất cả endpoints
-    """
+    """Base response model cho API responses"""
     model_config = ConfigDict(
-        # Cấu hình JSON encoding
-        json_encoders={
-            datetime: lambda dt: dt.isoformat()
-        }
+        json_encoders={datetime: lambda dt: dt.isoformat()}
     )
     
     success: bool = True

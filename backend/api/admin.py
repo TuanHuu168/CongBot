@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, Body, UploadFile, File
+from fastapi import APIRouter, HTTPException, Form, UploadFile, File, Body
 from fastapi.responses import FileResponse
 from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field
@@ -35,7 +35,7 @@ benchmark_results_cache = {}
 
 router = APIRouter(prefix="", tags=["admin"], responses={404: {"description": "Not found"}})
 
-# Models
+# Models đầy đủ
 class BenchmarkConfig(BaseModel):
     file_path: str = "benchmark.json"
     output_dir: str = "benchmark_results"
@@ -68,6 +68,20 @@ class BatchDeleteRequest(BaseModel):
     user_id: str
     chat_ids: List[str]
 
+# Helper functions
+def log_admin_activity(activity_type: ActivityType, description: str, metadata: Dict = None):
+    """Log hoạt động admin"""
+    activity_service.log_activity(activity_type, description, metadata=metadata or {})
+
+def handle_error(operation: str, error: Exception):
+    """Xử lý lỗi chung"""
+    error_msg = str(error)
+    print(f"Lỗi {operation}: {error_msg}")
+    log_admin_activity(ActivityType.SYSTEM_STATUS, f"Lỗi {operation}: {error_msg}", 
+                      {"error": error_msg, "success": False})
+    raise HTTPException(status_code=500, detail=error_msg)
+
+# System endpoints
 @router.get("/status", response_model=SystemStatus)
 async def get_admin_status():
     try:
@@ -95,34 +109,80 @@ async def get_admin_status():
             "cache_stats": cache_stats
         }
     except Exception as e:
-        print(f"Error in get_admin_status: {str(e)}")
-        activity_service.log_activity(
-            ActivityType.SYSTEM_STATUS,
-            f"Lỗi khi kiểm tra trạng thái hệ thống: {str(e)}",
-            metadata={"error": str(e), "success": False}
-        )
+        log_admin_activity(ActivityType.SYSTEM_STATUS, f"Lỗi kiểm tra trạng thái: {str(e)}", 
+                          {"error": str(e), "success": False})
         return {
             "status": "error",
             "message": f"Hệ thống gặp sự cố: {str(e)}",
-            "database": {
-                "chromadb": {"status": "error"},
-                "mongodb": {"status": "error"}
-            },
+            "database": {"chromadb": {"status": "error"}, "mongodb": {"status": "error"}},
             "cache_stats": None
         }
-        
+
 @router.get("/recent-activities")
 async def get_recent_activities(limit: int = 10):
     try:
         activities = activity_service.get_recent_activities(limit)
+        return {"activities": activities, "count": len(activities)}
+    except Exception as e:
+        handle_error("get_recent_activities", e)
+
+@router.get("/statistics")
+async def get_system_statistics():
+    try:
+        db = mongodb_client.get_database()
+        
+        # Thống kê người dùng và chat
+        total_users = db.users.count_documents({})
+        total_chats = db.chats.count_documents({})
+        
+        # Tổng exchanges
+        pipeline = [
+            {"$project": {"exchange_count": {"$size": {"$ifNull": ["$exchanges", []]}}}},
+            {"$group": {"_id": None, "total": {"$sum": "$exchange_count"}}}
+        ]
+        result = list(db.chats.aggregate(pipeline))
+        total_exchanges = result[0]["total"] if result else 0
+        
+        # Cache stats
+        total_cache = db.text_cache.count_documents({})
+        valid_cache = db.text_cache.count_documents({"validityStatus": "valid"})
+        
+        # Document stats
+        document_count = 0
+        chunk_count = 0
+        if os.path.exists(DATA_DIR):
+            document_count = sum(1 for item in os.listdir(DATA_DIR) 
+                               if os.path.isdir(os.path.join(DATA_DIR, item)))
+            
+            for doc_dir in os.listdir(DATA_DIR):
+                metadata_path = os.path.join(DATA_DIR, doc_dir, "metadata.json")
+                if os.path.exists(metadata_path):
+                    try:
+                        with open(metadata_path, 'r', encoding='utf-8') as f:
+                            metadata = json.load(f)
+                            chunk_count += len(metadata.get("chunks", []))
+                    except:
+                        pass
+        
+        # ChromaDB count
+        chroma_count = 0
+        try:
+            collection = chroma_client.get_collection()
+            chroma_count = collection.count()
+        except Exception as e:
+            print(f"Lỗi ChromaDB: {str(e)}")
+        
         return {
-            "activities": activities,
-            "count": len(activities)
+            "users": {"total": total_users},
+            "chats": {"total": total_chats, "exchanges": total_exchanges},
+            "cache": {"total": total_cache, "valid": valid_cache, "invalid": total_cache - valid_cache},
+            "documents": {"total": document_count, "chunks": chunk_count, "indexed_in_chroma": chroma_count},
+            "timestamp": now_utc().strftime("%Y-%m-%d %H:%M:%S")
         }
     except Exception as e:
-        print(f"Error in get_recent_activities: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("get_system_statistics", e)
 
+# Cache endpoints đầy đủ
 @router.get("/cache/stats")
 async def get_cache_detailed_stats():
     try:
@@ -163,8 +223,7 @@ async def get_cache_detailed_stats():
             "recent_cache": recent_cache
         }
     except Exception as e:
-        print(f"Error in get_cache_detailed_stats: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("get_cache_detailed_stats", e)
 
 @router.post("/clear-cache")
 async def clear_cache():
@@ -197,19 +256,17 @@ async def clear_cache():
         
         print(f"Sau khi xóa - MongoDB: {mongo_after}, ChromaDB: {chroma_after}")
         
-        activity_service.log_activity(
-            ActivityType.CACHE_CLEAR,
-            f"Admin xóa toàn bộ cache: MongoDB {deleted_count} entries, ChromaDB {chroma_before - chroma_after} entries",
-            metadata={
-                "action": "admin_clear_all_cache",
-                "mongodb_before": mongo_before,
-                "mongodb_after": mongo_after,
-                "mongodb_deleted": deleted_count,
-                "chromadb_before": chroma_before,
-                "chromadb_after": chroma_after,
-                "chromadb_deleted": chroma_before - chroma_after
-            }
-        )
+        log_admin_activity(ActivityType.CACHE_CLEAR,
+                          f"Admin xóa toàn bộ cache: MongoDB {deleted_count} entries, ChromaDB {chroma_before - chroma_after} entries",
+                          {
+                              "action": "admin_clear_all_cache",
+                              "mongodb_before": mongo_before,
+                              "mongodb_after": mongo_after,
+                              "mongodb_deleted": deleted_count,
+                              "chromadb_before": chroma_before,
+                              "chromadb_after": chroma_after,
+                              "chromadb_deleted": chroma_before - chroma_after
+                          })
         
         return {
             "message": f"Đã xóa toàn bộ cache thành công",
@@ -227,13 +284,7 @@ async def clear_cache():
         }
         
     except Exception as e:
-        print(f"Error in clear_cache: {str(e)}")
-        activity_service.log_activity(
-            ActivityType.CACHE_CLEAR,
-            f"Lỗi xóa cache: {str(e)}",
-            metadata={"error": str(e), "success": False}
-        )
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("clear_cache", e)
 
 @router.post("/clear-invalid-cache")
 async def clear_invalid_cache():
@@ -249,16 +300,14 @@ async def clear_invalid_cache():
         invalid_after = db.text_cache.count_documents({"validityStatus": "invalid"})
         print(f"Còn lại {invalid_after} cache không hợp lệ")
         
-        activity_service.log_activity(
-            ActivityType.CACHE_CLEAR,
-            f"Admin xóa cache không hợp lệ: {deleted_count} entries",
-            metadata={
-                "action": "admin_clear_invalid_cache",
-                "invalid_before": invalid_before,
-                "invalid_after": invalid_after,
-                "deleted_count": deleted_count
-            }
-        )
+        log_admin_activity(ActivityType.CACHE_CLEAR,
+                          f"Admin xóa cache không hợp lệ: {deleted_count} entries",
+                          {
+                              "action": "admin_clear_invalid_cache",
+                              "invalid_before": invalid_before,
+                              "invalid_after": invalid_after,
+                              "deleted_count": deleted_count
+                          })
         
         return {
             "message": f"Đã xóa {deleted_count} cache entries không hợp lệ",
@@ -271,13 +320,7 @@ async def clear_invalid_cache():
         }
         
     except Exception as e:
-        print(f"Error in clear_invalid_cache: {str(e)}")
-        activity_service.log_activity(
-            ActivityType.CACHE_CLEAR,
-            f"Lỗi xóa cache không hợp lệ: {str(e)}",
-            metadata={"error": str(e), "success": False}
-        )
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("clear_invalid_cache", e)
 
 @router.post("/invalidate-cache/{doc_id}")
 async def invalidate_cache(doc_id: str):
@@ -289,9 +332,8 @@ async def invalidate_cache(doc_id: str):
             "affected_count": count
         }
     except Exception as e:
-        print(f"Error in invalidate_cache: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    
+        handle_error("invalidate_cache", e)
+
 @router.get("/cache/detailed-status")
 async def get_cache_detailed_status():
     try:
@@ -333,8 +375,7 @@ async def get_cache_detailed_status():
         }
         
     except Exception as e:
-        print(f"Error getting detailed cache status: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("get_cache_detailed_status", e)
 
 @router.post("/delete-expired-cache")
 async def delete_expired_cache():
@@ -346,15 +387,13 @@ async def delete_expired_cache():
         
         deleted_count = retrieval_service.delete_expired_cache()
         
-        activity_service.log_activity(
-            ActivityType.CACHE_CLEAR,
-            f"Admin xóa cache đã hết hạn: {deleted_count} entries",
-            metadata={
-                "action": "delete_expired_cache",
-                "expired_before": expired_before,
-                "deleted_count": deleted_count
-            }
-        )
+        log_admin_activity(ActivityType.CACHE_CLEAR,
+                          f"Admin xóa cache đã hết hạn: {deleted_count} entries",
+                          {
+                              "action": "delete_expired_cache",
+                              "expired_before": expired_before,
+                              "deleted_count": deleted_count
+                          })
         
         return {
             "message": f"Đã xóa {deleted_count} cache entries đã hết hạn",
@@ -363,13 +402,7 @@ async def delete_expired_cache():
         }
         
     except Exception as e:
-        print(f"Error in delete_expired_cache: {str(e)}")
-        activity_service.log_activity(
-            ActivityType.CACHE_CLEAR,
-            f"Lỗi xóa expired cache: {str(e)}",
-            metadata={"error": str(e), "success": False}
-        )
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("delete_expired_cache", e)
 
 @router.get("/search-cache/{keyword}")
 async def search_cache(keyword: str, limit: int = 10):
@@ -418,14 +451,252 @@ async def search_cache(keyword: str, limit: int = 10):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in search_cache: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("search_cache", e)
+
+# Document endpoints với upload có embedding
+@router.post("/upload-document")
+async def upload_document(
+    metadata: str = Form(...),
+    chunks: List[UploadFile] = File(...)
+):
+    """Upload document với embedding tự động vào ChromaDB"""
+    try:
+        # Parse metadata từ form
+        doc_metadata = json.loads(metadata)
+        doc_id = doc_metadata.get("doc_id")
+        
+        if not doc_id:
+            raise HTTPException(status_code=400, detail="doc_id là bắt buộc")
+        
+        # Tạo thư mục document
+        doc_dir = os.path.join(DATA_DIR, doc_id)
+        os.makedirs(doc_dir, exist_ok=True)
+        
+        # Lưu chunks và chuẩn bị cho ChromaDB
+        saved_chunks = []
+        ids_to_add = []
+        documents_to_add = []
+        metadatas_to_add = []
+        
+        for i, chunk in enumerate(chunks):
+            # Lưu file chunk
+            file_name = f"chunk_{i+1}.md"
+            file_path = os.path.join(doc_dir, file_name)
+            
+            with open(file_path, "wb") as f:
+                content = await chunk.read()
+                f.write(content)
+            
+            # Đọc nội dung để embedding
+            chunk_content = content.decode('utf-8')
+            
+            # Tạo chunk info cho metadata.json
+            chunk_id = f"{doc_id}_chunk_{i+1}"
+            chunk_info = {
+                "chunk_id": chunk_id,
+                "chunk_type": "content",
+                "file_path": f"/data/{doc_id}/{file_name}",
+                "content_summary": f"Phần {i+1} của {doc_metadata.get('doc_type', 'văn bản')} {doc_id}"
+            }
+            saved_chunks.append(chunk_info)
+            
+            # Chuẩn bị cho ChromaDB
+            document_text = f"passage: {chunk_content}"
+            chunk_metadata = {
+                "doc_id": doc_id,
+                "doc_type": doc_metadata.get("doc_type", ""),
+                "doc_title": doc_metadata.get("doc_title", ""),
+                "effective_date": doc_metadata.get("effective_date", ""),
+                "document_scope": doc_metadata.get("document_scope", ""),
+                "chunk_id": chunk_id,
+                "chunk_type": "content",
+                "content_summary": chunk_info["content_summary"],
+                "chunk_index": str(i),
+                "total_chunks": str(len(chunks))
+            }
+            
+            ids_to_add.append(chunk_id)
+            documents_to_add.append(document_text)
+            metadatas_to_add.append(chunk_metadata)
+        
+        # Tạo metadata.json đầy đủ
+        full_metadata = {
+            "doc_id": doc_id,
+            "doc_type": doc_metadata.get("doc_type", ""),
+            "doc_title": doc_metadata.get("doc_title", ""),
+            "issue_date": now_utc().strftime("%d-%m-%Y"),
+            "effective_date": doc_metadata.get("effective_date", ""),
+            "expiry_date": None,
+            "status": doc_metadata.get("status", "active"),
+            "document_scope": doc_metadata.get("document_scope", "Quốc gia"),
+            "replaces": [],
+            "replaced_by": None,
+            "amends": None,
+            "amended_by": None,
+            "retroactive": False,
+            "retroactive_date": None,
+            "chunks": saved_chunks
+        }
+        
+        # Lưu metadata.json
+        with open(os.path.join(doc_dir, "metadata.json"), "w", encoding="utf-8") as f:
+            json.dump(full_metadata, f, ensure_ascii=False, indent=2)
+        
+        # Embedding vào ChromaDB
+        success = chroma_client.add_documents_to_main(
+            ids=ids_to_add,
+            documents=documents_to_add,
+            metadatas=metadatas_to_add
+        )
+        
+        if not success:
+            # Nếu ChromaDB thất bại, xóa thư mục đã tạo
+            shutil.rmtree(doc_dir)
+            raise HTTPException(status_code=500, detail="Lỗi khi embedding vào ChromaDB")
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS, 
+                          f"Upload document {doc_id} thành công với {len(saved_chunks)} chunks")
+        
+        return {
+            "message": f"Đã tải lên và embedding văn bản {doc_id} thành công với {len(saved_chunks)} chunks",
+            "doc_id": doc_id,
+            "chunks_count": len(saved_chunks),
+            "chromadb_embedded": True
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        # Cleanup nếu có lỗi
+        doc_id = None
+        try:
+            doc_metadata = json.loads(metadata)
+            doc_id = doc_metadata.get("doc_id")
+            if doc_id:
+                doc_dir = os.path.join(DATA_DIR, doc_id)
+                if os.path.exists(doc_dir):
+                    shutil.rmtree(doc_dir)
+        except:
+            pass
+        handle_error("upload_document", e)
+
+@router.get("/documents")
+async def list_documents():
+    try:
+        if not os.path.exists(DATA_DIR):
+            return {"documents": []}
+        
+        documents = []
+        for doc_dir in os.listdir(DATA_DIR):
+            doc_path = os.path.join(DATA_DIR, doc_dir)
+            metadata_path = os.path.join(doc_path, "metadata.json")
+            
+            if os.path.isdir(doc_path) and os.path.exists(metadata_path):
+                try:
+                    with open(metadata_path, 'r', encoding='utf-8') as f:
+                        metadata = json.load(f)
+                        
+                    doc_info = {
+                        "doc_id": metadata.get("doc_id", doc_dir),
+                        "doc_type": metadata.get("doc_type", "Unknown"),
+                        "doc_title": metadata.get("doc_title", "Unknown"),
+                        "effective_date": metadata.get("effective_date", "Unknown"),
+                        "status": metadata.get("status", "active"),
+                        "chunks_count": len(metadata.get("chunks", []))
+                    }
+                    
+                    documents.append(doc_info)
+                except Exception as e:
+                    print(f"Lỗi khi đọc metadata của {doc_dir}: {str(e)}")
+        
+        documents.sort(key=lambda x: x["doc_id"])
+        
+        return {"documents": documents}
+    except Exception as e:
+        handle_error("list_documents", e)
+
+@router.get("/documents/{doc_id}")
+async def get_document(doc_id: str):
+    doc_dir = os.path.join(DATA_DIR, doc_id)
+    metadata_path = os.path.join(doc_dir, "metadata.json")
     
+    if not os.path.exists(doc_dir) or not os.path.exists(metadata_path):
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
+    
+    try:
+        with open(metadata_path, 'r', encoding='utf-8') as f:
+            metadata = json.load(f)
+        
+        chunks = []
+        for chunk_info in metadata.get("chunks", []):
+            chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
+            if os.path.exists(chunk_path):
+                with open(chunk_path, 'r', encoding='utf-8') as f:
+                    chunk_content = f.read()
+                
+                chunks.append({
+                    "chunk_id": chunk_info.get("chunk_id"),
+                    "chunk_type": chunk_info.get("chunk_type"),
+                    "content_summary": chunk_info.get("content_summary"),
+                    "content": chunk_content[:500] + "..." if len(chunk_content) > 500 else chunk_content
+                })
+        
+        metadata["chunks"] = chunks
+        
+        return metadata
+    except Exception as e:
+        handle_error("get_document", e)
+
+@router.delete("/documents/{doc_id}")
+async def delete_document(doc_id: str, confirm: bool = False):
+    if not confirm:
+        return {"message": f"Vui lòng xác nhận việc xóa văn bản {doc_id} bằng cách gửi 'confirm: true'"}
+    
+    doc_dir = os.path.join(DATA_DIR, doc_id)
+    
+    if not os.path.exists(doc_dir):
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
+    
+    try:
+        # Invalidate cache trước
+        try:
+            retrieval_service.invalidate_document_cache(doc_id)
+        except Exception as e:
+            print(f"Cảnh báo: Không thể vô hiệu hóa cache cho {doc_id}: {str(e)}")
+        
+        # Xóa từ ChromaDB
+        try:
+            # Lấy danh sách chunk IDs từ metadata
+            metadata_path = os.path.join(doc_dir, "metadata.json")
+            if os.path.exists(metadata_path):
+                with open(metadata_path, 'r', encoding='utf-8') as f:
+                    metadata = json.load(f)
+                chunk_ids = [chunk.get("chunk_id") for chunk in metadata.get("chunks", [])]
+                
+                # Xóa từng chunk từ ChromaDB
+                collection = chroma_client.get_main_collection()
+                if collection and chunk_ids:
+                    try:
+                        collection.delete(ids=chunk_ids)
+                        print(f"Đã xóa {len(chunk_ids)} chunks từ ChromaDB")
+                    except Exception as e:
+                        print(f"Lỗi xóa chunks từ ChromaDB: {str(e)}")
+        except Exception as e:
+            print(f"Lỗi xử lý ChromaDB: {str(e)}")
+        
+        # Xóa thư mục document
+        shutil.rmtree(doc_dir)
+        
+        return {"message": f"Đã xóa văn bản {doc_id} thành công"}
+    except Exception as e:
+        handle_error("delete_document", e)
+
+# Benchmark endpoints đầy đủ
 @router.post("/upload-benchmark")
 async def upload_benchmark_file(file: UploadFile = File(...)):
     try:
         if not file.filename.endswith('.json'):
-            raise HTTPException(status_code=400, detail="Only JSON files are allowed")
+            raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file JSON")
         
         content = await file.read()
         file_content = content.decode('utf-8')
@@ -433,9 +704,9 @@ async def upload_benchmark_file(file: UploadFile = File(...)):
         try:
             json_data = json.loads(file_content)
             if "benchmark" not in json_data:
-                raise HTTPException(status_code=400, detail="Invalid benchmark format. Must contain 'benchmark' key")
+                raise HTTPException(status_code=400, detail="Format benchmark không hợp lệ. Phải có key 'benchmark'")
         except json.JSONDecodeError:
-            raise HTTPException(status_code=400, detail="Invalid JSON format")
+            raise HTTPException(status_code=400, detail="Format JSON không hợp lệ")
         
         timestamp = now_utc().strftime("%Y%m%d_%H%M%S")
         filename = f"uploaded_benchmark_{timestamp}.json"
@@ -443,7 +714,7 @@ async def upload_benchmark_file(file: UploadFile = File(...)):
         saved_filename = benchmark_service.save_uploaded_benchmark(file_content, filename)
         
         return {
-            "message": "Benchmark file uploaded successfully",
+            "message": "Upload benchmark thành công",
             "filename": saved_filename,
             "questions_count": len(json_data["benchmark"])
         }
@@ -451,23 +722,20 @@ async def upload_benchmark_file(file: UploadFile = File(...)):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error uploading benchmark file: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("upload_benchmark_file", e)
 
 @router.post("/run-benchmark")
 async def run_benchmark_4models(config: BenchmarkConfig):
     try:
         benchmark_id = str(uuid.uuid4())
         
-        activity_service.log_activity(
-            ActivityType.BENCHMARK_START,
-            f"Bắt đầu chạy benchmark với file {config.file_path}",
-            metadata={
-                "benchmark_id": benchmark_id,
-                "file_path": config.file_path,
-                "output_dir": config.output_dir
-            }
-        )
+        log_admin_activity(ActivityType.BENCHMARK_START,
+                          f"Bắt đầu chạy benchmark với file {config.file_path}",
+                          {
+                              "benchmark_id": benchmark_id,
+                              "file_path": config.file_path,
+                              "output_dir": config.output_dir
+                          })
         
         progress_queue = queue.Queue()
         result_queue = queue.Queue()
@@ -523,17 +791,15 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                     })
                     benchmark_results_cache[benchmark_id] = result
                     
-                    activity_service.log_activity(
-                        ActivityType.BENCHMARK_COMPLETE,
-                        f"Hoàn thành benchmark {benchmark_id}: {result.get('total_questions', 0)} câu hỏi",
-                        metadata={
-                            "benchmark_id": benchmark_id,
-                            "total_questions": result.get('total_questions', 0),
-                            "output_file": result.get('output_file', ''),
-                            "file_path": config.file_path,
-                            "duration_minutes": (datetime.now(VN_TZ) - datetime.fromisoformat(benchmark_progress[benchmark_id]['start_time'])).total_seconds() / 60
-                        }
-                    )
+                    log_admin_activity(ActivityType.BENCHMARK_COMPLETE,
+                                      f"Hoàn thành benchmark {benchmark_id}: {result.get('total_questions', 0)} câu hỏi",
+                                      {
+                                          "benchmark_id": benchmark_id,
+                                          "total_questions": result.get('total_questions', 0),
+                                          "output_file": result.get('output_file', ''),
+                                          "file_path": config.file_path,
+                                          "duration_minutes": (datetime.now(VN_TZ) - datetime.fromisoformat(benchmark_progress[benchmark_id]['start_time'])).total_seconds() / 60
+                                      })
                 else:
                     benchmark_progress[benchmark_id].update({
                         'status': 'failed',
@@ -542,15 +808,13 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                         'error': result
                     })
                     
-                    activity_service.log_activity(
-                        ActivityType.BENCHMARK_FAIL,
-                        f"Thất bại khi chạy benchmark {benchmark_id}: {result}",
-                        metadata={
-                            "benchmark_id": benchmark_id,
-                            "error": result,
-                            "file_path": config.file_path
-                        }
-                    )
+                    log_admin_activity(ActivityType.BENCHMARK_FAIL,
+                                      f"Thất bại khi chạy benchmark {benchmark_id}: {result}",
+                                      {
+                                          "benchmark_id": benchmark_id,
+                                          "error": result,
+                                          "file_path": config.file_path
+                                      })
             except queue.Empty:
                 benchmark_progress[benchmark_id].update({
                     'status': 'failed',
@@ -559,15 +823,13 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                     'error': 'Benchmark timed out'
                 })
                 
-                activity_service.log_activity(
-                    ActivityType.BENCHMARK_FAIL,
-                    f"Benchmark {benchmark_id} timeout",
-                    metadata={
-                        "benchmark_id": benchmark_id,
-                        "error": "timeout",
-                        "file_path": config.file_path
-                    }
-                )
+                log_admin_activity(ActivityType.BENCHMARK_FAIL,
+                                  f"Benchmark {benchmark_id} timeout",
+                                  {
+                                      "benchmark_id": benchmark_id,
+                                      "error": "timeout",
+                                      "file_path": config.file_path
+                                  })
         
         monitor_thread = threading.Thread(target=monitor_progress)
         monitor_thread.daemon = True
@@ -580,13 +842,7 @@ async def run_benchmark_4models(config: BenchmarkConfig):
         }
         
     except Exception as e:
-        print(f"Error starting benchmark: {str(e)}")
-        activity_service.log_activity(
-            ActivityType.BENCHMARK_FAIL,
-            f"Lỗi khi khởi động benchmark: {str(e)}",
-            metadata={"error": str(e), "file_path": config.file_path}
-        )
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("run_benchmark_4models", e)
 
 @router.get("/benchmark-progress/{benchmark_id}")
 async def get_benchmark_progress(benchmark_id: str):
@@ -604,9 +860,8 @@ async def get_benchmark_progress(benchmark_id: str):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error getting benchmark progress: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-    
+        handle_error("get_benchmark_progress", e)
+
 @router.get("/benchmark-results")
 async def list_benchmark_results():
     try:
@@ -661,8 +916,7 @@ async def list_benchmark_results():
         return {"results": results}
     
     except Exception as e:
-        print(f"Error in list_benchmark_results: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("list_benchmark_results", e)
 
 @router.get("/benchmark-results/{file_name}")
 async def download_benchmark_result(file_name: str):
@@ -803,7 +1057,7 @@ async def view_benchmark_content(file_name: str):
             "preview": preview_data[:3]
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Không thể đọc file: {str(e)}")
+        handle_error("view_benchmark_content", e)
 
 @router.get("/download-benchmark/{filename}")
 async def download_benchmark_file(filename: str):
@@ -843,225 +1097,4 @@ async def list_benchmark_files():
         
         return {'files': files}
     except Exception as e:
-        print(f"Error listing benchmark files: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.post("/upload-document")
-async def upload_document(
-    metadata: DocumentUpload = Body(...),
-    chunks: List[UploadFile] = File(...)
-):
-    try:
-        doc_dir = os.path.join(DATA_DIR, metadata.doc_id)
-        os.makedirs(doc_dir, exist_ok=True)
-        
-        saved_chunks = []
-        for i, chunk in enumerate(chunks):
-            file_name = f"chunk_{i+1}.md"
-            file_path = os.path.join(doc_dir, file_name)
-            
-            with open(file_path, "wb") as f:
-                f.write(await chunk.read())
-            
-            saved_chunks.append({
-                "chunk_id": f"{metadata.doc_id}_chunk_{i+1}",
-                "chunk_type": "content",
-                "file_path": f"/data/{metadata.doc_id}/{file_name}",
-                "content_summary": f"Phần {i+1} của {metadata.doc_type} {metadata.doc_id}"
-            })
-        
-        full_metadata = {
-            "doc_id": metadata.doc_id,
-            "doc_type": metadata.doc_type,
-            "doc_title": metadata.doc_title,
-            "issue_date": now_utc().strftime("%d-%m-%Y"),
-            "effective_date": metadata.effective_date,
-            "expiry_date": None,
-            "status": metadata.status,
-            "document_scope": metadata.document_scope,
-            "replaces": [],
-            "replaced_by": None,
-            "amends": None,
-            "amended_by": None,
-            "retroactive": False,
-            "retroactive_date": None,
-            "chunks": saved_chunks
-        }
-        
-        with open(os.path.join(doc_dir, "metadata.json"), "w", encoding="utf-8") as f:
-            json.dump(full_metadata, f, ensure_ascii=False, indent=2)
-        
-        return {
-            "message": f"Đã tải lên văn bản {metadata.doc_id} thành công với {len(saved_chunks)} chunks",
-            "doc_id": metadata.doc_id
-        }
-    except Exception as e:
-        print(f"Error in upload_document: {str(e)}")
-        
-        if os.path.exists(doc_dir):
-            shutil.rmtree(doc_dir)
-            
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/documents")
-async def list_documents():
-    try:
-        if not os.path.exists(DATA_DIR):
-            return {"documents": []}
-        
-        documents = []
-        for doc_dir in os.listdir(DATA_DIR):
-            doc_path = os.path.join(DATA_DIR, doc_dir)
-            metadata_path = os.path.join(doc_path, "metadata.json")
-            
-            if os.path.isdir(doc_path) and os.path.exists(metadata_path):
-                try:
-                    with open(metadata_path, 'r', encoding='utf-8') as f:
-                        metadata = json.load(f)
-                        
-                    chunks_count = len(metadata.get("chunks", []))
-                    
-                    doc_info = {
-                        "doc_id": metadata.get("doc_id", doc_dir),
-                        "doc_type": metadata.get("doc_type", "Unknown"),
-                        "doc_title": metadata.get("doc_title", "Unknown"),
-                        "effective_date": metadata.get("effective_date", "Unknown"),
-                        "status": metadata.get("status", "active"),
-                        "chunks_count": chunks_count
-                    }
-                    
-                    documents.append(doc_info)
-                except Exception as e:
-                    print(f"Lỗi khi đọc metadata của {doc_dir}: {str(e)}")
-        
-        documents.sort(key=lambda x: x["doc_id"])
-        
-        return {"documents": documents}
-    except Exception as e:
-        print(f"Error in list_documents: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/documents/{doc_id}")
-async def get_document(doc_id: str):
-    doc_dir = os.path.join(DATA_DIR, doc_id)
-    metadata_path = os.path.join(doc_dir, "metadata.json")
-    
-    if not os.path.exists(doc_dir) or not os.path.exists(metadata_path):
-        raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
-    
-    try:
-        with open(metadata_path, 'r', encoding='utf-8') as f:
-            metadata = json.load(f)
-        
-        chunks = []
-        for chunk_info in metadata.get("chunks", []):
-            chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
-            if os.path.exists(chunk_path):
-                with open(chunk_path, 'r', encoding='utf-8') as f:
-                    chunk_content = f.read()
-                
-                chunks.append({
-                    "chunk_id": chunk_info.get("chunk_id"),
-                    "chunk_type": chunk_info.get("chunk_type"),
-                    "content_summary": chunk_info.get("content_summary"),
-                    "content": chunk_content[:500] + "..." if len(chunk_content) > 500 else chunk_content
-                })
-        
-        metadata["chunks"] = chunks
-        
-        return metadata
-    except Exception as e:
-        print(f"Error in get_document: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.delete("/documents/{doc_id}")
-async def delete_document(doc_id: str, confirm: bool = False):
-    if not confirm:
-        return {"message": f"Vui lòng xác nhận việc xóa văn bản {doc_id} bằng cách gửi 'confirm: true'"}
-    
-    doc_dir = os.path.join(DATA_DIR, doc_id)
-    
-    if not os.path.exists(doc_dir):
-        raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
-    
-    try:
-        try:
-            retrieval_service.invalidate_document_cache(doc_id)
-        except Exception as e:
-            print(f"Cảnh báo: Không thể vô hiệu hóa cache cho {doc_id}: {str(e)}")
-        
-        shutil.rmtree(doc_dir)
-        
-        return {"message": f"Đã xóa văn bản {doc_id} thành công"}
-    except Exception as e:
-        print(f"Error in delete_document: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/statistics")
-async def get_system_statistics():
-    try:
-        db = mongodb_client.get_database()
-        
-        total_users = db.users.count_documents({})
-        total_chats = db.chats.count_documents({})
-        total_exchanges = 0
-        
-        pipeline = [
-            {"$project": {"exchange_count": {"$size": {"$ifNull": ["$exchanges", []]}}}},
-            {"$group": {"_id": None, "total": {"$sum": "$exchange_count"}}}
-        ]
-        result = list(db.chats.aggregate(pipeline))
-        if result:
-            total_exchanges = result[0]["total"]
-        
-        total_cache = db.text_cache.count_documents({})
-        valid_cache = db.text_cache.count_documents({"validityStatus": "valid"})
-        
-        document_count = 0
-        chunk_count = 0
-        
-        if os.path.exists(DATA_DIR):
-            document_count = sum(1 for item in os.listdir(DATA_DIR) if os.path.isdir(os.path.join(DATA_DIR, item)))
-            
-            for doc_dir in os.listdir(DATA_DIR):
-                doc_path = os.path.join(DATA_DIR, doc_dir)
-                metadata_path = os.path.join(doc_path, "metadata.json")
-                
-                if os.path.isdir(doc_path) and os.path.exists(metadata_path):
-                    try:
-                        with open(metadata_path, 'r', encoding='utf-8') as f:
-                            metadata = json.load(f)
-                            chunk_count += len(metadata.get("chunks", []))
-                    except:
-                        pass
-        
-        chroma_count = 0
-        try:
-            collection = chroma_client.get_collection()
-            chroma_count = collection.count()
-        except Exception as e:
-            print(f"Lỗi khi lấy thông tin ChromaDB: {str(e)}")
-        
-        return {
-            "users": {
-                "total": total_users
-            },
-            "chats": {
-                "total": total_chats,
-                "exchanges": total_exchanges
-            },
-            "cache": {
-                "total": total_cache,
-                "valid": valid_cache,
-                "invalid": total_cache - valid_cache
-            },
-            "documents": {
-                "total": document_count,
-                "chunks": chunk_count,
-                "indexed_in_chroma": chroma_count
-            },
-            "timestamp": now_utc().strftime("%Y-%m-%d %H:%M:%S")
-        }
-    except Exception as e:
-        print(f"Error in get_system_statistics: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
+        handle_error("list_benchmark_files", e)

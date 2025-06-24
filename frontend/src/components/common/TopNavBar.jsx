@@ -13,19 +13,16 @@ const TopNavBar = ({
   const location = useLocation();
   const { setUser, setCurrentChatId, setActiveChatMessages, setChatHistory, fetchUserInfo } = useChat();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Kiểm tra auth status và load user info
+  // Kiểm tra auth và load user info
   useEffect(() => {
-    const checkAuthStatus = async () => {
+    const checkAuth = async () => {
       const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
       const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
       
       if (token && userId) {
-        setIsLoggedIn(true);
-        
         if (user?.name) {
           setUserInfo(user);
         } else {
@@ -45,12 +42,10 @@ const TopNavBar = ({
           }
         }
       } else {
-        setIsLoggedIn(false);
         setUserInfo(null);
       }
     };
-
-    checkAuthStatus();
+    checkAuth();
   }, [user, fetchUserInfo]);
 
   // Click outside để đóng dropdown
@@ -68,7 +63,6 @@ const TopNavBar = ({
     showConfirm('Bạn có chắc chắn muốn đăng xuất?', 'Đăng xuất').then((result) => {
       if (result.isConfirmed) {
         clearAuthData();
-        setIsLoggedIn(false);
         setUserInfo(null);
         setShowUserDropdown(false);
         setUser(null);
@@ -86,6 +80,7 @@ const TopNavBar = ({
     if (user?.name && user.name !== 'Người dùng') return user.name;
     return 'Người dùng';
   };
+  const isLoggedIn = Boolean(userInfo);
 
   // Navigation items (loại bỏ current path)
   const getNavigationItems = () => {
