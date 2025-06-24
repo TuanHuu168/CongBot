@@ -1,39 +1,75 @@
 import Swal from 'sweetalert2';
 
-// Date formatting utilities
+// Timezone utilities - convert UTC từ backend sang VN time
+const VN_TIMEZONE_OFFSET = 7 * 60; // GMT+7 in minutes
+
+const convertToVNTime = (utcDateString) => {
+  if (!utcDateString) return null;
+  const utcDate = new Date(utcDateString);
+  // Thêm 7 giờ cho múi giờ Việt Nam
+  return new Date(utcDate.getTime() + VN_TIMEZONE_OFFSET * 60 * 1000);
+};
+
+// Date formatting utilities với VN timezone
 export const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
-  const date = new Date(dateString);
-  const now = new Date();
+  
+  // Convert từ UTC sang VN time
+  const vnDate = convertToVNTime(dateString);
+  if (!vnDate) return 'N/A';
+  
+  const now = convertToVNTime(new Date().toISOString());
   
   const isSameDay = (d1, d2) => d1.toDateString() === d2.toDateString();
   
-  if (isSameDay(date, now)) {
-    return `Hôm nay, ${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+  if (isSameDay(vnDate, now)) {
+    return `Hôm nay, ${vnDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
   }
 
   const yesterday = new Date(now);
   yesterday.setDate(yesterday.getDate() - 1);
   
-  if (isSameDay(date, yesterday)) {
-    return `Hôm qua, ${date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
+  if (isSameDay(vnDate, yesterday)) {
+    return `Hôm qua, ${vnDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}`;
   }
 
-  return date.toLocaleDateString('vi-VN', {
+  return vnDate.toLocaleDateString('vi-VN', {
     day: '2-digit', month: '2-digit', year: 'numeric',
     hour: '2-digit', minute: '2-digit'
   });
 };
 
+export const formatDateOnly = (dateString) => {
+  if (!dateString) return 'N/A';
+  
+  const vnDate = convertToVNTime(dateString);
+  if (!vnDate) return 'N/A';
+  
+  return vnDate.toLocaleDateString('vi-VN', {
+    day: '2-digit', month: '2-digit', year: 'numeric'
+  });
+};
+
+export const formatTimeOnly = (dateString) => {
+  if (!dateString) return 'N/A';
+  
+  const vnDate = convertToVNTime(dateString);
+  if (!vnDate) return 'N/A';
+  
+  return vnDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+};
+
 export const getDateLabel = (dateString) => {
-  const today = new Date();
+  const today = convertToVNTime(new Date().toISOString());
   const yesterday = new Date(today);
   yesterday.setDate(yesterday.getDate() - 1);
-  const chatDate = new Date(dateString);
+  const chatDate = convertToVNTime(dateString);
+  
+  if (!chatDate) return 'Không xác định';
   
   if (chatDate.toDateString() === today.toDateString()) return 'Hôm nay';
   if (chatDate.toDateString() === yesterday.toDateString()) return 'Hôm qua';
-  return chatDate.toLocaleDateString('vi-VN');
+  return chatDate.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
 };
 
 // Chat title utilities
@@ -167,3 +203,10 @@ export const STORAGE_KEYS = {
   AUTH_TOKEN: 'auth_token',
   USER_ID: 'user_id'
 };
+
+// Utility để lấy thời gian hiện tại VN
+export const getCurrentVNTime = () => {
+  return convertToVNTime(new Date().toISOString());
+};
+
+export { convertToVNTime };

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Body
 from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 import time
 import uuid
 from bson.objectid import ObjectId
@@ -13,10 +13,9 @@ from database.mongodb_client import mongodb_client
 
 router = APIRouter(prefix="", tags=["chat"])
 
-VN_TZ = timezone(timedelta(hours=7))
-
-def now_vn():
-    return datetime.now(VN_TZ)
+def now_utc():
+    """Lấy thời gian hiện tại theo UTC"""
+    return datetime.now(timezone.utc)
 
 # Models
 class QueryInput(BaseModel):
@@ -54,7 +53,7 @@ async def ask(input: QueryInput):
         start_time = time.time()
         print(f"Processing query: '{input.query}' với session_id: {input.session_id}")
         
-        # Lấy conversation history nếu có session_id
+        # Lấy conversation history
         conversation_context = []
         if input.session_id:
             try:
@@ -105,22 +104,11 @@ async def ask(input: QueryInput):
             else:
                 answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
         
-        # Lưu trữ tin nhắn với timezone Việt Nam
+        # Lưu trữ tin nhắn với UTC timestamp
         chat_id = input.session_id
         
         if input.user_id:
-            user_message = {
-                "text": input.query,
-                "timestamp": now_vn()
-            }
-            
-            bot_message = {
-                "text": answer,
-                "retrieved_chunks": retrieved_chunks,
-                "context": context_items,
-                "processingTime": retrieval_time + generation_time,
-                "timestamp": now_vn()
-            }
+            current_time = now_utc()
             
             db = mongodb_client.get_database()
             
@@ -141,13 +129,13 @@ async def ask(input: QueryInput):
                                     "exchangeId": str(uuid.uuid4()),
                                     "question": input.query,
                                     "answer": answer,
-                                    "timestamp": now_vn(),
+                                    "timestamp": current_time,
                                     "sourceDocuments": retrieved_chunks,
                                     "processingTime": retrieval_time + generation_time,
                                     "clientInfo": input.client_info
                                 }
                             },
-                            "$set": {"updated_at": now_vn()}
+                            "$set": {"updated_at": current_time}
                         }
                     )
                     if success.modified_count == 0:
@@ -155,14 +143,14 @@ async def ask(input: QueryInput):
                         chat_data = {
                             "user_id": input.user_id,
                             "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                            "created_at": now_vn(),
-                            "updated_at": now_vn(),
+                            "created_at": current_time,
+                            "updated_at": current_time,
                             "status": "active",
                             "exchanges": [{
                                 "exchangeId": str(uuid.uuid4()),
                                 "question": input.query,
                                 "answer": answer,
-                                "timestamp": now_vn(),
+                                "timestamp": current_time,
                                 "sourceDocuments": retrieved_chunks,
                                 "processingTime": retrieval_time + generation_time,
                                 "clientInfo": input.client_info
@@ -174,14 +162,14 @@ async def ask(input: QueryInput):
                     chat_data = {
                         "user_id": input.user_id,
                         "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                        "created_at": now_vn(),
-                        "updated_at": now_vn(),
+                        "created_at": current_time,
+                        "updated_at": current_time,
                         "status": "active",
                         "exchanges": [{
                             "exchangeId": str(uuid.uuid4()),
                             "question": input.query,
                             "answer": answer,
-                            "timestamp": now_vn(),
+                            "timestamp": current_time,
                             "sourceDocuments": retrieved_chunks,
                             "processingTime": retrieval_time + generation_time,
                             "clientInfo": input.client_info
@@ -194,14 +182,14 @@ async def ask(input: QueryInput):
                 chat_data = {
                     "user_id": input.user_id,
                     "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
-                    "created_at": now_vn(),
-                    "updated_at": now_vn(),
+                    "created_at": current_time,
+                    "updated_at": current_time,
                     "status": "active",
                     "exchanges": [{
                         "exchangeId": str(uuid.uuid4()),
                         "question": input.query,
                         "answer": answer,
-                        "timestamp": now_vn(),
+                        "timestamp": current_time,
                         "sourceDocuments": retrieved_chunks,
                         "processingTime": retrieval_time + generation_time,
                         "clientInfo": input.client_info
@@ -255,7 +243,7 @@ async def submit_feedback(feedback: UserFeedback):
         db = mongodb_client.get_database()
         
         feedback_data = feedback.dict()
-        feedback_data["timestamp"] = now_vn()
+        feedback_data["timestamp"] = now_utc()
         
         result = db.feedback.insert_one(feedback_data)
         
@@ -272,11 +260,12 @@ async def create_chat(chat: ChatCreate):
     try:
         db = mongodb_client.get_database()
         
+        current_time = now_utc()
         new_chat = {
             "user_id": chat.user_id,
             "title": chat.title,
-            "created_at": now_vn(),
-            "updated_at": now_vn(),
+            "created_at": current_time,
+            "updated_at": current_time,
             "status": "active",
             "exchanges": []
         }
@@ -328,8 +317,8 @@ async def get_chat_messages(chat_id: str):
             "id": str(chat["_id"]),
             "title": chat.get("title", "Cuộc trò chuyện"),
             "messages": messages,
-            "created_at": chat.get("created_at", now_vn()),
-            "updated_at": chat.get("updated_at", now_vn())
+            "created_at": chat.get("created_at", now_utc()),
+            "updated_at": chat.get("updated_at", now_utc())
         }
         
         return chat_data
@@ -352,6 +341,7 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
         if not chat:
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
         
+        current_time = now_utc()
         success = False
         
         if message.sender == "user":
@@ -364,10 +354,10 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
                             "exchangeId": exchange_id,
                             "question": message.text,
                             "answer": "",
-                            "timestamp": now_vn() if not message.timestamp else message.timestamp
+                            "timestamp": current_time if not message.timestamp else message.timestamp
                         }
                     },
-                    "$set": {"updated_at": now_vn()}
+                    "$set": {"updated_at": current_time}
                 }
             )
             success = result.modified_count > 0
@@ -383,8 +373,8 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
                 {
                     "$set": {
                         "exchanges.$.answer": message.text,
-                        "exchanges.$.timestamp": now_vn() if not message.timestamp else message.timestamp,
-                        "updated_at": now_vn()
+                        "exchanges.$.timestamp": current_time if not message.timestamp else message.timestamp,
+                        "updated_at": current_time
                     }
                 }
             )
@@ -435,7 +425,7 @@ async def update_chat_title(chat_id: str, title_data: dict = Body(...)):
         
         result = db.chats.update_one(
             {"_id": ObjectId(chat_id)},
-            {"$set": {"title": title, "updated_at": now_vn()}}
+            {"$set": {"title": title, "updated_at": now_utc()}}
         )
         
         if result.modified_count == 0:
@@ -463,7 +453,7 @@ async def delete_chat(chat_id: str, request: DeleteChatRequest):
         
         result = db.chats.update_one(
             {"_id": ObjectId(chat_id)},
-            {"$set": {"status": "deleted", "updated_at": now_vn()}}
+            {"$set": {"status": "deleted", "updated_at": now_utc()}}
         )
         
         if result.modified_count == 0:
@@ -509,7 +499,7 @@ async def delete_chats_batch(request: BatchDeleteRequest):
         
         result = db.chats.update_many(
             {"_id": {"$in": user_chat_ids}},
-            {"$set": {"status": "deleted", "updated_at": now_vn()}}
+            {"$set": {"status": "deleted", "updated_at": now_utc()}}
         )
         
         return {

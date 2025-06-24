@@ -27,8 +27,8 @@ from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR, EMBEDDING_MOD
 
 VN_TZ = timezone(timedelta(hours=7))
 
-def now_vn():
-    return datetime.now(VN_TZ)
+def now_utc():
+    return datetime.now(timezone.utc)
 
 benchmark_progress = {}
 benchmark_results_cache = {}
@@ -342,7 +342,7 @@ async def delete_expired_cache():
         print("Admin yêu cầu xóa cache đã hết hạn...")
         
         db = mongodb_client.get_database()
-        expired_before = db.text_cache.count_documents({"expiresAt": {"$lt": now_vn()}})
+        expired_before = db.text_cache.count_documents({"expiresAt": {"$lt": now_utc()}})
         
         deleted_count = retrieval_service.delete_expired_cache()
         
@@ -437,7 +437,7 @@ async def upload_benchmark_file(file: UploadFile = File(...)):
         except json.JSONDecodeError:
             raise HTTPException(status_code=400, detail="Invalid JSON format")
         
-        timestamp = now_vn().strftime("%Y%m%d_%H%M%S")
+        timestamp = now_utc().strftime("%Y%m%d_%H%M%S")
         filename = f"uploaded_benchmark_{timestamp}.json"
         
         saved_filename = benchmark_service.save_uploaded_benchmark(file_content, filename)
@@ -478,7 +478,7 @@ async def run_benchmark_4models(config: BenchmarkConfig):
             'phase': 'starting',
             'current_step': 0,
             'total_steps': 0,
-            'start_time': now_vn().isoformat()
+            'start_time': now_utc().isoformat()
         }
         
         def progress_callback(progress_info):
@@ -518,7 +518,7 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                         'status': 'completed',
                         'progress': 100.0,
                         'phase': 'completed',
-                        'end_time': now_vn().isoformat(),
+                        'end_time': now_utc().isoformat(),
                         'stats': result
                     })
                     benchmark_results_cache[benchmark_id] = result
@@ -538,7 +538,7 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                     benchmark_progress[benchmark_id].update({
                         'status': 'failed',
                         'phase': 'failed',
-                        'end_time': now_vn().isoformat(),
+                        'end_time': now_utc().isoformat(),
                         'error': result
                     })
                     
@@ -555,7 +555,7 @@ async def run_benchmark_4models(config: BenchmarkConfig):
                 benchmark_progress[benchmark_id].update({
                     'status': 'failed',
                     'phase': 'timeout',
-                    'end_time': now_vn().isoformat(),
+                    'end_time': now_utc().isoformat(),
                     'error': 'Benchmark timed out'
                 })
                 
@@ -874,7 +874,7 @@ async def upload_document(
             "doc_id": metadata.doc_id,
             "doc_type": metadata.doc_type,
             "doc_title": metadata.doc_title,
-            "issue_date": now_vn().strftime("%d-%m-%Y"),
+            "issue_date": now_utc().strftime("%d-%m-%Y"),
             "effective_date": metadata.effective_date,
             "expiry_date": None,
             "status": metadata.status,
@@ -1060,7 +1060,7 @@ async def get_system_statistics():
                 "chunks": chunk_count,
                 "indexed_in_chroma": chroma_count
             },
-            "timestamp": now_vn().strftime("%Y-%m-%d %H:%M:%S")
+            "timestamp": now_utc().strftime("%Y-%m-%d %H:%M:%S")
         }
     except Exception as e:
         print(f"Error in get_system_statistics: {str(e)}")
