@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { showError, getAuthData, clearAuthData } from './utils/formatUtils';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -93,7 +93,15 @@ export const adminAPI = {
   getDocuments: () => apiCall('get', '/documents'),
   deleteDocument: (docId) => apiCall('delete', `/documents/${docId}?confirm=true`),
   getBenchmarkResults: () => apiCall('get', '/benchmark-results'),
-  getStatistics: () => apiCall('get', '/statistics')
+  getStatistics: () => apiCall('get', '/statistics'),
+  
+  // User management endpoints
+  getAllUsers: (limit = 100, skip = 0) => apiCall('get', `/users?limit=${limit}&skip=${skip}`),
+  getUserDetail: (userId) => apiCall('get', `/users/${userId}`),
+  updateUser: (userId, userData) => apiCall('put', `/users/${userId}`, userData),
+  deleteUser: (userId) => apiCall('delete', `/users/${userId}?confirm=true`),
+  resetUserPassword: (userId, newPassword) => apiCall('post', `/users/${userId}/reset-password`, { new_password: newPassword }),
+  toggleUserStatus: (userId) => apiCall('post', `/users/${userId}/toggle-status`)
 };
 
 // Legacy exports

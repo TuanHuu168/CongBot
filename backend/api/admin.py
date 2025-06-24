@@ -1098,3 +1098,301 @@ async def list_benchmark_files():
         return {'files': files}
     except Exception as e:
         handle_error("list_benchmark_files", e)
+        
+# User management endpoints cho admin
+@router.get("/users")
+async def get_all_users(limit: int = 100, skip: int = 0):
+    """Lấy danh sách tất cả người dùng"""
+    try:
+        db = mongodb_client.get_database()
+        
+        # Lấy danh sách users với projection loại bỏ password
+        users = list(db.users.find(
+            {},
+            {
+                "password": 0,  # Không trả về password
+                "token": 0      # Không trả về token
+            }
+        ).sort("created_at", -1).skip(skip).limit(limit))
+        
+        # Chuyển đổi ObjectId thành string
+        for user in users:
+            user["id"] = str(user.pop("_id"))
+            user["created_at"] = user.get("created_at", now_utc())
+            user["updated_at"] = user.get("updated_at", now_utc())
+            
+            # Đảm bảo có đầy đủ fields cần thiết
+            user["role"] = user.get("role", "user")
+            user["status"] = user.get("status", "active")
+            user["fullName"] = user.get("fullName", user.get("full_name", ""))
+            user["phoneNumber"] = user.get("phoneNumber", user.get("phone_number", ""))
+            user["lastLogin"] = user.get("last_login", user.get("lastLogin"))
+        
+        total_count = db.users.count_documents({})
+        
+        return {
+            "users": users,
+            "total": total_count,
+            "skip": skip,
+            "limit": limit
+        }
+        
+    except Exception as e:
+        handle_error("get_all_users", e)
+
+@router.get("/users/{user_id}")
+async def get_user_detail(user_id: str):
+    """Lấy thông tin chi tiết một người dùng"""
+    try:
+        db = mongodb_client.get_database()
+        
+        from bson.objectid import ObjectId
+        user = db.users.find_one(
+            {"_id": ObjectId(user_id)},
+            {"password": 0, "token": 0}
+        )
+        
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        user["id"] = str(user.pop("_id"))
+        user["fullName"] = user.get("fullName", user.get("full_name", ""))
+        user["phoneNumber"] = user.get("phoneNumber", user.get("phone_number", ""))
+        
+        return {"user": user}
+        
+    except Exception as e:
+        handle_error("get_user_detail", e)
+
+@router.put("/users/{user_id}")
+async def update_user(user_id: str, user_data: dict = Body(...)):
+    """Cập nhật thông tin người dùng"""
+    try:
+        db = mongodb_client.get_database()
+        
+        from bson.objectid import ObjectId
+        
+        # Kiểm tra user tồn tại
+        existing_user = db.users.find_one({"_id": ObjectId(user_id)})
+        if not existing_user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        # Chuẩn bị data update
+        update_data = {}
+        allowed_fields = ["fullName", "email", "phoneNumber", "role", "status"]
+        
+        for field in allowed_fields:
+            if field in user_data:
+                update_data[field] = user_data[field]
+        
+        if not update_data:
+            raise HTTPException(status_code=400, detail="Không có dữ liệu để cập nhật")
+        
+        # Kiểm tra email trùng lặp nếu có update email
+        if "email" in update_data:
+            email_exists = db.users.find_one({
+                "email": update_data["email"],
+                "_id": {"$ne": ObjectId(user_id)}
+            })
+            if email_exists:
+                raise HTTPException(status_code=400, detail="Email đã được sử dụng bởi người dùng khác")
+        
+        update_data["updated_at"] = now_utc()
+        
+        # Thực hiện update
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": update_data}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể cập nhật người dùng")
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Admin cập nhật thông tin user {existing_user.get('username', user_id)}",
+                          {
+                              "action": "update_user",
+                              "user_id": user_id,
+                              "username": existing_user.get("username"),
+                              "updated_fields": list(update_data.keys())
+                          })
+        
+        return {
+            "message": "Cập nhật thông tin người dùng thành công",
+            "user_id": user_id
+        }
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        handle_error("update_user", e)
+
+@router.delete("/users/{user_id}")
+async def delete_user(user_id: str, confirm: bool = False):
+    """Xóa người dùng"""
+    try:
+        if not confirm:
+            raise HTTPException(status_code=400, detail="Vui lòng xác nhận việc xóa người dùng")
+        
+        db = mongodb_client.get_database()
+        
+        from bson.objectid import ObjectId
+        
+        # Kiểm tra user tồn tại
+        user = db.users.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        username = user.get("username", "unknown")
+        
+        # Không cho phép xóa admin cuối cùng
+        if user.get("role") == "admin":
+            admin_count = db.users.count_documents({"role": "admin"})
+            if admin_count <= 1:
+                raise HTTPException(status_code=400, detail="Không thể xóa admin cuối cùng trong hệ thống")
+        
+        # Xóa tất cả chats của user
+        chat_delete_result = db.chats.update_many(
+            {"user_id": user_id},
+            {"$set": {"status": "deleted", "updated_at": now_utc()}}
+        )
+        
+        # Xóa user
+        delete_result = db.users.delete_one({"_id": ObjectId(user_id)})
+        
+        if delete_result.deleted_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể xóa người dùng")
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Admin xóa user {username}",
+                          {
+                              "action": "delete_user",
+                              "user_id": user_id,
+                              "username": username,
+                              "deleted_chats": chat_delete_result.modified_count
+                          })
+        
+        return {
+            "message": f"Đã xóa người dùng {username} thành công",
+            "deleted_chats": chat_delete_result.modified_count
+        }
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        handle_error("delete_user", e)
+
+@router.post("/users/{user_id}/reset-password")
+async def reset_user_password(user_id: str, password_data: dict = Body(...)):
+    """Reset mật khẩu cho người dùng"""
+    try:
+        new_password = password_data.get("new_password")
+        if not new_password or len(new_password) < 6:
+            raise HTTPException(status_code=400, detail="Mật khẩu mới phải có ít nhất 6 ký tự")
+        
+        db = mongodb_client.get_database()
+        
+        from bson.objectid import ObjectId
+        import bcrypt
+        
+        # Kiểm tra user tồn tại
+        user = db.users.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        # Hash mật khẩu mới
+        salt = bcrypt.gensalt()
+        hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), salt).decode('utf-8')
+        
+        # Cập nhật mật khẩu
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    "password": hashed_password,
+                    "updated_at": now_utc()
+                },
+                "$unset": {"token": ""}  # Xóa token hiện tại để bắt đăng nhập lại
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể reset mật khẩu")
+        
+        username = user.get("username", "unknown")
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Admin reset mật khẩu cho user {username}",
+                          {
+                              "action": "reset_password",
+                              "user_id": user_id,
+                              "username": username
+                          })
+        
+        return {
+            "message": f"Đã reset mật khẩu cho người dùng {username} thành công"
+        }
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        handle_error("reset_user_password", e)
+
+@router.post("/users/{user_id}/toggle-status")
+async def toggle_user_status(user_id: str):
+    """Vô hiệu hóa hoặc kích hoạt lại người dùng"""
+    try:
+        db = mongodb_client.get_database()
+        
+        from bson.objectid import ObjectId
+        
+        user = db.users.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        current_status = user.get("status", "active")
+        new_status = "inactive" if current_status == "active" else "active"
+        
+        # Không cho phép vô hiệu hóa admin cuối cùng
+        if user.get("role") == "admin" and new_status == "inactive":
+            active_admin_count = db.users.count_documents({
+                "role": "admin",
+                "status": "active"
+            })
+            if active_admin_count <= 1:
+                raise HTTPException(status_code=400, detail="Không thể vô hiệu hóa admin cuối cùng")
+        
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    "status": new_status,
+                    "updated_at": now_utc()
+                }
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể thay đổi trạng thái người dùng")
+        
+        username = user.get("username", "unknown")
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Admin {new_status} user {username}",
+                          {
+                              "action": "toggle_user_status",
+                              "user_id": user_id,
+                              "username": username,
+                              "old_status": current_status,
+                              "new_status": new_status
+                          })
+        
+        return {
+            "message": f"Đã {new_status} người dùng {username}",
+            "new_status": new_status
+        }
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        handle_error("toggle_user_status", e)

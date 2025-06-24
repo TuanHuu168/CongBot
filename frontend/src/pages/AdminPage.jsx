@@ -39,85 +39,66 @@ const AdminPage = () => {
   const [invalidateDocId, setInvalidateDocId] = useState('');
   const [searchCacheKeyword, setSearchCacheKeyword] = useState('');
 
-  // Gộp tất cả useEffect và fetch functions
+  // Fetch functions được định nghĩa ở component level
+  const fetchSystemStats = async () => {
+    try {
+      setIsLoading(true);
+      const response = await adminAPI.getStatus();
+      setSystemStats(response);
+    } catch (error) {
+      console.error('Lỗi khi tải thông tin hệ thống:', error);
+      setError('Không thể tải thông tin hệ thống');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      setIsLoading(true);
+      const response = await adminAPI.getAllUsers();
+      setUsers(response.users || []);
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách người dùng:', error);
+      setError('Không thể tải danh sách người dùng');
+      setUsers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const refreshUsers = async () => {
+    await fetchUsers();
+  };
+
+  const fetchDocuments = async () => {
+    try {
+      setIsLoading(true);
+      const response = await adminAPI.getDocuments();
+      setDocuments(response.documents || []);
+    } catch (error) {
+      console.error('Lỗi khi tải danh sách văn bản:', error);
+      setError('Không thể tải danh sách văn bản');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchBenchmarkResults = async () => {
+    try {
+      setIsLoading(true);
+      const response = await adminAPI.getBenchmarkResults();
+      setBenchmarkResults(response.results || []);
+    } catch (error) {
+      console.error('Lỗi khi tải kết quả benchmark:', error);
+      setError('Không thể tải kết quả benchmark');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Load initial data
   useEffect(() => {
-    const fetchSystemStats = async () => {
-      try {
-        setIsLoading(true);
-        const response = await adminAPI.getStatus();
-        setSystemStats(response);
-      } catch (error) {
-        console.error('Lỗi khi tải thông tin hệ thống:', error);
-        setError('Không thể tải thông tin hệ thống');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const fetchUsers = async () => {
-      try {
-        setIsLoading(true);
-        try {
-          const response = await adminAPI.getStatistics();
-          if (response && response.users) {
-            setUsers(response.users.map(user => ({
-              id: user.id || user._id,
-              username: user.username,
-              email: user.email,
-              fullName: user.fullName || user.name,
-              role: user.role || 'user',
-              status: user.status || 'active',
-              lastLogin: user.lastLogin || user.lastLoginAt
-            })));
-            return;
-          }
-        } catch (e) {
-          console.log('Không thể lấy thông tin người dùng từ endpoint statistics, sử dụng dữ liệu mặc định...');
-        }
-
-        const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-        if (userId) {
-          setUsers([
-            { id: '1', username: 'admin', email: 'admin@example.com', role: 'admin', status: 'active', lastLogin: new Date().toISOString() }
-          ]);
-        }
-      } catch (error) {
-        console.error('Lỗi khi tải danh sách người dùng:', error);
-        setError('Không thể tải danh sách người dùng');
-        setUsers([
-          { id: '1', username: 'admin', email: 'admin@example.com', role: 'admin', status: 'active', lastLogin: new Date().toISOString() }
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const fetchDocuments = async () => {
-      try {
-        setIsLoading(true);
-        const response = await adminAPI.getDocuments();
-        setDocuments(response.documents || []);
-      } catch (error) {
-        console.error('Lỗi khi tải danh sách văn bản:', error);
-        setError('Không thể tải danh sách văn bản');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    const fetchBenchmarkResults = async () => {
-      try {
-        setIsLoading(true);
-        const response = await adminAPI.getBenchmarkResults();
-        setBenchmarkResults(response.results || []);
-      } catch (error) {
-        console.error('Lỗi khi tải kết quả benchmark:', error);
-        setError('Không thể tải kết quả benchmark');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
     Promise.allSettled([
       fetchSystemStats(),
       fetchUsers(),
@@ -168,8 +149,7 @@ const AdminPage = () => {
       });
       setDocumentFiles([]);
 
-      const response2 = await adminAPI.getDocuments();
-      setDocuments(response2.documents || []);
+      await fetchDocuments();
 
     } catch (error) {
       console.error('Lỗi khi tải lên văn bản:', error);
@@ -186,8 +166,7 @@ const AdminPage = () => {
           setIsLoading(true);
           await adminAPI.deleteDocument(docId);
           showSuccess(`Văn bản ${docId} đã được xóa thành công`, 'Đã xóa văn bản');
-          const response = await adminAPI.getDocuments();
-          setDocuments(response.documents || []);
+          await fetchDocuments();
         } catch (error) {
           console.error('Lỗi khi xóa văn bản:', error);
           showError('Không thể xóa văn bản. Vui lòng thử lại.', 'Lỗi xóa văn bản');
@@ -205,8 +184,7 @@ const AdminPage = () => {
           setIsLoading(true);
           await adminAPI.clearCache();
           showSuccess('Toàn bộ cache đã được xóa thành công', 'Đã xóa cache');
-          const response = await adminAPI.getStatus();
-          setSystemStats(response);
+          await fetchSystemStats();
         } catch (error) {
           console.error('Lỗi khi xóa cache:', error);
           showError('Không thể xóa cache. Vui lòng thử lại.', 'Lỗi xóa cache');
@@ -239,8 +217,7 @@ const AdminPage = () => {
       showSuccess(`Đã vô hiệu hóa ${result.affected_count} cache liên quan đến văn bản ${invalidateDocId}`, 'Vô hiệu hóa cache thành công');
 
       setInvalidateDocId('');
-      const response2 = await adminAPI.getStatus();
-      setSystemStats(response2);
+      await fetchSystemStats();
     } catch (error) {
       console.error('Lỗi khi vô hiệu hóa cache:', error);
       showError('Không thể vô hiệu hóa cache. Vui lòng thử lại.', 'Lỗi vô hiệu hóa cache');
@@ -288,9 +265,7 @@ const AdminPage = () => {
 
             showSuccess(`Đã chạy benchmark thành công. Độ chính xác trung bình: ${response.stats?.avg_retrieval_score?.toFixed(2) || 'N/A'}`, 'Benchmark hoàn thành');
 
-            adminAPI.getBenchmarkResults().then(res => {
-              setBenchmarkResults(res.results || []);
-            });
+            fetchBenchmarkResults();
           }, 15000);
 
         } catch (error) {
@@ -316,15 +291,12 @@ const AdminPage = () => {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const responses = await Promise.allSettled([
-        adminAPI.getStatus(),
-        adminAPI.getDocuments(),
-        adminAPI.getBenchmarkResults()
+      await Promise.allSettled([
+        fetchSystemStats(),
+        fetchUsers(),
+        fetchDocuments(),
+        fetchBenchmarkResults()
       ]);
-      
-      if (responses[0].status === 'fulfilled') setSystemStats(responses[0].value);
-      if (responses[1].status === 'fulfilled') setDocuments(responses[1].value.documents || []);
-      if (responses[2].status === 'fulfilled') setBenchmarkResults(responses[2].value.results || []);
     } catch (error) {
       console.error('Lỗi khi làm mới dữ liệu:', error);
       setError('Không thể làm mới dữ liệu');
@@ -346,7 +318,7 @@ const AdminPage = () => {
 
   const renderActiveTab = () => {
     const commonProps = { isLoading };
-    
+
     switch (activeTab) {
       case 'dashboard':
         return (
@@ -359,7 +331,7 @@ const AdminPage = () => {
           />
         );
       case 'users':
-        return <UsersTab {...commonProps} users={users} />;
+        return <UsersTab {...commonProps} users={users} refreshUsers={refreshUsers} />;
       case 'documents':
         return (
           <DocumentsTab 
