@@ -17,40 +17,66 @@ export const ChatProvider = ({ children }) => {
   const [currentChatId, setCurrentChatId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [userLoaded, setUserLoaded] = useState(false);
 
   const resetAuthState = useCallback(() => {
+    console.log('Reset auth state');
     setUser(null);
     setChatHistory([]);
     setActiveChatMessages([]);
     setCurrentChatId(null);
     setIsLoading(false);
     setError(null);
+    setUserLoaded(false);
   }, []);
 
-  const fetchUserInfo = useCallback(async (userId) => {
-    if (!userId) return null;
+  const fetchUserInfo = useCallback(async (userId, forceRefresh = false) => {
+    if (!userId) {
+      console.log('Không có userId để fetch');
+      return null;
+    }
+    
+    if (userLoaded && !forceRefresh && user) {
+      console.log('User đã được load, không fetch lại');
+      return user;
+    }
+    
     try {
+      console.log(`Bắt đầu fetch user info cho userId: ${userId}`);
       setIsLoading(true);
+      
       const userInfo = await userAPI.getInfo(userId);
-      setUser({
+      console.log('API trả về userInfo:', userInfo);
+      
+      const userData = {
         id: userId,
-        name: userInfo.fullName || userInfo.username,
-        email: userInfo.email,
-        username: userInfo.username,
-        phoneNumber: userInfo.phoneNumber,
+        name: userInfo.fullName || userInfo.username || 'Người dùng',
+        email: userInfo.email || '',
+        username: userInfo.username || '',
+        fullName: userInfo.fullName || '',
+        phoneNumber: userInfo.phoneNumber || '',
         role: userInfo.role || 'user',
-        avatarUrl: userInfo.avatar_url,
-        personalInfo: userInfo.personal_info
-      });
-      return userInfo;
+        status: userInfo.status || 'active',
+        avatarUrl: userInfo.avatar_url || '',
+        personalInfo: userInfo.personal_info || ''
+      };
+      
+      console.log('User data được tạo:', userData);
+      
+      setUser(userData);
+      setUserLoaded(true);
+      setError(null);
+      
+      return userData;
     } catch (error) {
       console.error('Lỗi khi tải thông tin người dùng:', error);
       setError('Không thể tải thông tin người dùng');
+      setUserLoaded(true); // Vẫn đánh dấu đã load để tránh loop
       return null;
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [user, userLoaded]);
 
   const fetchChatHistory = useCallback(async (retries = 3) => {
     try {
@@ -161,25 +187,39 @@ export const ChatProvider = ({ children }) => {
     setActiveChatMessages(prev => [...prev, userMsg, botMsg]);
   }, []);
 
-  // Kiểm tra auth state và khởi tạo
+  // Kiểm tra auth state định kỳ
   useEffect(() => {
     const checkAuthState = () => {
       const { userId, token } = getAuthData();
-      if ((!userId || !token) && user) {
-        resetAuthState();
+      if (!userId || !token) {
+        if (user) {
+          console.log('Auth không hợp lệ, reset state');
+          resetAuthState();
+        }
       }
     };
 
-    const interval = setInterval(checkAuthState, 2000);
+    const interval = setInterval(checkAuthState, 10000);
     return () => clearInterval(interval);
   }, [user, resetAuthState]);
 
+  // Load initial data khi component mount
   useEffect(() => {
-    const { userId, token } = getAuthData();
-    if (userId && token) {
-      Promise.allSettled([fetchUserInfo(userId), fetchChatHistory()]);
-    }
-  }, [fetchUserInfo, fetchChatHistory]);
+    const initializeData = async () => {
+      const { userId, token } = getAuthData();
+      console.log('Initialize data - userId:', userId, 'token exists:', !!token);
+      
+      if (userId && token && !userLoaded) {
+        console.log('Bắt đầu load user và chat history');
+        await Promise.allSettled([
+          fetchUserInfo(userId),
+          fetchChatHistory()
+        ]);
+      }
+    };
+
+    initializeData();
+  }, []); // Chỉ chạy 1 lần khi mount
 
   const value = {
     user, chatHistory, activeChatMessages, currentChatId, isLoading, error,

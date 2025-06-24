@@ -11,42 +11,9 @@ const TopNavBar = ({
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { setUser, setCurrentChatId, setActiveChatMessages, setChatHistory, fetchUserInfo } = useChat();
+  const { setUser, setCurrentChatId, setActiveChatMessages, setChatHistory } = useChat();
   const [showUserDropdown, setShowUserDropdown] = useState(false);
-  const [userInfo, setUserInfo] = useState(null);
   const dropdownRef = useRef(null);
-
-  // Kiểm tra auth và load user info
-  useEffect(() => {
-    const checkAuth = async () => {
-      const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
-      const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
-      
-      if (token && userId) {
-        if (user?.name) {
-          setUserInfo(user);
-        } else {
-          try {
-            const userData = await fetchUserInfo(userId);
-            if (userData) {
-              setUserInfo({
-                id: userId,
-                name: userData.fullName || userData.username || 'Người dùng',
-                email: userData.email,
-                username: userData.username,
-                role: userData.role || 'user'
-              });
-            }
-          } catch (error) {
-            setUserInfo({ id: userId, name: 'Người dùng', email: '', username: '', role: 'user' });
-          }
-        }
-      } else {
-        setUserInfo(null);
-      }
-    };
-    checkAuth();
-  }, [user, fetchUserInfo]);
 
   // Click outside để đóng dropdown
   useEffect(() => {
@@ -63,7 +30,6 @@ const TopNavBar = ({
     showConfirm('Bạn có chắc chắn muốn đăng xuất?', 'Đăng xuất').then((result) => {
       if (result.isConfirmed) {
         clearAuthData();
-        setUserInfo(null);
         setShowUserDropdown(false);
         setUser(null);
         setCurrentChatId(null);
@@ -74,13 +40,19 @@ const TopNavBar = ({
     });
   };
 
-  const isAdmin = () => userInfo?.role === 'admin' || user?.role === 'admin';
+  const isAdmin = () => user?.role === 'admin';
   const getDisplayName = () => {
-    if (userInfo?.name && userInfo.name !== 'Người dùng') return userInfo.name;
-    if (user?.name && user.name !== 'Người dùng') return user.name;
+    // Ưu tiên fullName, sau đó username, cuối cùng mới là 'Người dùng'
+    if (user?.fullName && user.fullName.trim() !== '') return user.fullName;
+    if (user?.name && user.name.trim() !== '' && user.name !== 'Người dùng') return user.name;
+    if (user?.username && user.username.trim() !== '') return user.username;
     return 'Người dùng';
   };
-  const isLoggedIn = Boolean(userInfo);
+  const isLoggedIn = Boolean(user?.id);
+
+  // Debug log
+  console.log('TopNavBar render - User:', user);
+  console.log('Display name:', getDisplayName());
 
   // Navigation items (loại bỏ current path)
   const getNavigationItems = () => {
@@ -150,7 +122,9 @@ const TopNavBar = ({
                     <div className="w-8 h-8 rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-green-500 to-teal-600">
                       <User size={16} className="text-white" />
                     </div>
-                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">{getDisplayName()}</span>
+                    <span className="text-sm font-medium text-gray-700 hidden sm:inline">
+                      {getDisplayName()}
+                    </span>
                     <ChevronDown size={16} className={`text-gray-500 transition-transform ${showUserDropdown ? 'rotate-180' : ''}`} />
                   </button>
 

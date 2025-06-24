@@ -28,49 +28,88 @@ const ChatPage = () => {
   const [localError, setLocalError] = useState(null);
   const [textareaHeight, setTextareaHeight] = useState(46);
   const [formKey, setFormKey] = useState(Date.now());
+  const [authChecked, setAuthChecked] = useState(false);
 
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
 
-  // Gộp tất cả useEffect
+  // Auth check và load user - chạy ngay khi component mount
   useEffect(() => {
-    // Auth check
-    const checkAuth = async () => {
+    const checkAuthAndLoadUser = async () => {
+      console.log('ChatPage: Kiểm tra auth và load user');
       const { token, userId } = getAuthData();
+      
       if (!token || !userId) {
+        console.log('Không có token hoặc userId, chuyển hướng đến login');
         resetAuthState();
         navigate('/login');
         return;
       }
-      if (!user && userId) {
+
+      setAuthChecked(true);
+
+      // Nếu chưa có user hoặc user chưa có name đúng, fetch lại
+      if (!user || !user.name || user.name === 'Người dùng') {
+        console.log('User chưa có hoặc chưa đủ thông tin, fetch lại');
         try {
-          await fetchUserInfo(userId);
+          await fetchUserInfo(userId, true); // Force refresh
         } catch (error) {
-          console.error('Lỗi khi tải thông tin user:', error);
+          console.error('Lỗi khi load user:', error);
         }
       }
     };
 
-    // Handle initial state
-    if (state?.freshLogin) fetchChatHistory();
-    if (state?.suggestedQuestion) setInput(state.suggestedQuestion);
+    checkAuthAndLoadUser();
+  }, []);
+
+  // Xử lý state từ navigation
+  useEffect(() => {
+    if (!authChecked) return;
+
+    if (state?.freshLogin) {
+      console.log('Fresh login detected, fetch chat history');
+      fetchChatHistory();
+    }
+    
+    if (state?.suggestedQuestion) {
+      setInput(state.suggestedQuestion);
+    }
+    
     if (!state?.chatId && !state?.freshLogin) {
       setCurrentChatId(null);
       setActiveChatMessages([]);
     }
+  }, [state, authChecked, fetchChatHistory, setCurrentChatId, setActiveChatMessages]);
 
-    // Auto scroll
+  // Auto scroll to bottom
+  useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [activeChatMessages]);
 
-    // Responsive handling
+  // Responsive handling
+  useEffect(() => {
     const handleResize = () => {
       const isMobileView = window.innerWidth < 768;
       setIsMobile(isMobileView);
       if (!isMobileView) setIsSidebarOpen(false);
     };
 
-    // Textarea height adjustment
+    let timeoutId;
+    const debouncedResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(handleResize, 100);
+    };
+
+    window.addEventListener('resize', debouncedResize);
+    return () => {
+      window.removeEventListener('resize', debouncedResize);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  // Textarea height adjustment
+  useEffect(() => {
     const adjustTextareaHeight = () => {
       if (!textareaRef.current) return;
       if (input === '') {
@@ -84,35 +123,29 @@ const ChatPage = () => {
       setTextareaHeight(newHeight);
     };
 
-    checkAuth();
     adjustTextareaHeight();
+  }, [input]);
 
+  // Focus textarea trên desktop
+  useEffect(() => {
+    if (textareaRef.current && !isMobile && authChecked) {
+      textareaRef.current.focus();
+    }
+  }, [isMobile, authChecked]);
+
+  // Kiểm tra auth định kỳ (ít thường xuyên hơn)
+  useEffect(() => {
     const authInterval = setInterval(() => {
       const { token, userId } = getAuthData();
       if (!token || !userId) {
+        console.log('Auth expired, redirect to login');
         resetAuthState();
         navigate('/login');
       }
-    }, 3000);
+    }, 30000); // 30 giây kiểm tra 1 lần
 
-    let timeoutId;
-    const debouncedResize = () => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(handleResize, 100);
-    };
-
-    window.addEventListener('resize', debouncedResize);
-
-    if (textareaRef.current && !isMobile) {
-      textareaRef.current.focus();
-    }
-
-    return () => {
-      clearInterval(authInterval);
-      window.removeEventListener('resize', debouncedResize);
-      clearTimeout(timeoutId);
-    };
-  }, [state, user, fetchUserInfo, resetAuthState, navigate, fetchChatHistory, setCurrentChatId, setActiveChatMessages, input, isMobile, currentChatId]);
+    return () => clearInterval(authInterval);
+  }, [resetAuthState, navigate]);
 
   const prepareAndSendMessage = async (userQuestion) => {
     if (userQuestion.trim() === '' || isLoading) return;
@@ -233,6 +266,20 @@ const ChatPage = () => {
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(title);
     return isMongoId ? "Cuộc trò chuyện mới" : title;
   };
+
+  // Debug user info
+  console.log('ChatPage render - User:', user);
+
+  if (!authChecked) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Đang kiểm tra thông tin đăng nhập...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <motion.div

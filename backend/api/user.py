@@ -159,17 +159,21 @@ async def get_user_info(user_id: str):
         if not user:
             raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
         
-        # Tạo đối tượng trả về (loại bỏ password)
+        # Tạo đối tượng trả về với đầy đủ thông tin
         user_data = {
             "id": str(user["_id"]),
             "username": user.get("username", ""),
             "email": user.get("email", ""),
-            "fullName": user.get("fullName", ""),
-            "phoneNumber": user.get("phoneNumber", ""),
+            "fullName": user.get("fullName", user.get("full_name", "")),
+            "phoneNumber": user.get("phoneNumber", user.get("phone_number", "")),
             "role": user.get("role", "user"),
+            "status": user.get("status", "active"),
             "created_at": user.get("created_at", datetime.now()),
-            "last_login": user.get("last_login")
+            "updated_at": user.get("updated_at", datetime.now()),
+            "last_login": user.get("last_login", user.get("lastLogin"))
         }
+        
+        print(f"API trả về user data: {user_data}")  # Debug log
         
         return user_data
     except HTTPException as he:
