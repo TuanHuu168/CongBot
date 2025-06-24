@@ -267,8 +267,6 @@ const ChatPage = () => {
     return isMongoId ? "Cuộc trò chuyện mới" : title;
   };
 
-  // Debug user info
-  console.log('ChatPage render - User:', user);
 
   if (!authChecked) {
     return (

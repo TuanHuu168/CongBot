@@ -35,48 +35,60 @@ export const ChatProvider = ({ children }) => {
       console.log('Không có userId để fetch');
       return null;
     }
-    
+
     if (userLoaded && !forceRefresh && user) {
       console.log('User đã được load, không fetch lại');
       return user;
     }
-    
+
     try {
       console.log(`Bắt đầu fetch user info cho userId: ${userId}`);
       setIsLoading(true);
-      
-      const userInfo = await userAPI.getInfo(userId);
-      console.log('API trả về userInfo:', userInfo);
-      
+
+      const response = await userAPI.getInfo(userId);
+
+
+      // Xử lý cả 2 trường hợp: response trực tiếp hoặc nested trong user object
+      let userInfo;
+      if (response.user) {
+        // Nếu response có nested user object
+        userInfo = response.user;
+      } else {
+        // Nếu response là user data trực tiếp  
+        userInfo = response;
+      }
+
+      // Mapping user data
       const userData = {
-        id: userId,
-        name: userInfo.fullName || userInfo.username || 'Người dùng',
-        email: userInfo.email || '',
+        id: userInfo.id || userId,
         username: userInfo.username || '',
+        email: userInfo.email || '',
         fullName: userInfo.fullName || '',
         phoneNumber: userInfo.phoneNumber || '',
         role: userInfo.role || 'user',
         status: userInfo.status || 'active',
-        avatarUrl: userInfo.avatar_url || '',
-        personalInfo: userInfo.personal_info || ''
+        // Các field khác nếu có
+        avatarUrl: userInfo.avatarUrl || userInfo.avatar_url || '',
+        personalInfo: userInfo.personalInfo || userInfo.personal_info || '',
+        // Tạo name field cho TopNavBar
+        name: userInfo.fullName || userInfo.username || 'Người dùng'
       };
-      
-      console.log('User data được tạo:', userData);
-      
-      setUser(userData);
+
+      // Force re-render bằng cách tạo object mới
+      setUser({ ...userData });
       setUserLoaded(true);
       setError(null);
-      
+
       return userData;
     } catch (error) {
       console.error('Lỗi khi tải thông tin người dùng:', error);
       setError('Không thể tải thông tin người dùng');
-      setUserLoaded(true); // Vẫn đánh dấu đã load để tránh loop
+      setUserLoaded(true);
       return null;
     } finally {
       setIsLoading(false);
     }
-  }, [user, userLoaded]);
+  }, []); // Remove all dependencies
 
   const fetchChatHistory = useCallback(async (retries = 3) => {
     try {
@@ -138,7 +150,7 @@ export const ChatProvider = ({ children }) => {
       setIsLoading(true);
       const chat = await chatAPI.getMessages(chatId);
       const formattedMessages = [];
-      
+
       if (chat.messages?.length) {
         chat.messages.forEach((msg, index) => {
           formattedMessages.push({
@@ -187,6 +199,29 @@ export const ChatProvider = ({ children }) => {
     setActiveChatMessages(prev => [...prev, userMsg, botMsg]);
   }, []);
 
+  // Load initial data khi component mount
+  useEffect(() => {
+    const initializeData = async () => {
+      const { userId, token } = getAuthData();
+      console.log('Initialize data - userId:', userId, 'token exists:', !!token);
+
+      if (userId && token && !userLoaded) {
+        console.log('Bắt đầu load user và chat history');
+        try {
+          // Đảm bảo user được load trước
+          const loadedUser = await fetchUserInfo(userId, true);
+
+          // Sau đó mới load chat history
+          await fetchChatHistory();
+        } catch (error) {
+          console.error('Lỗi khi initialize data:', error);
+        }
+      }
+    };
+
+    initializeData();
+  }, []); // Chỉ chạy 1 lần khi mount
+
   // Kiểm tra auth state định kỳ
   useEffect(() => {
     const checkAuthState = () => {
@@ -199,27 +234,9 @@ export const ChatProvider = ({ children }) => {
       }
     };
 
-    const interval = setInterval(checkAuthState, 10000);
+    const interval = setInterval(checkAuthState, 30000); // 30 giây
     return () => clearInterval(interval);
   }, [user, resetAuthState]);
-
-  // Load initial data khi component mount
-  useEffect(() => {
-    const initializeData = async () => {
-      const { userId, token } = getAuthData();
-      console.log('Initialize data - userId:', userId, 'token exists:', !!token);
-      
-      if (userId && token && !userLoaded) {
-        console.log('Bắt đầu load user và chat history');
-        await Promise.allSettled([
-          fetchUserInfo(userId),
-          fetchChatHistory()
-        ]);
-      }
-    };
-
-    initializeData();
-  }, []); // Chỉ chạy 1 lần khi mount
 
   const value = {
     user, chatHistory, activeChatMessages, currentChatId, isLoading, error,

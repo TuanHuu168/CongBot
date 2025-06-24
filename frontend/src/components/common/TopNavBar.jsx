@@ -50,10 +50,6 @@ const TopNavBar = ({
   };
   const isLoggedIn = Boolean(user?.id);
 
-  // Debug log
-  console.log('TopNavBar render - User:', user);
-  console.log('Display name:', getDisplayName());
-
   // Navigation items (loại bỏ current path)
   const getNavigationItems = () => {
     const currentPath = location.pathname;

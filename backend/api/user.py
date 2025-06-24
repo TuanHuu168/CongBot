@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends, Body
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Dict, Optional, Any
 import bcrypt
-from datetime import datetime
+from datetime import datetime, timezone
 from uuid import uuid4
 from bson.objectid import ObjectId
 
@@ -48,7 +48,8 @@ def save_user(user_data: dict) -> str:
     if 'password' in user_data:
         user_data['password'] = hash_password(user_data['password'])
     
-    user_data["created_at"] = datetime.now()
+    user_data["created_at"] = datetime.now(timezone.utc)
+    user_data["updated_at"] = datetime.now(timezone.utc)
     
     db = mongodb_client.get_database()
     result = db.users.insert_one(user_data)
@@ -81,8 +82,16 @@ async def register_user(user: UserCreate):
         if existing_email:
             raise HTTPException(status_code=400, detail="Email đã được sử dụng")
         
-        # Tạo người dùng mới
-        user_data = user.dict()
+        # Tạo người dùng mới với cấu trúc đồng nhất
+        user_data = {
+            "username": user.username,
+            "email": user.email,
+            "password": user.password,  # Sẽ được hash trong save_user
+            "fullName": user.fullName,
+            "phoneNumber": user.phoneNumber or "",
+            "role": "user",
+            "status": "active"
+        }
         
         # Lưu vào MongoDB và lấy ID
         user_id = save_user(user_data)
@@ -121,11 +130,17 @@ async def login_user(user_login: UserLogin):
         # Tạo token đơn giản (trong thực tế nên dùng JWT)
         token = str(uuid4())
         
-        # Lưu token vào user (hoặc trong bảng sessions riêng)
+        # Lưu token vào user và update last_login
         db = mongodb_client.get_database()
         db.users.update_one(
             {"_id": user["_id"]},
-            {"$set": {"token": token, "last_login": datetime.now()}}
+            {
+                "$set": {
+                    "token": token, 
+                    "last_login": datetime.now(timezone.utc),
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
         )
         
         # Log login activity
@@ -159,19 +174,26 @@ async def get_user_info(user_id: str):
         if not user:
             raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
         
-        # Tạo đối tượng trả về với đầy đủ thông tin
+        # Đảm bảo trả về cấu trúc đồng nhất với frontend expect
         user_data = {
             "id": str(user["_id"]),
             "username": user.get("username", ""),
             "email": user.get("email", ""),
-            "fullName": user.get("fullName", user.get("full_name", "")),
-            "phoneNumber": user.get("phoneNumber", user.get("phone_number", "")),
+            # Đồng nhất field name - luôn dùng fullName
+            "fullName": user.get("fullName", ""),
+            "phoneNumber": user.get("phoneNumber", ""),
             "role": user.get("role", "user"),
             "status": user.get("status", "active"),
-            "created_at": user.get("created_at", datetime.now()),
-            "updated_at": user.get("updated_at", datetime.now()),
-            "last_login": user.get("last_login", user.get("lastLogin"))
+            "created_at": user.get("created_at", datetime.now(timezone.utc)).isoformat(),
+            "updated_at": user.get("updated_at", datetime.now(timezone.utc)).isoformat(),
+            "last_login": user.get("last_login", "")
         }
+        
+        # Convert last_login to ISO string if it exists
+        if user_data["last_login"] and hasattr(user_data["last_login"], 'isoformat'):
+            user_data["last_login"] = user_data["last_login"].isoformat()
+        elif not user_data["last_login"]:
+            user_data["last_login"] = None
         
         print(f"API trả về user data: {user_data}")  # Debug log
         
