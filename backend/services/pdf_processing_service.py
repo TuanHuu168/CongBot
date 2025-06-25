@@ -4,7 +4,17 @@ import time
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-import fitz
+
+# Sửa import fitz để tránh conflict với folder frontend
+try:
+    import PyMuPDF as fitz
+except ImportError:
+    try:
+        import fitz
+    except ImportError:
+        print("Cần cài đặt PyMuPDF: pip install PyMuPDF")
+        raise
+
 import google.generativeai as genai
 import sys
 
@@ -17,7 +27,7 @@ class PDFProcessingService:
         genai.configure(api_key=GEMINI_API_KEY)
         print("Dịch vụ xử lý PDF đã được khởi tạo")
         
-        # Template prompt được cải thiện để trích xuất related_documents
+        # Template prompt để Gemini chia chunk và tạo metadata JSON hoàn chỉnh
         self.chunking_prompt = """
 Bạn là chuyên gia phân tích và chia nhỏ văn bản pháp luật Việt Nam. 
 Nhiệm vụ của bạn là chia văn bản thành các chunk hợp lý và trích xuất thông tin về các văn bản liên quan.
@@ -144,7 +154,9 @@ Trả về JSON theo format sau (chú ý phân tích kỹ để điền đầy �
     "description": "Nghị định hướng dẫn thi hành một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
   }}
 ]
-```"""
+```
+LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH VỰC PHÁP LUẬT VIỆT NAM, HÃY TRẢ VỀ MỘT JSON RỖNG VỚI CÁC TRƯỜNG BẮT BUỘC."""
+
     def extract_pdf_content(self, pdf_path: str) -> str:
         """Trích xuất nội dung từ file PDF"""
         try:
