@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   MessageSquare, Book, Award, Users, ArrowRight, Check, ChevronRight,
-  Shield, Search, Clock, FileText, Star, User, LogOut, ChevronDown
+  Shield, Search, Clock, FileText, Star, User, LogOut, ChevronDown, Settings
 } from 'lucide-react';
 import { useChat } from '../ChatContext';
 import { getAuthData, clearAuthData, showConfirm, showSuccess } from '../utils/formatUtils';
@@ -192,8 +192,8 @@ const LandingPage = () => {
                         }}
                         className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                       >
-                        <User size={16} className="mr-2 text-gray-500" />
-                        <span>Hồ sơ cá nhân</span>
+                        <Settings size={16} className="mr-2 text-gray-500" />
+                        <span>Cài đặt</span>
                       </button>
                       <button
                         onClick={() => {

@@ -1044,7 +1044,7 @@ const DocumentsTab = ({
                     <option value="">-- Chọn văn bản --</option>
                     {documents.map(doc => (
                         <option key={doc.doc_id} value={doc.doc_id}>
-                            {doc.doc_id} - {doc.doc_title}
+                            {doc.doc_id}
                         </option>
                     ))}
                 </select>
@@ -1119,9 +1119,7 @@ const DocumentsTab = ({
                                             <div className="bg-gray-50 p-3 rounded border">
                                                 <p className="text-xs font-medium text-gray-600 mb-2">Nội dung:</p>
                                                 <div className="text-sm text-gray-700 max-h-40 overflow-y-auto whitespace-pre-wrap break-words">
-                                                    {chunk.content.length > 500 
-                                                        ? chunk.content.substring(0, 500) + '...' 
-                                                        : chunk.content}
+                                                    {chunk.content}
                                                 </div>
                                             </div>
                                         )}
