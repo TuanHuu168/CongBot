@@ -13,12 +13,14 @@ from pathlib import Path
 import threading
 import queue
 import numpy as np
+import tempfile
 
 # Import services
 from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from services.benchmark_service import benchmark_service
 from services.activity_service import activity_service, ActivityType
+from services.pdf_processing_service import pdf_processing_service
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
 
@@ -32,6 +34,9 @@ def now_utc():
 
 benchmark_progress = {}
 benchmark_results_cache = {}
+
+# Global dictionary để theo dõi trạng thái xử lý PDF
+pdf_processing_status = {}
 
 router = APIRouter(prefix="", tags=["admin"], responses={404: {"description": "Not found"}})
 
@@ -459,7 +464,7 @@ async def upload_document(
     metadata: str = Form(...),
     chunks: List[UploadFile] = File(...)
 ):
-    """Upload document với embedding tự động vào ChromaDB"""
+    """Upload document chunks đã chia sẵn với embedding tự động vào ChromaDB"""
     try:
         # Parse metadata từ form
         doc_metadata = json.loads(metadata)
@@ -535,7 +540,8 @@ async def upload_document(
             "amended_by": None,
             "retroactive": False,
             "retroactive_date": None,
-            "chunks": saved_chunks
+            "chunks": saved_chunks,
+            "related_documents": []
         }
         
         # Lưu metadata.json
@@ -580,6 +586,274 @@ async def upload_document(
             pass
         handle_error("upload_document", e)
 
+# PDF Processing endpoints (LOGIC MỚI: chỉ chia chunk, không embed)
+@router.post("/upload-pdf-document")
+async def upload_pdf_document(
+    file: UploadFile = File(...),
+    doc_id: str = Form(...),
+    doc_type: str = Form(...),
+    doc_title: str = Form(...),
+    effective_date: str = Form(...),
+    document_scope: str = Form("Quốc gia")
+):
+    """Upload PDF và để hệ thống tự động chia chunk bằng Gemini (chưa embed ChromaDB)"""
+    
+    if not file.filename.lower().endswith('.pdf'):
+        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF")
+    
+    processing_id = str(uuid.uuid4())
+    
+    try:
+        # Khởi tạo trạng thái xử lý
+        pdf_processing_status[processing_id] = {
+            "status": "starting",
+            "progress": 0,
+            "message": "Đang khởi tạo xử lý...",
+            "doc_id": doc_id,
+            "start_time": datetime.now().isoformat(),
+            "embedded_to_chroma": False,  # Trạng thái embedding
+            "approved": False  # Trạng thái approve của admin
+        }
+        
+        print(f"Bắt đầu xử lý PDF upload cho doc_id: {doc_id}")
+        
+        # Đọc file PDF vào memory
+        content = await file.read()
+        
+        # Lưu PDF tạm thời
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
+            temp_file.write(content)
+            temp_pdf_path = temp_file.name
+        
+        pdf_processing_status[processing_id].update({
+            "status": "processing",
+            "progress": 20,
+            "message": "Đang trích xuất nội dung PDF..."
+        })
+        
+        # Chuẩn bị metadata
+        doc_metadata = {
+            "doc_id": doc_id,
+            "doc_type": doc_type,
+            "doc_title": doc_title,
+            "effective_date": effective_date,
+            "document_scope": document_scope
+        }
+        
+        # Xử lý PDF trong background thread
+        def process_pdf_background():
+            try:
+                pdf_processing_status[processing_id].update({
+                    "status": "processing",
+                    "progress": 40,
+                    "message": "Đang gọi Gemini để chia chunk..."
+                })
+                
+                # Gọi service xử lý PDF (CHỈ chia chunk, KHÔNG embed)
+                result = pdf_processing_service.process_pdf_document(temp_pdf_path, doc_metadata)
+                
+                pdf_processing_status[processing_id].update({
+                    "status": "completed",
+                    "progress": 100,
+                    "message": f"Hoàn thành chia chunk! {result['processing_summary']}",
+                    "result": result,
+                    "end_time": datetime.now().isoformat(),
+                    "embedded_to_chroma": False,  # Chưa embed
+                    "approved": False  # Chờ admin approve
+                })
+                
+                log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
+                                  f"Chia chunk PDF tự động: {doc_id} - {result['chunks_count']} chunks (chờ approve)",
+                                  metadata={
+                                      "doc_id": doc_id,
+                                      "chunks_count": result['chunks_count'],
+                                      "related_docs_count": result['related_documents_count'],
+                                      "method": "pdf_auto_chunk",
+                                      "status": "pending_approval"
+                                  })
+                    
+            except Exception as e:
+                pdf_processing_status[processing_id].update({
+                    "status": "failed",
+                    "progress": 0,
+                    "message": f"Lỗi: {str(e)}",
+                    "error": str(e),
+                    "end_time": datetime.now().isoformat(),
+                    "embedded_to_chroma": False,
+                    "approved": False
+                })
+                
+                log_admin_activity(ActivityType.SYSTEM_STATUS,
+                                  f"Lỗi chia chunk PDF: {doc_id} - {str(e)}",
+                                  metadata={
+                                      "doc_id": doc_id,
+                                      "error": str(e),
+                                      "method": "pdf_auto_chunk"
+                                  })
+            finally:
+                # Xóa file tạm
+                try:
+                    os.unlink(temp_pdf_path)
+                except:
+                    pass
+        
+        # Chạy background processing
+        thread = threading.Thread(target=process_pdf_background)
+        thread.daemon = True
+        thread.start()
+        
+        return {
+            "message": "Đã bắt đầu xử lý PDF",
+            "processing_id": processing_id,
+            "doc_id": doc_id
+        }
+        
+    except Exception as e:
+        # Cleanup
+        try:
+            os.unlink(temp_pdf_path)
+        except:
+            pass
+            
+        if processing_id in pdf_processing_status:
+            del pdf_processing_status[processing_id]
+            
+        handle_error("upload_pdf_document", e)
+
+@router.get("/pdf-processing-status/{processing_id}")
+async def get_pdf_processing_status(processing_id: str):
+    """Lấy trạng thái xử lý PDF"""
+    if processing_id not in pdf_processing_status:
+        raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
+    
+    return pdf_processing_status[processing_id]
+
+@router.post("/approve-pdf-chunks/{processing_id}")
+async def approve_pdf_chunks(processing_id: str):
+    """Admin approve và embed chunks vào ChromaDB"""
+    if processing_id not in pdf_processing_status:
+        raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
+    
+    status = pdf_processing_status[processing_id]
+    
+    if status.get("status") != "completed":
+        raise HTTPException(status_code=400, detail="Chỉ có thể approve PDF đã xử lý thành công")
+    
+    if status.get("embedded_to_chroma"):
+        raise HTTPException(status_code=400, detail="PDF này đã được embed vào ChromaDB")
+    
+    try:
+        doc_id = status.get("doc_id")
+        result = status.get("result", {})
+        metadata = result.get("metadata", {})
+        chunks = metadata.get("chunks", [])
+        
+        print(f"Admin approve và embed PDF {doc_id} vào ChromaDB...")
+        
+        # Chuẩn bị dữ liệu để embed
+        ids_to_add = []
+        documents_to_add = []
+        metadatas_to_add = []
+        
+        for i, chunk_info in enumerate(chunks):
+            # Đọc nội dung chunk
+            chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
+            if os.path.exists(chunk_path):
+                with open(chunk_path, 'r', encoding='utf-8') as f:
+                    chunk_content = f.read()
+                
+                # Chuẩn bị cho ChromaDB
+                document_text = f"passage: {chunk_content}"
+                chunk_metadata = {
+                    "doc_id": doc_id,
+                    "doc_type": metadata.get("doc_type", ""),
+                    "doc_title": metadata.get("doc_title", ""),
+                    "effective_date": metadata.get("effective_date", ""),
+                    "document_scope": metadata.get("document_scope", ""),
+                    "chunk_id": chunk_info.get("chunk_id"),
+                    "chunk_type": chunk_info.get("chunk_type"),
+                    "content_summary": chunk_info.get("content_summary"),
+                    "chunk_index": str(i),
+                    "total_chunks": str(len(chunks))
+                }
+                
+                ids_to_add.append(chunk_info.get("chunk_id"))
+                documents_to_add.append(document_text)
+                metadatas_to_add.append(chunk_metadata)
+        
+        # Embedding vào ChromaDB
+        success = chroma_client.add_documents_to_main(
+            ids=ids_to_add,
+            documents=documents_to_add,
+            metadatas=metadatas_to_add
+        )
+        
+        if not success:
+            raise HTTPException(status_code=500, detail="Lỗi khi embedding vào ChromaDB")
+        
+        # Cập nhật trạng thái
+        pdf_processing_status[processing_id].update({
+            "embedded_to_chroma": True,
+            "approved": True,
+            "approved_at": datetime.now().isoformat(),
+            "message": f"Đã approve và embed {len(chunks)} chunks vào ChromaDB"
+        })
+        
+        log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
+                          f"Admin approve và embed PDF: {doc_id} - {len(chunks)} chunks",
+                          metadata={
+                              "doc_id": doc_id,
+                              "chunks_count": len(chunks),
+                              "method": "pdf_approved",
+                              "processing_id": processing_id
+                          })
+        
+        return {
+            "message": f"Đã approve và embed {len(chunks)} chunks vào ChromaDB thành công",
+            "doc_id": doc_id,
+            "chunks_embedded": len(chunks)
+        }
+        
+    except Exception as e:
+        handle_error("approve_pdf_chunks", e)
+
+@router.post("/regenerate-pdf-chunks/{processing_id}")
+async def regenerate_pdf_chunks(processing_id: str):
+    """Tạo lại chunks cho PDF (yêu cầu upload lại)"""
+    if processing_id not in pdf_processing_status:
+        raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
+    
+    old_status = pdf_processing_status[processing_id]
+    doc_id = old_status.get("doc_id")
+    
+    try:
+        # Xóa thư mục cũ nếu chưa được embed
+        if not old_status.get("embedded_to_chroma", False):
+            doc_dir = os.path.join(DATA_DIR, doc_id)
+            if os.path.exists(doc_dir):
+                shutil.rmtree(doc_dir)
+                print(f"Đã xóa thư mục cũ: {doc_dir}")
+        
+        # Xóa trạng thái xử lý cũ
+        del pdf_processing_status[processing_id]
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Admin yêu cầu tạo lại chunks cho {doc_id}",
+                          metadata={
+                              "doc_id": doc_id,
+                              "old_processing_id": processing_id,
+                              "action": "regenerate_request"
+                          })
+        
+        return {
+            "message": "Đã xóa kết quả cũ. Vui lòng upload lại file PDF để tạo chunks mới",
+            "doc_id": doc_id,
+            "old_processing_id": processing_id
+        }
+        
+    except Exception as e:
+        handle_error("regenerate_pdf_chunks", e)
+
 @router.get("/documents")
 async def list_documents():
     try:
@@ -595,6 +869,19 @@ async def list_documents():
                 try:
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
+                    
+                    # Kiểm tra xem document có trong ChromaDB không
+                    embedded_in_chroma = False
+                    try:
+                        collection = chroma_client.get_collection()
+                        # Kiểm tra chunk đầu tiên
+                        first_chunk = metadata.get("chunks", [])
+                        if first_chunk:
+                            first_chunk_id = first_chunk[0].get("chunk_id")
+                            result = collection.get(ids=[first_chunk_id])
+                            embedded_in_chroma = len(result.get("ids", [])) > 0
+                    except:
+                        embedded_in_chroma = False
                         
                     doc_info = {
                         "doc_id": metadata.get("doc_id", doc_dir),
@@ -602,7 +889,9 @@ async def list_documents():
                         "doc_title": metadata.get("doc_title", "Unknown"),
                         "effective_date": metadata.get("effective_date", "Unknown"),
                         "status": metadata.get("status", "active"),
-                        "chunks_count": len(metadata.get("chunks", []))
+                        "chunks_count": len(metadata.get("chunks", [])),
+                        "embedded_in_chroma": embedded_in_chroma,
+                        "related_documents_count": len(metadata.get("related_documents", []))
                     }
                     
                     documents.append(doc_info)
@@ -646,6 +935,68 @@ async def get_document(doc_id: str):
         return metadata
     except Exception as e:
         handle_error("get_document", e)
+
+@router.get("/documents/{doc_id}/chunks")
+async def get_document_chunks(doc_id: str):
+    """Lấy thông tin chi tiết các chunks của một document"""
+    try:
+        doc_dir = os.path.join(DATA_DIR, doc_id)
+        metadata_path = os.path.join(doc_dir, "metadata.json")
+        
+        if not os.path.exists(doc_dir) or not os.path.exists(metadata_path):
+            raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
+        
+        # Đọc metadata
+        with open(metadata_path, 'r', encoding='utf-8') as f:
+            metadata = json.load(f)
+        
+        # Đọc nội dung từng chunk
+        chunks_detail = []
+        for chunk_info in metadata.get("chunks", []):
+            chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
+            
+            chunk_detail = {
+                "chunk_id": chunk_info.get("chunk_id"),
+                "chunk_type": chunk_info.get("chunk_type"),
+                "content_summary": chunk_info.get("content_summary"),
+                "file_path": chunk_info.get("file_path"),
+                "content": "",
+                "word_count": 0,
+                "exists": False
+            }
+            
+            if os.path.exists(chunk_path):
+                try:
+                    with open(chunk_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    chunk_detail.update({
+                        "content": content,
+                        "word_count": len(content.split()),
+                        "exists": True
+                    })
+                except Exception as e:
+                    print(f"Lỗi đọc chunk {chunk_path}: {str(e)}")
+            
+            chunks_detail.append(chunk_detail)
+        
+        return {
+            "doc_id": doc_id,
+            "doc_info": {
+                "doc_type": metadata.get("doc_type"),
+                "doc_title": metadata.get("doc_title"),
+                "effective_date": metadata.get("effective_date"),
+                "status": metadata.get("status"),
+                "total_chunks": len(chunks_detail),
+                "related_documents": metadata.get("related_documents", [])
+            },
+            "chunks": chunks_detail
+        }
+        
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        handle_error("get_document_chunks", e)
 
 @router.delete("/documents/{doc_id}")
 async def delete_document(doc_id: str, confirm: bool = False):
@@ -691,7 +1042,7 @@ async def delete_document(doc_id: str, confirm: bool = False):
     except Exception as e:
         handle_error("delete_document", e)
 
-# Benchmark endpoints đầy đủ
+# Benchmark endpoints (giữ nguyên logic cũ)
 @router.post("/upload-benchmark")
 async def upload_benchmark_file(file: UploadFile = File(...)):
     try:
@@ -1099,7 +1450,7 @@ async def list_benchmark_files():
     except Exception as e:
         handle_error("list_benchmark_files", e)
         
-# User management endpoints cho admin
+# User management endpoints cho admin (giữ nguyên logic cũ)
 @router.get("/users")
 async def get_all_users(limit: int = 100, skip: int = 0):
     """Lấy danh sách tất cả người dùng"""
