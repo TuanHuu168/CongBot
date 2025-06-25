@@ -20,7 +20,7 @@ from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from services.benchmark_service import benchmark_service
 from services.activity_service import activity_service, ActivityType
-from services.pdf_processing_service import pdf_processing_service
+from services.document_processing_service import document_processing_service
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
 
@@ -36,7 +36,7 @@ benchmark_progress = {}
 benchmark_results_cache = {}
 
 # Global dictionary để theo dõi trạng thái xử lý PDF
-pdf_processing_status = {}
+document_processing_status = {}
 
 router = APIRouter(prefix="", tags=["admin"], responses={404: {"description": "Not found"}})
 
@@ -464,7 +464,6 @@ async def upload_document(
     metadata: str = Form(...),
     chunks: List[UploadFile] = File(...)
 ):
-    """Upload document chunks đã chia sẵn với embedding tự động vào ChromaDB"""
     try:
         # Parse metadata từ form
         doc_metadata = json.loads(metadata)
@@ -586,9 +585,8 @@ async def upload_document(
             pass
         handle_error("upload_document", e)
 
-# PDF Processing endpoints (LOGIC MỚI: chỉ chia chunk, không embed)
-@router.post("/upload-pdf-document")
-async def upload_pdf_document(
+@router.post("/upload-document-auto")
+async def upload_document_auto(
     file: UploadFile = File(...),
     doc_id: str = Form(...),
     doc_type: str = Form(...),
@@ -596,39 +594,43 @@ async def upload_pdf_document(
     effective_date: str = Form(...),
     document_scope: str = Form("Quốc gia")
 ):
-    """Upload PDF và để hệ thống tự động chia chunk bằng Gemini (chưa embed ChromaDB)"""
+    """Upload tài liệu (PDF/Word) và để hệ thống tự động chia chunk bằng Gemini với auto-detection"""
     
-    if not file.filename.lower().endswith('.pdf'):
-        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF")
+    # Kiểm tra file type
+    file_extension = os.path.splitext(file.filename)[1].lower()
+    if file_extension not in ['.pdf', '.doc', '.docx']:
+        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF, Word (.doc, .docx)")
     
     processing_id = str(uuid.uuid4())
     
     try:
         # Khởi tạo trạng thái xử lý
-        pdf_processing_status[processing_id] = {
+        document_processing_status[processing_id] = {
             "status": "starting",
             "progress": 0,
             "message": "Đang khởi tạo xử lý...",
             "doc_id": doc_id,
+            "file_type": file_extension,
+            "original_filename": file.filename,
             "start_time": datetime.now().isoformat(),
-            "embedded_to_chroma": False,  # Trạng thái embedding
-            "approved": False  # Trạng thái approve của admin
+            "embedded_to_chroma": False,
+            "approved": False
         }
         
-        print(f"Bắt đầu xử lý PDF upload cho doc_id: {doc_id}")
+        print(f"Bắt đầu xử lý {file_extension} upload cho doc_id: {doc_id}")
         
-        # Đọc file PDF vào memory
+        # Đọc file vào memory
         content = await file.read()
         
-        # Lưu PDF tạm thời
-        with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
+        # Lưu file tạm thời với extension phù hợp
+        with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
             temp_file.write(content)
-            temp_pdf_path = temp_file.name
+            temp_file_path = temp_file.name
         
-        pdf_processing_status[processing_id].update({
+        document_processing_status[processing_id].update({
             "status": "processing",
             "progress": 20,
-            "message": "Đang trích xuất nội dung PDF..."
+            "message": f"Đang trích xuất nội dung {file_extension.upper()}..."
         })
         
         # Chuẩn bị metadata
@@ -640,40 +642,44 @@ async def upload_pdf_document(
             "document_scope": document_scope
         }
         
-        # Xử lý PDF trong background thread
-        def process_pdf_background():
+        # Xử lý tài liệu trong background thread
+        def process_document_background():
             try:
-                pdf_processing_status[processing_id].update({
+                document_processing_status[processing_id].update({
                     "status": "processing",
                     "progress": 40,
-                    "message": "Đang gọi Gemini để chia chunk..."
+                    "message": "Đang gọi Gemini để phân tích và auto-detect metadata..."
                 })
                 
-                # Gọi service xử lý PDF (CHỈ chia chunk, KHÔNG embed)
-                result = pdf_processing_service.process_pdf_document(temp_pdf_path, doc_metadata)
+                # Gọi service xử lý tài liệu (CHỈ chia chunk, KHÔNG embed)
+                result = document_processing_service.process_document(temp_file_path, doc_metadata)
                 
-                pdf_processing_status[processing_id].update({
+                document_processing_status[processing_id].update({
                     "status": "completed",
                     "progress": 100,
-                    "message": f"Hoàn thành chia chunk! {result['processing_summary']}",
+                    "message": f"Hoàn thành phân tích! {result['processing_summary']}",
                     "result": result,
                     "end_time": datetime.now().isoformat(),
-                    "embedded_to_chroma": False,  # Chưa embed
-                    "approved": False  # Chờ admin approve
+                    "embedded_to_chroma": False,
+                    "approved": False
                 })
                 
                 log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
-                                  f"Chia chunk PDF tự động: {doc_id} - {result['chunks_count']} chunks (chờ approve)",
+                                  f"Chia chunk {file_extension.upper()} tự động: {result['doc_id']} - {result['chunks_count']} chunks (chờ approve)",
                                   metadata={
-                                      "doc_id": doc_id,
+                                      "doc_id": result['doc_id'],
+                                      "original_doc_id": doc_id,
                                       "chunks_count": result['chunks_count'],
                                       "related_docs_count": result['related_documents_count'],
-                                      "method": "pdf_auto_chunk",
-                                      "status": "pending_approval"
+                                      "method": f"{file_extension}_auto_chunk",
+                                      "status": "pending_approval",
+                                      "auto_detected": result.get('auto_detected', {}),
+                                      "file_type": file_extension,
+                                      "original_filename": file.filename
                                   })
                     
             except Exception as e:
-                pdf_processing_status[processing_id].update({
+                document_processing_status[processing_id].update({
                     "status": "failed",
                     "progress": 0,
                     "message": f"Lỗi: {str(e)}",
@@ -684,71 +690,79 @@ async def upload_pdf_document(
                 })
                 
                 log_admin_activity(ActivityType.SYSTEM_STATUS,
-                                  f"Lỗi chia chunk PDF: {doc_id} - {str(e)}",
+                                  f"Lỗi chia chunk {file_extension.upper()}: {doc_id} - {str(e)}",
                                   metadata={
                                       "doc_id": doc_id,
                                       "error": str(e),
-                                      "method": "pdf_auto_chunk"
+                                      "method": f"{file_extension}_auto_chunk",
+                                      "file_type": file_extension,
+                                      "original_filename": file.filename
                                   })
             finally:
                 # Xóa file tạm
                 try:
-                    os.unlink(temp_pdf_path)
+                    os.unlink(temp_file_path)
                 except:
                     pass
         
         # Chạy background processing
-        thread = threading.Thread(target=process_pdf_background)
+        thread = threading.Thread(target=process_document_background)
         thread.daemon = True
         thread.start()
         
         return {
-            "message": "Đã bắt đầu xử lý PDF",
+            "message": f"Đã bắt đầu xử lý {file_extension.upper()}",
             "processing_id": processing_id,
-            "doc_id": doc_id
+            "doc_id": doc_id,
+            "file_type": file_extension,
+            "original_filename": file.filename
         }
         
     except Exception as e:
         # Cleanup
         try:
-            os.unlink(temp_pdf_path)
+            os.unlink(temp_file_path)
         except:
             pass
             
-        if processing_id in pdf_processing_status:
-            del pdf_processing_status[processing_id]
+        if processing_id in document_processing_status:
+            del document_processing_status[processing_id]
             
-        handle_error("upload_pdf_document", e)
+        handle_error("upload_document_auto", e)
 
-@router.get("/pdf-processing-status/{processing_id}")
-async def get_pdf_processing_status(processing_id: str):
-    """Lấy trạng thái xử lý PDF"""
-    if processing_id not in pdf_processing_status:
+@router.get("/document-processing-status/{processing_id}")
+async def get_document_processing_status(processing_id: str):
+    """Lấy trạng thái xử lý tài liệu"""
+    if processing_id not in document_processing_status:
         raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
     
-    return pdf_processing_status[processing_id]
+    return document_processing_status[processing_id]
 
-@router.post("/approve-pdf-chunks/{processing_id}")
-async def approve_pdf_chunks(processing_id: str):
+@router.post("/approve-document-chunks/{processing_id}")
+async def approve_document_chunks(processing_id: str):
     """Admin approve và embed chunks vào ChromaDB"""
-    if processing_id not in pdf_processing_status:
+    if processing_id not in document_processing_status:
         raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
     
-    status = pdf_processing_status[processing_id]
+    status = document_processing_status[processing_id]
     
     if status.get("status") != "completed":
-        raise HTTPException(status_code=400, detail="Chỉ có thể approve PDF đã xử lý thành công")
+        raise HTTPException(status_code=400, detail="Chỉ có thể approve tài liệu đã xử lý thành công")
     
     if status.get("embedded_to_chroma"):
-        raise HTTPException(status_code=400, detail="PDF này đã được embed vào ChromaDB")
+        raise HTTPException(status_code=400, detail="Tài liệu này đã được embed vào ChromaDB")
     
     try:
         doc_id = status.get("doc_id")
         result = status.get("result", {})
         metadata = result.get("metadata", {})
         chunks = metadata.get("chunks", [])
+        file_type = status.get("file_type", "document")
         
-        print(f"Admin approve và embed PDF {doc_id} vào ChromaDB...")
+        # Sử dụng doc_id từ result (có thể đã được auto-detect)
+        final_doc_id = result.get("doc_id", doc_id)
+        
+        print(f"Admin approve và embed {file_type.upper()} {final_doc_id} vào ChromaDB...")
         
         # Chuẩn bị dữ liệu để embed
         ids_to_add = []
@@ -765,7 +779,7 @@ async def approve_pdf_chunks(processing_id: str):
                 # Chuẩn bị cho ChromaDB
                 document_text = f"passage: {chunk_content}"
                 chunk_metadata = {
-                    "doc_id": doc_id,
+                    "doc_id": final_doc_id,
                     "doc_type": metadata.get("doc_type", ""),
                     "doc_title": metadata.get("doc_title", ""),
                     "effective_date": metadata.get("effective_date", ""),
@@ -792,7 +806,7 @@ async def approve_pdf_chunks(processing_id: str):
             raise HTTPException(status_code=500, detail="Lỗi khi embedding vào ChromaDB")
         
         # Cập nhật trạng thái
-        pdf_processing_status[processing_id].update({
+        document_processing_status[processing_id].update({
             "embedded_to_chroma": True,
             "approved": True,
             "approved_at": datetime.now().isoformat(),
@@ -800,59 +814,71 @@ async def approve_pdf_chunks(processing_id: str):
         })
         
         log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
-                          f"Admin approve và embed PDF: {doc_id} - {len(chunks)} chunks",
+                          f"Admin approve và embed {file_type.upper()}: {final_doc_id} - {len(chunks)} chunks",
                           metadata={
-                              "doc_id": doc_id,
+                              "doc_id": final_doc_id,
                               "chunks_count": len(chunks),
-                              "method": "pdf_approved",
-                              "processing_id": processing_id
+                              "method": f"{file_type}_approved",
+                              "processing_id": processing_id,
+                              "file_type": file_type
                           })
         
         return {
             "message": f"Đã approve và embed {len(chunks)} chunks vào ChromaDB thành công",
-            "doc_id": doc_id,
-            "chunks_embedded": len(chunks)
+            "doc_id": final_doc_id,
+            "chunks_embedded": len(chunks),
+            "file_type": file_type
         }
         
     except Exception as e:
-        handle_error("approve_pdf_chunks", e)
+        handle_error("approve_document_chunks", e)
 
-@router.post("/regenerate-pdf-chunks/{processing_id}")
-async def regenerate_pdf_chunks(processing_id: str):
-    """Tạo lại chunks cho PDF (yêu cầu upload lại)"""
-    if processing_id not in pdf_processing_status:
+@router.post("/regenerate-document-chunks/{processing_id}")
+async def regenerate_document_chunks(processing_id: str):
+    """Tạo lại chunks cho tài liệu (yêu cầu upload lại)"""
+    if processing_id not in document_processing_status:
         raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
     
-    old_status = pdf_processing_status[processing_id]
+    old_status = document_processing_status[processing_id]
     doc_id = old_status.get("doc_id")
+    file_type = old_status.get("file_type", "document")
+    
+    # Lấy doc_id cuối cùng từ result nếu có (auto-detected)
+    result = old_status.get("result", {})
+    final_doc_id = result.get("doc_id", doc_id)
     
     try:
         # Xóa thư mục cũ nếu chưa được embed
         if not old_status.get("embedded_to_chroma", False):
-            doc_dir = os.path.join(DATA_DIR, doc_id)
+            doc_dir = os.path.join(DATA_DIR, final_doc_id)
             if os.path.exists(doc_dir):
                 shutil.rmtree(doc_dir)
                 print(f"Đã xóa thư mục cũ: {doc_dir}")
         
         # Xóa trạng thái xử lý cũ
-        del pdf_processing_status[processing_id]
+        del document_processing_status[processing_id]
         
         log_admin_activity(ActivityType.SYSTEM_STATUS,
-                          f"Admin yêu cầu tạo lại chunks cho {doc_id}",
+                          f"Admin yêu cầu tạo lại chunks cho {file_type.upper()} {final_doc_id}",
                           metadata={
-                              "doc_id": doc_id,
+                              "doc_id": final_doc_id,
+                              "original_doc_id": doc_id,
                               "old_processing_id": processing_id,
-                              "action": "regenerate_request"
+                              "action": "regenerate_request",
+                              "file_type": file_type
                           })
         
         return {
-            "message": "Đã xóa kết quả cũ. Vui lòng upload lại file PDF để tạo chunks mới",
-            "doc_id": doc_id,
-            "old_processing_id": processing_id
+            "message": f"Đã xóa kết quả cũ. Vui lòng upload lại file {file_type.upper()} để tạo chunks mới",
+            "doc_id": final_doc_id,
+            "original_doc_id": doc_id,
+            "old_processing_id": processing_id,
+            "file_type": file_type
         }
         
     except Exception as e:
-        handle_error("regenerate_pdf_chunks", e)
+        handle_error("regenerate_document_chunks", e)
+
 
 @router.get("/documents")
 async def list_documents():
