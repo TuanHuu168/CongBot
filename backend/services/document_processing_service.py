@@ -9,18 +9,17 @@ from docx import Document as DocxDocument
 import olefile
 import zipfile
 
-
-import google.generativeai as genai
+from google import genai
 import sys
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import GEMINI_API_KEY, DATA_DIR
+from config import GEMINI_API_KEY, GEMINI_MODEL, DATA_DIR
 
 class DocumentProcessingService:
     def __init__(self):
         """Khởi tạo dịch vụ xử lý tài liệu"""
-        genai.configure(api_key=GEMINI_API_KEY)
-        print("Dịch vụ xử lý tài liệu đã được khởi tạo - hỗ trợ PDF và Word")
+        self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
+        print(f"Dịch vụ xử lý tài liệu đã được khởi tạo - hỗ trợ PDF và Word với model: {GEMINI_MODEL}")
         
         # Template prompt cho Gemini
         self.chunking_prompt = """
@@ -35,7 +34,7 @@ Nhiệm vụ của bạn là chia văn bản thành các chunk hợp lý và tr�
    - Tách riêng phụ lục, biểu mẫu nếu có
 
 2. **Quy tắc đặt tên chunk_id:**
-   - Format: {doc_id}_{loại}
+   - Format: doc_id_loai
    - Loại: preamble, art[số], appendix, form
    - Ví dụ: 47_2009_TTLT_BTC_BLĐTBXH_preamble, 47_2009_TTLT_BTC_BLĐTBXH_art1_2
 
@@ -146,10 +145,6 @@ Nếu văn bản có tiêu đề "THÔNG TƯ 47/2009/TTLT-BTC-BLĐTBXH", thì:
 LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH VỰC PHÁP LUẬT VIỆT NAM, HÃY TRẢ VỀ MỘT JSON RỖNG VỚI CÁC TRƯỜNG BẮT BUỘC."""
 
     def extract_pdf_content(self, file_path: str) -> str:
-        """Trích xuất nội dung từ file PDF"""
-        if not fitz:
-            raise Exception("PyMuPDF không được cài đặt. Cần cài: pip install PyMuPDF")
-            
         try:
             print(f"Đang trích xuất nội dung từ PDF: {file_path}")
             
@@ -264,7 +259,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
     def chunk_content_with_gemini(self, content: str, doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
         """Sử dụng Gemini để chia chunk văn bản và auto-detect metadata"""
         try:
-            print("Đang gọi Gemini để phân tích văn bản, chia chunk và auto-detect metadata...")
+            print(f"Đang gọi Gemini model {GEMINI_MODEL} để phân tích văn bản, chia chunk và auto-detect metadata...")
             
             # Tạo prompt với hướng dẫn chi tiết về auto-detection
             prompt = self.chunking_prompt.format(
@@ -276,20 +271,15 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
                 document_scope=doc_metadata.get('document_scope', 'Quốc gia')
             )
             
-            print("Đã tạo prompt để phân tích văn bản với auto-detection")
+            print(f"Đã tạo prompt để phân tích văn bản với auto-detection using model: {GEMINI_MODEL}")
             
-            # Gọi Gemini API với temperature thấp để có kết quả ổn định
-            model = genai.GenerativeModel('gemini-2.0-flash')
-            response = model.generate_content(
-                prompt,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=0.1,  # Giảm tính ngẫu nhiên
-                    top_p=0.8,
-                    top_k=40,
-                )
+            # Gọi Gemini API theo cách tương tự generation_service
+            response = self.gemini_client.models.generate_content(
+                model=GEMINI_MODEL,
+                contents=prompt
             )
             
-            print("Đã nhận phản hồi từ Gemini với auto-detection")
+            print(f"Đã nhận phản hồi từ Gemini model {GEMINI_MODEL} với auto-detection")
             
             # Parse JSON response
             response_text = response.text.strip()
@@ -309,7 +299,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             chunks_count = len(result.get('chunks', []))
             related_docs_count = len(result.get('related_documents', []))
             
-            print(f"Gemini đã phân tích thành công:")
+            print(f"Gemini {GEMINI_MODEL} đã phân tích thành công:")
             print(f"  - Auto-detected doc_id: {result.get('doc_id', 'N/A')}")
             print(f"  - Auto-detected doc_type: {result.get('doc_type', 'N/A')}")
             print(f"  - Auto-detected doc_title: {result.get('doc_title', 'N/A')[:50]}...")
@@ -329,13 +319,13 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             return result
             
         except json.JSONDecodeError as je:
-            print(f"Lỗi parse JSON từ Gemini: {str(je)}")
+            print(f"Lỗi parse JSON từ Gemini {GEMINI_MODEL}: {str(je)}")
             print("Raw response từ Gemini:")
             print(response_text)
-            raise Exception(f"Gemini trả về JSON không hợp lệ: {str(je)}")
+            raise Exception(f"Gemini {GEMINI_MODEL} trả về JSON không hợp lệ: {str(je)}")
         except Exception as e:
-            print(f"Lỗi khi gọi Gemini: {str(e)}")
-            raise Exception(f"Lỗi xử lý với Gemini: {str(e)}")
+            print(f"Lỗi khi gọi Gemini {GEMINI_MODEL}: {str(e)}")
+            raise Exception(f"Lỗi xử lý với Gemini {GEMINI_MODEL}: {str(e)}")
 
     def _validate_and_clean_result(self, result: Dict[str, Any], original_metadata: Dict[str, Any]) -> Dict[str, Any]:
         """Validate và làm sạch kết quả từ Gemini với auto-detection"""
@@ -486,7 +476,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             content = self.extract_document_content(file_path)
             
             # Bước 2: Gọi Gemini để phân tích, chia chunk và auto-detect metadata
-            print("=== BƯỚC 2: PHÂN TÍCH VỚI GEMINI (AUTO-DETECTION) ===")
+            print(f"=== BƯỚC 2: PHÂN TÍCH VỚI GEMINI {GEMINI_MODEL} (AUTO-DETECTION) ===")
             chunked_result = self.chunk_content_with_gemini(content, doc_metadata)
             
             # Bước 3: Sử dụng auto-detected doc_id cho folder
@@ -531,6 +521,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"  - Effective Date (auto): {final_metadata['effective_date']}")
             print(f"  - Chunks: {len(saved_chunks)}")
             print(f"  - Related documents: {len(final_metadata['related_documents'])}")
+            print(f"  - Model used: {GEMINI_MODEL}")
             
             return {
                 "doc_id": final_doc_id,
