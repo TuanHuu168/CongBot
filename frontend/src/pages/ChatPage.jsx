@@ -409,7 +409,7 @@ const ChatPage = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Nhập câu hỏi của bạn về chính sách người có công..."
+                        placeholder="Nhập câu hỏi của bạn..."
                         className="w-full border border-gray-200 focus:border-green-600 focus:ring-1 focus:ring-green-600 focus:outline-none text-sm rounded-[20px] my-1 py-3.5 px-3 resize-none transition-all duration-200"
                         style={{
                           height: `${textareaHeight}px`,
