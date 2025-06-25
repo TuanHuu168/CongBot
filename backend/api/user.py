@@ -6,9 +6,7 @@ from datetime import datetime, timezone
 from uuid import uuid4
 from bson.objectid import ObjectId
 
-# Import database client
 from database.mongodb_client import mongodb_client
-# Import activity service
 from services.activity_service import activity_service, ActivityType
 
 router = APIRouter(
@@ -17,11 +15,10 @@ router = APIRouter(
     responses={404: {"description": "Not found"}},
 )
 
-# === MODELS ===
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
-    password: str  # Password gốc, sẽ được hash trước khi lưu
+    password: str
     fullName: str
     phoneNumber: Optional[str] = None
 
@@ -29,12 +26,22 @@ class UserLogin(BaseModel):
     username: str
     password: str
 
+class UserUpdate(BaseModel):
+    fullName: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phoneNumber: Optional[str] = None
+    personalInfo: Optional[str] = None
+    avatarUrl: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    currentPassword: str
+    newPassword: str
+
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user_id: str
 
-# === UTILITY FUNCTIONS ===
 def hash_password(password: str) -> str:
     salt = bcrypt.gensalt()
     hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
@@ -44,7 +51,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def save_user(user_data: dict) -> str:
-    # Hash password trước khi lưu
     if 'password' in user_data:
         user_data['password'] = hash_password(user_data['password'])
     
@@ -66,40 +72,36 @@ def get_user_by_id(user_id: str):
     except:
         return None
 
-# === ENDPOINTS ===
 @router.post("/register", response_model=dict)
 async def register_user(user: UserCreate):
     try:
         db = mongodb_client.get_database()
         
-        # Kiểm tra xem người dùng đã tồn tại chưa
         existing_user = get_user_by_username(user.username)
         if existing_user:
             raise HTTPException(status_code=400, detail="Tên người dùng đã tồn tại")
         
-        # Kiểm tra email đã tồn tại chưa
         existing_email = db.users.find_one({"email": user.email})
         if existing_email:
             raise HTTPException(status_code=400, detail="Email đã được sử dụng")
         
-        # Tạo người dùng mới với cấu trúc đồng nhất
         user_data = {
             "username": user.username,
             "email": user.email,
-            "password": user.password,  # Sẽ được hash trong save_user
+            "password": user.password,
             "fullName": user.fullName,
             "phoneNumber": user.phoneNumber or "",
+            "personalInfo": "",
+            "avatarUrl": "",
             "role": "user",
             "status": "active"
         }
         
-        # Lưu vào MongoDB và lấy ID
         user_id = save_user(user_data)
         
-        # Log activity
         activity_service.log_activity(
             ActivityType.LOGIN,
-            f"Người dùng mới đăng ký: {user.username}",
+            f"User registered: {user.username}",
             user_id=user_id,
             user_email=user.email,
             metadata={"action": "register", "username": user.username}
@@ -112,25 +114,20 @@ async def register_user(user: UserCreate):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in /users/register endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/login", response_model=Token)
 async def login_user(user_login: UserLogin):
     try:
-        # Tìm user trong database
         user = get_user_by_username(user_login.username)
         if not user:
             raise HTTPException(status_code=401, detail="Tên đăng nhập hoặc mật khẩu không đúng")
         
-        # Kiểm tra mật khẩu
         if not verify_password(user_login.password, user["password"]):
             raise HTTPException(status_code=401, detail="Tên đăng nhập hoặc mật khẩu không đúng")
         
-        # Tạo token đơn giản (trong thực tế nên dùng JWT)
         token = str(uuid4())
         
-        # Lưu token vào user và update last_login
         db = mongodb_client.get_database()
         db.users.update_one(
             {"_id": user["_id"]},
@@ -143,10 +140,9 @@ async def login_user(user_login: UserLogin):
             }
         )
         
-        # Log login activity
         activity_service.log_activity(
             ActivityType.LOGIN,
-            f"Người dùng {user_login.username} đã đăng nhập",
+            f"User login: {user_login.username}",
             user_id=str(user["_id"]),
             user_email=user.get("email"),
             metadata={
@@ -164,7 +160,6 @@ async def login_user(user_login: UserLogin):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in /users/login endpoint: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/{user_id}", response_model=dict)
@@ -174,14 +169,14 @@ async def get_user_info(user_id: str):
         if not user:
             raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
         
-        # Đảm bảo trả về cấu trúc đồng nhất với frontend expect
         user_data = {
             "id": str(user["_id"]),
             "username": user.get("username", ""),
             "email": user.get("email", ""),
-            # Đồng nhất field name - luôn dùng fullName
             "fullName": user.get("fullName", ""),
             "phoneNumber": user.get("phoneNumber", ""),
+            "personalInfo": user.get("personalInfo", ""),
+            "avatarUrl": user.get("avatarUrl", ""),
             "role": user.get("role", "user"),
             "status": user.get("status", "active"),
             "created_at": user.get("created_at", datetime.now(timezone.utc)).isoformat(),
@@ -189,17 +184,234 @@ async def get_user_info(user_id: str):
             "last_login": user.get("last_login", "")
         }
         
-        # Convert last_login to ISO string if it exists
         if user_data["last_login"] and hasattr(user_data["last_login"], 'isoformat'):
             user_data["last_login"] = user_data["last_login"].isoformat()
         elif not user_data["last_login"]:
             user_data["last_login"] = None
         
-        print(f"API trả về user data: {user_data}")  # Debug log
-        
         return user_data
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in get_user_info endpoint: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/{user_id}")
+async def update_user(user_id: str, user_update: UserUpdate):
+    try:
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        db = mongodb_client.get_database()
+        
+        update_data = {}
+        for field, value in user_update.dict(exclude_unset=True).items():
+            if value is not None:
+                update_data[field] = value
+        
+        if not update_data:
+            raise HTTPException(status_code=400, detail="Không có dữ liệu để cập nhật")
+        
+        if "email" in update_data:
+            existing_email = db.users.find_one({
+                "email": update_data["email"],
+                "_id": {"$ne": ObjectId(user_id)}
+            })
+            if existing_email:
+                raise HTTPException(status_code=400, detail="Email đã được sử dụng")
+        
+        update_data["updated_at"] = datetime.now(timezone.utc)
+        
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": update_data}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể cập nhật thông tin người dùng")
+        
+        activity_service.log_activity(
+            ActivityType.LOGIN,
+            f"User updated profile: {user.get('username')}",
+            user_id=user_id,
+            user_email=user.get("email"),
+            metadata={"action": "update_profile", "fields": list(update_data.keys())}
+        )
+        
+        return {"message": "Cập nhật thông tin thành công"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.put("/{user_id}/change-password")
+async def change_password(user_id: str, password_change: PasswordChange):
+    try:
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        if not verify_password(password_change.currentPassword, user["password"]):
+            raise HTTPException(status_code=401, detail="Mật khẩu hiện tại không đúng")
+        
+        if len(password_change.newPassword) < 6:
+            raise HTTPException(status_code=400, detail="Mật khẩu mới phải có ít nhất 6 ký tự")
+        
+        new_password_hash = hash_password(password_change.newPassword)
+        
+        db = mongodb_client.get_database()
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    "password": new_password_hash,
+                    "updated_at": datetime.now(timezone.utc)
+                },
+                "$unset": {"token": ""}
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=500, detail="Không thể thay đổi mật khẩu")
+        
+        activity_service.log_activity(
+            ActivityType.LOGIN,
+            f"User changed password: {user.get('username')}",
+            user_id=user_id,
+            user_email=user.get("email"),
+            metadata={"action": "change_password"}
+        )
+        
+        return {"message": "Đổi mật khẩu thành công"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/{user_id}")
+async def delete_user(user_id: str, confirm: bool = False):
+    try:
+        if not confirm:
+            raise HTTPException(status_code=400, detail="Vui lòng xác nhận việc xóa người dùng")
+        
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        db = mongodb_client.get_database()
+        
+        db.chats.update_many(
+            {"user_id": user_id},
+            {"$set": {"status": "deleted", "updated_at": datetime.now(timezone.utc)}}
+        )
+        
+        result = db.users.delete_one({"_id": ObjectId(user_id)})
+        
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể xóa người dùng")
+        
+        activity_service.log_activity(
+            ActivityType.LOGIN,
+            f"User deleted: {user.get('username')}",
+            user_id=user_id,
+            user_email=user.get("email"),
+            metadata={"action": "delete_user"}
+        )
+        
+        return {"message": f"Đã xóa người dùng {user.get('username')} thành công"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{user_id}/reset-password")
+async def reset_user_password(user_id: str, password_data: dict = Body(...)):
+    try:
+        new_password = password_data.get("new_password")
+        if not new_password or len(new_password) < 6:
+            raise HTTPException(status_code=400, detail="Mật khẩu mới phải có ít nhất 6 ký tự")
+        
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        hashed_password = hash_password(new_password)
+        
+        db = mongodb_client.get_database()
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    "password": hashed_password,
+                    "updated_at": datetime.now(timezone.utc)
+                },
+                "$unset": {"token": ""}
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể reset mật khẩu")
+        
+        activity_service.log_activity(
+            ActivityType.LOGIN,
+            f"Admin reset password for user: {user.get('username')}",
+            user_id=user_id,
+            user_email=user.get("email"),
+            metadata={"action": "admin_reset_password"}
+        )
+        
+        return {"message": f"Đã reset mật khẩu cho người dùng {user.get('username')} thành công"}
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/{user_id}/toggle-status")
+async def toggle_user_status(user_id: str):
+    try:
+        user = get_user_by_id(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="Không tìm thấy người dùng")
+        
+        current_status = user.get("status", "active")
+        new_status = "inactive" if current_status == "active" else "active"
+        
+        db = mongodb_client.get_database()
+        
+        if user.get("role") == "admin" and new_status == "inactive":
+            active_admin_count = db.users.count_documents({
+                "role": "admin",
+                "status": "active"
+            })
+            if active_admin_count <= 1:
+                raise HTTPException(status_code=400, detail="Không thể vô hiệu hóa admin cuối cùng")
+        
+        result = db.users.update_one(
+            {"_id": ObjectId(user_id)},
+            {
+                "$set": {
+                    "status": new_status,
+                    "updated_at": datetime.now(timezone.utc)
+                }
+            }
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Không thể thay đổi trạng thái người dùng")
+        
+        activity_service.log_activity(
+            ActivityType.LOGIN,
+            f"Admin changed user status: {user.get('username')} to {new_status}",
+            user_id=user_id,
+            user_email=user.get("email"),
+            metadata={"action": "toggle_status", "old_status": current_status, "new_status": new_status}
+        )
+        
+        return {
+            "message": f"Đã {new_status} người dùng {user.get('username')}",
+            "new_status": new_status
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

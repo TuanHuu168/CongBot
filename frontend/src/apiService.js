@@ -9,14 +9,12 @@ const apiClient = axios.create({
   headers: { 'Content-Type': 'application/json' }
 });
 
-// Request interceptor
 apiClient.interceptors.request.use(config => {
   const { token } = getAuthData();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Response interceptor
 apiClient.interceptors.response.use(
   response => response,
   error => {
@@ -44,16 +42,14 @@ const apiCall = async (method, url, data = null, config = {}) => {
   }
 };
 
-// User API
 export const userAPI = {
   getInfo: (userId) => apiCall('get', `/users/${userId}`),
   register: (userData) => apiCall('post', '/users/register', userData),
   login: (credentials) => apiCall('post', '/users/login', credentials),
   update: (userId, data) => apiCall('put', `/users/${userId}`, data),
-  changePassword: (userId, passwords) => apiCall('put', `/users/${userId}/password`, passwords)
+  changePassword: (userId, passwords) => apiCall('put', `/users/${userId}/change-password`, passwords)
 };
 
-// Chat API
 export const chatAPI = {
   ask: (query, sessionId = null) => {
     const { userId } = getAuthData();
@@ -85,7 +81,6 @@ export const chatAPI = {
   }
 };
 
-// Admin API
 export const adminAPI = {
   getStatus: () => apiCall('get', '/status'),
   clearCache: () => apiCall('post', '/clear-cache'),
@@ -94,8 +89,6 @@ export const adminAPI = {
   deleteDocument: (docId) => apiCall('delete', `/documents/${docId}?confirm=true`),
   getBenchmarkResults: () => apiCall('get', '/benchmark-results'),
   getStatistics: () => apiCall('get', '/statistics'),
-  
-  // User management endpoints
   getAllUsers: (limit = 100, skip = 0) => apiCall('get', `/users?limit=${limit}&skip=${skip}`),
   getUserDetail: (userId) => apiCall('get', `/users/${userId}`),
   updateUser: (userId, userData) => apiCall('put', `/users/${userId}`, userData),
@@ -104,7 +97,6 @@ export const adminAPI = {
   toggleUserStatus: (userId) => apiCall('post', `/users/${userId}/toggle-status`)
 };
 
-// Legacy exports
 export const askQuestion = chatAPI.ask;
 export const getUserChats = chatAPI.getAll;
 export const getChatMessages = chatAPI.getMessages;
@@ -113,5 +105,4 @@ export const deleteChat = chatAPI.delete;
 export const deleteChatsBatch = chatAPI.deleteBatch;
 export const getUserInfo = userAPI.getInfo;
 
-// Utility để get API base URL (có thể dùng ở các component khác)
 export const getApiBaseUrl = () => API_BASE_URL;
