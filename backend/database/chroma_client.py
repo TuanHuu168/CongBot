@@ -143,6 +143,8 @@ class ChromaDBClient:
     
     def add_documents_to_main(self, ids, documents, metadatas=None):
         """Thêm documents vào main collection"""
+        print(f"[CHROMA CLIENT] Embedding {len(ids)} documents using model: {EMBEDDING_MODEL_NAME}")
+        print(f"[CHROMA CLIENT] Device: {'cuda' if USE_GPU and torch.cuda.is_available() else 'cpu'}")
         collection = self.get_main_collection()
         if not collection:
             print("Không thể lấy main collection")

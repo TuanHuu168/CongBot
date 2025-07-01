@@ -1,0 +1,59 @@
+{
+  "doc_id": "494_2012_NQ_UBTVQH13",
+  "doc_type": "Nghị quyết",
+  "doc_title": "Nghị quyết về kết quả giám sát việc thực hiện chính sách, pháp luật về người có công với cách mạng",
+  "issue_date": "18-05-2012",
+  "effective_date": "18-05-2012",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "494_2012_NQ_UBTVQH13_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/494_2012_NQ_UBTVQH13/chunk_1.md",
+      "content_summary": "Phần mở đầu của Nghị quyết, bao gồm tiêu đề, thông tin ban hành, căn cứ pháp lý và nội dung quyết nghị của Ủy ban Thường vụ Quốc hội về kết quả giám sát việc thực hiện chính sách, pháp luật về người có công với cách mạng."
+    },
+    {
+      "chunk_id": "494_2012_NQ_UBTVQH13_art1",
+      "chunk_type": "article",
+      "file_path": "/data/494_2012_NQ_UBTVQH13/chunk_2.md",
+      "content_summary": "Điều 1 của Nghị quyết, nêu sự tán thành cơ bản đối với báo cáo giám sát về việc thực hiện chính sách, pháp luật đối với người có công với cách mạng, đồng thời nhấn mạnh kết quả đạt được và những hạn chế, vướng mắc còn tồn tại."
+    },
+    {
+      "chunk_id": "494_2012_NQ_UBTVQH13_art2",
+      "chunk_type": "article",
+      "file_path": "/data/494_2012_NQ_UBTVQH13/chunk_3.md",
+      "content_summary": "Điều 2 của Nghị quyết, yêu cầu Chính phủ và Thủ tướng Chính phủ tập trung thực hiện các nhiệm vụ và giải pháp nhằm cải thiện chính sách, pháp luật đối với người có công, bao gồm điều chỉnh trợ cấp, hỗ trợ nhà ở, phê duyệt đề án tìm kiếm hài cốt liệt sỹ, giải quyết hồ sơ tồn đọng và tăng cường tuyên truyền, kiểm tra."
+    },
+    {
+      "chunk_id": "494_2012_NQ_UBTVQH13_art3_4",
+      "chunk_type": "article",
+      "file_path": "/data/494_2012_NQ_UBTVQH13/chunk_4.md",
+      "content_summary": "Điều 3 và Điều 4 của Nghị quyết, quy định về việc Chính phủ báo cáo kết quả thực hiện Nghị quyết, trách nhiệm giám sát của các cơ quan Quốc hội và Hội đồng nhân dân, cùng với hiệu lực thi hành của Nghị quyết."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "1992_HP_QH",
+      "relationship": "references",
+      "description": "Hiến pháp nước Cộng hòa xã hội chủ nghĩa Việt Nam năm 1992"
+    },
+    {
+      "doc_id": "51_2001_NQ_QH10",
+      "relationship": "references",
+      "description": "Nghị quyết số 51/2001/QH10 sửa đổi, bổ sung một số điều của Hiến pháp năm 1992"
+    },
+    {
+      "doc_id": "407_2011_NQ_UBTVQH13",
+      "relationship": "references",
+      "description": "Nghị quyết số 407/NQ-UBTVQH13 ngày 22 tháng 11 năm 2011 của Ủy ban thường vụ Quốc hội về Chương trình hoạt động giám sát của Ủy ban thường vụ Quốc hội năm 2012"
+    }
+  ]
+}

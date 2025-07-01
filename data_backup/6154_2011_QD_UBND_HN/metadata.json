@@ -1,0 +1,69 @@
+{
+  "doc_id": "6154_2011_QD_UBND_HN",
+  "doc_type": "Quyết định",
+  "doc_title": "Quyết định Về việc thực hiện chế độ điều dưỡng luân phiên đối với người có công với cách mạng trên địa bàn thành phố Hà Nội",
+  "issue_date": "30-12-2011",
+  "effective_date": "01-01-2012",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Địa phương",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": [],
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "6154_2011_QD_UBND_HN_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/6154_2011_QD_UBND_HN/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định số 6154/QĐ-UBND của Ủy ban nhân dân thành phố Hà Nội, bao gồm tiêu đề, thông tin ban hành, và các căn cứ pháp lý cho việc ban hành quyết định về chế độ điều dưỡng luân phiên cho người có công với cách mạng trên địa bàn thành phố Hà Nội."
+    },
+    {
+      "chunk_id": "6154_2011_QD_UBND_HN_art1",
+      "chunk_type": "article",
+      "file_path": "/data/6154_2011_QD_UBND_HN/chunk_2.md",
+      "content_summary": "Điều 1 của Quyết định này quy định về việc thực hiện chế độ điều dưỡng luân phiên 02 năm một lần cho người có công với cách mạng trên địa bàn thành phố Hà Nội, bao gồm các quy định chi tiết về đối tượng, hình thức, mức chi, thời gian thực hiện từ ngày 01/01/2012, và nguồn kinh phí đảm bảo từ ngân sách Thành phố."
+    },
+    {
+      "chunk_id": "6154_2011_QD_UBND_HN_art2",
+      "chunk_type": "article",
+      "file_path": "/data/6154_2011_QD_UBND_HN/chunk_3.md",
+      "content_summary": "Điều 2 quy định trách nhiệm của Sở Lao động Thương binh và Xã hội trong việc xây dựng kế hoạch dự toán ngân sách hàng năm, chỉ đạo các trung tâm nuôi dưỡng và điều dưỡng người có công triển khai thực hiện và chịu trách nhiệm thanh quyết toán theo quy định."
+    },
+    {
+      "chunk_id": "6154_2011_QD_UBND_HN_art3",
+      "chunk_type": "article",
+      "file_path": "/data/6154_2011_QD_UBND_HN/chunk_4.md",
+      "content_summary": "Điều 3 và phần kết thúc Quyết định quy định về trách nhiệm thi hành của các cơ quan, đơn vị liên quan (Văn phòng UBND Thành phố, các Sở: Lao động Thương binh và Xã hội, Tài chính, Y tế, Kho bạc Nhà nước Hà Nội và UBND các quận, huyện, thị xã), cùng với thông tin nơi nhận và chữ ký của lãnh đạo."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "26_2003_Luat_QH",
+      "relationship": "references",
+      "description": "Căn cứ ban hành Quyết định: Luật Tổ chức Hội đồng nhân dân và Ủy ban nhân dân ngày 26/11/2003."
+    },
+    {
+      "doc_id": "16_2002_Luat_QH",
+      "relationship": "references",
+      "description": "Căn cứ ban hành Quyết định: Luật Ngân sách nhà nước ngày 16/12/2002."
+    },
+    {
+      "doc_id": "25_2010_TTLT_BLĐTBXH_BTC_BYT",
+      "relationship": "references",
+      "description": "Căn cứ ban hành Quyết định: Thông tư liên tịch số 25/2010/TTLT-BLĐTBXH-BTC-BYT ngày 11/9/2010 của Liên Bộ: Lao động Thương binh và Xã hội, Tài chính, Y tế hướng dẫn chế độ chăm sóc sức khỏe đối với người có công với cách mạng. Quyết định này cũng quy định chi tiết việc thực hiện theo Thông tư liên tịch này."
+    },
+    {
+      "doc_id": "08_2011_NQ_HDND_HN",
+      "relationship": "references",
+      "description": "Căn cứ ban hành Quyết định: Nghị quyết số 08/2011/NQ-HĐND ngày 9/12/2011 của Hội đồng nhân dân thành phố Hà Nội về dự toán ngân sách và phân bổ dự toán ngân sách thành phố Hà Nội năm 2012."
+    },
+    {
+      "doc_id": "25_2010_TTLT_BLĐTBXH_BTC_BYT",
+      "relationship": "implements",
+      "description": "Quyết định này hướng dẫn việc thực hiện chế độ điều dưỡng luân phiên đối với người có công trên địa bàn thành phố Hà Nội, theo quy định tại Thông tư liên tịch số 25/2010/TTLT-BLĐTBXH-BTC-BYT."
+    }
+  ]
+}

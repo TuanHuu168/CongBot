@@ -1,0 +1,92 @@
+{
+  "doc_id": "62_2011_QD_TTg",
+  "doc_type": "Quyết định",
+  "doc_title": "Về chế độ, chính sách đối với đối tượng tham gia chiến tranh bảo vệ tổ quốc, làm nhiệm vụ quốc tế ở Căm-pu-chi-a, giúp bạn Lào sau ngày 30 tháng 4 năm 1975 đã phục viên, xuất ngũ, thôi việc",
+  "issue_date": "09-11-2011",
+  "effective_date": "01-01-2012",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": [
+    {
+      "doc_id": "142_2008_QD_TTg",
+      "relationship": "amends",
+      "description": "Quyết định số 142/2008/QĐ-TTg ngày 27 tháng 10 năm 2008 của Thủ tướng Chính phủ về thực hiện chế độ đối với quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội đã phục viên, xuất ngũ về địa phương"
+    },
+    {
+      "doc_id": "38_2010_QD_TTg",
+      "relationship": "amends",
+      "description": "Quyết định số 38/2010/QĐ-TTg ngày 06 tháng 5 năm 2010 của Thủ tướng Chính phủ về việc sửa đổi, bổ sung Quyết định số 142/2008/QĐ-TTg"
+    },
+    {
+      "doc_id": "53_2010_QD_TTg",
+      "relationship": "amends",
+      "description": "Quyết định số 53/2010/QĐ-TTg ngày 20 tháng 8 năm 2010 của Thủ tướng Chính phủ quy định về chế độ đối với cán bộ, chiến sĩ công an nhân dân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong công an nhân dân đã thôi việc, xuất ngũ về địa phương"
+    }
+  ],
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "62_2011_QD_TTg_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/62_2011_QD_TTg/62_2011_QD_TTg_preamble.md",
+      "content_summary": "Phần mở đầu của Quyết định số 62/2011/QĐ-TTg quy định về chế độ, chính sách cho các đối tượng tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế sau năm 1975, bao gồm tiêu đề, thông tin ban hành, căn cứ pháp lý và tuyên bố chung về việc ban hành Quyết định."
+    },
+    {
+      "chunk_id": "62_2011_QD_TTg_art1_2",
+      "chunk_type": "article",
+      "file_path": "/data/62_2011_QD_TTg/62_2011_QD_TTg_art1_2.md",
+      "content_summary": "Quy định phạm vi điều chỉnh và chi tiết các đối tượng được áp dụng hoặc không được áp dụng chế độ, chính sách theo Quyết định số 62/2011/QĐ-TTg, bao gồm các nhóm quân nhân, công an, cán bộ, công nhân viên chức, dân quân tự vệ, thanh niên xung phong tham gia chiến tranh bảo vệ Tổ quốc và nhiệm vụ quốc tế sau ngày 30/4/1975."
+    },
+    {
+      "chunk_id": "62_2011_QD_TTg_art3_4",
+      "chunk_type": "article",
+      "file_path": "/data/62_2011_QD_TTg/62_2011_QD_TTg_art3_4.md",
+      "content_summary": "Xác định chi tiết các địa bàn và mốc thời gian cụ thể của các cuộc chiến tranh bảo vệ Tổ quốc (biên giới Tây Nam, phía Bắc, truy quét FULRO) và nhiệm vụ quốc tế (Lào, Campuchia) làm căn cứ hưởng chế độ. Đồng thời, quy định cách tính thời gian công tác hoặc thời gian tham gia chiến tranh để hưởng các chế độ trợ cấp theo Quyết định số 62/2011/QĐ-TTg."
+    },
+    {
+      "chunk_id": "62_2011_QD_TTg_art5",
+      "chunk_type": "article",
+      "file_path": "/data/62_2011_QD_TTg/62_2011_QD_TTg_art5.md",
+      "content_summary": "Quy định chi tiết các mức trợ cấp hàng tháng và trợ cấp một lần đối với các đối tượng đủ điều kiện theo Quyết định số 62/2011/QĐ-TTg, bao gồm các tiêu chí về thời gian công tác hoặc tham gia chiến tranh, mức hưởng cụ thể và quy định đối với thân nhân khi đối tượng từ trần."
+    },
+    {
+      "chunk_id": "62_2011_QD_TTg_art6_8",
+      "chunk_type": "article",
+      "file_path": "/data/62_2011_QD_TTg/62_2011_QD_TTg_art6_8.md",
+      "content_summary": "Quy định về chế độ bảo hiểm y tế và mai táng phí; hướng dẫn chi tiết về hồ sơ và trình tự giải quyết chế độ trợ cấp từ cấp xã đến cấp tỉnh và các Bộ, ngành; đồng thời xác định nguồn kinh phí (ngân sách trung ương và địa phương) để thực hiện các chế độ theo Quyết định số 62/2011/QĐ-TTg."
+    },
+    {
+      "chunk_id": "62_2011_QD_TTg_art9_10",
+      "chunk_type": "article",
+      "file_path": "/data/62_2011_QD_TTg/62_2011_QD_TTg_art9_10.md",
+      "content_summary": "Quy định chi tiết trách nhiệm của Bộ Quốc phòng, Bộ Công an, Bộ Lao động - Thương binh và Xã hội, Ủy ban nhân dân cấp tỉnh và Bộ Tài chính trong việc tổ chức thực hiện, xét duyệt, chi trả chế độ theo Quyết định số 62/2011/QĐ-TTg. Đồng thời, nêu rõ hiệu lực thi hành của Quyết định và các điều khoản chuyển tiếp liên quan đến việc áp dụng mức trợ cấp cho các đối tượng đã được quy định tại các quyết định trước đó."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "None",
+      "relationship": "references",
+      "description": "Luật Tổ chức Chính phủ ngày 25 tháng 12 năm 2001"
+    },
+    {
+      "doc_id": "142_2008_QD_TTg",
+      "relationship": "amends",
+      "description": "Quyết định số 142/2008/QĐ-TTg ngày 27 tháng 10 năm 2008 của Thủ tướng Chính phủ về thực hiện chế độ đối với quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội đã phục viên, xuất ngũ về địa phương"
+    },
+    {
+      "doc_id": "38_2010_QD_TTg",
+      "relationship": "amends",
+      "description": "Quyết định số 38/2010/QĐ-TTg ngày 06 tháng 5 năm 2010 của Thủ tướng Chính phủ về việc sửa đổi, bổ sung Quyết định số 142/2008/QĐ-TTg"
+    },
+    {
+      "doc_id": "53_2010_QD_TTg",
+      "relationship": "amends",
+      "description": "Quyết định số 53/2010/QĐ-TTg ngày 20 tháng 8 năm 2010 của Thủ tướng Chính phủ quy định về chế độ đối với cán bộ, chiến sĩ công an nhân dân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong công an nhân dân đã thôi việc, xuất ngũ về địa phương"
+    }
+  ]
+}

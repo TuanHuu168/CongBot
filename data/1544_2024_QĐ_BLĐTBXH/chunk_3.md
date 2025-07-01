@@ -1,2 +1,0 @@
-Điều 3. Quyết định này có hiệu lực kể từ ngày ký.
-Điều 4. Chánh Văn phòng Bộ, Vụ trưởng Vụ Kế hoạch - Tài chính, Giám đốc Sở Lao động - Thương binh và Xã hội tỉnh Bạc Liêu, Giám đốc Ban quản lý dự án đầu tư xây dựng thuộc Bộ, Thủ trưởng các đơn vị và cá nhân liên quan chịu trách nhiệm thi hành Quyết định này./.

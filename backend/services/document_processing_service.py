@@ -19,32 +19,47 @@ class DocumentProcessingService:
     def __init__(self):
         """Khởi tạo dịch vụ xử lý tài liệu"""
         self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
-        print(f"Dịch vụ xử lý tài liệu đã được khởi tạo - hỗ trợ PDF và Word với model: {GEMINI_MODEL}")
+        print(f"Dịch vụ xử lý tài liệu đã được khởi tạo - hỗ trợ PDF, Word và Markdown với model: {GEMINI_MODEL}")
         
         # Template prompt cho Gemini
         self.chunking_prompt = """
 Bạn là chuyên gia phân tích và chia nhỏ văn bản pháp luật Việt Nam. 
 Nhiệm vụ của bạn là chia văn bản thành các chunk hợp lý và trích xuất thông tin về các văn bản liên quan.
 
-1. **Nguyên tắc chia chunk:**
-   - Mỗi chunk khoảng 500-1000 từ
+**PHÁT HIỆN ĐỊNH DẠNG VĂN BẢN:**
+- Nếu là định dạng Markdown: Tận dụng cấu trúc headers (#, ##, ###) để chia chunk logic
+- Nếu có headers H1 (#): Mỗi section chính là 1 chunk
+- Nếu có headers H2 (##): Nhóm subsections liên quan
+- Nếu có lists (-,*,1.): Giữ nguyên lists trong cùng chunk
+- Nếu có code blocks (```): Giữ nguyên code blocks
+
+1. **Nguyên tắc chia chunk cho Markdown:**
+   - Ưu tiên chia theo headers (H1, H2, H3)
+   - Mỗi chunk 500-1000 từ, trừ khi logic yêu cầu khác
+   - Giữ nguyên format Markdown trong nội dung chunk
+   - Tách riêng phần mở đầu (tiêu đề + metadata)
+   - Tách riêng các appendix/biểu mẫu
+
+2. **Nguyên tắc chia chunk cho văn bản pháp luật khác:**
+   - Mỗi chunk khoảng 500-1000 từ. Tối đa là 1000 từ, không được vượt quá 1000 từ
+   - Nếu vượt quá 1000 từ, chia thành nhiều chunk nhỏ hơn
    - Ưu tiên chia theo điều, khoản, mục
    - Nhóm các khoản liên quan trong cùng một điều
    - Tách riêng phần mở đầu (preamble) bao gồm tiêu đề, căn cứ
    - Tách riêng phụ lục, biểu mẫu nếu có
 
-2. **Quy tắc đặt tên chunk_id:**
+3. **Quy tắc đặt tên chunk_id:**
    - Format: doc_id_loai
    - Loại: preamble, art[số], appendix, form
    - Ví dụ: 47_2009_TTLT_BTC_BLĐTBXH_preamble, 47_2009_TTLT_BTC_BLĐTBXH_art1_2
 
-3. **Loại chunk_type:**
+4. **Loại chunk_type:**
    - preamble: Phần mở đầu, căn cứ
    - article: Các điều khoản chính
    - appendix: Phụ lục
    - form: Biểu mẫu
 
-4. **Trích xuất thông tin văn bản liên quan (related_documents):**
+5. **Trích xuất thông tin văn bản liên quan (related_documents):**
    Tìm và phân tích các thông tin sau trong văn bản:
    
    a) **Căn cứ pháp lý** (relationship: "references"):
@@ -67,18 +82,18 @@ Nhiệm vụ của bạn là chia văn bản thành các chunk hợp lý và tr�
       - Tìm cụm từ: "hướng dẫn thi hành", "quy định chi tiết"
       - Văn bản cấp trên được hướng dẫn
 
-5. **Trích xuất thông tin ngày tháng:**
+6. **Trích xuất thông tin ngày tháng:**
    - issue_date: Ngày ban hành (tìm trong phần đầu văn bản)
    - effective_date: Ngày có hiệu lực (thường ở điều cuối)
    - expiry_date: Ngày hết hiệu lực (nếu có)
 
-6. **QUAN TRỌNG - Tự động detect metadata:**
+7. **QUAN TRỌNG - Tự động detect metadata:**
    - doc_id: Trích xuất từ tiêu đề hoặc phần đầu văn bản (format: số_năm_loại_cơquan)
    - doc_type: Xác định loại văn bản (Luật, Nghị định, Thông tư, Quyết định, Pháp lệnh)
    - doc_title: Trích xuất tiêu đề đầy đủ của văn bản
    - effective_date: Tìm ngày có hiệu lực trong văn bản
 
-7. **Yêu cầu output:**
+8. **Yêu cầu output:**
    - Trả về JSON với cấu trúc metadata hoàn chỉnh
    - Giữ nguyên 100% nội dung gốc trong các chunk
    - Đưa ra content_summary mô tả ngắn gọn nội dung chunk
@@ -91,6 +106,12 @@ Nhiệm vụ của bạn là chia văn bản thành các chunk hợp lý và tr�
 - Trích xuất chính xác số hiệu văn bản theo format: số_năm_loại_cơquan
 - Nếu không tìm thấy thông tin nào, để array rỗng []
 - PHẢI tự động detect và điền đầy đủ metadata từ nội dung văn bản
+
+**LƯU Ý ĐẶC BIỆT CHO MARKDOWN:**
+- Giữ nguyên format Markdown trong content chunks (#, ##, -, *, etc.)
+- Sử dụng headers để xác định ranh giới chunk logic
+- Nếu có YAML frontmatter (---), extract metadata từ đó
+- Tận dụng structure có sẵn của Markdown để chia chunk tốt hơn
 
 Văn bản cần phân tích:
 {content}
@@ -241,8 +262,38 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi trích xuất DOC: {str(e)}")
             raise Exception(f"Không thể đọc file Word DOC: {str(e)}")
 
+    def extract_markdown_content(self, file_path: str) -> str:
+        try:
+            print(f"Đang trích xuất nội dung từ Markdown: {file_path}")
+            
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Làm sạch content nhưng giữ cấu trúc Markdown
+            content = content.strip()
+            
+            # Optional: Parse markdown để extract structure
+            lines = content.split('\n')
+            cleaned_lines = []
+            
+            for line in lines:
+                # Giữ nguyên headers, lists, và nội dung có ý nghĩa
+                stripped_line = line.strip()
+                if stripped_line:  # Không phải dòng trống
+                    cleaned_lines.append(line)  # Giữ nguyên indentation
+                elif cleaned_lines and cleaned_lines[-1].strip():  # Dòng trống sau nội dung
+                    cleaned_lines.append('')  # Giữ 1 dòng trống để phân đoạn
+            
+            final_content = '\n'.join(cleaned_lines)
+            
+            print(f"Hoàn thành trích xuất Markdown. Tổng số ký tự: {len(final_content)}")
+            return final_content
+            
+        except Exception as e:
+            print(f"Lỗi khi trích xuất Markdown: {str(e)}")
+            raise Exception(f"Không thể đọc file Markdown: {str(e)}")
+    
     def extract_document_content(self, file_path: str) -> str:
-        """Trích xuất nội dung từ file tài liệu (PDF, DOCX, DOC)"""
         file_extension = os.path.splitext(file_path)[1].lower()
         
         print(f"Detecting file type: {file_extension}")
@@ -253,8 +304,10 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             return self.extract_docx_content(file_path)
         elif file_extension == '.doc':
             return self.extract_doc_content(file_path)
+        elif file_extension == '.md':
+            return self.extract_markdown_content(file_path)
         else:
-            raise Exception(f"Định dạng file không được hỗ trợ: {file_extension}. Chỉ hỗ trợ PDF, DOCX, DOC")
+            raise Exception(f"Định dạng file không được hỗ trợ: {file_extension}. Chỉ hỗ trợ PDF, DOCX, DOC, MD")
 
     def chunk_content_with_gemini(self, content: str, doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
         """Sử dụng Gemini để chia chunk văn bản và auto-detect metadata"""
@@ -272,20 +325,19 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             )
             
             print(f"Đã tạo prompt để phân tích văn bản với auto-detection using model: {GEMINI_MODEL}")
-            
-            # Gọi Gemini API theo cách tương tự generation_service
+            response_time = time.time()
+            # Gọi Gemini API
             response = self.gemini_client.models.generate_content(
-                model=GEMINI_MODEL,
-                contents=prompt
+                model="gemini-2.5-flash",
+                contents=prompt,
             )
             
             print(f"Đã nhận phản hồi từ Gemini model {GEMINI_MODEL} với auto-detection")
-            
+            print(f"Thời gian phản hồi: {time.time() - response_time:.2f} giây")
             # Parse JSON response
             response_text = response.text.strip()
             print("Preview phản hồi từ Gemini:")
             print(response_text[:300] + "..." if len(response_text) > 300 else response_text)
-            
             # Tìm JSON trong response
             json_start = response_text.find('{')
             json_end = response_text.rfind('}') + 1
@@ -476,7 +528,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             content = self.extract_document_content(file_path)
             
             # Bước 2: Gọi Gemini để phân tích, chia chunk và auto-detect metadata
-            print(f"=== BƯỚC 2: PHÂN TÍCH VỚI GEMINI {GEMINI_MODEL} (AUTO-DETECTION) ===")
+            print(f"=== BƯỚC 2: PHÂN TÍCH VỚI GEMINI gemini-2.5-flash (AUTO-DETECTION) ===")
             chunked_result = self.chunk_content_with_gemini(content, doc_metadata)
             
             # Bước 3: Sử dụng auto-detected doc_id cho folder

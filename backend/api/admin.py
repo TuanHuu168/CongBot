@@ -547,6 +547,8 @@ async def upload_document(
         with open(os.path.join(doc_dir, "metadata.json"), "w", encoding="utf-8") as f:
             json.dump(full_metadata, f, ensure_ascii=False, indent=2)
         
+        print(f"[MANUAL UPLOAD] Bắt đầu embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
+        print(f"[MANUAL UPLOAD] Document: {doc_id} - Using embedding model: {EMBEDDING_MODEL_NAME}")
         # Embedding vào ChromaDB
         success = chroma_client.add_documents_to_main(
             ids=ids_to_add,
@@ -594,17 +596,16 @@ async def upload_document_auto(
     effective_date: str = Form(...),
     document_scope: str = Form("Quốc gia")
 ):
-    """Upload tài liệu (PDF/Word) và để hệ thống tự động chia chunk bằng Gemini với auto-detection"""
     
     # Kiểm tra file type
     file_extension = os.path.splitext(file.filename)[1].lower()
-    if file_extension not in ['.pdf', '.doc', '.docx']:
-        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF, Word (.doc, .docx)")
+    if file_extension not in ['.pdf', '.doc', '.docx', '.md']:
+        raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF, Word (.doc, .docx), Markdown (.md)")
     
     processing_id = str(uuid.uuid4())
     
     try:
-        # Khởi tạo trạng thái xử lý
+        # ... rest of the code remains the same
         document_processing_status[processing_id] = {
             "status": "starting",
             "progress": 0,
@@ -795,6 +796,9 @@ async def approve_document_chunks(processing_id: str):
                 documents_to_add.append(document_text)
                 metadatas_to_add.append(chunk_metadata)
         
+        print(f"[AUTO UPLOAD] Admin approve và embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
+        print(f"[AUTO UPLOAD] Document: {final_doc_id} - File type: {file_type} - Using embedding model: {EMBEDDING_MODEL_NAME}")
+
         # Embedding vào ChromaDB
         success = chroma_client.add_documents_to_main(
             ids=ids_to_add,

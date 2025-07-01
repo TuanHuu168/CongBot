@@ -1,0 +1,79 @@
+{
+  "doc_id": "773_2018_QĐ_TTg",
+  "doc_type": "Quyết định",
+  "doc_title": "Ban hành Kế hoạch tổ chức thực hiện Chỉ thị số 14-CT/TW ngày 19/7/2017 của Ban Bí thư Trung ương Đảng khóa XII về tiếp tục tăng cường sự lãnh đạo của Đảng đối với công tác người có công với cách mạng",
+  "issue_date": "26-06-2018",
+  "effective_date": "26-06-2018",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "773_2018_QĐ_TTg_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/773_2018_QĐ_TTg/773_2018_QĐ_TTg_preamble.md",
+      "content_summary": "Quyết định ban hành kế hoạch thực hiện Chỉ thị số 14-CT/TW về tăng cường sự lãnh đạo của Đảng đối với công tác người có công với cách mạng. Căn cứ Luật Tổ chức Chính phủ, Pháp lệnh Ưu đãi người có công, và Chỉ thị số 14-CT/TW."
+    },
+    {
+      "chunk_id": "773_2018_QĐ_TTg_art1_3",
+      "chunk_type": "article",
+      "file_path": "/data/773_2018_QĐ_TTg/773_2018_QĐ_TTg_art1_3.md",
+      "content_summary": "Điều 1 ban hành kế hoạch thực hiện Chỉ thị 14-CT/TW. Điều 2 quy định hiệu lực của Quyết định. Điều 3 quy định trách nhiệm thi hành Quyết định."
+    },
+    {
+      "chunk_id": "773_2018_QĐ_TTg_appendix",
+      "chunk_type": "appendix",
+      "file_path": "/data/773_2018_QĐ_TTg/773_2018_QĐ_TTg_appendix.md",
+      "content_summary": "Kế hoạch thực hiện Chỉ thị số 14-CT/TW ngày 19 tháng 7 năm 2017 của Ban Bí thư Trung ương Đảng khóa XII về tiếp tục tăng cường sự lãnh đạo của Đảng đối với công tác người có công với cách mạng."
+    },
+    {
+      "chunk_id": "773_2018_QĐ_TTg_appendix_2",
+      "chunk_type": "appendix",
+      "file_path": "/data/773_2018_QĐ_TTg/773_2018_QĐ_TTg_appendix_2.md",
+      "content_summary": "Tổ chức thực hiện kế hoạch, bao gồm trách nhiệm của các Bộ, ngành và địa phương trong việc thực hiện chính sách ưu đãi người có công."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "26_2005_PL_UBTVQH11",
+      "relationship": "references",
+      "description": "Pháp lệnh Ưu đãi người có công với cách mạng số 26/2005/PL-UBTVQH11 ngày 29 tháng 6 năm 2005 của Ủy ban Thường vụ Quốc hội"
+    },
+    {
+      "doc_id": "04_2012_PL_UBTVQH13",
+      "relationship": "references",
+      "description": "Pháp lệnh sửa đổi, bổ sung một số điều của Pháp lệnh Ưu đãi người có công với cách mạng số 04/2012/PL-UBTVQH13 ngày 16 tháng 7 năm 2012 của Ủy ban Thường vụ Quốc hội"
+    },
+    {
+      "doc_id": "14_2017_CT_TW",
+      "relationship": "references",
+      "description": "Chỉ thị số 14-CT/TW ngày 19 tháng 7 năm 2017 của Ban Bí thư Trung ương Đảng khóa XII về tiếp tục tăng cường sự lãnh đạo của Đảng đối với công tác người có công với cách mạng"
+    },
+    {
+      "doc_id": "63_2013_KL_TW",
+      "relationship": "references",
+      "description": "Kết luận số 63-KL/TW ngày 27 tháng 5 năm 2013 của Ban Chấp hành Trung ương khóa XI"
+    },
+    {
+      "doc_id": "22_2013_QĐ_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 22/2013/QĐ-TTg ngày 26 tháng 4 năm 2013 của Thủ tướng Chính phủ"
+    },
+    {
+      "doc_id": "63_2017_NQ_CP",
+      "relationship": "references",
+      "description": "Nghị quyết số 63/NQ-CP ngày 25 tháng 7 năm 2017 của Chính phủ"
+    },
+    {
+      "doc_id": "31_2012_CT_TTg",
+      "relationship": "references",
+      "description": "Chỉ thị số 31/CT-TTg ngày 28 tháng 11 năm 2012 của Thủ tướng Chính phủ"
+    }
+  ]
+}

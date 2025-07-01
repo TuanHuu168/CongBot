@@ -1,5 +1,0 @@
-Điều 1. Phê duyệt kế hoạch lựa chọn nhà thầu một số gói thầu thuộc dự án Trung tâm Điều dưỡng người có công tỉnh Bạc Liêu theo chi tiết tại Phụ lục kèm theo Quyết định này.
-Điều 2. Chủ đầu tư chịu trách nhiệm toàn diện trước Bộ trưởng và pháp luật:
-1. Rà soát nội dung các gói thầu, các yêu cầu về chế độ, kỹ thuật, tiêu chuẩn, định mức sử dụng tài sản công và chất lượng cần đạt được, thời gian thực hiện, dự toán được phê duyệt làm cơ sở xác định giá gói thầu trước khi tổ chức lựa chọn nhà thầu để đảm bảo mục tiêu, quy mô đầu tư, tiến độ, chất lượng và hiệu quả dự án đầu tư đã được phê duyệt. Trường hợp phát hiện nội dung chưa đúng thì tổ chức điều chỉnh theo thẩm quyền hoặc báo cáo cấp có thẩm quyền theo quy định.
-2. Tổ chức lựa chọn nhà thầu theo quy định của pháp luật, đảm bảo công khai, minh bạch, thực hành tiết kiệm, chống lãng phí, thất thoát trong quản lý sử dụng ngân sách nhà nước và đấu thầu.
-3. Báo cáo kết quả thực hiện về Bộ (qua Vụ Kế hoạch - Tài chính) theo đúng quy định.

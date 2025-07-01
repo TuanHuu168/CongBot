@@ -1,0 +1,119 @@
+{
+  "doc_id": "12_2012_QĐ_UBND",
+  "doc_type": "Quyết định",
+  "doc_title": "Về việc ban hành quy định tặng quà đối với thương binh, bệnh binh, gia đình liệt sĩ và người có công với cách mạng trên địa bàn tỉnh Tuyên Quang",
+  "issue_date": "25-06-2012",
+  "effective_date": "05-07-2012",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Tỉnh",
+  "replaces": [
+    "110_2005_QĐ_UBND",
+    "42_2007_QĐ_UBND"
+  ],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "12_2012_QĐ_UBND_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/12_2012_QĐ_UBND/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định, bao gồm tiêu đề, thông tin ban hành, các căn cứ pháp lý và lý do ban hành Quyết định."
+    },
+    {
+      "chunk_id": "12_2012_QĐ_UBND_decision_articles",
+      "chunk_type": "article",
+      "file_path": "/data/12_2012_QĐ_UBND/chunk_2.md",
+      "content_summary": "Các điều khoản chính của Quyết định, quy định việc ban hành Quy định kèm theo, trách nhiệm triển khai và hiệu lực thi hành của Quyết định, cùng với các văn bản bị thay thế."
+    },
+    {
+      "chunk_id": "12_2012_QĐ_UBND_quy_dinh_chuong1",
+      "chunk_type": "article",
+      "file_path": "/data/12_2012_QĐ_UBND/chunk_3.md",
+      "content_summary": "Chương I của Quy định, bao gồm các quy định chung về đối tượng, thời gian, mức quà tặng và trách nhiệm trong việc tặng quà cho người có công."
+    },
+    {
+      "chunk_id": "12_2012_QĐ_UBND_quy_dinh_chuong2_art3",
+      "chunk_type": "article",
+      "file_path": "/data/12_2012_QĐ_UBND/chunk_4.md",
+      "content_summary": "Điều 3 của Quy định, liệt kê chi tiết các nhóm đối tượng đủ điều kiện nhận quà tặng, phân loại thành 6 nhóm chính dựa trên công lao và tình trạng sức khỏe."
+    },
+    {
+      "chunk_id": "12_2012_QĐ_UBND_quy_dinh_chuong2_art4",
+      "chunk_type": "article",
+      "file_path": "/data/12_2012_QĐ_UBND/chunk_5.md",
+      "content_summary": "Điều 4 của Quy định, xác định thời gian và mức quà tặng cụ thể cho các nhóm đối tượng chính sách vào các dịp lễ chính trong năm (Ngày Thương binh liệt sĩ 27/7, Quốc khánh 2/9, Tết Nguyên đán)."
+    },
+    {
+      "chunk_id": "12_2012_QĐ_UBND_quy_dinh_chuong3",
+      "chunk_type": "article",
+      "file_path": "/data/12_2012_QĐ_UBND/chunk_6.md",
+      "content_summary": "Chương III của Quy định, nêu rõ trách nhiệm của các sở, ban, ngành, và chính quyền địa phương trong việc tổ chức thực hiện, quản lý, kiểm tra và báo cáo việc tặng quà cho người có công."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "_2003_Luật_QH",
+      "relationship": "references",
+      "description": "Luật Tổ chức Hội đồng nhân dân và Ủy ban nhân dân ngày 26/11/2003"
+    },
+    {
+      "doc_id": "_2004_Luật_QH",
+      "relationship": "references",
+      "description": "Luật Ban hành văn bản quy phạm pháp luật của Hội đồng nhân dân và Ủy ban nhân dân ngày 03/12/2004"
+    },
+    {
+      "doc_id": "26_2005_PL_UBTVQH11",
+      "relationship": "references",
+      "description": "Pháp lệnh số 26/2005/PL-UBTVQH11 ngày 29/6/2005 ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "35_2007_PL_UBTVQH11",
+      "relationship": "references",
+      "description": "Pháp lệnh số 35/2007/PL-UBTVQH11 ngày 21/6/2007 sửa đổi, bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "54_2006_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 54/2006/NĐ-CP ngày 26/5/2006 của Chính phủ hướng dẫn thi hành một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "89_2008_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 89/2008/NĐ-CP ngày 13/8/2008 của Chính phủ hướng dẫn thi hành Pháp lệnh sửa đổi bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "110_2005_QĐ_UBND",
+      "relationship": "replaces",
+      "description": "Quyết định số 110/2005/QĐ-UBND ngày 29/12/2005 của Ủy ban nhân dân tỉnh về việc ban hành Quy định tặng quà đối với thương binh, bệnh binh, gia đình liệt sĩ, người có công với cách mạng trên địa bàn tỉnh Tuyên Quang"
+    },
+    {
+      "doc_id": "42_2007_QĐ_UBND",
+      "relationship": "replaces",
+      "description": "Quyết định số 42/2007/QĐ-UBND ngày 31/12/2007 của Ủy ban nhân dân tỉnh về việc sửa đổi, bổ sung một số điều của Quy định ban hành kèm theo Quyết định số 110/2005/QĐ-UBND ngày 29/12/2005 của Ủy ban nhân dân tỉnh"
+    },
+    {
+      "doc_id": "26_2005_PL_UBTVQH11",
+      "relationship": "implements",
+      "description": "Pháp lệnh số 26/2005/PL-UBTVQH11 ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "35_2007_PL_UBTVQH11",
+      "relationship": "implements",
+      "description": "Pháp lệnh số 35/2007/PL-UBTVQH11 sửa đổi, bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "54_2006_NĐ_CP",
+      "relationship": "implements",
+      "description": "Nghị định số 54/2006/NĐ-CP hướng dẫn thi hành một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
+    },
+    {
+      "doc_id": "89_2008_NĐ_CP",
+      "relationship": "implements",
+      "description": "Nghị định số 89/2008/NĐ-CP hướng dẫn thi hành Pháp lệnh sửa đổi bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng"
+    }
+  ]
+}

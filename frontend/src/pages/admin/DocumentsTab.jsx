@@ -15,16 +15,16 @@ const DocumentsTab = ({
 }) => {
     // State cho tab chính
     const [activeMainTab, setActiveMainTab] = useState('upload');
-    
+
     // State cho upload modes
     const [uploadMode, setUploadMode] = useState('manual');
-    
+
     // State cho auto processing (PDF/Word)
     const [documentFile, setDocumentFile] = useState(null);
     const [documentProcessingId, setDocumentProcessingId] = useState(null);
     const [documentProcessingStatus, setDocumentProcessingStatus] = useState(null);
     const [isProcessingDocument, setIsProcessingDocument] = useState(false);
-    
+
     // State cho metadata của cả 2 mode
     const [uploadMetadata, setUploadMetadata] = useState({
         doc_id: '',
@@ -60,20 +60,20 @@ const DocumentsTab = ({
                 try {
                     const response = await axios.get(`${API_BASE_URL}/document-processing-status/${documentProcessingId}`);
                     const status = response.data;
-                    
+
                     setDocumentProcessingStatus(status);
-                    
+
                     if (status.status === 'completed' || status.status === 'failed') {
                         setIsProcessingDocument(false);
                         clearInterval(interval);
-                        
+
                         if (status.status === 'completed') {
                             const result = status.result;
                             const metadata = result?.metadata;
                             const autoDetected = result?.auto_detected;
-                            
+
                             if (metadata || autoDetected) {
-                                console.log('Đang tự động điền metadata từ kết quả Gemini:', {metadata, autoDetected});
+                                console.log('Đang tự động điền metadata từ kết quả Gemini:', { metadata, autoDetected });
                                 setUploadMetadata({
                                     doc_id: autoDetected?.doc_id || metadata?.doc_id || '',
                                     doc_type: autoDetected?.doc_type || metadata?.doc_type || 'Thông tư',
@@ -82,10 +82,10 @@ const DocumentsTab = ({
                                     document_scope: metadata?.document_scope || 'Quốc gia'
                                 });
                             }
-                            
+
                             const fileType = status.file_type?.toUpperCase() || 'TÀI LIỆU';
                             const fileName = status.original_filename || 'file';
-                            
+
                             Swal.fire({
                                 title: `Phân tích ${fileType} hoàn thành`,
                                 html: `
@@ -138,7 +138,7 @@ const DocumentsTab = ({
             setFolderFiles([]);
             setFolderMetadata(null);
         }
-        
+
         setUploadMetadata({
             doc_id: '',
             doc_type: 'Thông tư',
@@ -176,6 +176,8 @@ const DocumentsTab = ({
             case 'doc':
             case 'docx':
                 return <FileText size={16} className="text-blue-500" />;
+            case 'md':
+                return <FileText size={16} className="text-green-500" />;
             default:
                 return <File size={16} className="text-gray-500" />;
         }
@@ -185,13 +187,13 @@ const DocumentsTab = ({
     const handleFolderSelect = async (event) => {
         const files = Array.from(event.target.files);
         console.log('Đã chọn thư mục với số tệp:', files.length);
-        
+
         if (files.length === 0) {
             console.log('Không có tệp nào được chọn');
             return;
         }
 
-        const metadataFile = files.find(file => 
+        const metadataFile = files.find(file =>
             file.webkitRelativePath.endsWith('metadata.json')
         );
 
@@ -211,7 +213,7 @@ const DocumentsTab = ({
             const metadata = JSON.parse(metadataText);
             console.log('Metadata đã đọc:', metadata);
 
-            const chunkFiles = files.filter(file => 
+            const chunkFiles = files.filter(file =>
                 !file.webkitRelativePath.endsWith('metadata.json') &&
                 (file.name.endsWith('.md') || file.name.endsWith('.txt'))
             );
@@ -366,10 +368,10 @@ const DocumentsTab = ({
             });
 
             setDocumentProcessingId(response.data.processing_id);
-            
+
             const fileType = response.data.file_type?.toUpperCase() || 'TÀI LIỆU';
             const fileName = response.data.original_filename || documentFile.name;
-            
+
             Swal.fire({
                 title: `Bắt đầu phân tích ${fileType}`,
                 html: `
@@ -394,7 +396,7 @@ const DocumentsTab = ({
         } catch (error) {
             console.error('Lỗi khi tải lên tài liệu:', error);
             setIsProcessingDocument(false);
-            
+
             Swal.fire({
                 title: 'Lỗi tải lên tài liệu',
                 text: error.response?.data?.detail || 'Không thể tải lên tệp',
@@ -432,7 +434,7 @@ const DocumentsTab = ({
                 try {
                     console.log('Đang phê duyệt document chunks và nhúng vào ChromaDB...');
                     const response = await axios.post(`${API_BASE_URL}/approve-document-chunks/${documentProcessingId}`);
-                    
+
                     Swal.fire({
                         title: 'Thành công',
                         text: response.data.message,
@@ -491,7 +493,7 @@ const DocumentsTab = ({
                 try {
                     console.log('Đang tạo lại document chunks...');
                     const response = await axios.post(`${API_BASE_URL}/regenerate-document-chunks/${documentProcessingId}`);
-                    
+
                     Swal.fire({
                         title: 'Đã xóa kết quả cũ',
                         text: response.data.message,
@@ -530,12 +532,12 @@ const DocumentsTab = ({
                     <Clock size={16} className="mr-2" />
                     Trạng thái xử lý {fileType}
                 </h4>
-                
+
                 <div className="mb-2 flex items-center text-sm text-gray-600">
                     {getFileIcon(fileName)}
                     <span className="ml-2">{fileName}</span>
                 </div>
-                
+
                 {status === 'processing' && (
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
@@ -562,7 +564,7 @@ const DocumentsTab = ({
                             <span className="font-medium">Hoàn thành phân tích {fileType}</span>
                         </div>
                         <p className="text-sm text-gray-600">{message}</p>
-                        
+
                         {result && (
                             <div className="bg-white p-3 rounded border">
                                 <div className="grid grid-cols-2 gap-4 text-sm mb-3">
@@ -575,7 +577,7 @@ const DocumentsTab = ({
                                         <span className="ml-2 text-blue-600 font-medium">{result.related_documents_count}</span>
                                     </div>
                                 </div>
-                                
+
                                 {result.auto_detected && (
                                     <div className="bg-blue-50 p-2 rounded mb-2">
                                         <p className="text-xs font-medium text-blue-700 mb-1">Thông tin được phát hiện tự động:</p>
@@ -586,7 +588,7 @@ const DocumentsTab = ({
                                         </div>
                                     </div>
                                 )}
-                                
+
                                 <p className="text-xs text-gray-500 italic break-words">{result.processing_summary}</p>
                             </div>
                         )}
@@ -600,7 +602,7 @@ const DocumentsTab = ({
                                 <CheckCircle size={16} className="mr-2" />
                                 {documentProcessingStatus?.embedded_to_chroma ? 'Đã phê duyệt' : 'Phê duyệt & Nhúng'}
                             </button>
-                            
+
                             {!documentProcessingStatus?.embedded_to_chroma && (
                                 <button
                                     onClick={handleRegenerateDocumentChunks}
@@ -660,7 +662,7 @@ const DocumentsTab = ({
                                 Tự động chia chunk bằng Gemini AI
                             </span>
                             <p className="text-xs text-gray-500 mt-1">
-                                Tải lên tệp PDF/Word, Gemini AI sẽ tự động phân tích, phát hiện metadata và chia chunk
+                                Tải lên tệp PDF/Word/Markdown, Gemini AI sẽ tự động phân tích, phát hiện metadata và chia chunk
                             </p>
                         </div>
                     </label>
@@ -703,7 +705,7 @@ const DocumentsTab = ({
                             </div>
                             <label htmlFor="document-upload" className="cursor-pointer">
                                 <span className="text-lg font-medium text-green-600 hover:text-green-500">
-                                    Chọn tệp PDF hoặc Word
+                                    Chọn tệp PDF, Word hoặc Markdown
                                 </span>
                                 <input
                                     id="document-upload"
@@ -711,7 +713,7 @@ const DocumentsTab = ({
                                     type="file"
                                     className="sr-only"
                                     onChange={(e) => setDocumentFile(e.target.files[0])}
-                                    accept=".pdf,.doc,.docx"
+                                    accept=".pdf,.doc,.docx,.md"
                                     disabled={isProcessingDocument}
                                 />
                             </label>
@@ -719,7 +721,7 @@ const DocumentsTab = ({
                                 hoặc kéo và thả tệp vào đây
                             </p>
                             <p className="text-xs text-gray-400 mt-1">
-                                Hỗ trợ: PDF, Word (.doc, .docx) - Tối đa 10MB
+                                Hỗ trợ: PDF, Word (.doc, .docx), Markdown (.md) - Tối đa 10MB
                             </p>
                         </div>
 
@@ -745,7 +747,7 @@ const DocumentsTab = ({
                             <AlertCircle size={16} className="text-blue-500 mr-2" />
                             Thông tin văn bản (Gemini sẽ tự động trích xuất và điền)
                         </h4>
-                        
+
                         <div className="grid grid-cols-1 gap-4">
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -1001,7 +1003,7 @@ const DocumentsTab = ({
                 <div className="text-xs text-blue-600 space-y-1">
                     {uploadMode === 'auto' ? (
                         <>
-                            <p>• Tải lên tệp PDF/Word, Gemini AI sẽ tự động phân tích và chia chunk theo logic</p>
+                            <p>• Tải lên tệp PDF/Word/Markdown, Gemini AI sẽ tự động phân tích và chia chunk theo logic</p>
                             <p>• AI sẽ trích xuất và tự động điền: mã văn bản, tiêu đề, ngày hiệu lực</p>
                             <p>• AI cũng tìm các văn bản liên quan và tạo metadata hoàn chỉnh</p>
                             <p>• Bạn có thể để trống metadata để Gemini tự động phát hiện hoàn toàn</p>
@@ -1096,25 +1098,24 @@ const DocumentsTab = ({
                                             <h4 className="font-medium text-gray-800 break-words">
                                                 {chunk.chunk_id}
                                             </h4>
-                                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                                                chunk.exists 
-                                                    ? 'bg-green-100 text-green-800' 
-                                                    : 'bg-red-100 text-red-800'
-                                            }`}>
+                                            <span className={`px-2 py-1 rounded text-xs font-medium ${chunk.exists
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-red-100 text-red-800'
+                                                }`}>
                                                 {chunk.exists ? 'Tồn tại' : 'Không tồn tại'}
                                             </span>
                                         </div>
-                                        
+
                                         <div className="text-sm text-gray-600 mb-2 break-words">
                                             <span className="font-medium">Mô tả:</span> {chunk.content_summary}
                                         </div>
-                                        
+
                                         <div className="text-xs text-gray-500 mb-3">
-                                            <span className="font-medium">Loại:</span> {chunk.chunk_type} | 
+                                            <span className="font-medium">Loại:</span> {chunk.chunk_type} |
                                             <span className="font-medium ml-2">Số từ:</span> {chunk.word_count} |
                                             <span className="font-medium ml-2">Đường dẫn:</span> {chunk.file_path}
                                         </div>
-                                        
+
                                         {chunk.exists && chunk.content && (
                                             <div className="bg-gray-50 p-3 rounded border">
                                                 <p className="text-xs font-medium text-gray-600 mb-2">Nội dung:</p>
@@ -1154,22 +1155,20 @@ const DocumentsTab = ({
                         <div className="flex">
                             <button
                                 onClick={() => setActiveMainTab('upload')}
-                                className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                                    activeMainTab === 'upload'
-                                        ? 'border-green-600 text-green-600 bg-green-50'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
-                                }`}
+                                className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeMainTab === 'upload'
+                                    ? 'border-green-600 text-green-600 bg-green-50'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    }`}
                             >
                                 <Upload size={16} className="inline mr-2" />
                                 Tải lên dữ liệu
                             </button>
                             <button
                                 onClick={() => setActiveMainTab('chunks')}
-                                className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
-                                    activeMainTab === 'chunks'
-                                        ? 'border-green-600 text-green-600 bg-green-50'
-                                        : 'border-transparent text-gray-500 hover:text-gray-700'
-                                }`}
+                                className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeMainTab === 'chunks'
+                                    ? 'border-green-600 text-green-600 bg-green-50'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    }`}
                             >
                                 <FileText size={16} className="inline mr-2" />
                                 Xem thông tin chunks
@@ -1215,7 +1214,7 @@ const DocumentsTab = ({
                         ) : (
                             <div className="space-y-3">
                                 {documents
-                                    .filter(doc => 
+                                    .filter(doc =>
                                         doc.doc_id.toLowerCase().includes(documentFilter.toLowerCase()) ||
                                         doc.doc_title?.toLowerCase().includes(documentFilter.toLowerCase())
                                     )
@@ -1228,7 +1227,7 @@ const DocumentsTab = ({
                                                             <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 mr-2 flex-shrink-0">
                                                                 {document.doc_type}
                                                             </span>
-                                                            <span className="break-words">{document.doc_id}</span>                                                       
+                                                            <span className="break-words">{document.doc_id}</span>
                                                         </h3>
                                                         <p className="text-sm text-gray-600 break-words">{document.doc_title}</p>
                                                     </div>
@@ -1276,17 +1275,17 @@ const DocumentsTab = ({
                                         </div>
                                     ))}
 
-                                {documents.filter(doc => 
+                                {documents.filter(doc =>
                                     doc.doc_id.toLowerCase().includes(documentFilter.toLowerCase()) ||
                                     doc.doc_title?.toLowerCase().includes(documentFilter.toLowerCase())
                                 ).length === 0 && (
-                                    <div className="py-10 text-center">
-                                        <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
-                                            <FileText size={24} className="text-gray-400" />
+                                        <div className="py-10 text-center">
+                                            <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
+                                                <FileText size={24} className="text-gray-400" />
+                                            </div>
+                                            <p className="text-gray-500 text-sm">Không tìm thấy văn bản nào</p>
                                         </div>
-                                        <p className="text-gray-500 text-sm">Không tìm thấy văn bản nào</p>
-                                    </div>
-                                )}
+                                    )}
                             </div>
                         )}
                     </div>

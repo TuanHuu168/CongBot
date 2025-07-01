@@ -1,0 +1,319 @@
+{
+    "benchmark": [
+        {
+            "id": "q1",
+            "question": "Một thương binh đang hưởng trợ cấp hàng tháng có con học đại học, gia đình này được hưởng những ưu đãi gì? Cơ quan nào chịu trách nhiệm chi trả?",
+            "answer": "Theo Điều 4 Thông tư số 101/2018/TT-BTC và Điều 8 Quyết định số 49/2012/QĐ-UBND, gia đình thương binh được hưởng trợ cấp hàng tháng cho thương binh và trợ cấp ưu đãi giáo dục cho con. **Thông tin chi tiết:** - **Loại chính sách**: Trợ cấp hàng tháng và ưu đãi giáo dục - **Đối tượng**: Thương binh và con đang học đại học - **Thời hạn**: 12 tháng/năm học cho trợ cấp giáo dục - **Cơ quan thực hiện**: UBND cấp xã chịu trách nhiệm chi trả trực tiếp - **Nguồn kinh phí**: Ngân sách trung ương đảm bảo - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018 và Quyết định số 49/2012/QĐ-UBND ngày 23/10/2012",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art4",
+                "49_2012_QĐ_UBND_regulation_ch2_art8"
+            ]
+        },
+        {
+            "id": "q2",
+            "question": "Phí chứng thực bản sao giấy tờ do cơ quan Việt Nam cấp là bao nhiêu? Thời hạn giải quyết ra sao?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND và Thông tư số 226/2016/TT-BTC, phí chứng thực bản sao từ bản chính giấy tờ của cơ quan Việt Nam là 2.000 đồng/trang; từ trang thứ 3 trở lên thu 1.000 đồng/trang, tối đa không quá 200.000 đồng/bản. **Thông tin chi tiết:** - **Mã định danh**: 2.000815 - **Phí/Lệ phí**: 2.000đ/trang, từ trang 3: 1.000đ/trang, tối đa 200.000đ/bản - **Thời hạn**: Trong ngày hoặc ngày làm việc tiếp theo nếu tiếp nhận sau 15h, tối đa 02 ngày - **Cơ quan thực hiện**: UBND cấp xã, Phòng Tư pháp, tổ chức hành nghề công chứng - **Mức độ dịch vụ công**: Cấp 2 - **Văn bản pháp luật**: Nghị định số 23/2015/NĐ-CP ngày 16/02/2015, Thông tư số 01/2020/TT-BTP ngày 03/3/2020",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung"
+            ]
+        },
+        {
+            "id": "q3",
+            "question": "Kinh phí thực hiện chính sách ưu đãi người có công được quản lý như thế nào? Ai chịu trách nhiệm chính?",
+            "answer": "Theo Điều 1 và 2 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, kinh phí do ngân sách Trung ương đảm bảo, cơ quan LĐTBXH chủ trì phối hợp với Kho bạc Nhà nước quản lý. **Thông tin chi tiết:** - **Nguồn kinh phí**: Ngân sách Trung ương đảm bảo đầy đủ, kịp thời - **Cơ quan thực hiện**: Bộ Tài chính, Kho bạc Nhà nước bảo đảm; cơ quan LĐTBXH chủ trì quản lý - **Nguyên tắc**: Chi đúng đối tượng, đúng chế độ, đúng nội dung theo quy định - **Quản lý tài khoản**: Sở/Phòng LĐTBXH và cơ sở nuôi dưỡng mở tài khoản dự toán tại KBNN - **Quyết toán**: Số dư cuối niên độ không sử dụng hết bị hủy bỏ - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+            ]
+        },
+        {
+            "id": "q4",
+            "question": "Một cơ sở nuôi dưỡng người có công muốn sửa chữa cơ sở vật chất thì được hỗ trợ những gì?",
+            "answer": "Theo Điều 5 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH và Điều 10 Thông tư số 101/2018/TT-BTC, cơ sở được hỗ trợ sửa chữa, nâng cấp nhà cửa, cơ sở hạ tầng và các hoạt động khác. **Thông tin chi tiết:** - **Loại chính sách**: Chi hỗ trợ hoạt động cơ sở nuôi dưỡng - **Nội dung hỗ trợ**: Sửa chữa, cải tạo, nâng cấp cơ sở vật chất, trang thiết bị, nhà cửa, hạ tầng - **Mức chi**: Theo quy định hiện hành của Nhà nước đối với cơ quan hành chính và đơn vị sự nghiệp công lập - **Nguồn kinh phí**: Ngân sách trung ương bố trí trong dự toán LĐTBXH - **Cơ quan quyết định**: Giám đốc Sở LĐTBXH quy định mức chi cụ thể trong phạm vi dự toán được giao - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH và Thông tư số 101/2018/TT-BTC",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+                "101_2018_TT_BTC_ch2_art10"
+            ]
+        },
+        {
+            "id": "q5",
+            "question": "Quy trình lập dự toán kinh phí chính sách ưu đãi người có công có những thời hạn gì?",
+            "answer": "Theo Điều 7 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH và Điều 16 Thông tư số 101/2018/TT-BTC, có 4 thời hạn chính trong quy trình lập dự toán. **Thông tin chi tiết:** - **Thời hạn cấp cơ sở**: Phòng LĐTBXH và cơ sở nuôi dưỡng gửi Sở LĐTBXH trước ngày 20/6 hàng năm - **Thời hạn cấp tỉnh**: Sở LĐTBXH tổng hợp gửi Bộ LĐTBXH trước ngày 05/7 hàng năm - **Thời hạn cấp Bộ**: Bộ LĐTBXH tổng hợp gửi Bộ Tài chính trước ngày 20/7 hàng năm - **Thời hạn hoàn thành**: Bộ Tài chính giao dự toán cho Bộ LĐTBXH trước ngày 20/11 hàng năm - **Nội dung dự toán**: Chi tiết theo từng loại trợ cấp hàng tháng, trợ cấp một lần và các chế độ ưu đãi khác - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art7_8",
+                "101_2018_TT_BTC_ch3_art16"
+            ]
+        },
+        {
+            "id": "q6",
+            "question": "Trong thủ tục hành chính, văn bản nào quy định về kiểm soát và đánh giá tác động?",
+            "answer": "Theo Nghị định số 63/2010/NĐ-CP ngày 08/6/2010 và Nghị định số 48/2013/NĐ-CP ngày 14/5/2013, việc kiểm soát và đánh giá tác động thủ tục hành chính được quy định chi tiết. **Thông tin chi tiết:** - **Văn bản chính**: Nghị định số 63/2010/NĐ-CP về kiểm soát thủ tục hành chính - **Văn bản sửa đổi**: Nghị định số 48/2013/NĐ-CP sửa đổi bổ sung - **Cơ quan kiểm soát**: Bộ Tư pháp thống nhất quản lý, Cục Kiểm soát thủ tục hành chính thực hiện - **Tiêu chí đánh giá**: Sự cần thiết, tính hợp lý, tính hợp pháp, chi phí tuân thủ - **Biểu mẫu**: Có 3 phụ lục đánh giá thủ tục hành chính, mẫu đơn tờ khai, yêu cầu điều kiện - **Hiệu lực**: Nghị định 63/2010 từ 14/10/2010, Nghị định 48/2013 từ 01/7/2013 - **Phạm vi áp dụng**: Toàn quốc, tất cả cơ quan hành chính nhà nước",
+            "contexts": [
+                "63_2010_NĐ_CP_ch2_art10_11",
+                "48_2013_NĐ_CP_art1_part1"
+            ]
+        },
+        {
+            "id": "q7",
+            "question": "Phí quản lý kinh phí thực hiện chính sách ưu đãi người có công được trích bao nhiêu phần trăm?",
+            "answer": "Theo Điều 6 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH và Điều 14 Thông tư số 101/2018/TT-BTC, ngành LĐTBXH được trích phí quản lý từ tổng kinh phí thực hiện chính sách. **Thông tin chi tiết:** - **Tỷ lệ trích**: 1,7%/tổng kinh phí thực hiện chính sách ưu đãi người có công - **Mục đích sử dụng**: Đảm bảo hoạt động nghiệp vụ quản lý đối tượng, hồ sơ, tài chính kế toán - **Chi phí chi trả**: Tối đa 50% chi phí quản lý toàn ngành dành cho phục vụ chi trả đến người thụ hưởng - **Phân bổ cụ thể**: Do Bộ trưởng Bộ LĐTBXH quyết định tỷ lệ chi trả cụ thể của từng tỉnh - **Nguồn kinh phí**: Ngân sách trung ương bố trí trong dự toán chính sách ưu đãi hàng năm - **Cơ quan quản lý**: Bộ LĐTBXH phân bổ phù hợp đặc thù từng địa phương - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+                "101_2018_TT_BTC_ch2_art14"
+            ]
+        },
+        {
+            "id": "q8",
+            "question": "Việc chứng thực chữ ký trong giấy tờ có mức phí như thế nào và thời gian xử lý bao lâu?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận và Thông tư số 226/2016/TT-BTC, chứng thực chữ ký có mức phí và thời gian xử lý cụ thể. **Thông tin chi tiết:** - **Mã định danh**: 2.000884 - **Phí/Lệ phí**: 10.000 đồng/trường hợp (một hoặc nhiều chữ ký trong một giấy tờ, văn bản) - **Thời hạn**: Trong ngày tiếp nhận hoặc ngày làm việc tiếp theo nếu tiếp nhận sau 15 giờ - **Cơ quan thực hiện**: UBND cấp xã, Phòng Tư pháp, tổ chức hành nghề công chứng - **Địa điểm**: Bộ phận Tiếp nhận và trả kết quả của các cơ quan trên - **Mức độ dịch vụ công**: Cấp 2 - **Phạm vi áp dụng**: Áp dụng cho cả trường hợp chứng thực điểm chỉ và người không thể ký được - **Văn bản pháp luật**: Nghị định số 23/2015/NĐ-CP, Thông tư số 01/2020/TT-BTP, Thông tư số 226/2016/TT-BTC",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_chung"
+            ]
+        },
+        {
+            "id": "q9",
+            "question": "Người có công đi điều dưỡng tập trung được hỗ trợ những gì? Mức chi cụ thể ra sao?",
+            "answer": "Theo Điều 6 Thông tư số 101/2018/TT-BTC, người có công đi điều dưỡng tập trung được hỗ trợ nhiều khoản chi với mức cụ thể. **Thông tin chi tiết:** - **Loại chính sách**: Chế độ điều dưỡng phục hồi sức khỏe tập trung - **Nội dung hỗ trợ**: Tiền ăn (sáng + 2 bữa chính + bồi dưỡng), thuốc bổ và chữa bệnh, quà tặng - **Chi phí phụ trợ**: Điện nước, xăng dầu máy phát, vệ sinh môi trường tối đa 320.000đ/người/lần - **Chi văn hóa**: Sách báo, hoạt động văn nghệ, thể thao 100.000đ/người/đợt - **Mức chi khác**: Không quá 15% mức chi điều dưỡng cho các khoản phục vụ trực tiếp - **Phương thức thực hiện**: Giao nhiệm vụ cho cơ sở hoặc thanh toán theo hợp đồng - **Nguồn kinh phí**: Ngân sách trung ương bố trí trong dự toán LĐTBXH - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art6"
+            ]
+        },
+        {
+            "id": "q10",
+            "question": "Cơ sở dữ liệu quốc gia về thủ tục hành chính bao gồm những nội dung gì?",
+            "answer": "Theo Điều 26 Nghị định số 63/2010/NĐ-CP, Cơ sở dữ liệu quốc gia về thủ tục hành chính bao gồm 5 nội dung cơ bản được quản lý bởi Văn phòng Chính phủ. **Thông tin chi tiết:** - **Nội dung chính**: Thủ tục hành chính hiện đang thực hiện toàn quốc hoặc địa phương - **Lưu trữ lịch sử**: Thủ tục hành chính đã bị hủy bỏ hoặc bãi bỏ - **Văn bản pháp lý**: Các văn bản quy định về thủ tục hành chính và có liên quan - **Cổng tương tác**: Cổng tham vấn về thủ tục hành chính và việc thực hiện - **Cơ quan quản lý**: Văn phòng Chính phủ chủ trì, phối hợp Bộ Công an, Bộ TT&TT - **Yêu cầu kỹ thuật**: Dễ dàng, tiện lợi cho người sử dụng tìm kiếm, tra cứu - **Thời hạn cập nhật**: Trong 05 ngày làm việc từ khi nhận dữ liệu - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010",
+            "contexts": [
+                "63_2010_NĐ_CP_ch4_art23_26"
+            ]
+        },
+        {
+            "id": "q11",
+            "question": "Việc nhập quốc tịch Việt Nam có phí lệ phí bao nhiêu và thời gian xử lý?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận và Thông tư số 281/2016/TT-BTC, thủ tục nhập quốc tịch Việt Nam có mức phí và thời gian xử lý cụ thể. **Thông tin chi tiết:** - **Mã định danh**: 2.002039 - **Lệ phí**: 3.000.000 đồng/trường hợp - **Miễn phí**: Người có công lao đặc biệt; người không quốc tịch khó khăn kinh tế có xác nhận UBND xã - **Thời hạn**: 115 ngày (thời gian thực tế giải quyết tại các cơ quan có thẩm quyền) - **Cơ quan thực hiện**: Sở Tư pháp tiếp nhận, Bộ Tư pháp quyết định - **Địa điểm**: Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - **Mức độ dịch vụ công**: Cấp 2, có thực hiện qua DVCTT - **Văn bản pháp luật**: Luật Quốc tịch Việt Nam 2008, Nghị định số 16/2020/NĐ-CP, Thông tư số 02/2020/TT-BTP",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_quoc_tich"
+            ]
+        },
+        {
+            "id": "q12",
+            "question": "Chi phí thanh toán giám định y khoa cho người có công được thực hiện như thế nào?",
+            "answer": "Theo Điều 8 Thông tư số 101/2018/TT-BTC, chi phí thẩm định cấp giấy giám định y khoa cho người có công được thanh toán theo quy định cụ thể. **Thông tin chi tiết:** - **Đối tượng được thanh toán**: Trường hợp có hồ sơ đủ điều kiện, được Sở LĐTBXH giới thiệu đến Hội đồng giám định y khoa cấp tỉnh - **Nội dung thanh toán**: Giám định lần đầu làm căn cứ công nhận chế độ; giám định lại tỷ lệ suy giảm khả năng lao động - **Mức thanh toán**: Theo Biểu phí thẩm định trong Thông tư số 243/2016/TT-BTC - **Trường hợp đặc biệt**: Nếu giám định phúc quyết đúng như đề nghị thì Sở LĐTBXH thanh toán, sai thì đối tượng tự chi trả - **Phạm vi áp dụng**: Bao gồm cả chuyển lên Hội đồng giám định y khoa cấp Trung ương - **Nguồn kinh phí**: Ngân sách trung ương bố trí trong dự toán LĐTBXH - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018, Thông tư số 243/2016/TT-BTC",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art8_9"
+            ]
+        },
+        {
+            "id": "q13",
+            "question": "Trách nhiệm của UBND phường xã trong việc chi trả trợ cấp cho người có công ra sao?",
+            "answer": "Theo Điều 8 Quyết định số 49/2012/QĐ-UBND TP.HCM, UBND phường-xã có nhiều trách nhiệm cụ thể trong chi trả trợ cấp cho người có công. **Thông tin chi tiết:** - **Cơ sở pháp lý**: Hợp đồng trách nhiệm ký với Phòng LĐTBXH, Quyết định giao nhiệm vụ cho cán bộ thực hiện - **Quản lý trực tiếp**: Đối tượng, tiền mặt, các khoản chi trợ cấp, đảm bảo an toàn không thất thoát - **Thời hạn chi trả**: Hoàn thành trước ngày 15 hàng tháng, thanh quyết toán với Phòng LĐTBXH trước ngày 18 - **Quy trình chi trả**: Kiểm tra danh sách, thông báo công khai địa điểm thời gian, yêu cầu ký nhận đầy đủ - **Ủy quyền nhận**: Phải có giấy ủy quyền xác nhận của UBND xã, hiệu lực không quá 1 năm - **Quản lý sổ sách**: Mở sổ theo dõi thu chi, lập chứng từ đầy đủ, Chủ tịch UBND ký duyệt - **Phạm vi áp dụng**: Trên địa bàn TP.Hồ Chí Minh - **Văn bản pháp luật**: Quyết định số 49/2012/QĐ-UBND ngày 23/10/2012",
+            "contexts": [
+                "49_2012_QĐ_UBND_regulation_ch2_art8"
+            ]
+        },
+        {
+            "id": "q14",
+            "question": "Thủ tục đăng ký thế chấp quyền sử dụng đất có phí bao nhiêu và thời gian xử lý?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận và Nghị quyết số 24/2017/NQ-HĐND, thủ tục đăng ký thế chấp quyền sử dụng đất có mức phí và thời gian cụ thể. **Thông tin chi tiết:** - **Mã định danh**: 1.004583 - **Phí đăng ký**: 80.000 đồng/hồ sơ - **Thời hạn**: Trong ngày nhận hồ sơ hợp lệ, nếu sau 15h thì ngày làm việc tiếp theo, tối đa 03 ngày - **Phạm vi áp dụng**: Thế chấp quyền sử dụng đất hoặc đồng thời với tài sản gắn liền hoặc chỉ tài sản gắn liền - **Cơ quan thực hiện**: Văn phòng đăng ký đất đai hoặc Chi nhánh Văn phòng đăng ký đất đai - **Địa điểm**: Trung tâm HCC tỉnh (Quầy Sở TN&MT) hoặc Bộ phận Một cửa cấp huyện - **Mức độ dịch vụ công**: Cấp 2, có thực hiện qua DVCTT - **Văn bản pháp luật**: Luật đất đai 2013, Nghị định số 102/2017/NĐ-CP, Thông tư số 07/2019/TT-BTP",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_1"
+            ]
+        },
+        {
+            "id": "q15",
+            "question": "Điều kiện để được cấp thẻ tư vấn viên pháp luật là gì? Có mất phí không?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận và Nghị định số 77/2008/NĐ-CP, việc cấp thẻ tư vấn viên pháp luật có điều kiện và không mất phí. **Thông tin chi tiết:** - **Mã định danh**: 1.000426 - **Phí/Lệ phí**: Không thu phí - **Thời hạn**: 05 ngày làm việc - **Cơ quan thực hiện**: Sở Tư pháp tiếp nhận và giải quyết - **Địa điểm**: Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - **Mức độ dịch vụ công**: Cấp 3, có thực hiện qua DVCTT - **Điều kiện**: Phải đảm bảo các yêu cầu về trình độ chuyên môn, kinh nghiệm làm việc theo quy định - **Kết quả**: Nhận được thẻ tư vấn viên pháp luật có giá trị trên phạm vi tỉnh - **Văn bản pháp luật**: Nghị định số 77/2008/NĐ-CP, Nghị định số 05/2012/NĐ-CP, Thông tư số 01/2010/TT-BTP, Thông tư số 19/2011/TT-BTP",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_luat_su_2_tu_van"
+            ]
+        },
+        {
+            "id": "q16",
+            "question": "Khi nào số dư dự toán kinh phí chính sách người có công bị hủy bỏ?",
+            "answer": "Theo Điều 2 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, số dư dự toán kinh phí thực hiện chính sách ưu đãi người có công bị hủy bỏ theo quy định chặt chẽ. **Thông tin chi tiết:** - **Thời điểm hủy bỏ**: Số dư đến hết niên độ ngân sách năm dự toán không sử dụng hết - **Phạm vi áp dụng**: Bao gồm cả thời gian chỉnh lý quyết toán theo chế độ quy định - **Nguyên tắc**: Không được chuyển sang năm sau sử dụng - **Loại kinh phí**: Áp dụng cho tất cả các khoản chi trợ cấp thường xuyên, một lần, ưu đãi khác, hỗ trợ hoạt động - **Quản lý chặt chẽ**: Đảm bảo việc thu hồi, nộp ngân sách các khoản lĩnh trùng, cấp trùng, chi sai chế độ - **Cơ quan thực hiện**: Ngành LĐTBXH phối hợp với Kho bạc Nhà nước thực hiện thu hồi - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art1_2"
+            ]
+        },
+        {
+            "id": "q17",
+            "question": "Thủ tục hành chính phải có những bộ phận tạo thành cơ bản nào theo quy định?",
+            "answer": "Theo Điều 8 Nghị định số 63/2010/NĐ-CP, việc quy định một thủ tục hành chính cụ thể chỉ hoàn thành khi đáp ứng đầy đủ 9 bộ phận tạo thành cơ bản. **Thông tin chi tiết:** - **Bộ phận bắt buộc**: Tên thủ tục, trình tự thực hiện, cách thức thực hiện, hồ sơ, thời hạn giải quyết - **Bộ phận định danh**: Đối tượng thực hiện, cơ quan thực hiện, kết quả thực hiện thủ tục hành chính - **Bộ phận bổ sung**: Mẫu đơn tờ khai hành chính, mẫu kết quả, yêu cầu điều kiện, phí lệ phí (nếu có) - **Phân cấp quy định**: Chính phủ/Thủ tướng quy định các điểm a,b,d,đ,e,g,h; Bộ trưởng/UBND tỉnh quy định chi tiết - **Yêu cầu đặc biệt**: Yêu cầu điều kiện dạng quy chuẩn kỹ thuật do Bộ trưởng quy định - **Nguyên tắc hoàn chỉnh**: Cơ quan nào có thẩm quyền phải hoàn chỉnh dự án, dự thảo của mình - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010 về kiểm soát thủ tục hành chính",
+            "contexts": [
+                "63_2010_NĐ_CP_ch2_art7_9"
+            ]
+        },
+        {
+            "id": "q18",
+            "question": "Phương tiện trợ giúp và dụng cụ chỉnh hình cho người có công được cấp như thế nào?",
+            "answer": "Theo Điều 7 Thông tư số 101/2018/TT-BTC, việc cấp phương tiện trợ giúp và dụng cụ chỉnh hình cho người có công thực hiện theo nguyên tắc cấp tiền và có hỗ trợ đi lại. **Thông tin chi tiết:** - **Nguyên tắc cấp**: Cấp tiền để đối tượng mua phương tiện theo niên hạn sử dụng quy định - **Mức tiền**: Theo phụ lục kèm theo Thông tư, bao gồm cả tiền mua vật phẩm phụ, bảo trì phương tiện - **Thời điểm cấp**: Một lần vào đầu niên hạn sử dụng - **Hỗ trợ đi lại**: 5.000đ/km từ nơi cư trú đến cơ sở y tế gần nhất, tối đa 1.400.000đ/người/niên hạn - **Hỗ trợ phục hồi chức năng**: Cùng mức với làm dụng cụ chỉnh hình khi có chỉ định của bệnh viện cấp tỉnh trở lên - **Đối tượng thụ hưởng**: Người được hưởng chế độ cấp phương tiện trợ giúp theo quy định của Bộ LĐTBXH - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art7"
+            ]
+        },
+        {
+            "id": "q19",
+            "question": "Việc điều chỉnh dự toán kinh phí giữa các tỉnh được thực hiện như thế nào?",
+            "answer": "Theo Điều 11 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH và Điều 18 Thông tư số 101/2018/TT-BTC, điều chỉnh dự toán giữa các tỉnh do Bộ LĐTBXH quyết định. **Thông tin chi tiết:** - **Thẩm quyền**: Bộ trưởng Bộ LĐTBXH ra quyết định điều chỉnh dự toán giữa các Sở LĐTBXH - **Điều kiện**: Trong phạm vi dự toán đã được cấp có thẩm quyền giao, không vượt quá tổng số - **Căn cứ điều chỉnh**: Đề nghị của Sở LĐTBXH kèm Bảng tổng hợp xác nhận của KBNN về số dư dự toán còn lại - **Thời hạn**: Hoàn thành trước ngày 15/11 năm hiện hành - **Thủ tục**: Gửi Kho bạc Nhà nước tỉnh để kiểm soát chi và gửi Bộ Tài chính để báo cáo - **Trường hợp đặc biệt**: Cần ý kiến thống nhất của Bộ Tài chính nếu điều chỉnh nhiệm vụ chi đã được ghi chú trong quyết định giao dự toán - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art9_11",
+                "101_2018_TT_BTC_ch3_art18"
+            ]
+        },
+        {
+            "id": "q20",
+            "question": "Các hành vi bị nghiêm cấm trong thực hiện thủ tục hành chính là gì?",
+            "answer": "Theo Điều 6 Nghị định số 63/2010/NĐ-CP, có 3 nhóm hành vi bị nghiêm cấm trong thực hiện thủ tục hành chính với các quy định cụ thể. **Thông tin chi tiết:** - **Nghiêm cấm cán bộ công chức**: Tiết lộ thông tin bí mật; từ chối, kéo dài thời gian; hách dịch, sách nhiễu; nhận tiền quà; đùn đẩy trách nhiệm - **Nghiêm cấm đối tượng**: Cản trở hoạt động cơ quan nhà nước; đưa hối lộ; dùng thủ đoạn lừa dối - **Nghiêm cấm tổ chức cá nhân**: Cản trở hoạt động kiểm soát thủ tục hành chính - **Ngoại lệ tiết lộ thông tin**: Được đối tượng đồng ý bằng văn bản hoặc pháp luật có quy định khác - **Phạm vi bảo mật**: Bí mật kinh doanh, bí mật cá nhân của đối tượng thực hiện thủ tục - **Xử lý vi phạm**: Tùy theo tính chất, mức độ vi phạm xử lý theo quy định pháp luật - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010 về kiểm soát thủ tục hành chính",
+            "contexts": [
+                "63_2010_NĐ_CP_ch1_art1_6"
+            ]
+        },
+        {
+            "id": "q21",
+            "question": "Thủ tục chứng thực di chúc có những yêu cầu và mức phí như thế nào?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận, thủ tục chứng thực di chúc thuộc thẩm quyền UBND cấp xã với mức phí và thời hạn cụ thể. **Thông tin chi tiết:** - **Mã định danh**: 2.001019 - **Cơ quan thực hiện**: UBND cấp xã tiếp nhận và giải quyết - **Phí chứng thực**: 50.000 đồng/trường hợp - **Thời hạn**: Không quá 02 ngày kể từ ngày nhận đủ hồ sơ yêu cầu chứng thực - **Thời gian linh hoạt**: Có thể dài hơn theo thỏa thuận bằng văn bản với người yêu cầu chứng thực - **Mức độ dịch vụ công**: Cấp 2 - **Địa điểm**: Bộ phận Tiếp nhận và trả kết quả của UBND cấp xã - **Văn bản pháp luật**: Nghị định số 23/2015/NĐ-CP ngày 16/02/2015, Thông tư số 01/2020/TT-BTP ngày 03/3/2020, Thông tư số 226/2016/TT-BTC ngày 11/11/2016",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_chung_thuc_cap_huyen_xa"
+            ]
+        },
+        {
+            "id": "q22",
+            "question": "Việc chi trả chế độ cho người thụ hưởng thông qua tổ chức dịch vụ chi trả có những quy định gì?",
+            "answer": "Theo Điều 15 Thông tư số 101/2018/TT-BTC, việc chi trả qua tổ chức dịch vụ có quy trình và trách nhiệm cụ thể. **Thông tin chi tiết:** - **Tiêu chí lựa chọn**: Tổ chức có kinh nghiệm, mạng lưới điểm giao dịch tại xã, có thể chi trả tại nhà cho đối tượng đặc thù - **Hợp đồng chi trả**: Giữa cơ quan LĐTBXH và tổ chức dịch vụ, ghi rõ phạm vi, phương thức, thời hạn, chi phí - **Phương thức chi trả**: Chi trả trực tiếp bằng tiền mặt hoặc qua thẻ ATM - **Thời hạn chuyển tiền**: Trước ngày 25 hàng tháng, cơ quan LĐTBXH chuyển kinh phí vào tài khoản tổ chức dịch vụ - **Báo cáo định kỳ**: Tổ chức dịch vụ báo cáo danh sách đã nhận tiền, chưa nhận tiền trước ngày 20 hàng tháng - **Giám sát**: Cơ quan LĐTBXH cử người giám sát việc chi trả - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art15"
+            ]
+        },
+        {
+            "id": "q23",
+            "question": "Thời hạn ban hành quyết định công bố thủ tục hành chính theo các cấp độ là bao lâu?",
+            "answer": "Theo Điều 15 Nghị định số 63/2010/NĐ-CP được sửa đổi bởi Điều 1 Nghị định số 48/2013/NĐ-CP, thời hạn ban hành quyết định công bố thủ tục hành chính được phân chia theo cấp. **Thông tin chi tiết:** - **Cấp Trung ương**: Quyết định của Bộ trưởng, Thủ trưởng cơ quan ngang Bộ phải ban hành chậm nhất trước 20 ngày làm việc - **Cấp địa phương**: Quyết định của Chủ tịch UBND tỉnh và các cấp dưới phải ban hành chậm nhất trước 05 ngày làm việc - **Mốc tính thời gian**: Tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành - **Phạm vi áp dụng**: Áp dụng cho tất cả thủ tục hành chính mới ban hành, sửa đổi bổ sung hoặc thay thế - **Hiệu lực**: Quy định này có hiệu lực từ ngày 01/7/2013 - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010, Nghị định số 48/2013/NĐ-CP ngày 14/5/2013",
+            "contexts": [
+                "63_2010_NĐ_CP_ch3_art12_15",
+                "48_2013_NĐ_CP_art1_part2"
+            ]
+        },
+        {
+            "id": "q24",
+            "question": "Chi hỗ trợ thăm viếng mộ liệt sĩ có mức như thế nào và ai được hưởng?",
+            "answer": "Theo Điều 12 Thông tư số 101/2018/TT-BTC, chi hỗ trợ thăm viếng mộ liệt sĩ có mức cụ thể và đối tượng rõ ràng. **Thông tin chi tiết:** - **Đối tượng**: Thân nhân liệt sĩ (không quá 3 người) hoặc người thờ cúng liệt sĩ được cơ quan LĐTBXH cấp giấy giới thiệu - **Mức hỗ trợ**: 2.000 đồng/km nhân với khoảng cách từ nơi cấp giấy giới thiệu đến nghĩa trang hoặc nơi hy sinh - **Giới hạn tối đa**: Không quá 2.400.000 đồng/người - **Tần suất**: Mỗi năm một lần đối với một liệt sĩ - **Nội dung hỗ trợ**: Tiền tàu xe và tiền ăn (bao gồm cả lượt đi và về) - **Ví dụ tính toán**: Khoảng cách 900km x 2.000đ x 3 người = 5.400.000đ (nhưng bị giới hạn tối đa 2.400.000đ/người) - **Quy trình**: Thực hiện theo quy định của Bộ LĐTBXH - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art12_13"
+            ]
+        },
+        {
+            "id": "q25",
+            "question": "Nguyên tắc quy định thủ tục hành chính phải đảm bảo những yêu cầu gì?",
+            "answer": "Theo Điều 7 Nghị định số 63/2010/NĐ-CP, thủ tục hành chính được quy định phải bảo đảm 5 nguyên tắc cơ bản. **Thông tin chi tiết:** - **Tính đơn giản**: Đơn giản, dễ hiểu và dễ thực hiện cho đối tượng và cơ quan thực hiện - **Tính phù hợp**: Phù hợp với mục tiêu quản lý hành chính nhà nước - **Tính bình đẳng**: Bảo đảm quyền bình đẳng của các đối tượng thực hiện thủ tục hành chính - **Tính tiết kiệm**: Tiết kiệm thời gian và chi phí của cá nhân, tổ chức và cơ quan hành chính nhà nước - **Tính hệ thống**: Đảm bảo tính hợp hiến, hợp pháp, thống nhất, đồng bộ, hiệu quả; thực hiện phân công phân cấp rõ ràng, minh bạch - **Trách nhiệm hoàn chỉnh**: Cơ quan nào có thẩm quyền phải hoàn chỉnh dự án, dự thảo văn bản thuộc thẩm quyền - **Tính liên thông**: Bảo đảm tính liên thông giữa các thủ tục hành chính liên quan - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010",
+            "contexts": [
+                "63_2010_NĐ_CP_ch2_art7_9"
+            ]
+        },
+        {
+            "id": "q26",
+            "question": "Sở LĐTBXH có những nhiệm vụ gì trong quản lý kinh phí chính sách người có công?",
+            "answer": "Theo Điều 4 Quyết định số 49/2012/QĐ-UBND TP.HCM, Sở LĐTBXH có 8 nhiệm vụ chính trong quản lý kinh phí chính sách người có công. **Thông tin chi tiết:** - **Thẩm tra dự toán**: Thẩm tra dự toán hàng năm của Phòng LĐTBXH các quận-huyện và đơn vị thuộc Sở, tổng hợp báo cáo Bộ LĐTBXH trước 05/7 - **Phân bổ dự toán**: Căn cứ quyết định của Bộ LĐTBXH, phân bổ và giao dự toán cho các đơn vị trực thuộc - **Điều chỉnh dự toán**: Ra quyết định điều chỉnh dự toán giữa các đơn vị trên cơ sở xác nhận của KBNN - **Quản lý danh sách**: Lập Bảng kê tăng, in danh sách chi trả hàng tháng, ban hành văn bản tạm dừng chi trả - **Thẩm tra quyết toán**: Xét duyệt, thông báo kết quả thực hiện dự toán, quyết toán kinh phí hàng quý, năm - **Tổng hợp báo cáo**: Báo cáo quyết toán của Thành phố gửi Bộ LĐTBXH trước 05/7 hàng năm - **Hướng dẫn nghiệp vụ**: Tổ chức hướng dẫn quy định tài chính, kế toán cho các đơn vị - **Phối hợp kiểm tra**: Cùng Phòng LĐTBXH kiểm tra thực hiện chính sách tại các phường-xã",
+            "contexts": [
+                "49_2012_QĐ_UBND_regulation_ch2_art4_5"
+            ]
+        },
+        {
+            "id": "q27",
+            "question": "Thủ tục xóa đăng ký biện pháp bảo đảm có phí bao nhiêu và thời gian xử lý?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận, thủ tục xóa đăng ký biện pháp bảo đảm bằng quyền sử dụng đất có mức phí thấp nhất và thời gian nhanh. **Thông tin chi tiết:** - **Mã định danh**: 1.000655 - **Phí đăng ký**: 20.000 đồng/hồ sơ - **Thời hạn**: Trong ngày nhận hồ sơ hợp lệ, nếu sau 15h thì ngày làm việc tiếp theo, tối đa 03 ngày - **Cơ quan thực hiện**: Văn phòng đăng ký đất đai hoặc Chi nhánh Văn phòng đăng ký đất đai - **Địa điểm**: Trung tâm HCC tỉnh (Quầy Sở TN&MT) hoặc Bộ phận Một cửa cấp huyện - **Mức độ dịch vụ công**: Cấp 2, có thực hiện qua DVCTT - **So sánh phí**: Thấp nhất trong các thủ tục đăng ký biện pháp bảo đảm (80.000đ đăng ký, 60.000đ thay đổi, 20.000đ xóa) - **Văn bản pháp luật**: Luật đất đai 2013, Nghị định số 102/2017/NĐ-CP, Thông tư số 07/2019/TT-BTP, Nghị quyết số 24/2017/NQ-HĐND",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_bien_phap_bao_dam_2"
+            ]
+        },
+        {
+            "id": "q28",
+            "question": "Chi phí quản lý thực hiện chính sách ưu đãi người có công bao gồm những nội dung nào?",
+            "answer": "Theo Điều 6 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH và Điều 14 Thông tư số 101/2018/TT-BTC, chi phí quản lý bao gồm 17 nội dung chi cụ thể. **Thông tin chi tiết:** - **Tỷ lệ trích**: 1,7% tổng kinh phí thực hiện chính sách, trong đó tối đa 50% dành cho phục vụ chi trả - **Chi trả thù lao**: Cho cán bộ trực tiếp chi trả trợ cấp, mức do Giám đốc Sở LĐTBXH quyết định - **Chi phổ biến chính sách**: Theo Thông tư liên tịch số 14/2014/TTLT-BTC-BTP về phổ biến giáo dục pháp luật - **Chi thông tin tuyên truyền**: Trên các phương tiện thông tin đại chúng - **Chi ứng dụng CNTT**: Phục vụ quản lý tài chính, hồ sơ, đối tượng, chi trả - **Chi văn phòng phẩm**: In ấn biểu mẫu, mua sách tài liệu phục vụ quản lý - **Chi dịch vụ chi trả**: Chuyển tiền, làm thẻ ATM, vận chuyển tiền mặt, thuê địa điểm - **Chi tập huấn bồi dưỡng**: Theo Thông tư số 36/2018/TT-BTC và số 40/2017/TT-BTC - **Chi xét duyệt hồ sơ**: Tối đa 50.000đ/hồ sơ - **Chi khác**: Công tác phí, làm đêm thêm giờ, xăng dầu, mua sắm tài sản",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6",
+                "101_2018_TT_BTC_ch2_art14"
+            ]
+        },
+        {
+            "id": "q29",
+            "question": "Khi đánh giá tác động thủ tục hành chính cần xem xét những tiêu chí nào?",
+            "answer": "Theo Điều 10 Nghị định số 63/2010/NĐ-CP, cơ quan soạn thảo văn bản quy phạm pháp luật có quy định về thủ tục hành chính phải đánh giá tác động theo 4 tiêu chí chính. **Thông tin chi tiết:** - **Sự cần thiết**: Xem xét thủ tục hành chính có thực sự cần thiết hay không - **Tính hợp lý**: Đánh giá thủ tục có hợp lý, phù hợp với thực tế hay không - **Tính hợp pháp**: Kiểm tra thủ tục có tuân thủ đúng pháp luật hiện hành - **Chi phí tuân thủ**: Tính toán các chi phí mà tổ chức, cá nhân phải bỏ ra để thực hiện - **Biểu mẫu đánh giá**: Thực hiện theo 3 Phụ lục (I, II, III) của Nghị định, do Cơ quan kiểm soát TTHC đăng tải - **Hướng dẫn**: Cơ quan kiểm soát TTHC hướng dẫn điền biểu mẫu và tính toán chi phí - **Bổ sung tiêu chí**: Cơ quan kiểm soát có thể bổ sung thêm tiêu chí đánh giá khi cần thiết - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010 về kiểm soát thủ tục hành chính",
+            "contexts": [
+                "63_2010_NĐ_CP_ch2_art10_11",
+                "63_2010_NĐ_CP_annex1"
+            ]
+        },
+        {
+            "id": "q30",
+            "question": "Việc hỗ trợ di chuyển hài cốt liệt sĩ có những nội dung và mức hỗ trợ như thế nào?",
+            "answer": "Theo Điều 13 Thông tư số 101/2018/TT-BTC, việc hỗ trợ di chuyển hài cốt liệt sĩ bao gồm 3 nội dung chính với mức hỗ trợ cụ thể. **Thông tin chi tiết:** - **Hỗ trợ thân nhân**: Tiền tàu xe và tiền ăn cho thân nhân liệt sĩ hoặc người được ủy quyền (không quá 3 người) - **Mức hỗ trợ đi lại**: 2.000đ/km từ nơi cấp giấy giới thiệu đến nghĩa trang, tối đa 2.400.000đ/người - **Chi phí cất bốc**: Hỗ trợ 4.000.000 đồng cho việc cất bốc và di chuyển một bộ hài cốt liệt sĩ - **Trường hợp đặc biệt**: Nếu thân nhân muốn giữ lại xây cất tại nghĩa trang dòng họ thì được hỗ trợ thêm tiền xây vỏ mộ - **Mức xây vỏ mộ**: Theo quy định tại khoản 3 Điều 62 Nghị định số 31/2013/NĐ-CP - **Quy trình thủ tục**: Thực hiện theo quy định của Bộ LĐTBXH - **Nguồn kinh phí**: Ngân sách trung ương bố trí trong dự toán LĐTBXH - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art12_13"
+            ]
+        },
+        {
+            "id": "q31",
+            "question": "Thủ tục hành chính nào đã bị bãi bỏ trong lĩnh vực luật sư theo quy định mới nhất?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận, có 9 thủ tục hành chính trong lĩnh vực luật sư đã bị bãi bỏ theo các Quyết định của Bộ Tư pháp. **Thông tin chi tiết:** - **Chấm dứt hoạt động**: 3 TTHC về chấm dứt hoạt động tổ chức hành nghề luật sư trong các trường hợp khác nhau - **Thu hồi giấy đăng ký**: 1 TTHC về thu hồi Giấy đăng ký hoạt động của tổ chức hành nghề luật sư và chi nhánh - **Chuyển đổi**: 2 TTHC về chuyển đổi công ty luật và chuyển đổi văn phòng luật sư thành công ty luật - **Giải thể Đoàn luật sư**: 1 TTHC về giải thể Đoàn luật sư - **Phê duyệt, phê chuẩn**: 2 TTHC về phê duyệt Đề án tổ chức Đại hội và phê chuẩn kết quả Đại hội luật sư - **Văn bản bãi bỏ**: Quyết định số 1565/QĐ-BTP ngày 13/7/2020 của Bộ Tư pháp - **Trạng thái**: Tất cả đều là TTHC cấp tỉnh và đã bị bãi bỏ chính thức - **Hiệu lực**: Có hiệu lực từ ngày ký Quyết định số 1766/2020/QĐ-UBND",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_tthc_bai_bo"
+            ]
+        },
+        {
+            "id": "q32",
+            "question": "Quy trình hạch toán và quyết toán kinh phí chính sách người có công có những quy định gì?",
+            "answer": "Theo Điều 13 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, việc hạch toán và quyết toán kinh phí thực hiện chính sách ưu đãi người có công có quy trình 4 cấp với thời hạn cụ thể. **Thông tin chi tiết:** - **Hạch toán**: Vào Chương Bộ LĐTBXH (mã 024), cấp Chương ngân sách Trung ương (mã 1), loại 520, khoản 527 - **Cấp cơ sở**: Phòng LĐTBXH và cơ sở nuôi dưỡng lập báo cáo gửi Sở LĐTBXH trước 30/4 hàng năm - **Cấp tỉnh**: Sở LĐTBXH xét duyệt và tổng hợp báo cáo gửi Bộ LĐTBXH trước 05/7 hàng năm - **Cấp Bộ**: Bộ LĐTBXH thẩm định và tổng hợp quyết toán gửi Bộ Tài chính trước 01/10 hàng năm - **Cấp Trung ương**: Bộ Tài chính thẩm định và tổng hợp vào quyết toán ngân sách nhà nước - **Nội dung báo cáo**: Thể hiện đầy đủ các khoản chi theo dự toán được giao và đúng mục lục ngân sách - **Hồ sơ**: Đủ biểu mẫu, thuyết minh, xác nhận của KBNN - **Xử lý công trình đầu tư**: Hạch toán vào TK 337, chủ đầu tư trình phê duyệt quyết toán",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art12_13"
+            ]
+        },
+        {
+            "id": "q33",
+            "question": "Thủ tục thôi quốc tịch Việt Nam ở trong nước có thời gian và phí như thế nào?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận, thủ tục thôi quốc tịch Việt Nam ở trong nước có thời gian xử lý dài và mức lệ phí cao. **Thông tin chi tiết:** - **Mã định danh**: 2.002036 - **Thời hạn**: 75 ngày (thời gian thực tế giải quyết hồ sơ tại các cơ quan có thẩm quyền) - **Lệ phí**: 2.500.000 đồng/trường hợp - **Cơ quan thực hiện**: Sở Tư pháp tiếp nhận, Công an tỉnh, Bộ Tư pháp có thẩm quyền quyết định - **Địa điểm**: Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - **Mức độ dịch vụ công**: Cấp 2, có thực hiện qua DVCTT - **Quy trình phức tạp**: Do liên quan nhiều cơ quan (Sở Tư pháp, Công an tỉnh, Bộ Tư pháp) nên thời gian xử lý lâu - **Văn bản pháp luật**: Luật Quốc tịch Việt Nam 2008, Nghị định số 16/2020/NĐ-CP ngày 03/02/2020, Thông tư số 02/2020/TT-BTP ngày 08/4/2020",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_quoc_tich"
+            ]
+        },
+        {
+            "id": "q34",
+            "question": "Cơ quan nào chịu trách nhiệm kiểm soát chi của Kho bạc Nhà nước đối với kinh phí người có công?",
+            "answer": "Theo Điều 14 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, Kho bạc Nhà nước thực hiện kiểm soát kinh phí chính sách ưu đãi người có công theo quy định hiện hành với hồ sơ làm căn cứ cụ thể. **Thông tin chi tiết:** - **Cơ quan kiểm soát**: Kho bạc Nhà nước thực hiện kiểm soát chi theo quy định hiện hành - **Hồ sơ trợ cấp hàng tháng**: Danh sách chi trả (mẫu C67-HD/LĐTBXH), Bảng kê điều chỉnh (mẫu C63-HD), Danh sách trợ cấp giáo dục (mẫu C69-HD) - **Hồ sơ trợ cấp một lần**: Danh sách chi trả (mẫu C65-HD/LĐTBXH), Quyết định đối tượng hưởng trợ cấp của cơ quan có thẩm quyền - **Hồ sơ công tác mộ**: Dự toán được giao, chế độ chi tiêu hiện hành, quyết định phê duyệt dự án đầu tư - **Hồ sơ hỗ trợ cơ sở**: Theo từng nội dung chi và quy định hiện hành áp dụng cho từng lĩnh vực - **Thủ trưởng cơ quan**: Chịu trách nhiệm ký, đóng dấu và gửi KBNN trước 20/12 năm trước - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art14"
+            ]
+        },
+        {
+            "id": "q35",
+            "question": "Việc tạm cấp ngân sách cho chính sách người có công được thực hiện khi nào và như thế nào?",
+            "answer": "Theo Điều 10 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, việc tạm cấp ngân sách được thực hiện trong trường hợp đặc biệt vào đầu năm ngân sách. **Thông tin chi tiết:** - **Điều kiện tạm cấp**: Đầu năm ngân sách, dự toán và phương án phân bổ chưa được cấp có thẩm quyền quyết định - **Mức tạm cấp**: Tối đa không quá mức kinh phí bình quân 01 tháng của năm trước - **Mục đích**: Đảm bảo chi trả đúng thời hạn hàng tháng cho đối tượng chính sách - **Cơ quan thực hiện**: Kho bạc Nhà nước nơi đơn vị mở tài khoản giao dịch - **Thu hồi**: Sau khi có dự toán chính thức, KBNN trừ vào các mục chi tương ứng - **Phạm vi áp dụng**: Chỉ cho kinh phí trợ cấp hàng tháng và hỗ trợ hoạt động cơ sở nuôi dưỡng - **Không áp dụng**: Không áp dụng đối với trợ cấp ưu đãi một lần - **Văn bản pháp luật**: Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009",
+            "contexts": [
+                "47_2009_TTLT_BTC_BLĐTBXH_art9_11"
+            ]
+        },
+        {
+            "id": "q36",
+            "question": "Phí đăng ký hoạt động của tổ chức hành nghề luật sư là bao nhiêu?",
+            "answer": "Theo Quyết định số 1766/2020/QĐ-UBND tỉnh Bình Thuận, phí đăng ký hoạt động của tổ chức hành nghề luật sư có mức phí thống nhất cho hầu hết các loại hình. **Thông tin chi tiết:** - **Mức phí chung**: 50.000 đồng/hồ sơ cho hầu hết các thủ tục - **Áp dụng cho**: Đăng ký hoạt động mới, thay đổi nội dung, thay đổi người đại diện, đăng ký chi nhánh - **Thời hạn xử lý**: Từ 04-09 ngày tùy theo loại thủ tục - **Ngoại lệ**: Đăng ký hành nghề luật sư cá nhân không thu phí; công ty luật nước ngoài có mức phí cao hơn (600.000đ - 2.000.000đ) - **Mức độ dịch vụ công**: Cấp 3, có thực hiện qua DVCTT - **Cơ quan thực hiện**: Sở Tư pháp tiếp nhận và giải quyết - **Địa điểm**: Trung tâm HCC tỉnh (Quầy Sở Tư pháp) - **Văn bản pháp luật**: Luật Luật sư năm 2006, Nghị định số 123/2013/NĐ-CP, Thông tư số 02/2015/TT-BTP, Thông tư số 47/2019/TT-BTC",
+            "contexts": [
+                "1766_2020_QĐ_UBND_annex_luat_su_1",
+                "1766_2020_QĐ_UBND_annex_luat_su_2_tu_van"
+            ]
+        },
+        {
+            "id": "q37",
+            "question": "Chi đóng bảo hiểm y tế cho người có công được thực hiện như thế nào?",
+            "answer": "Theo Điều 5 Thông tư số 101/2018/TT-BTC, việc chi đóng bảo hiểm y tế cho người có công có đối tượng và phương thức cụ thể. **Thông tin chi tiết:** - **Đối tượng được đóng**: Người đang hưởng trợ cấp, phụ cấp hàng tháng (trừ những người đang tham gia BHXH bắt buộc, hưởng lương hưu, trợ cấp BHXH, BHTN) - **Đối tượng đặc biệt**: Người không hưởng trợ cấp hàng tháng được cấp thẻ BHYT theo Pháp lệnh ưu đãi người có công và thanh niên xung phong thời kỳ chống Pháp - **Thời gian đóng**: Hàng quý, cơ quan LĐTBXH rà soát danh sách đối tượng đóng BHYT - **Phương thức**: Đối chiếu với cơ quan BHXH, rút dự toán tại KBNN, chuyển kinh phí vào quỹ BHYT - **Mức đóng**: Theo quy định của pháp luật về bảo hiểm y tế hiện hành - **Nguồn kinh phí**: Ngân sách trung ương bố trí trong dự toán LĐTBXH - **Văn bản pháp luật**: Thông tư số 101/2018/TT-BTC ngày 14/11/2018, Quyết định số 170/2008/QĐ-TTg",
+            "contexts": [
+                "101_2018_TT_BTC_ch2_art5"
+            ]
+        },
+        {
+            "id": "q38",
+            "question": "Thủ tục hành chính cần được thẩm định về những nội dung gì trước khi ban hành?",
+            "answer": "Theo Điều 11 Nghị định số 63/2010/NĐ-CP được sửa đổi bởi Nghị định số 48/2013/NĐ-CP, việc thẩm định quy định về thủ tục hành chính có nội dung và yêu cầu hồ sơ cụ thể. **Thông tin chi tiết:** - **Trách nhiệm thẩm định**: Cơ quan thẩm định văn bản quy phạm pháp luật có trách nhiệm thẩm định và bổ sung kết quả vào Báo cáo thẩm định - **Nội dung thẩm định**: Tập trung xem xét các tiêu chí quy định tại Điều 10 (sự cần thiết, tính hợp lý, tính hợp pháp, chi phí tuân thủ) - **Hồ sơ bắt buộc**: Ngoài thành phần theo quy định QPPL, phải có bản đánh giá tác động TTHC và ý kiến góp ý của cơ quan kiểm soát TTHC - **Điều kiện tiếp nhận**: Cơ quan thẩm định không tiếp nhận hồ sơ nếu thiếu bản đánh giá tác động và ý kiến cơ quan kiểm soát TTHC - **Tham gia thẩm định**: Cơ quan thẩm định có thể mời cơ quan kiểm soát TTHC cùng cấp tham gia thẩm định - **Thẩm quyền**: Theo quy định của pháp luật về ban hành văn bản quy phạm pháp luật - **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010, Nghị định số 48/2013/NĐ-CP ngày 14/5/2013",
+            "contexts": [
+                "63_2010_NĐ_CP_ch2_art10_11",
+                "48_2013_NĐ_CP_art1_part2"
+            ]
+        }
+    ]
+}
