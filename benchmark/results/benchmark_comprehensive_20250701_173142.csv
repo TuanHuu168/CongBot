@@ -1,0 +1,128 @@
+﻿STT,question,benchmark_answer,current_answer,current_cosine_sim,current_bertscore_f1,current_llm_judge_overall,current_map@1,current_map@3,current_map@5,current_mrr@1,current_mrr@3,current_mrr@5,current_hitrate@1,current_hitrate@3,current_hitrate@5,current_processing_time,langchain_answer,langchain_cosine_sim,langchain_bertscore_f1,langchain_llm_judge_overall,langchain_map@1,langchain_map@3,langchain_map@5,langchain_mrr@1,langchain_mrr@3,langchain_mrr@5,langchain_hitrate@1,langchain_hitrate@3,langchain_hitrate@5,langchain_processing_time,haystack_answer,haystack_cosine_sim,haystack_bertscore_f1,haystack_llm_judge_overall,haystack_map@1,haystack_map@3,haystack_map@5,haystack_mrr@1,haystack_mrr@3,haystack_mrr@5,haystack_hitrate@1,haystack_hitrate@3,haystack_hitrate@5,haystack_processing_time,chatgpt_answer,chatgpt_cosine_sim,chatgpt_bertscore_f1,chatgpt_llm_judge_overall,chatgpt_processing_time,benchmark_chunks
+1,Gia đình tôi có ông nội là bệnh binh tỷ lệ tổn thương 85% và con trai đang học đại học. Muốn hỏi ông được hưởng trợ cấp hàng tháng bao nhiêu và con cháu có được hỗ trợ học phí không?,"Theo Phụ lục I Văn bản hợp nhất số 4804/2024/VBHN-BLĐTBXH và Điều 8 Nghị định, ông nội được hưởng nhiều chế độ ưu đãi. **Mức tiền/Tỷ lệ**: Trợ cấp hằng tháng 6.378.000 đồng và phụ cấp hằng tháng 1.399.000 đồng do có tỷ lệ tổn thương từ 81%-90%. **Đối tượng**: Bệnh binh có tỷ lệ tổn thương cơ thể 85% và con cháu đang học đại học. **Loại chính sách**: Trợ cấp hằng tháng cho bệnh binh và hỗ trợ ưu đãi giáo dục. **Điều kiện/Yêu cầu**: Con cháu phải đang theo học tại cơ sở giáo dục đại học thuộc hệ thống giáo dục quốc dân. **Hỗ trợ giáo dục**: Con cháu được hưởng trợ cấp 0,4 lần mức chuẩn/01 đối tượng/01 năm học. **Thời hạn**: Trợ cấp giáo dục được cấp đủ 12 tháng cho một năm học. **Cơ quan thực hiện**: Sở Lao động - Thương binh và Xã hội ủy quyền cho các cơ quan cấp dưới chi trả. **Bảo hiểm y tế**: Ông nội và toàn bộ gia đình được hưởng bảo hiểm y tế miễn phí. **Điều dưỡng**: Được điều dưỡng phục hồi sức khỏe hằng năm. **Nguồn kinh phí**: Ngân sách trung ương đảm bảo. **Văn bản pháp luật**: Văn bản hợp nhất số 4804/2024/VBHN-BLĐTBXH của Bộ Lao động - Thương binh và Xã hội. **Phương thức thực hiện**: Chi trả hằng tháng tại địa phương nơi cư trú.","Chào bạn,
+
+Với vai trò là chuyên gia tư vấn chính sách người có công, tôi rất tiếc phải thông báo rằng hiện tại tôi chưa được cung cấp các văn bản pháp luật cụ thể (như Pháp lệnh Ưu đãi người có công, các Nghị định của Chính phủ và Thông tư của Bộ Lao động - Thương binh và Xã hội) để có thể trích dẫn chính xác số hiệu, điều khoản và mức hưởng cụ thể cho trường hợp của ông và con trai bạn.
+
+Tuy nhiên, tôi sẽ phác thảo cấu trúc thông tin mà bạn cần tìm hiểu dựa trên quy định chung của pháp luật Việt Nam về ưu đãi người có công, để bạn biết các thông tin chính yếu cần tìm trong các văn bản đó.
+
+Để trả lời câu hỏi của bạn về việc ông nội bạn (bệnh binh tỷ lệ tổn thương 85%) được hưởng trợ cấp hàng tháng bao nhiêu và con trai bạn (cháu của ông, đang học đại học) có được hỗ trợ học phí không, thông tin cần thiết thường sẽ được quy định chi tiết trong các văn bản sau:
+
+1.  **Pháp lệnh Ưu đãi người có công với cách mạng hiện hành (ví dụ: Pháp lệnh số 02/2020/UBTVQH14 ngày 09/12/2020 của Ủy ban Thường vụ Quốc hội).**
+2.  **Các Nghị định của Chính phủ quy định chi tiết và hướng dẫn thi hành Pháp lệnh, đặc biệt là Nghị định quy định mức chuẩn trợ cấp, phụ cấp ưu đãi người có công với cách mạng (Nghị định gần nhất có thể là Nghị định số 75/2021/NĐ-CP ngày 24/7/2021 của Chính phủ, hoặc các Nghị định sửa đổi, bổ sung sau này).**
+3.  **Các văn bản của Chính phủ, Bộ Giáo dục và Đào tạo, Bộ Tài chính về chính sách miễn, giảm học phí, hỗ trợ chi phí học tập (ví dụ: Nghị định số 81/2021/NĐ-CP ngày 27/8/2021 của Chính phủ).**
+
+Dưới đây là các thông tin mà bạn cần tìm trong các văn bản pháp luật nêu trên để có câu trả lời chính xác:
+
+### **Về trợ cấp hàng tháng của bệnh binh tỷ lệ tổn thương 85%**
+
+Theo quy định chung của pháp luật về ưu đãi người có công (dự kiến được quy định tại Pháp lệnh Ưu đãi người có công và các Nghị định hướng dẫn thi hành), bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên sẽ được hưởng mức trợ cấp hàng tháng cụ thể.
+
+**Thông tin chi tiết (cần tra cứu trong văn bản cụ thể):**
+-   **Loại chính sách**: Trợ cấp ưu đãi hàng tháng cho bệnh binh.
+-   **Mức tiền/Tỷ lệ**: Mức trợ cấp hàng tháng cho bệnh binh được tính theo tỷ lệ tổn thương cơ thể. Mức này thường là ""X lần"" mức chuẩn trợ cấp ưu đãi người có công. Mức chuẩn sẽ được quy định cụ thể trong Nghị định của Chính phủ và được điều chỉnh định kỳ. Ví dụ, nếu mức chuẩn là 2.055.000 đồng (theo Nghị định 75/2021/NĐ-CP), thì mức hưởng của bệnh binh 85% sẽ là một hệ số nhân với mức chuẩn này, kèm theo các khoản phụ cấp khác nếu có (phụ cấp người phục vụ đối với bệnh binh có tỷ lệ tổn thương từ 81% trở lên).
+-   **Đối tượng**: Bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên. Ông nội bạn với tỷ lệ tổn thương 85% thuộc đối tượng này.
+-   **Điều kiện/Yêu cầu**: Có hồ sơ bệnh binh đã được cấp có thẩm quyền công nhận.
+-   **Thủ tục/Hồ sơ**: Thông thường là hồ sơ gốc đã được xác lập của bệnh binh. Việc chi trả trợ cấp được thực hiện định kỳ.
+-   **Thời hạn**: Chi trả hàng tháng.
+-   **Cơ quan thực hiện**: Sở Lao động - Thương binh và Xã hội (LĐTBXH) cấp tỉnh, Phòng LĐTBXH cấp huyện tại nơi cư trú.
+-   **Văn bản pháp luật**: Cần xem Pháp lệnh Ưu đãi người có công và Nghị định của Chính phủ quy định mức chuẩn trợ cấp, phụ cấp ưu đãi người có công với cách mạng.
+-   **Ngày tháng quan trọng**: Ngày ban hành và hiệu lực của Pháp lệnh, Nghị định quy định mức chuẩn.
+-   **Trạng thái văn bản**: Có hiệu lực thi hành.
+-   **Nguồn kinh phí**: Ngân sách nhà nước.
+-   **Phương thức**: Chi trả trực tiếp hoặc qua tài khoản ngân hàng định kỳ hàng tháng.
+-   **Kết quả nhận được**: Khoản trợ cấp được chi trả hàng tháng.
+
+### **Về hỗ trợ học phí cho con cháu của bệnh binh**
+
+Pháp luật Việt Nam có chính sách miễn, giảm học phí và hỗ trợ chi phí học tập cho đối tượng là con của người có công với cách mạng. Cần lưu ý rằng đối tượng được hưởng ưu đãi thường là **con đẻ** của người có công, không phải là cháu (con của con người có công).
+
+**Thông tin chi tiết (cần tra cứu trong văn bản cụ thể):**
+-   **Loại chính sách**: Miễn, giảm học phí và hỗ trợ chi phí học tập.
+-   **Mức tiền/Tỷ lệ**: Mức miễn hoặc giảm học phí sẽ được quy định cụ thể (ví dụ: miễn 100% học phí hoặc giảm X% học phí). Ngoài ra, có thể có hỗ trợ chi phí học tập định kỳ (ví dụ: 100.000 đồng/tháng).
+-   **Đối tượng**:
+    *   Con của bệnh binh (nếu là con đẻ của ông nội bạn).
+    *   **Điều quan trọng cần kiểm tra**: Chính sách hiện hành thường chỉ áp dụng cho con đẻ của người có công. Trường hợp con trai bạn là ""cháu"" (tức con của con ông nội bạn) thì cần kiểm tra rất kỹ quy định cụ thể xem có được hưởng ưu đãi này không. Theo các quy định phổ biến, đối tượng là ""cháu"" của người có công thường không nằm trong diện được miễn, giảm học phí.
+-   **Điều kiện/Yêu cầu**:
+    *   Học tại các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân (mầm non, phổ thông, giáo dục thường xuyên, học nghề, đại học, cao đẳng).
+    *   Có giấy tờ chứng minh là con của bệnh binh.
+    *   Không có hành vi vi phạm pháp luật bị xử lý kỷ luật.
+-   **Thủ tục/Hồ sơ**:
+    *   Đơn đề nghị miễn, giảm học phí/hỗ trợ chi phí học tập.
+    *   Giấy tờ chứng minh là con của bệnh binh (Giấy khai sinh, Sổ hộ khẩu).
+    *   Bản sao Quyết định công nhận bệnh binh của ông nội.
+    *   Giấy xác nhận của cơ sở giáo dục nơi con bạn đang học.
+-   **Thời hạn**: Nộp hồ sơ vào đầu mỗi năm học hoặc kỳ học. Thời gian giải quyết hồ sơ thường là từ 10-15 ngày làm việc.
+-   **Cơ quan thực hiện**: Cơ sở giáo dục nơi sinh viên đang học (tiếp nhận hồ sơ, xét duyệt ban đầu), Phòng LĐTBXH (xác nhận đối tượng), Sở Tài chính (cấp kinh phí).
+-   **Văn bản pháp luật**: Cần xem Nghị định của Chính phủ về cơ chế thu, quản lý học phí đối với các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân và chính sách miễn, giảm học phí, hỗ trợ chi phí học tập (ví dụ: Nghị định số 81/2021/NĐ-CP) và các thông tư hướng dẫn của Bộ Giáo dục và Đào tạo, Bộ Lao động - Thương binh và Xã hội.
+-   **Ngày tháng quan trọng**: Ngày ban hành và hiệu lực của Nghị định, Thông tư.
+-   **Trạng thái văn bản**: Có hiệu lực thi hành.
+-   **Nguồn kinh phí**: Ngân sách nhà nước.
+-   **Phương thức**: Nộp hồ sơ trực tiếp tại cơ sở giáo dục.
+-   **Kết quả nhận được**: Quyết định miễn, giảm học phí hoặc danh sách được hỗ trợ chi phí học tập.
+
+**Lưu ý đặc biệt**: Để có câu trả lời chính xác nhất, bạn nên đến Phòng Lao động - Thương binh và Xã hội tại địa phương nơi ông nội bạn cư trú hoặc liên hệ trực tiếp với Phòng Công tác sinh viên/Phòng Tài chính của trường đại học nơi con trai bạn đang học để được hướng dẫn cụ thể về các văn bản pháp luật hiện hành và thủ tục áp dụng.",0.8602,0.5000,3.50,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,25.946,"Dưới đây là thông tin chi tiết về các khoản trợ cấp mà ông nội bạn có thể được hưởng, cũng như chính sách hỗ trợ học phí cho con cháu dựa trên các văn bản pháp luật hiện hành:
+
+**1. Trợ cấp hàng tháng cho bệnh binh:**
+
+*   **Mức trợ cấp:**
+    *   Theo Phụ lục I ban hành kèm theo Nghị định số 77/2024/NĐ-CP ngày 01 tháng 7 năm 2024, bệnh binh có tỷ lệ tổn thương cơ thể từ 81% - 90% được hưởng trợ cấp hàng tháng là 6.378.000 đồng.
+    *   Ngoài ra, bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên còn được hưởng thêm phụ cấp 1.399.000 đồng/tháng.
+    *   Nếu bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên và có bệnh tật đặc biệt nặng thì được hưởng thêm phụ cấp 2.789.000 đồng/tháng.
+
+**Như vậy, ông nội của bạn (bệnh binh, tỷ lệ tổn thương 85%) sẽ được hưởng các chế độ sau:**
+
+*   **Trợ cấp hàng tháng:** 6.378.000 đồng.
+*   **Phụ cấp hàng tháng:** 1.399.000 đồng.
+*   **Nếu có bệnh tật đặc biệt nặng:** 2.789.000 đồng.
+
+**2. Hỗ trợ học phí cho con là sinh viên đại học:**
+
+*   Theo Phụ lục I ban hành kèm theo Nghị định số 77/2024/NĐ-CP ngày 01 tháng 7 năm 2024, con của bệnh binh có tỷ lệ tổn thương cơ thể từ 61% trở lên đang theo học tại các cơ sở giáo dục nghề nghiệp, giáo dục đại học được hưởng trợ cấp ưu đãi hằng tháng là 2.789.000 đồng.
+
+**Như vậy, con trai của bạn đang học đại học sẽ được hưởng trợ cấp ưu đãi hàng tháng là 2.789.000 đồng.**
+
+**Lưu ý:** Các mức trợ cấp và phụ cấp này có thể thay đổi theo quy định của pháp luật. Bạn nên thường xuyên cập nhật thông tin từ các nguồn chính thức để đảm bảo quyền lợi của mình và gia đình.",0.8927,0.5000,4.00,0.5000,0.5000,0.5000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,749.804,"Dựa trên các văn bản pháp luật hiện hành, tôi xin cung cấp thông tin về chế độ ưu đãi dành cho ông nội là bệnh binh và con trai đang học đại học của bạn như sau:
+
+**1. Trợ cấp hàng tháng cho bệnh binh:**
+
+*   **Mức trợ cấp:**
+    *   Theo Phụ lục I của Nghị định số 77/2024/NĐ-CP (có hiệu lực từ 01/07/2024), bệnh binh có tỷ lệ tổn thương cơ thể từ 81% - 90% được hưởng trợ cấp hàng tháng là 6.378.000 đồng.
+    *   Ngoài ra, bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên còn được hưởng thêm phụ cấp hàng tháng là 1.399.000 đồng.
+*   **Các chế độ khác:**
+    *   Nếu ông nội bạn cần người phục vụ và đang sống ở gia đình, thì người phục vụ sẽ được hưởng thêm trợ cấp hàng tháng là 2.789.000 đồng. Nếu người phục vụ đó phải chăm sóc ông nội có bệnh tật đặc biệt nặng thì mức trợ cấp là 3.582.000 đồng.
+    *   Bệnh binh được cấp bảo hiểm y tế và được điều dưỡng phục hồi sức khỏe hàng năm (do có tỷ lệ tổn thương cơ thể từ 81% trở lên).
+    *   Ngoài ra, bệnh binh còn được hưởng các chế độ ưu đãi khác theo quy định tại các điểm c, e, g, h, i và k khoản 2 Điều 5 của Pháp lệnh ưu đãi người có công.
+
+**2. Hỗ trợ học phí cho con là sinh viên đại học:**
+
+*   Theo Phụ lục I của Nghị định số 77/2024/NĐ-CP, con của bệnh binh có tỷ lệ tổn thương cơ thể từ 61% trở lên đang theo học tại các cơ sở giáo dục nghề nghiệp, giáo dục đại học được hưởng trợ cấp ưu đãi hàng tháng là 2.789.000 đồng.
+
+**Lưu ý:**
+
+*   Mức trợ cấp và phụ cấp có thể thay đổi theo quy định của pháp luật. Bạn nên thường xuyên cập nhật thông tin từ các nguồn chính thức.
+*   Để biết chính xác mức trợ cấp và các chế độ ưu đãi được hưởng, gia đình bạn nên liên hệ với Phòng Lao động - Thương binh và Xã hội tại địa phương để được hướng dẫn cụ thể.
+*   Ngoài các chế độ trên, người có công và thân nhân còn có thể được hưởng các chính sách hỗ trợ khác về nhà ở, đất ở, vay vốn ưu đãi,... tùy theo điều kiện và quy định của từng địa phương (theo Quyết định số 31/2011/QĐ-UBND của UBND tỉnh).
+",0.8987,0.5000,4.50,0.0000,0.0000,0.1250,0.0000,0.0000,0.2500,0.0000,0.0000,1.0000,6.536,"Để trả lời câu hỏi của bạn về chế độ trợ cấp hàng tháng cho ông nội là bệnh binh và hỗ trợ học phí cho con cháu, chúng ta sẽ phân tích theo các quy định pháp luật hiện hành.
+
+### 1. Trợ cấp hàng tháng cho ông nội (bệnh binh tỷ lệ tổn thương 85%)
+
+Theo quy định tại **Điều 27** của Pháp lệnh 02/2020/UBTVQH14 về chế độ ưu đãi đối với bệnh binh, mức trợ cấp hàng tháng cho bệnh binh được xác định dựa trên tỷ lệ tổn thương cơ thể. Cụ thể:
+
+- **Mức trợ cấp hàng tháng** cho bệnh binh có tỷ lệ tổn thương từ 81% trở lên là 1.620.000 đồng (theo quy định tại Nghị định 20/2021/NĐ-CP, có hiệu lực từ 01/01/2021). 
+
+Do ông nội của bạn có tỷ lệ tổn thương 85%, ông sẽ được hưởng mức trợ cấp hàng tháng là **1.620.000 đồng**.
+
+### 2. Hỗ trợ học phí cho con cháu
+
+Theo **Điều 31** của Pháp lệnh 02/2020/UBTVQH14, con đẻ của người có công (bao gồm cả bệnh binh) được hưởng các chế độ ưu đãi trong giáo dục và đào tạo. Cụ thể:
+
+- **Hỗ trợ học phí**: Con đẻ của bệnh binh có tỷ lệ tổn thương từ 61% trở lên sẽ được miễn giảm học phí hoặc hỗ trợ học phí theo quy định của pháp luật. 
+
+- Nếu con trai của bạn đang học đại học và thuộc đối tượng được hỗ trợ (tức là từ đủ 18 tuổi trở lên và còn tiếp tục đi học), thì con của bạn sẽ được hưởng chế độ hỗ trợ học phí theo quy định.
+
+### Kết luận
+
+- **Ông nội của bạn** sẽ nhận được **1.620.000 đồng** trợ cấp hàng tháng.
+- **Con trai của bạn** có thể được **hỗ trợ học phí** theo quy định của pháp luật về ưu đãi đối với con đẻ của người có công.
+
+Nếu bạn cần thêm thông tin chi tiết hoặc hướng dẫn cụ thể về thủ tục để nhận trợ cấp và hỗ trợ học phí, hãy liên hệ với cơ quan Lao động - Thương binh và Xã hội địa phương để được tư vấn và hướng dẫn.",0.8746,0.5000,3.00,12.912,4804_2024_VBHN_BLĐTBXH_appendix1 | 834_2024_VBHN_BLDTBXH_art5_8

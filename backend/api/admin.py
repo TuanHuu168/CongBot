@@ -15,7 +15,7 @@ import queue
 import numpy as np
 import tempfile
 
-# Import services
+# Import các service
 from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from services.benchmark_service import benchmark_service
@@ -35,12 +35,11 @@ def now_utc():
 benchmark_progress = {}
 benchmark_results_cache = {}
 
-# Global dictionary để theo dõi trạng thái xử lý PDF
+# Theo dõi trạng thái xử lý PDF
 document_processing_status = {}
 
 router = APIRouter(prefix="", tags=["admin"], responses={404: {"description": "Not found"}})
 
-# Models đầy đủ
 class BenchmarkConfig(BaseModel):
     file_path: str = "benchmark.json"
     output_dir: str = "benchmark_results"
@@ -73,20 +72,19 @@ class BatchDeleteRequest(BaseModel):
     user_id: str
     chat_ids: List[str]
 
-# Helper functions
+# Ghi log các hoạt động của admin
 def log_admin_activity(activity_type: ActivityType, description: str, metadata: Dict = None):
-    """Log hoạt động admin"""
     activity_service.log_activity(activity_type, description, metadata=metadata or {})
 
+# Xử lý lỗi chung cho các endpoint
 def handle_error(operation: str, error: Exception):
-    """Xử lý lỗi chung"""
     error_msg = str(error)
     print(f"Lỗi {operation}: {error_msg}")
     log_admin_activity(ActivityType.SYSTEM_STATUS, f"Lỗi {operation}: {error_msg}", 
                       {"error": error_msg, "success": False})
     raise HTTPException(status_code=500, detail=error_msg)
 
-# System endpoints
+# Các endpoint quản lý hệ thống
 @router.get("/status", response_model=SystemStatus)
 async def get_admin_status():
     try:
@@ -127,7 +125,7 @@ async def get_admin_status():
 async def get_recent_activities(limit: int = 10):
     try:
         activities = activity_service.get_recent_activities(limit)
-        return {"activities": activities, "count": len(activities)}
+        return {"Các hoạt động": activities, "Số lượng": len(activities)}
     except Exception as e:
         handle_error("get_recent_activities", e)
 
@@ -140,7 +138,7 @@ async def get_system_statistics():
         total_users = db.users.count_documents({})
         total_chats = db.chats.count_documents({})
         
-        # Tổng exchanges
+        # Tổng số tin nhắn (exchanges) trong các cuộc trò chuyện
         pipeline = [
             {"$project": {"exchange_count": {"$size": {"$ifNull": ["$exchanges", []]}}}},
             {"$group": {"_id": None, "total": {"$sum": "$exchange_count"}}}
@@ -148,11 +146,11 @@ async def get_system_statistics():
         result = list(db.chats.aggregate(pipeline))
         total_exchanges = result[0]["total"] if result else 0
         
-        # Cache stats
+        # Thống kê cache
         total_cache = db.text_cache.count_documents({})
         valid_cache = db.text_cache.count_documents({"validityStatus": "valid"})
         
-        # Document stats
+        # Thống kê tài liệu
         document_count = 0
         chunk_count = 0
         if os.path.exists(DATA_DIR):
@@ -169,7 +167,7 @@ async def get_system_statistics():
                     except:
                         pass
         
-        # ChromaDB count
+        # Số lượng tài liệu đã được index trong ChromaDB
         chroma_count = 0
         try:
             collection = chroma_client.get_collection()
@@ -187,7 +185,7 @@ async def get_system_statistics():
     except Exception as e:
         handle_error("get_system_statistics", e)
 
-# Cache endpoints đầy đủ
+# Các endpoint quản lý cache đầy đủ
 @router.get("/cache/stats")
 async def get_cache_detailed_stats():
     try:
@@ -209,13 +207,13 @@ async def get_cache_detailed_stats():
                 "cache_count": result["count"]
             })
         
-        # Cache phổ biến
+        # Cache phổ biến nhất
         popular_cache = list(db.text_cache.find(
             {"validityStatus": "valid"},
             {"cacheId": 1, "questionText": 1, "hitCount": 1, "_id": 0}
         ).sort("hitCount", -1).limit(5))
         
-        # Cache gần đây
+        # Cache gần đây nhất
         recent_cache = list(db.text_cache.find(
             {},
             {"cacheId": 1, "questionText": 1, "createdAt": 1, "_id": 0}
@@ -257,7 +255,7 @@ async def clear_cache():
             if cache_collection:
                 chroma_after = cache_collection.count()
         except Exception as e:
-            print(f"Không thể đếm ChromaDB cache sau xóa: {str(e)}")
+            print(f"Không thể đếm ChromaDB cache sau khi xóa: {str(e)}")
         
         print(f"Sau khi xóa - MongoDB: {mongo_after}, ChromaDB: {chroma_after}")
         
@@ -354,7 +352,7 @@ async def get_cache_detailed_status():
             if cache_collection:
                 chroma_total = cache_collection.count()
             else:
-                chroma_error = "Cache collection not found"
+                chroma_error = "Không tìm thấy cache collection"
         except Exception as e:
             chroma_error = str(e)
         
@@ -458,21 +456,21 @@ async def search_cache(keyword: str, limit: int = 10):
     except Exception as e:
         handle_error("search_cache", e)
 
-# Document endpoints với upload có embedding
+# Các endpoint quản lý tài liệu với upload có embedding
 @router.post("/upload-document")
 async def upload_document(
     metadata: str = Form(...),
     chunks: List[UploadFile] = File(...)
 ):
     try:
-        # Parse metadata từ form
+        # Phân tích metadata từ form
         doc_metadata = json.loads(metadata)
         doc_id = doc_metadata.get("doc_id")
         
         if not doc_id:
             raise HTTPException(status_code=400, detail="doc_id là bắt buộc")
         
-        # Tạo thư mục document
+        # Tạo thư mục tài liệu
         doc_dir = os.path.join(DATA_DIR, doc_id)
         os.makedirs(doc_dir, exist_ok=True)
         
@@ -494,7 +492,7 @@ async def upload_document(
             # Đọc nội dung để embedding
             chunk_content = content.decode('utf-8')
             
-            # Tạo chunk info cho metadata.json
+            # Tạo thông tin chunk cho metadata.json
             chunk_id = f"{doc_id}_chunk_{i+1}"
             chunk_info = {
                 "chunk_id": chunk_id,
@@ -547,8 +545,9 @@ async def upload_document(
         with open(os.path.join(doc_dir, "metadata.json"), "w", encoding="utf-8") as f:
             json.dump(full_metadata, f, ensure_ascii=False, indent=2)
         
-        print(f"[MANUAL UPLOAD] Bắt đầu embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
-        print(f"[MANUAL UPLOAD] Document: {doc_id} - Using embedding model: {EMBEDDING_MODEL_NAME}")
+        print(f"[UPLOAD THỦ CÔNG] Bắt đầu embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
+        print(f"[UPLOAD THỦ CÔNG] Tài liệu: {doc_id} - Sử dụng embedding model: {EMBEDDING_MODEL_NAME}")
+        
         # Embedding vào ChromaDB
         success = chroma_client.add_documents_to_main(
             ids=ids_to_add,
@@ -574,7 +573,7 @@ async def upload_document(
     except HTTPException:
         raise
     except Exception as e:
-        # Cleanup nếu có lỗi
+        # Dọn dẹp nếu có lỗi
         doc_id = None
         try:
             doc_metadata = json.loads(metadata)
@@ -597,7 +596,7 @@ async def upload_document_auto(
     document_scope: str = Form("Quốc gia")
 ):
     
-    # Kiểm tra file type
+    # Kiểm tra loại file
     file_extension = os.path.splitext(file.filename)[1].lower()
     if file_extension not in ['.pdf', '.doc', '.docx', '.md']:
         raise HTTPException(status_code=400, detail="Chỉ hỗ trợ file PDF, Word (.doc, .docx), Markdown (.md)")
@@ -605,7 +604,6 @@ async def upload_document_auto(
     processing_id = str(uuid.uuid4())
     
     try:
-        # ... rest of the code remains the same
         document_processing_status[processing_id] = {
             "status": "starting",
             "progress": 0,
@@ -620,10 +618,10 @@ async def upload_document_auto(
         
         print(f"Bắt đầu xử lý {file_extension} upload cho doc_id: {doc_id}")
         
-        # Đọc file vào memory
+        # Đọc file vào bộ nhớ
         content = await file.read()
         
-        # Lưu file tạm thời với extension phù hợp
+        # Lưu file tạm thời với phần mở rộng phù hợp
         with tempfile.NamedTemporaryFile(delete=False, suffix=file_extension) as temp_file:
             temp_file.write(content)
             temp_file_path = temp_file.name
@@ -643,13 +641,13 @@ async def upload_document_auto(
             "document_scope": document_scope
         }
         
-        # Xử lý tài liệu trong background thread
+        # Xử lý tài liệu trong luồng nền
         def process_document_background():
             try:
                 document_processing_status[processing_id].update({
                     "status": "processing",
                     "progress": 40,
-                    "message": "Đang gọi Gemini để phân tích và auto-detect metadata..."
+                    "message": "Đang gọi Gemini để phân tích và tự động nhận diện metadata..."
                 })
                 
                 # Gọi service xử lý tài liệu (CHỈ chia chunk, KHÔNG embed)
@@ -666,7 +664,7 @@ async def upload_document_auto(
                 })
                 
                 log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
-                                  f"Chia chunk {file_extension.upper()} tự động: {result['doc_id']} - {result['chunks_count']} chunks (chờ approve)",
+                                  f"Chia chunk {file_extension.upper()} tự động: {result['doc_id']} - {result['chunks_count']} chunks (chờ duyệt)",
                                   metadata={
                                       "doc_id": result['doc_id'],
                                       "original_doc_id": doc_id,
@@ -706,7 +704,7 @@ async def upload_document_auto(
                 except:
                     pass
         
-        # Chạy background processing
+        # Chạy xử lý nền
         thread = threading.Thread(target=process_document_background)
         thread.daemon = True
         thread.start()
@@ -720,7 +718,7 @@ async def upload_document_auto(
         }
         
     except Exception as e:
-        # Cleanup
+        # Dọn dẹp
         try:
             os.unlink(temp_file_path)
         except:
@@ -733,7 +731,7 @@ async def upload_document_auto(
 
 @router.get("/document-processing-status/{processing_id}")
 async def get_document_processing_status(processing_id: str):
-    """Lấy trạng thái xử lý tài liệu"""
+    # Lấy trạng thái xử lý tài liệu
     if processing_id not in document_processing_status:
         raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
     
@@ -741,14 +739,14 @@ async def get_document_processing_status(processing_id: str):
 
 @router.post("/approve-document-chunks/{processing_id}")
 async def approve_document_chunks(processing_id: str):
-    """Admin approve và embed chunks vào ChromaDB"""
+    # Admin duyệt và embed chunks vào ChromaDB
     if processing_id not in document_processing_status:
         raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
     
     status = document_processing_status[processing_id]
     
     if status.get("status") != "completed":
-        raise HTTPException(status_code=400, detail="Chỉ có thể approve tài liệu đã xử lý thành công")
+        raise HTTPException(status_code=400, detail="Chỉ có thể duyệt tài liệu đã xử lý thành công")
     
     if status.get("embedded_to_chroma"):
         raise HTTPException(status_code=400, detail="Tài liệu này đã được embed vào ChromaDB")
@@ -760,10 +758,10 @@ async def approve_document_chunks(processing_id: str):
         chunks = metadata.get("chunks", [])
         file_type = status.get("file_type", "document")
         
-        # Sử dụng doc_id từ result (có thể đã được auto-detect)
+        # Sử dụng doc_id từ result (có thể đã được tự động nhận diện)
         final_doc_id = result.get("doc_id", doc_id)
         
-        print(f"Admin approve và embed {file_type.upper()} {final_doc_id} vào ChromaDB...")
+        print(f"Admin duyệt và embed {file_type.upper()} {final_doc_id} vào ChromaDB...")
         
         # Chuẩn bị dữ liệu để embed
         ids_to_add = []
@@ -796,8 +794,8 @@ async def approve_document_chunks(processing_id: str):
                 documents_to_add.append(document_text)
                 metadatas_to_add.append(chunk_metadata)
         
-        print(f"[AUTO UPLOAD] Admin approve và embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
-        print(f"[AUTO UPLOAD] Document: {final_doc_id} - File type: {file_type} - Using embedding model: {EMBEDDING_MODEL_NAME}")
+        print(f"[UPLOAD TỰ ĐỘNG] Admin duyệt và embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
+        print(f"[UPLOAD TỰ ĐỘNG] Tài liệu: {final_doc_id} - Loại file: {file_type} - Sử dụng embedding model: {EMBEDDING_MODEL_NAME}")
 
         # Embedding vào ChromaDB
         success = chroma_client.add_documents_to_main(
@@ -814,11 +812,11 @@ async def approve_document_chunks(processing_id: str):
             "embedded_to_chroma": True,
             "approved": True,
             "approved_at": datetime.now().isoformat(),
-            "message": f"Đã approve và embed {len(chunks)} chunks vào ChromaDB"
+            "message": f"Đã duyệt và embed {len(chunks)} chunks vào ChromaDB"
         })
         
         log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
-                          f"Admin approve và embed {file_type.upper()}: {final_doc_id} - {len(chunks)} chunks",
+                          f"Admin duyệt và embed {file_type.upper()}: {final_doc_id} - {len(chunks)} chunks",
                           metadata={
                               "doc_id": final_doc_id,
                               "chunks_count": len(chunks),
@@ -828,7 +826,7 @@ async def approve_document_chunks(processing_id: str):
                           })
         
         return {
-            "message": f"Đã approve và embed {len(chunks)} chunks vào ChromaDB thành công",
+            "message": f"Đã duyệt và embed {len(chunks)} chunks vào ChromaDB thành công",
             "doc_id": final_doc_id,
             "chunks_embedded": len(chunks),
             "file_type": file_type
@@ -839,7 +837,7 @@ async def approve_document_chunks(processing_id: str):
 
 @router.post("/regenerate-document-chunks/{processing_id}")
 async def regenerate_document_chunks(processing_id: str):
-    """Tạo lại chunks cho tài liệu (yêu cầu upload lại)"""
+    # Tạo lại chunks cho tài liệu (yêu cầu upload lại)
     if processing_id not in document_processing_status:
         raise HTTPException(status_code=404, detail="Không tìm thấy quá trình xử lý")
     
@@ -847,7 +845,7 @@ async def regenerate_document_chunks(processing_id: str):
     doc_id = old_status.get("doc_id")
     file_type = old_status.get("file_type", "document")
     
-    # Lấy doc_id cuối cùng từ result nếu có (auto-detected)
+    # Lấy doc_id cuối cùng từ result nếu có (tự động nhận diện)
     result = old_status.get("result", {})
     final_doc_id = result.get("doc_id", doc_id)
     
@@ -900,7 +898,7 @@ async def list_documents():
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
                     
-                    # Kiểm tra xem document có trong ChromaDB không
+                    # Kiểm tra xem tài liệu có trong ChromaDB không
                     embedded_in_chroma = False
                     try:
                         collection = chroma_client.get_collection()
@@ -968,7 +966,7 @@ async def get_document(doc_id: str):
 
 @router.get("/documents/{doc_id}/chunks")
 async def get_document_chunks(doc_id: str):
-    """Lấy thông tin chi tiết các chunks của một document"""
+    # Lấy thông tin chi tiết các chunks của một tài liệu
     try:
         doc_dir = os.path.join(DATA_DIR, doc_id)
         metadata_path = os.path.join(doc_dir, "metadata.json")
@@ -1039,7 +1037,7 @@ async def delete_document(doc_id: str, confirm: bool = False):
         raise HTTPException(status_code=404, detail=f"Không tìm thấy văn bản: {doc_id}")
     
     try:
-        # Invalidate cache trước
+        # Vô hiệu hóa cache trước
         try:
             retrieval_service.invalidate_document_cache(doc_id)
         except Exception as e:
@@ -1065,14 +1063,14 @@ async def delete_document(doc_id: str, confirm: bool = False):
         except Exception as e:
             print(f"Lỗi xử lý ChromaDB: {str(e)}")
         
-        # Xóa thư mục document
+        # Xóa thư mục tài liệu
         shutil.rmtree(doc_dir)
         
         return {"message": f"Đã xóa văn bản {doc_id} thành công"}
     except Exception as e:
         handle_error("delete_document", e)
 
-# Benchmark endpoints (giữ nguyên logic cũ)
+# Các endpoint Benchmark (giữ nguyên logic cũ)
 @router.post("/upload-benchmark")
 async def upload_benchmark_file(file: UploadFile = File(...)):
     try:
@@ -1445,7 +1443,7 @@ async def download_benchmark_file(filename: str):
     file_path = os.path.join(BENCHMARK_RESULTS_DIR, filename)
     
     if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail=f"File not found: {filename}")
+        raise HTTPException(status_code=404, detail=f"Không tìm thấy file: {filename}")
     
     return FileResponse(
         file_path, 
@@ -1480,10 +1478,10 @@ async def list_benchmark_files():
     except Exception as e:
         handle_error("list_benchmark_files", e)
         
-# User management endpoints cho admin (giữ nguyên logic cũ)
+# Các endpoint quản lý người dùng cho admin (giữ nguyên logic cũ)
 @router.get("/users")
 async def get_all_users(limit: int = 100, skip: int = 0):
-    """Lấy danh sách tất cả người dùng"""
+    # Lấy danh sách tất cả người dùng
     try:
         db = mongodb_client.get_database()
         
@@ -1523,7 +1521,7 @@ async def get_all_users(limit: int = 100, skip: int = 0):
 
 @router.get("/users/{user_id}")
 async def get_user_detail(user_id: str):
-    """Lấy thông tin chi tiết một người dùng"""
+    # Lấy thông tin chi tiết một người dùng
     try:
         db = mongodb_client.get_database()
         
@@ -1547,7 +1545,7 @@ async def get_user_detail(user_id: str):
 
 @router.put("/users/{user_id}")
 async def update_user(user_id: str, user_data: dict = Body(...)):
-    """Cập nhật thông tin người dùng"""
+    # Cập nhật thông tin người dùng
     try:
         db = mongodb_client.get_database()
         
@@ -1610,7 +1608,7 @@ async def update_user(user_id: str, user_data: dict = Body(...)):
 
 @router.delete("/users/{user_id}")
 async def delete_user(user_id: str, confirm: bool = False):
-    """Xóa người dùng"""
+    # Xóa người dùng
     try:
         if not confirm:
             raise HTTPException(status_code=400, detail="Vui lòng xác nhận việc xóa người dùng")
@@ -1665,7 +1663,7 @@ async def delete_user(user_id: str, confirm: bool = False):
 
 @router.post("/users/{user_id}/reset-password")
 async def reset_user_password(user_id: str, password_data: dict = Body(...)):
-    """Reset mật khẩu cho người dùng"""
+    # Reset mật khẩu cho người dùng
     try:
         new_password = password_data.get("new_password")
         if not new_password or len(new_password) < 6:
@@ -1721,7 +1719,7 @@ async def reset_user_password(user_id: str, password_data: dict = Body(...)):
 
 @router.post("/users/{user_id}/toggle-status")
 async def toggle_user_status(user_id: str):
-    """Vô hiệu hóa hoặc kích hoạt lại người dùng"""
+    # Vô hiệu hóa hoặc kích hoạt lại người dùng
     try:
         db = mongodb_client.get_database()
         

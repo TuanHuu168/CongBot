@@ -6,7 +6,7 @@ import time
 import uuid
 from bson.objectid import ObjectId
 
-# Import services
+# Import các service
 from services.generation_service import generation_service
 from services.retrieval_service import retrieval_service
 from database.mongodb_client import mongodb_client
@@ -14,10 +14,10 @@ from database.mongodb_client import mongodb_client
 router = APIRouter(prefix="", tags=["chat"])
 
 def now_utc():
-    """Lấy thời gian hiện tại theo UTC"""
+    # Lấy thời gian hiện tại theo UTC
     return datetime.now(timezone.utc)
 
-# Models
+# Các model
 class QueryInput(BaseModel):
     query: str
     user_id: Optional[str] = None
@@ -51,9 +51,9 @@ class BatchDeleteRequest(BaseModel):
 async def ask(input: QueryInput):
     try:
         start_time = time.time()
-        print(f"Processing query: '{input.query}' với session_id: {input.session_id}")
+        print(f"Đang xử lý câu hỏi: '{input.query}' với session_id: {input.session_id}")
         
-        # Lấy conversation history
+        # Lấy lịch sử cuộc trò chuyện
         conversation_context = []
         if input.session_id:
             try:
@@ -67,18 +67,18 @@ async def ask(input: QueryInput):
                             "question": exchange.get("question", ""),
                             "answer": exchange.get("answer", "")
                         })
-                    print(f"Loaded {len(conversation_context)} previous exchanges")
+                    print(f"Đã tải {len(conversation_context)} trao đổi trước đó")
                 context_load_end = time.time()
-                print(f"Loading context took: {context_load_end - context_load_start:.3f} seconds")
+                print(f"Tải context mất: {context_load_end - context_load_start:.3f} giây")
             except Exception as e:
-                print(f"Error loading conversation context: {str(e)}")
+                print(f"Lỗi khi tải lịch sử cuộc trò chuyện: {str(e)}")
                 conversation_context = []
         
-        # Retrieval
+        # Tìm kiếm thông tin
         retrieval_start = time.time()
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
         retrieval_end = time.time()
-        print(f"Retrieval took: {retrieval_end - retrieval_start:.3f} seconds")
+        print(f"Tìm kiếm mất: {retrieval_end - retrieval_start:.3f} giây")
         source = retrieval_result.get("source", "unknown")
         context_items = retrieval_result.get("context_items", [])
         retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
@@ -91,14 +91,14 @@ async def ask(input: QueryInput):
             answer = retrieval_result.get("answer", "")
             print(f"Sử dụng câu trả lời từ cache")
         else:
-            print(f"Gọi generation_service với conversation context")
+            print(f"Gọi generation_service với lịch sử cuộc trò chuyện")
             if context_items:
                 generation_result = generation_service.generate_answer_with_context(
                     input.query, context_items, conversation_context, use_cache=False
                 )
                 answer = generation_result.get("answer", "")
                 generation_time = generation_result.get("generation_time", 0)
-                print(f"Generation took: {generation_time:.3f} seconds")
+                print(f"Tạo câu trả lời mất: {generation_time:.3f} giây")
                 if "retrieved_chunks" in generation_result:
                     retrieved_chunks = generation_result.get("retrieved_chunks", retrieved_chunks)
             else:
@@ -113,7 +113,7 @@ async def ask(input: QueryInput):
             db = mongodb_client.get_database()
             
             if input.session_id:
-                print(f"Adding message to existing chat: {input.session_id}")
+                print(f"Thêm tin nhắn vào cuộc trò chuyện hiện tại: {input.session_id}")
                 
                 try:
                     existing_chat = db.chats.find_one({"_id": ObjectId(input.session_id)})
@@ -139,7 +139,7 @@ async def ask(input: QueryInput):
                         }
                     )
                     if success.modified_count == 0:
-                        print(f"Failed to add message to chat: {input.session_id}")
+                        print(f"Thất bại khi thêm tin nhắn vào cuộc trò chuyện: {input.session_id}")
                         chat_data = {
                             "user_id": input.user_id,
                             "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
@@ -178,7 +178,7 @@ async def ask(input: QueryInput):
                     result = db.chats.insert_one(chat_data)
                     chat_id = str(result.inserted_id)
             else:
-                print("Creating new chat")
+                print("Tạo cuộc trò chuyện mới")
                 chat_data = {
                     "user_id": input.user_id,
                     "title": input.query[:30] + "..." if len(input.query) > 30 else input.query,
@@ -200,11 +200,11 @@ async def ask(input: QueryInput):
         
         total_time = time.time() - start_time
         
-        print(f"TIMING SUMMARY:")
-        print(f" - Retrieval: {retrieval_time:.3f}s (source: {source})")
-        print(f" - Generation: {generation_time:.3f}s")  
-        print(f" - Total processing: {total_time:.3f}s")
-        print(f" - Cache hit: {'Yes' if source == 'cache' else 'No'}")
+        print(f"TÓM TẮT THỜI GIAN XỬ LÝ:")
+        print(f" - Tìm kiếm: {retrieval_time:.3f}s (nguồn: {source})")
+        print(f" - Tạo câu trả lời: {generation_time:.3f}s")  
+        print(f" - Tổng thời gian xử lý: {total_time:.3f}s")
+        print(f" - Sử dụng cache: {'Có' if source == 'cache' else 'Không'}")
         
         return {
             "id": chat_id,
@@ -216,7 +216,7 @@ async def ask(input: QueryInput):
             "total_time": total_time
         }
     except Exception as e:
-        print(f"Error in /ask endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint /ask: {str(e)}")
         import traceback
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))
@@ -234,7 +234,7 @@ async def retrieve(input: QueryInput):
             "retrieval_time": retrieval_result.get('execution_time', 0)
         }
     except Exception as e:
-        print(f"Error in /retrieve endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint /retrieve: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/feedback")
@@ -252,7 +252,7 @@ async def submit_feedback(feedback: UserFeedback):
             "feedback_id": str(result.inserted_id)
         }
     except Exception as e:
-        print(f"Error in /feedback endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint /feedback: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chats/create")
@@ -277,7 +277,7 @@ async def create_chat(chat: ChatCreate):
             "message": "Tạo cuộc trò chuyện mới thành công"
         }
     except Exception as e:
-        print(f"Error in /chats/create endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint /chats/create: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/chats/{chat_id}/messages")
@@ -288,11 +288,11 @@ async def get_chat_messages(chat_id: str):
         try:
             chat = db.chats.find_one({"_id": ObjectId(chat_id)})
         except:
-            print(f"Invalid chat_id format: {chat_id}")
+            print(f"Định dạng chat_id không hợp lệ: {chat_id}")
             raise HTTPException(status_code=404, detail="ID cuộc trò chuyện không hợp lệ")
         
         if not chat:
-            print(f"Chat with id {chat_id} not found")
+            print(f"Không tìm thấy cuộc trò chuyện với id {chat_id}")
             raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện")
         
         exchanges = chat.get("exchanges", [])
@@ -325,7 +325,7 @@ async def get_chat_messages(chat_id: str):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in /chats/{chat_id}/messages endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint /chats/{chat_id}/messages: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chats/{chat_id}/messages")
@@ -390,7 +390,7 @@ async def add_chat_message(chat_id: str, message: ChatMessage):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in add message endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint thêm tin nhắn: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/chats/{user_id}")
@@ -411,7 +411,7 @@ async def get_chats(user_id: str, limit: int = None):
         
         return chats
     except Exception as e:
-        print(f"Error in /chats endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint /chats: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
     
 @router.put("/chats/{chat_id}/title")
@@ -436,7 +436,7 @@ async def update_chat_title(chat_id: str, title_data: dict = Body(...)):
             "chat_id": chat_id
         }
     except Exception as e:
-        print(f"Error in update title endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint cập nhật tiêu đề: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.delete("/chats/{chat_id}")
@@ -466,7 +466,7 @@ async def delete_chat(chat_id: str, request: DeleteChatRequest):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in delete_chat endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint delete_chat: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/chats/delete-batch")
@@ -509,5 +509,5 @@ async def delete_chats_batch(request: BatchDeleteRequest):
     except HTTPException as he:
         raise he
     except Exception as e:
-        print(f"Error in delete_chats_batch endpoint: {str(e)}")
+        print(f"Lỗi trong endpoint delete_chats_batch: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

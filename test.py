@@ -1,73 +1,34 @@
-import json
-import os
-from pathlib import Path
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
+import numpy as np
 
-def process_chunks_and_metadata():
-    # Đọc file test_data.json
-    with open('test_data.json', 'r', encoding='utf-8') as f:
-        data = json.load(f)
-    
-    # Lấy thông tin chunks
-    chunks = data.get('chunks', [])
-    
-    # Tạo thư mục gốc cho các chunks
-    base_dir = None
-    
-    # Xử lý từng chunk
-    for chunk in chunks:
-        chunk_id = chunk.get('chunk_id', '')
-        file_path = chunk.get('file_path', '')
-        content = chunk.get('content', '')
-        
-        # Tạo đường dẫn file đầy đủ
-        # Loại bỏ dấu / đầu nếu có
-        if file_path.startswith('/'):
-            file_path = file_path[1:]
-        
-        # Tạo thư mục nếu chưa tồn tại
-        file_dir = os.path.dirname(file_path)
-        if file_dir:
-            os.makedirs(file_dir, exist_ok=True)
-            if base_dir is None:
-                base_dir = file_dir.split('/')[0] if '/' in file_dir else file_dir
-        
-        # Tạo nội dung file với format yêu cầu
-        file_content = f"# {chunk_id}\n{content}"
-        
-        # Ghi file chunk
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(file_content)
-        
-        print(f"Đã tạo file: {file_path}")
-    
-    # Tạo metadata.json (bỏ phần content trong chunks)
-    metadata = data.copy()
-    
-    # Loại bỏ content từ các chunks
-    if 'chunks' in metadata:
-        for chunk in metadata['chunks']:
-            if 'content' in chunk:
-                del chunk['content']
-    
-    # Xác định thư mục để lưu metadata.json
-    metadata_dir = base_dir if base_dir else 'data'
-    metadata_path = os.path.join(metadata_dir, 'metadata.json')
-    
-    # Tạo thư mục nếu cần
-    os.makedirs(metadata_dir, exist_ok=True)
-    
-    # Ghi file metadata.json
-    with open(metadata_path, 'w', encoding='utf-8') as f:
-        json.dump(metadata, f, ensure_ascii=False, indent=4)
-    
-    print(f"Đã tạo file metadata: {metadata_path}")
-    print(f"Tổng cộng đã xử lý {len(chunks)} chunks")
+MODEL_NAME = "ng3owb/congbot-e5"  # Model name
+MODEL_NAME = "intfloat/multilingual-e5-base"  # Model name
+model = SentenceTransformer(MODEL_NAME)
 
-if __name__ == "__main__":
-    try:
-        process_chunks_and_metadata()
-        print("Hoàn thành xử lý!")
-    except FileNotFoundError:
-        print("Không tìm thấy file test_data.json")
-    except Exception as e:
-        print(f"Lỗi: {e}")
+sentences = [
+    "query: Hướng dẫn về quản lý kinh phí cho người có công với cách mạng được quy định ở đâu?",
+    "passage: 47_2009_TTLT_BTC_BLĐTBXH_preamble\nThông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH của Bộ Tài chính, Bộ Lao động, Thương binh và Xã hội: Hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng và người trực tiếp tham gia kháng chiến do ngành Lao động - Thương binh và Xã hội quản lý\n\nBỘ TÀI CHÍNH - BỘ LAO ĐỘNG - THƯƠNG BINH VÀ XÃ HỘI --------	CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM Độc lập – Tự do – Hạnh phúc ------------\n\nSố: 47/2009/TTLT-BTC-BLĐTBXH	Hà Nội, ngày 11 tháng 03 năm 2009\n\nTHÔNG TƯ LIÊN TỊCH\n\nHƯỚNG DẪN CẤP PHÁT, QUẢN LÝ VÀ SỬ DỤNG KINH PHÍ THỰC HIỆN CHÍNH SÁCH ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VÀ NGƯỜI TRỰC TIẾP THAM GIA KHÁNG CHIẾN DO NGÀNH LAO ĐỘNG – THƯƠNG BINH VÀ XÃ HỘI QUẢN LÝ\n\nCăn cứ Nghị định số 60/2003/NĐ-CP ngày 06/6/2003 của Chính phủ quy định chi tiết và hướng dẫn thi hành Luật Ngân sách nhà nước. Căn cứ Nghị định số 54/2006/NĐ-CP ngày 26/5/2006 của Chính phủ hướng dẫn thi hành một số điều của Pháp lệnh ưu đãi người có công với cách mạng; Nghị định số 89/2008/NĐ-CP ngày 13/8/2008 của Chính phủ hướng dẫn thi hành Pháp lệnh sửa đổi, bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng và các văn bản quy phạm pháp luật bổ sung, sửa đổi liên quan khác của cấp có thẩm quyền về chính sách ưu đãi người có công với cách mạng. Bộ Tài chính – Bộ Lao động – Thương binh và Xã hội hướng dẫn cấp phát, quản lý và sử dụng kinh phí thực hiện chính sách ưu đãi người có công với cách mạng; người trực tiếp tham gia kháng chiến do ngành Lao động – Thương binh và Xã hội quản lý (sau đây gọi tắt là chính sách ưu đãi người có công với cách mạng) như sau:",
+    "passage: # 55_2023_NĐ_CP_appendix1\n\nPHỤ LỤC I\n\nMỨC HƯỞNG TRỢ CẤP, PHỤ CẤP ƯU ĐÃI HẰNG THÁNG ĐỐI VỚI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VÀ THÂN NHÂN CỦA NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG (Kèm theo Nghị định số 55/2023/NĐ-CP ngày 21 tháng 7 năm 2023 của Chính phủ)\n\nĐơn vị: đồng\n\n| MỨC TRỢ CẤP, PHỤ CẤP ƯU ĐÃI HẰNG THÁNG |  |  |  |\n|---|---|---|---|\n| STT | Đối tượng | Mức trợ cấp, phụ cấp |  |\n| Trợ cấp | Phụ cấp |  |  |\n| 1 | Người hoạt động cách mạng trước ngày 01 tháng 01 năm 1945 và thân nhân |  |  |\n| 1.1 | Người hoạt động cách mạng trước ngày 01 tháng 01 năm 1945: |  |  |\n|  | Diện thoát ly | 2.297.000 | 390.000/01 thâm niên |\n|  | Diện không thoát ly | 3.899.000 |  |\n| 1.2 | Thân nhân của người hoạt động cách mạng trước ngày 01 tháng 01 năm 1945 từ trần: |  |  |\n|  | Vợ hoặc chồng, con chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng được hưởng trợ cấp tuất hằng tháng | 2.055.000 |  |\n|  | Vợ hoặc chồng sống cô đơn, con mồ côi cả cha mẹ chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng thì được hưởng thêm trợ cấp tuất nuôi dưỡng hằng tháng | 1.644.000 |  |\n| 2 | Người hoạt động cách mạng từ ngày 01 tháng 01 năm 1945 đến ngày khởi nghĩa tháng Tám năm 1945 và thân nhân |  |  |\n| 2.1 | Người hoạt động cách mạng từ ngày 01 tháng 01 năm 1945 đến ngày khởi nghĩa tháng Tám năm 1945 | 2.125.000 |  |\n| 2.2 | Thân nhân của người hoạt động cách mạng từ ngày 01 tháng 01 năm 1945 đến ngày khởi nghĩa tháng Tám năm 1945 từ trần: |  |  |\n|  | Vợ hoặc chồng, con chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng được hưởng trợ cấp tuất hằng tháng | 1.153.000 |  |\n|  | Vợ hoặc chồng sống cô đơn, con mồ côi cả cha mẹ chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng thì được hưởng thêm trợ cấp tuất nuôi dưỡng hằng tháng | 1.644.000 |  |\n| 3 | Thân nhân liệt sĩ: |  |  |\n| 3.1 | Thân nhân của 01 liệt sĩ | 2.055.000 |  |\n| 3.2 | Thân nhân của 02 liệt sĩ | 4.110.000 |  |\n| 3.3 | Thân nhân của 3 liệt sĩ trở lên | 6.165.000 |  |\n| 3.4 | Cha đẻ, mẹ đẻ, người có công nuôi liệt sĩ, vợ hoặc chồng liệt sĩ sống cô đơn; con liệt sĩ chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng mồ côi cả cha mẹ thì được hưởng thêm trợ cấp tuất nuôi dưỡng | 1.644.000 |  |\n| 3.5 | Vợ hoặc chồng liệt sĩ lấy chồng hoặc vợ khác mà nuôi con liệt sĩ đến tuổi trưởng thành hoặc chăm sóc cha đẻ, mẹ đẻ liệt sĩ khi còn sống hoặc vì hoạt động cách mạng mà không có điều kiện chăm sóc cha đẻ, mẹ đẻ khi còn sống | 2.055.000 |  |\n| 4 | Bà mẹ Việt Nam anh hùng | 6.165.000 | 1.722.000 |\n|  | Người phục vụ Bà mẹ Việt Nam anh hùng sống ở gia đình | 2.055.000 |  |\n| 5 | Anh hùng Lực lượng vũ trang nhân dân, Anh hùng Lao động trong thời kỳ kháng chiến | 1.722.000 |  |\n| 6 | Thương binh, người hưởng chính sách như thương binh, thương binh loại B và thân nhân |  |  |\n| 6.1 | Thương binh, người hưởng chính sách như thương binh, thương binh loại B |  |  |\n|  | Thương binh, người hưởng chính sách như thương binh | Phụ lục II |  |\n| Thương binh loại B | Phụ lục III |  |  |\n| Thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 81% trở lên |  | 1.031.000 |  |\n| Thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 81% trở lên có vết thương đặc biệt nặng |  | 2.113.000 |  |\n| Người phục vụ thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 81% trở lên ở gia đình | 2.055.000 |  |  |\n| Người phục vụ thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 81% trở lên có vết thương đặc biệt nặng ở gia đình | 2.640.000 |  |  |\n| 6.2 | Thân nhân của thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 61% trở lên: |  |  |\n|  | Cha đẻ, mẹ đẻ, vợ hoặc chồng đủ tuổi theo quy định tại khoản 2 Điều 169 của Bộ luật Lao động , con chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng của thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 61% trở lên từ trần được hưởng trợ cấp tuất hằng tháng | 1.153.000 |  |\n| Cha đẻ, mẹ đẻ sống cô đơn, vợ hoặc chồng đủ tuổi theo quy định tại khoản 2 Điều 169 của Bộ luật Lao động sống cô đơn, con mồ hôi cả cha mẹ chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng của thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 61% trở lên từ trần được hưởng thêm trợ cấp tuất nuôi dưỡng hằng tháng | 1.644.000 |  |  |\n| 7 | Bệnh binh và thân nhân |  |  |\n| 7.1 | Bệnh binh: |  |  |\n|  | Có tỷ lệ tổn thương cơ thể từ 41% - 50% | 2.145.000 |  |\n| Có tỷ lệ tổn thương cơ thể từ 51% - 60% | 2.673.000 |  |  |\n| Có tỷ lệ tổn thương cơ thể từ 61% - 70% | 3.406.000 |  |  |\n| Có tỷ lệ tổn thương cơ thể từ 71% - 80% | 3.927.000 |  |  |\n| Có tỷ lệ tổn thương cơ thể từ 81% - 90% | 4.700.000 |  |  |\n| Có tỷ lệ tổn thương cơ thể từ 91% - 100% | 5.235.000 |  |  |\n| Bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên |  | 1.031.000 |  |\n| Bệnh binh có tỷ lệ tổn thương cơ thể từ 81% trở lên có bệnh tật đặc biệt nặng |  | 2.055.000 |  |\n| Người phục vụ bệnh binh ở gia đình có tỷ lệ tổn thương cơ thể từ 81% trở lên | 2.055.000 |  |  |\n| Người phục vụ bệnh binh ở gia đình có tỷ lệ tổn thương cơ thể từ 81% trở lên có bệnh tật đặc biệt nặng | 2.640.000 |  |  |\n| 7.2 | Thân nhân của bệnh binh: |  |  |\n|  | Cha đẻ, mẹ đẻ, vợ hoặc chồng đủ tuổi theo quy định tại khoản 2 Điều 169 của Bộ luật Lao động , con chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng của bệnh binh có tỷ lệ tổn thương cơ thể từ 61% trở lên từ trần được hưởng trợ cấp tuất hằng tháng | 1.153.000 |  |\n| Cha đẻ, mẹ đẻ sống cô đơn, vợ hoặc chồng đủ tuổi theo quy định tại khoản 2 Điều 169 của Bộ luật Lao động sống cô đơn, con mồ côi cả cha mẹ chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng của bệnh binh có tỷ lệ tổn thương cơ thể từ 61% trở lên từ trần hưởng thêm trợ cấp tuất nuôi dưỡng hằng tháng | 1.644.000 |  |  |\n| 8 | Người hoạt động kháng chiến bị nhiễm chất độc hoá học và thân nhân |  |  |\n| 8.1 | Người hoạt động kháng chiến bị nhiễm chất độc hoá học: |  |  |\n|  | Có tỷ lệ tổn thương cơ thể từ 21% - 40% | 1.562.000 |  |\n| Có tỷ lệ tổn thương cơ thể từ 41% - 60% | 2.610.000 |  |  |\n| Có tỷ lệ tổn thương cơ thể từ 61% - 80% | 3.658.000 |  |  |\n| Có tỷ lệ tổn thương cơ thể từ 81% trở lên | 4.685.000 |  |  |\n| Người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 81% trở lên |  | 1.031.000 |  |\n| Người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 81% trở lên có bệnh tật đặc biệt nặng |  | 2.055.000 |  |\n| Người phục vụ người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 81% trở lên sống ở gia đình | 2.055.000 |  |  |\n| 8.2 | Thân nhân của người hoạt động kháng chiến bị nhiễm chất độc hoá học: |  |  |\n|  | Cha đẻ, mẹ đẻ, vợ hoặc chồng đủ tuổi theo quy định tại khoản 2 Điều 169 của Bộ luật Lao động , con chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng của người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 61% trở lên từ trần được hưởng trợ cấp tuất hằng tháng | 1.153.000 |  |\n| Cha đẻ, mẹ đẻ sống cô đơn, vợ hoặc chồng đủ tuổi theo quy định tại khoản 2 Điều 169 của Bộ luật Lao động sống cô đơn, con mồ hôi cả cha mẹ chưa đủ 18 tuổi hoặc từ đủ 18 tuổi trở lên nếu còn tiếp tục đi học hoặc bị khuyết tật nặng, khuyết tật đặc biệt nặng của người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 61% trở lên từ trần được hưởng thêm trợ cấp tuất nuôi dưỡng hằng tháng | 1.644.000 |  |  |\n| Con đẻ còn sống của người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 61% đến 80% | 1.233.000 |  |  |\n| Con đẻ còn sống của người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể từ 81% trở lên | 2.055.000 |  |  |\n| 9 | Người hoạt động cách mạng, kháng chiến, bảo vệ Tổ quốc, làm nghĩa vụ quốc tế bị địch bắt tù, đày | 1.233.000 |  |\n| 10 | Người có công giúp đỡ cách mạng: |  |  |\n| 10.1 | Người được tặng hoặc người trong gia đình được tặng Kỷ niệm chương “Tổ quốc ghi công” hoặc Bằng “Có công với nước” trước cách mạng tháng Tám năm 1945 được hưởng trợ cấp hằng tháng | 2.055.000 |  |\n| 10.2 | Người được tặng hoặc người trong gia đình được tặng Huân chương Kháng chiến được hưởng trợ cấp hằng tháng | 1.208.000 |  |\n| 10.3 | Trường hợp người được tặng hoặc người trong gia đình được tặng Kỷ niệm chương “Tổ quốc ghi công” hoặc Bằng “Có công với nước” trước cách mạng tháng Tám năm 1945, người được tặng hoặc người trong gia đình được tặng Huân chương Kháng chiến sống cô đơn thì được hưởng thêm trợ cấp tuất nuôi dưỡng hằng tháng | 1.644.000 |  |\n| 11 | Trợ cấp ưu đãi hằng tháng khi theo học tại các cơ sở phổ thông dân tộc nội trú, giáo dục nghề nghiệp, giáo dục đại học: |  |  |\n| 11.1 | Anh hùng Lực lượng vũ trang nhân dân; Anh hùng Lao động trong thời kỳ kháng chiến; thương binh, người hưởng chính sách như thương binh, thương binh loại B; con của người hoạt động cách mạng trước ngày 01 tháng 01 năm 1945; con của người hoạt động cách mạng từ ngày 01 tháng 01 năm 1945 đến ngày khởi nghĩa tháng Tám năm 1945; thân nhân liệt sĩ; con của Anh hùng Lực lượng vũ trang nhân dân, Anh hùng Lao động trong thời kỳ kháng chiến; con của thương binh, người hưởng chính sách như thương binh, thương binh loại B, con của bệnh binh, con của người hoạt động kháng chiến bị nhiễm chất độc hoá học có tỷ lệ tổn thương cơ thể từ 61% trở lên | 2.055.000 |  |\n| 11.2 | Con của thương binh, người hưởng chính sách như thương binh, thương binh loại B có tỷ lệ tổn thương cơ thể từ 21% đến 60%; con của bệnh binh có tỷ lệ tổn thương cơ thể từ 41% đến 60%; con của người hoạt động kháng chiến bị nhiễm chất độc hoá học có tỷ lệ tổn thương cơ thể từ 21% đến 60% | 1.031.000 |  |",
+    "passage: # 48_2013_NĐ_CP_art1_part2\n4. Sửa đổi Điều 11:\n\n“Điều 11. Thẩm định quy định về thủ tục hành chính\n\n1. Ngoài việc thẩm định nội dung dự án, dự thảo văn bản quy phạm pháp luật, cơ quan thẩm định có trách nhiệm thẩm định quy định về thủ tục hành chính và thể hiện nội dung này trong Báo cáo thẩm định.\n\n2. Nội dung thẩm định thủ tục hành chính chủ yếu xem xét các tiêu chí quy định tại Điều 10 của Nghị định này.\n\n3. Ngoài thành phần hồ sơ gửi thẩm định theo quy định của pháp luật về ban hành văn bản quy phạm pháp luật, cơ quan gửi thẩm định phải có bản đánh giá tác động về thủ tục hành chính theo quy định tại Điều 10 của Nghị định này.\n\nCơ quan thẩm định không tiếp nhận hồ sơ gửi thẩm định nếu dự án, dự thảo văn bản quy phạm pháp luật có quy định về thủ tục hành chính chưa có bản đánh giá tác động về thủ tục hành chính và ý kiến góp ý của cơ quan cho ý kiến quy định tại Khoản 1 Điều 9 của Nghị định này.”\n\n5. Sửa đổi về thời hạn ban hành quyết định công bố tại Điều 15:\n\n“Điều 15. Quyết định công bố thủ tục hành chính\n\nQuyết định công bố thủ tục hành chính của các cơ quan quy định tại Khoản 1 Điều 13 của Nghị định này phải được ban hành chậm nhất trước 20 (hai mươi) ngày làm việc tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành.\n\nQuyết định công bố thủ tục hành chính của các cơ quan quy định tại các Khoản 2 và 3 Điều 13 của Nghị định này phải được ban hành chậm nhất trước 05 (năm) ngày làm việc tính đến ngày văn bản quy phạm pháp luật có quy định về thủ tục hành chính có hiệu lực thi hành.”.\n\n6. Sửa đổi Khoản 2 Điều 22:\n\n“Điều 22. Phản ánh, kiến nghị về thủ tục hành chính trong quá trình thực hiện\n\n2. Bộ Tư pháp chịu trách nhiệm thiết lập, duy trì hoạt động của cổng thông tin phản ánh, kiến nghị, kết quả giải quyết về thủ tục hành chính trên Cơ sở dữ liệu quốc gia về thủ tục hành chính và chủ động tổ chức lấy ý kiến cá nhân, tổ chức về thủ tục hành chính quy định trong dự án, dự thảo văn bản quy phạm pháp luật do cơ quan chủ trì soạn thảo gửi lấy ý kiến theo quy định tại Khoản 2 Điều 9 của Nghị định này.”"
+]
+
+# Encode thành vector
+embeddings = model.encode(sentences)
+print("Tên model sử dụng:", MODEL_NAME)
+# Kiểm tra số chiều embedding
+print(f"Số chiều của mỗi embedding: {embeddings.shape[1]}")  # ví dụ: 768
+
+# Tính ma trận cosine similarity toàn bộ (n x n)
+similarity_matrix = cosine_similarity(embeddings)
+
+# In ra ma trận cosine similarity
+np.set_printoptions(precision=3, suppress=True)
+print("\nMa trận cosine similarity:")
+print(similarity_matrix)
+
+# In riêng similarity giữa query và từng passage
+print("\nĐộ tương đồng giữa query và từng passage:")
+for i in range(1, len(sentences)):
+    score = similarity_matrix[0][i]
+    print(f"Query ↔ Passage {i}: {score:.3f}")

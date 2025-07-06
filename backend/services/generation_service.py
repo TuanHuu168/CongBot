@@ -1,7 +1,6 @@
 import time
 import sys
 import os
-from typing import List, Dict, Any, Optional
 from google import genai
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -10,15 +9,16 @@ from services.retrieval_service import retrieval_service
 
 class GenerationService:
     def __init__(self):
-        # Khởi tạo dịch vụ generation
+        # Khởi tạo dịch vụ tạo câu trả lời
         self.retrieval = retrieval_service
         self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
     
-    def generate_answer_with_context(self, query: str, context_items: List[str], conversation_context: List[Dict[str, str]] = None, use_cache: bool = True) -> Dict[str, Any]:
+    def generate_answer_with_context(self, query, context_items, conversation_context=None, use_cache=True):
+        # Tạo câu trả lời với context và lịch sử cuộc trò chuyện
         start_time = time.time()
         
         try:
-            # Tạo prompt với conversation context
+            # Tạo prompt kèm context
             prompt = self._create_prompt_with_context(query, context_items, conversation_context or [])
             # print("Prompt gửi đến Gemini với conversation context:", prompt)
             
@@ -50,17 +50,17 @@ class GenerationService:
                 "total_time": time.time() - start_time
             }
 
-    def _create_prompt_with_context(self, query: str, context_items: List[str], conversation_context: List[Dict[str, str]]) -> str:
-        # Tạo phần conversation history
+    def _create_prompt_with_context(self, query, context_items, conversation_context):
+        # Tạo prompt với context và lịch sử cuộc trò chuyện
         conversation_history = ""
         if conversation_context:
-            conversation_history = "\n### LỊCH SỬ CUỘC TSRÒ CHUYỆN TRƯỚC ĐÓ:\n"
+            conversation_history = "\n### LỊCH SỬ CUỘC TRÒ CHUYỆN TRƯỚC ĐÓ:\n"
             for i, exchange in enumerate(conversation_context, 1):
                 conversation_history += f"\n**Câu hỏi {i}:** {exchange['question']}\n"
                 conversation_history += f"**Trả lời {i}:** {exchange['answer']}\n"
             conversation_history += "\n### CÂU HỎI HIỆN TẠI:\n"
         
-        # Tạo context text
+        # Tạo context text từ các đoạn văn bản tìm được
         context_text = "\n\n".join([f"[Đoạn văn bản {i+1}]\n{item}" for i, item in enumerate(context_items)])
         
         prompt = f"""
@@ -143,11 +143,12 @@ Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam
 
 [CONTEXT]
 {context_text}
+Thêm một lưu ý cuối cùng: Tập trung vào trả lời câu hỏi của người dùng, không trả lời kiến thức chung chung hay không liên quan. Nếu câu hỏi không rõ ràng, hãy yêu cầu người dùng cung cấp thêm thông tin.
 """
         return prompt
     
-    def generate_answer(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        # Method này dùng làm wrapper để giữ backward compatibility
+    def generate_answer(self, query, use_cache=True):
         return self.generate_answer_with_context(query, [], [], use_cache)
 
+# Singleton instance
 generation_service = GenerationService()

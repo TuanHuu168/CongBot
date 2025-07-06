@@ -1,0 +1,42 @@
+﻿STT,question,benchmark_answer,current_answer,current_cosine_sim,current_entity_sim,current_retrieval_accuracy,current_processing_time,langchain_answer,langchain_cosine_sim,langchain_entity_sim,langchain_retrieval_accuracy,langchain_processing_time,haystack_answer,haystack_cosine_sim,haystack_entity_sim,haystack_retrieval_accuracy,haystack_processing_time,chatgpt_answer,chatgpt_cosine_sim,chatgpt_entity_sim,chatgpt_processing_time,benchmark_chunks
+1,"Em muốn hỏi là ai chi trả tiền trợ cấp cho người có công ở các xã, phường vậy?","Theo Điều 8 Quyết định số 49/2012/QĐ-UBND, Ủy ban nhân dân phường-xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.","Để có thể trả lời câu hỏi của bạn về việc ai chi trả tiền trợ cấp cho người có công ở các xã, phường, tôi cần bạn cung cấp các văn bản pháp luật hoặc đoạn văn bản liên quan. Hiện tại, tôi chưa nhận được bất kỳ văn bản nào để phân tích và tổng hợp thông tin.
+
+Vui lòng cung cấp văn bản pháp luật để tôi có thể hỗ trợ bạn một cách chính xác và đầy đủ nhất theo các nguyên tắc đã được đặt ra.",0.7664,0.8100,0.0000,9.600,ERROR: Embedding dimension 768 does not match collection dimensionality 384,0.6350,0.7059,0.0000,13.988,"Theo [Điều 8, Quyết định số 49/2012/QĐ-UBND], thì Ủy ban nhân dân phường - xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát; thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.
+
+**Thông tin chi tiết:**
+- **Loại chính sách**: Chi trả trợ cấp ưu đãi người có công
+- **Đối tượng**: Người có công với cách mạng và thân nhân của họ
+- **Cơ quan thực hiện**:
+    - Ủy ban nhân dân phường - xã, thị trấn: Trực tiếp chi trả.
+    - Phòng Lao động - Thương binh và Xã hội quận - huyện: Cấp kinh phí và quản lý.
+- **Địa điểm/Phạm vi**: Xã, phường, thị trấn
+- **Văn bản pháp luật**: Quyết định số 49/2012/QĐ-UBND
+- **Phương thức**: Chi trả trực tiếp
+
+**Lưu ý đặc biệt**:
+- Ủy ban nhân dân phường - xã, thị trấn phải ký Hợp đồng trách nhiệm chi trả trợ cấp ưu đãi người có công với Phòng Lao động - Thương binh và Xã hội quận - huyện.
+- Kinh phí chi trả được chuyển từ tài khoản dự toán của Phòng Lao động - Thương binh và Xã hội quận - huyện về tài khoản tiền gửi của Ủy ban nhân dân phường - xã, thị trấn.
+- Ủy ban nhân dân phường - xã, thị trấn có trách nhiệm bố trí địa điểm chi trả thuận lợi và thông báo công khai cho đối tượng.
+",0.8956,0.7334,1.0000,4.166,"Theo **Thông tư 101/2018/TT-BTC, Điều 15**, thì việc chi trả tiền trợ cấp cho người có công được thực hiện thông qua tổ chức dịch vụ chi trả, do cơ quan Lao động - Thương binh và Xã hội (LĐTBXH) lựa chọn.
+
+**Thông tin chi tiết:**
+- **Mã định danh**: 101/2018/TT-BTC
+- **Loại chính sách**: Chi trả trợ cấp cho người có công
+- **Mức tiền/Tỷ lệ**: Không quy định cụ thể mức tiền trong điều này, nhưng chi trả phải đảm bảo kịp thời và an toàn.
+- **Đối tượng**: Người có công với cách mạng và thân nhân của họ.
+- **Điều kiện/Yêu cầu**: Tổ chức dịch vụ chi trả phải có kinh nghiệm và mạng lưới điểm giao dịch tại xã, phường, thị trấn.
+- **Thủ tục/Hồ sơ**: Cần lập hợp đồng giữa cơ quan LĐTBXH và tổ chức dịch vụ chi trả, ghi rõ phạm vi đối tượng, phương thức chi trả, thời hạn chi trả, và các điều khoản liên quan.
+- **Thời hạn**: Cơ quan LĐTBXH phải thực hiện rút dự toán và chuyển tiền cho tổ chức dịch vụ chi trả trước ngày 25 hàng tháng.
+- **Cơ quan thực hiện**: Sở LĐTBXH hoặc Phòng LĐTBXH tùy theo phân cấp.
+- **Địa điểm/Phạm vi**: Tại các xã, phường, thị trấn.
+- **Phí/Lệ phí**: Mức chi phí chi trả được ghi trong hợp đồng giữa cơ quan LĐTBXH và tổ chức dịch vụ chi trả.
+- **Văn bản pháp luật**: Thông tư 101/2018/TT-BTC, ngày 01-01-2019, Bộ Tài chính.
+- **Ngày tháng quan trọng**: Có hiệu lực từ 01-01-2019.
+- **Trạng thái văn bản**: Có hiệu lực.
+- **Mức độ dịch vụ công**: DVC cấp 2, thực hiện qua dịch vụ công trực tuyến (nếu có).
+- **Nguồn kinh phí**: Ngân sách nhà nước.
+- **Phương thức**: Chi trả trực tiếp bằng tiền mặt hoặc qua thẻ ATM.
+- **Kết quả nhận được**: Người có công nhận được tiền trợ cấp theo quy định.
+
+*Lưu ý đặc biệt*: Cơ quan LĐTBXH có trách nhiệm giám sát việc chi trả của tổ chức dịch vụ chi trả để đảm bảo tính chính xác và kịp thời.",0.8061,0.1980,13.300,49_2012_QĐ_UBND_regulation_ch2_art8
+SUMMARY,Average results from 1 questions,Statistical Summary,See individual results above,0.7664,0.8100,0.0000,9.600,See individual results above,0.6350,0.7059,0.0000,13.988,See individual results above,0.8956,0.7334,1.0000,4.166,See individual results above,0.8061,0.1980,13.300,All benchmark chunks across questions

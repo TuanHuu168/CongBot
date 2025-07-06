@@ -34,35 +34,35 @@ class ChromaDBClient:
             self.initialize()
 
     def initialize(self):
-        """Khởi tạo ChromaDB client và cả 2 collections"""
+        # Khởi tạo ChromaDB client và cả 2 collections
         if self.client is not None:
             return
             
         try:
             os.makedirs(CHROMA_PERSIST_DIRECTORY, exist_ok=True)
             self.persist_directory = CHROMA_PERSIST_DIRECTORY
-            print(f"ChromaDB persist directory: {self.persist_directory}")
+            print(f"Thư mục lưu trữ ChromaDB: {self.persist_directory}")
 
             if not EMBEDDING_MODEL_NAME:
-                raise ValueError("EMBEDDING_MODEL_NAME is None or empty! Check your .env file")
+                raise ValueError("EMBEDDING_MODEL_NAME bị None hoặc rỗng! Kiểm tra file .env của bạn")
 
             device = "cuda" if USE_GPU and torch.cuda.is_available() else "cpu"
             
-            # Test model trước khi tạo embedding function
+            # Kiểm tra model trước khi tạo embedding function
             try:
                 from sentence_transformers import SentenceTransformer
                 test_model = SentenceTransformer(EMBEDDING_MODEL_NAME)
                 test_embedding = test_model.encode(["test"])
-                print(f"Model {EMBEDDING_MODEL_NAME} loaded successfully, dimension: {test_embedding.shape[1]}")
+                print(f"Model {EMBEDDING_MODEL_NAME} tải thành công, số chiều: {test_embedding.shape[1]}")
             except Exception as e:
-                print(f"Error loading model {EMBEDDING_MODEL_NAME}: {str(e)}")
+                print(f"Lỗi khi tải model {EMBEDDING_MODEL_NAME}: {str(e)}")
                 raise e
             
             self.embedding_function = SentenceTransformerEmbeddingFunction(
                 model_name=EMBEDDING_MODEL_NAME,
                 device=device
             )
-            print(f"Embedding function initialized on device: {device} using model: {EMBEDDING_MODEL_NAME}")
+            print(f"Embedding function đã khởi tạo trên thiết bị: {device} sử dụng model: {EMBEDDING_MODEL_NAME}")
 
             self.client = chromadb.PersistentClient(path=self.persist_directory)
             
@@ -77,12 +77,12 @@ class ChromaDBClient:
             self.cache_collection = None
     
     def _create_all_collections(self):
-        """Tạo tất cả collections cần thiết"""
+        # Tạo tất cả collections cần thiết
         if not self.client:
             return
             
         try:
-            # Main collection
+            # Main collection cho tài liệu chính
             try:
                 self.main_collection = self.client.get_collection(name=self.main_collection_name)
             except Exception:
@@ -92,9 +92,9 @@ class ChromaDBClient:
                 )
             
             main_count = self.main_collection.count()
-            print(f"Main collection '{self.main_collection_name}' ready with {main_count} documents")
+            print(f"Main collection '{self.main_collection_name}' sẵn sàng với {main_count} tài liệu")
             
-            # Cache collection  
+            # Cache collection cho cache câu hỏi
             try:
                 self.cache_collection = self.client.get_collection(name=self.cache_collection_name)
             except Exception:
@@ -104,7 +104,7 @@ class ChromaDBClient:
                 )
             
             cache_count = self.cache_collection.count()
-            print(f"Cache collection '{self.cache_collection_name}' ready with {cache_count} documents")
+            print(f"Cache collection '{self.cache_collection_name}' sẵn sàng với {cache_count} tài liệu")
                 
         except Exception as e:
             print(f"Lỗi khi tạo collections: {str(e)}")
@@ -113,16 +113,16 @@ class ChromaDBClient:
             self.main_collection = None
             self.cache_collection = None
 
-    # ==================== BASIC OPERATIONS ====================
+    # ==================== CÁC THAO TÁC CƠ BẢN ====================
     
     def get_client(self):
-        """Lấy ChromaDB client"""
+        # Lấy ChromaDB client
         if not self.client:
             self.initialize()
         return self.client
     
     def get_collection(self, collection_type="main"):
-        """Lấy collection theo loại"""
+        # Lấy collection theo loại
         if not self.main_collection or not self.cache_collection:
             self.initialize()
         
@@ -134,17 +134,17 @@ class ChromaDBClient:
             return self.main_collection
     
     def get_main_collection(self):
-        """Lấy main collection cho văn bản pháp luật"""
+        # Lấy main collection cho văn bản pháp luật
         return self.get_collection("main")
     
     def get_cache_collection(self):
-        """Lấy cache collection cho cache câu hỏi"""
+        # Lấy cache collection cho cache câu hỏi
         return self.get_collection("cache")
     
     def add_documents_to_main(self, ids, documents, metadatas=None):
-        """Thêm documents vào main collection"""
-        print(f"[CHROMA CLIENT] Embedding {len(ids)} documents using model: {EMBEDDING_MODEL_NAME}")
-        print(f"[CHROMA CLIENT] Device: {'cuda' if USE_GPU and torch.cuda.is_available() else 'cpu'}")
+        # Thêm tài liệu vào main collection
+        print(f"[CHROMA CLIENT] Đang embedding {len(ids)} tài liệu sử dụng model: {EMBEDDING_MODEL_NAME}")
+        print(f"[CHROMA CLIENT] Thiết bị: {'cuda' if USE_GPU and torch.cuda.is_available() else 'cpu'}")
         collection = self.get_main_collection()
         if not collection:
             print("Không thể lấy main collection")
@@ -158,11 +158,11 @@ class ChromaDBClient:
             )
             return True
         except Exception as e:
-            print(f"Lỗi khi thêm documents vào main collection: {str(e)}")
+            print(f"Lỗi khi thêm tài liệu vào main collection: {str(e)}")
             return False
     
     def add_documents_to_cache(self, ids, documents, metadatas=None):
-        """Thêm documents vào cache collection"""
+        # Thêm tài liệu vào cache collection
         collection = self.get_cache_collection()
         if not collection:
             print("Không thể lấy cache collection")
@@ -176,11 +176,11 @@ class ChromaDBClient:
             )
             return True
         except Exception as e:
-            print(f"Lỗi khi thêm documents vào cache collection: {str(e)}")
+            print(f"Lỗi khi thêm tài liệu vào cache collection: {str(e)}")
             return False
     
     def search_main(self, query_text, n_results=5, include=None):
-        """Tìm kiếm trong main collection"""
+        # Tìm kiếm trong main collection
         collection = self.get_main_collection()
         if not collection:
             print("Không thể lấy main collection để tìm kiếm")
@@ -192,19 +192,30 @@ class ChromaDBClient:
                 
             if include is None:
                 include = ["documents", "metadatas", "distances"]
-                
+            
+            # Kiểm tra kích thước embedding trước khi query
+            if hasattr(self, 'embedding_function'):
+                try:
+                    test_embed = self.embedding_function([query_text])
+                    print(f"[CHROMA DEBUG] Kích thước embedding truy vấn: {len(test_embed[0]) if test_embed and test_embed[0] else 'None'}")
+                except Exception as e:
+                    print(f"[CHROMA DEBUG] Lỗi khi kiểm tra embedding: {e}")
+            
             results = collection.query(
                 query_texts=[query_text],
                 n_results=n_results,
                 include=include
             )
+            
+            print(f"[CHROMA DEBUG] Truy vấn thành công, kết quả: {len(results.get('ids', [[]])[0])} mục")
             return results
         except Exception as e:
+            print(f"[CHROMA DEBUG] Lỗi truy vấn: {str(e)}")
             print(f"Lỗi khi tìm kiếm trong main collection: {str(e)}")
             return None
     
     def search_cache(self, query_text, n_results=5, include=None):
-        """Tìm kiếm trong cache collection"""
+        # Tìm kiếm trong cache collection
         collection = self.get_cache_collection()
         if not collection:
             print("Không thể lấy cache collection để tìm kiếm")
@@ -228,7 +239,7 @@ class ChromaDBClient:
             return None
     
     def delete_collection(self, name=None):
-        """Xóa collection"""
+        # Xóa collection
         client = self.get_client()
         if not client:
             return False
@@ -249,37 +260,37 @@ class ChromaDBClient:
             return False
     
     def clear_cache_collection(self):
-        """Xóa toàn bộ cache collection và tạo lại"""
+        # Xóa toàn bộ cache collection và tạo lại
         try:
             self.delete_collection(self.cache_collection_name)
             self.cache_collection = self.client.create_collection(
                 name=self.cache_collection_name,
                 embedding_function=self.embedding_function
             )
-            print(f"Đã clear cache collection '{self.cache_collection_name}'")
+            print(f"Đã xóa sạch cache collection '{self.cache_collection_name}'")
             return True
         except Exception as e:
-            print(f"Lỗi khi clear cache collection: {str(e)}")
+            print(f"Lỗi khi xóa cache collection: {str(e)}")
             return False
     
     def clear_main_collection(self):
-        """Xóa toàn bộ main collection và tạo lại"""
+        # Xóa toàn bộ main collection và tạo lại
         try:
             self.delete_collection(self.main_collection_name)
             self.main_collection = self.client.create_collection(
                 name=self.main_collection_name,
                 embedding_function=self.embedding_function
             )
-            print(f"Đã clear main collection '{self.main_collection_name}'")
+            print(f"Đã xóa sạch main collection '{self.main_collection_name}'")
             self.loaded_documents = 0
             self.total_chunks = 0
             return True
         except Exception as e:
-            print(f"Lỗi khi clear main collection: {str(e)}")
+            print(f"Lỗi khi xóa main collection: {str(e)}")
             return False
     
     def list_collections(self):
-        """Liệt kê tất cả collections"""
+        # Liệt kê tất cả collections
         client = self.get_client()
         if not client:
             return []
@@ -308,7 +319,7 @@ class ChromaDBClient:
             return []
     
     def get_collection_stats(self):
-        """Lấy thống kê về tất cả collections"""
+        # Lấy thống kê về tất cả collections
         stats = {
             "main_collection": {
                 "name": self.main_collection_name,
@@ -327,19 +338,19 @@ class ChromaDBClient:
                 stats["main_collection"]["count"] = self.main_collection.count()
                 stats["main_collection"]["status"] = "connected"
         except Exception as e:
-            print(f"Lỗi khi lấy stats main collection: {str(e)}")
+            print(f"Lỗi khi lấy thống kê main collection: {str(e)}")
         
         try:
             if self.cache_collection:
                 stats["cache_collection"]["count"] = self.cache_collection.count()
                 stats["cache_collection"]["status"] = "connected"
         except Exception as e:
-            print(f"Lỗi khi lấy stats cache collection: {str(e)}")
+            print(f"Lỗi khi lấy thống kê cache collection: {str(e)}")
         
         return stats
     
     def reset_database(self):
-        """Reset toàn bộ ChromaDB"""
+        # Reset toàn bộ ChromaDB
         try:
             client = self.get_client()
             if client:
@@ -354,10 +365,10 @@ class ChromaDBClient:
             print(f"Lỗi khi reset database: {str(e)}")
             return False
 
-    # ==================== DATA LOADING OPERATIONS ====================
+    # ==================== CÁC THAO TÁC TẢI DỮ LIỆU ====================
     
     def safe_join_list(self, value, default_value=""):
-        """An toàn join list, xử lý trường hợp None hoặc không phải list"""
+        # An toàn khi join list, xử lý trường hợp None hoặc không phải list
         if value is None:
             return default_value
         elif isinstance(value, list):
@@ -368,7 +379,7 @@ class ChromaDBClient:
             return str(value) if value is not None else default_value
     
     def read_chunk_content(self, file_path: str, doc_folder: str) -> str:
-        """Đọc nội dung từ file chunk"""
+        # Đọc nội dung từ file chunk
         try:
             print(f"    Đang đọc file: {file_path}")
             
@@ -396,7 +407,7 @@ class ChromaDBClient:
             return ""
     
     def create_chunk_metadata(self, doc_metadata: Dict[str, Any], chunk_info: Dict[str, Any], chunk_index: int) -> Dict[str, Any]:
-        """Tạo metadata đầy đủ cho chunk với xử lý an toàn"""
+        # Tạo metadata đầy đủ cho chunk với xử lý an toàn
         chunks_list = doc_metadata.get("chunks", [])
         
         previous_chunk = chunks_list[chunk_index - 1]["chunk_id"] if chunk_index > 0 else None
@@ -441,7 +452,7 @@ class ChromaDBClient:
         return metadata
     
     def process_document(self, doc_folder: str) -> bool:
-        """Xử lý một document folder"""
+        # Xử lý một thư mục tài liệu
         try:
             metadata_path = os.path.join(doc_folder, "metadata.json")
             
@@ -453,7 +464,7 @@ class ChromaDBClient:
                 doc_metadata = json.load(f)
             
             doc_id = doc_metadata.get("doc_id", os.path.basename(doc_folder))
-            print(f"Đang xử lý document: {doc_id}")
+            print(f"Đang xử lý tài liệu: {doc_id}")
             
             ids_to_add = []
             documents_to_add = []
@@ -490,32 +501,32 @@ class ChromaDBClient:
                         metadatas=metadatas_to_add
                     )
                     if success:
-                        print(f"Đã thêm {len(ids_to_add)} chunks cho document {doc_id}")
+                        print(f"Đã thêm {len(ids_to_add)} chunks cho tài liệu {doc_id}")
                         self.total_chunks += len(ids_to_add)
                         return True
                     else:
-                        print(f"Lỗi khi thêm chunks vào ChromaDB cho document {doc_id}")
+                        print(f"Lỗi khi thêm chunks vào ChromaDB cho tài liệu {doc_id}")
                         return False
                 except Exception as e:
                     print(f"Lỗi khi thêm chunks vào ChromaDB: {str(e)}")
                     return False
             else:
-                print(f"Không có chunk nào hợp lệ cho document {doc_id}")
+                print(f"Không có chunk nào hợp lệ cho tài liệu {doc_id}")
                 return False
                 
         except Exception as e:
-            print(f"Lỗi xử lý document {doc_folder}: {str(e)}")
+            print(f"Lỗi xử lý tài liệu {doc_folder}: {str(e)}")
             import traceback
             traceback.print_exc()
             return False
     
     def load_all_data(self) -> bool:
-        """Load tất cả data từ thư mục data"""
+        # Tải tất cả dữ liệu từ thư mục data
         if not os.path.exists(DATA_DIR):
             print(f"Thư mục data không tồn tại: {DATA_DIR}")
             return False
         
-        print(f"Bắt đầu load data từ: {DATA_DIR}")
+        print(f"Bắt đầu tải dữ liệu từ: {DATA_DIR}")
         print("=" * 60)
         
         doc_folders = []
@@ -525,10 +536,10 @@ class ChromaDBClient:
                 doc_folders.append(item_path)
         
         if not doc_folders:
-            print("Không tìm thấy thư mục document nào trong data")
+            print("Không tìm thấy thư mục tài liệu nào trong data")
             return False
         
-        print(f"Tìm thấy {len(doc_folders)} documents")
+        print(f"Tìm thấy {len(doc_folders)} tài liệu")
         
         successful_docs = 0
         self.loaded_documents = 0
@@ -541,17 +552,17 @@ class ChromaDBClient:
             print("-" * 40)
         
         print("=" * 60)
-        print(f"Hoàn thành load data:")
-        print(f"  - Documents thành công: {successful_docs}/{len(doc_folders)}")
+        print(f"Hoàn thành tải dữ liệu:")
+        print(f"  - Tài liệu thành công: {successful_docs}/{len(doc_folders)}")
         print(f"  - Tổng chunks đã thêm: {self.total_chunks}")
         
         final_count = self.main_collection.count()
-        print(f"  - Tổng documents trong ChromaDB: {final_count}")
+        print(f"  - Tổng tài liệu trong ChromaDB: {final_count}")
         
         return successful_docs > 0
     
     def check_existing_data(self):
-        """Kiểm tra data hiện có trong ChromaDB"""
+        # Kiểm tra dữ liệu hiện có trong ChromaDB
         try:
             main_collection = self.get_main_collection()
             cache_collection = self.get_cache_collection()
@@ -563,8 +574,8 @@ class ChromaDBClient:
             main_count = main_collection.count()
             cache_count = cache_collection.count()
             
-            print(f"Main collection ({self.main_collection_name}) có {main_count} documents")
-            print(f"Cache collection ({self.cache_collection_name}) có {cache_count} documents")
+            print(f"Main collection ({self.main_collection_name}) có {main_count} tài liệu")
+            print(f"Cache collection ({self.cache_collection_name}) có {cache_count} tài liệu")
             
             if main_count > 0:
                 sample_results = main_collection.get(
@@ -572,11 +583,11 @@ class ChromaDBClient:
                     include=["documents", "metadatas"]
                 )
                 
-                print("\nSample documents từ main collection:")
+                print("\nMẫu tài liệu từ main collection:")
                 for i, (doc_id, metadata) in enumerate(zip(sample_results["ids"], sample_results["metadatas"])):
                     print(f"{i+1}. {doc_id}")
-                    print(f"   Doc: {metadata.get('doc_id', 'N/A')}")
-                    print(f"   Type: {metadata.get('doc_type', 'N/A')}")
+                    print(f"   Tài liệu: {metadata.get('doc_id', 'N/A')}")
+                    print(f"   Loại: {metadata.get('doc_type', 'N/A')}")
                     print(f"   Chunk: {metadata.get('chunk_type', 'N/A')}")
             
             if cache_count > 0:
@@ -585,16 +596,16 @@ class ChromaDBClient:
                     include=["documents", "metadatas"]
                 )
                 
-                print("\nSample documents từ cache collection:")
+                print("\nMẫu tài liệu từ cache collection:")
                 for i, (doc_id, metadata) in enumerate(zip(cache_sample["ids"], cache_sample["metadatas"])):
                     print(f"{i+1}. {doc_id}")
-                    print(f"   Status: {metadata.get('validityStatus', 'N/A')}")
+                    print(f"   Trạng thái: {metadata.get('validityStatus', 'N/A')}")
             
         except Exception as e:
-            print(f"Lỗi kiểm tra data: {str(e)}")
+            print(f"Lỗi kiểm tra dữ liệu: {str(e)}")
     
     def get_load_progress(self):
-        """Lấy thông tin tiến trình load data"""
+        # Lấy thông tin tiến trình tải dữ liệu
         return {
             "loaded_documents": self.loaded_documents,
             "total_chunks": self.total_chunks,
@@ -605,15 +616,14 @@ class ChromaDBClient:
 # Singleton instance
 chroma_client = ChromaDBClient()
 
-# Helper functions
+# Lấy ChromaDB client
 def get_chroma_client():
-    """Hàm helper để lấy ChromaDB client"""
     return chroma_client
 
+# Lấy main collection
 def get_collection():
-    """Hàm helper để lấy main collection"""
     return chroma_client.get_main_collection()
 
+# Lấy cache collection
 def get_cache_collection():
-    """Hàm helper để lấy cache collection"""
     return chroma_client.get_cache_collection()

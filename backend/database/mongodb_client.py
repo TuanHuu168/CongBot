@@ -20,6 +20,7 @@ class MongoDBClient:
         return cls._instance
 
     def initialize(self):
+        # Khởi tạo kết nối MongoDB
         if self._initialized:
             return
             
@@ -47,75 +48,90 @@ class MongoDBClient:
             raise e
 
     def get_database(self):
+        # Lấy database instance
         if not self._initialized:
             self.initialize()
         return self.db
 
     def get_collection(self, collection_name: str):
+        # Lấy collection theo tên
         db = self.get_database()
         if db is None:
             raise Exception("Không thể kết nối tới database")
         return db[collection_name]
 
     def create_indexes(self):
+        # Tạo indexes cho tất cả collections để tối ưu hiệu suất
         if self.db is None:
             self.initialize()
 
         print("Bắt đầu tạo indexes cho MongoDB...")
         
         try:
-            # USERS COLLECTION INDEXES
+            # Indexes cho collection users
             users_collection = self.get_collection("users")
             
+            # Index duy nhất cho username
             users_collection.create_index([("username", 1)], unique=True, background=True)
             
+            # Index duy nhất cho email
             users_collection.create_index([("email", 1)], unique=True, background=True)
             
+            # Index cho trạng thái và vai trò
             users_collection.create_index([("status", 1)], background=True)
             users_collection.create_index([("role", 1)], background=True)
             
+            # Index cho thời gian đăng nhập cuối
             users_collection.create_index([("last_login_at", -1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho users: {str(e)}")
 
         try:
-            # CONVERSATIONS COLLECTION INDEXES
+            # Indexes cho colection chats
             conversations_collection = self.get_collection("chats")
             
+            # Index cho user_id để tìm cuộc trò chuyện của user
             conversations_collection.create_index([("user_id", 1)], background=True)
             
+            # Index kết hợp cho user_id và thời gian cập nhật
             conversations_collection.create_index([("user_id", 1), ("updated_at", -1)], background=True)
             
+            # Index cho trạng thái và tìm kiếm full-text trong tiêu đề
             conversations_collection.create_index([("status", 1)], background=True)
             conversations_collection.create_index([("title", "text")], background=True)
             
+            # Index cho thời gian tạo
             conversations_collection.create_index([("created_at", -1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho conversations: {str(e)}")
 
         try:
-            # CACHE COLLECTION INDEXES
+            # Indexes cho collection cache
             cache_collection = self.get_collection("text_cache")
             
+            # Index duy nhất cho cache_id
             cache_collection.create_index([("cache_id", 1)], unique=True, background=True)
             
-            # Tạo text index mới với tên duy nhất
+            # Tạo text index mới với tên duy nhất cho tìm kiếm full-text
             try:
                 cache_collection.create_index([
                     ("normalized_question", "text"), 
                     ("question_text", "text")
                 ], background=True, name="unified_cache_text_search")
             except Exception as text_err:
-                print(f"  Text index lỗi: {str(text_err)}")
+                print(f"  Lỗi tạo text index: {str(text_err)}")
             
+            # Index cho từ khóa và tài liệu liên quan
             cache_collection.create_index([("keywords", 1)], background=True)
             cache_collection.create_index([("related_doc_ids", 1)], background=True)
             cache_collection.create_index([("validity_status", 1)], background=True)
             
+            # Index TTL cho cache hết hạn tự động
             cache_collection.create_index([("expires_at", 1)], expireAfterSeconds=0, background=True)
             
+            # Index cho loại cache và số lần truy cập
             cache_collection.create_index([("cache_type", 1)], background=True)
             cache_collection.create_index([("metrics.hit_count", -1)], background=True)
 
@@ -123,9 +139,10 @@ class MongoDBClient:
             print(f"  Lỗi tạo indexes cho cache: {str(e)}")
 
         try:
-            # FEEDBACK COLLECTION INDEXES
+            # Indexes cho collection feedback
             feedback_collection = self.get_collection("feedback")
             
+            # Index cho user_id và chat_id
             feedback_collection.create_index([("user_id", 1)], background=True)
             feedback_collection.create_index([("chat_id", 1)], background=True)
             feedback_collection.create_index([("timestamp", -1)], background=True)
@@ -135,13 +152,15 @@ class MongoDBClient:
             print(f"  Lỗi tạo indexes cho feedback: {str(e)}")
 
         try:
-            # ACTIVITY LOGS COLLECTION INDEXES
+            # Indexes cho colection activity_logs
             activity_logs_collection = self.get_collection("activity_logs")
             
+            # Index cho loại hoạt động và user_id
             activity_logs_collection.create_index([("activity_type", 1)], background=True)
             activity_logs_collection.create_index([("user_id", 1)], background=True)
             activity_logs_collection.create_index([("timestamp", -1)], background=True)
             
+            # Index TTL để tự động xóa log cũ sau 30 ngày
             activity_logs_collection.create_index([("created_at", 1)], expireAfterSeconds=2592000, background=True)
 
         except Exception as e:
@@ -150,8 +169,9 @@ class MongoDBClient:
         print("Hoàn thành tạo tất cả indexes cho MongoDB!")
 
     def get_collection_stats(self) -> Dict[str, Any]:
+        # Lấy thống kê chi tiết về tất cả collections
         if self.db is None:
-            return {"error": "Database not connected"}
+            return {"error": "Database chưa được kết nối"}
 
         stats = {}
         
@@ -176,11 +196,12 @@ class MongoDBClient:
                     stats[collection_name] = {"error": str(e)}
                     
         except Exception as e:
-            return {"error": f"Failed to get collection stats: {str(e)}"}
+            return {"error": f"Lỗi khi lấy thống kê collection: {str(e)}"}
             
         return stats
 
     def health_check(self) -> Dict[str, Any]:
+        # Kiểm tra tình trạng sức khỏe của database
         health_info = {
             "status": "disconnected",
             "database": DB_CONFIG.MONGO_DB_NAME,
@@ -197,6 +218,7 @@ class MongoDBClient:
             collections = self.db.list_collection_names()
             total_docs = 0
             
+            # Đếm tổng số tài liệu trong tất cả collections
             for collection_name in collections:
                 try:
                     count = self.db[collection_name].count_documents({})
@@ -218,6 +240,7 @@ class MongoDBClient:
         return health_info
 
     def close(self):
+        # Đóng kết nối database
         if self.client:
             self.client.close()
             self.client = None
@@ -225,8 +248,9 @@ class MongoDBClient:
             self._initialized = False
             print("Đã đóng kết nối MongoDB")
 
-    # HELPER METHODS
+    # CÁC PHƯƠNG THỨC HELPER
     def save_user(self, user_data: Dict[str, Any]) -> str:
+        # Lưu thông tin người dùng mới
         user_data["created_at"] = datetime.now()
         user_data["updated_at"] = datetime.now()
         
@@ -235,6 +259,7 @@ class MongoDBClient:
         return str(result.inserted_id)
 
     def get_user_by_id(self, user_id: str) -> Optional[Dict[str, Any]]:
+        # Tìm người dùng theo ID
         from bson.objectid import ObjectId
         
         try:
@@ -244,12 +269,14 @@ class MongoDBClient:
             return None
 
     def get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
+        # Tìm người dùng theo tên đăng nhập
         users_collection = self.get_collection("users")
         return users_collection.find_one({"username": username})
 
     def save_chat_message(self, user_id: str, query: str, answer: str, 
                          context_items: List[str] = None, retrieved_chunks: List[str] = None, 
                          performance_metrics: Dict[str, Any] = None) -> str:
+        # Lưu tin nhắn chat với các thông tin liên quan
         chat_data = {
             "user_id": user_id,
             "query": query,
@@ -265,6 +292,7 @@ class MongoDBClient:
         return str(result.inserted_id)
 
     def get_user_chat_history(self, user_id: str, limit: int = 20) -> List[Dict[str, Any]]:
+        # Lấy lịch sử chat của người dùng
         chat_history_collection = self.get_collection("chat_history")
         return list(chat_history_collection.find(
             {"user_id": user_id},
@@ -272,6 +300,7 @@ class MongoDBClient:
         ).sort("timestamp", -1).limit(limit))
 
     def save_user_feedback(self, chat_id: str, feedback_data: Dict[str, Any]) -> str:
+        # Lưu phản hồi của người dùng
         feedback_data["chat_id"] = chat_id
         feedback_data["timestamp"] = datetime.now()
         
@@ -283,7 +312,9 @@ class MongoDBClient:
 mongodb_client = MongoDBClient()
 
 def get_mongodb_client():
+    # Hàm helper để lấy MongoDB client
     return mongodb_client
 
 def get_database():
+    # Hàm helper để lấy database
     return mongodb_client.get_database()

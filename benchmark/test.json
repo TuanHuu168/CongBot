@@ -1,0 +1,76 @@
+{
+    "benchmark": [
+        {
+            "id": "q1",
+            "question": "Gia đình tôi có ông nội là bệnh binh tỷ lệ tổn thương 85% và con trai đang học đại học. Muốn hỏi ông được hưởng trợ cấp hàng tháng bao nhiêu và con cháu có được hỗ trợ học phí không?",
+            "answer": "Theo Phụ lục I Văn bản hợp nhất số 4804/2024/VBHN-BLĐTBXH và Điều 8 Nghị định, ông nội được hưởng nhiều chế độ ưu đãi. **Mức tiền/Tỷ lệ**: Trợ cấp hằng tháng 6.378.000 đồng và phụ cấp hằng tháng 1.399.000 đồng do có tỷ lệ tổn thương từ 81%-90%. **Đối tượng**: Bệnh binh có tỷ lệ tổn thương cơ thể 85% và con cháu đang học đại học. **Loại chính sách**: Trợ cấp hằng tháng cho bệnh binh và hỗ trợ ưu đãi giáo dục. **Điều kiện/Yêu cầu**: Con cháu phải đang theo học tại cơ sở giáo dục đại học thuộc hệ thống giáo dục quốc dân. **Hỗ trợ giáo dục**: Con cháu được hưởng trợ cấp 0,4 lần mức chuẩn/01 đối tượng/01 năm học. **Thời hạn**: Trợ cấp giáo dục được cấp đủ 12 tháng cho một năm học. **Cơ quan thực hiện**: Sở Lao động - Thương binh và Xã hội ủy quyền cho các cơ quan cấp dưới chi trả. **Bảo hiểm y tế**: Ông nội và toàn bộ gia đình được hưởng bảo hiểm y tế miễn phí. **Điều dưỡng**: Được điều dưỡng phục hồi sức khỏe hằng năm. **Nguồn kinh phí**: Ngân sách trung ương đảm bảo. **Văn bản pháp luật**: Văn bản hợp nhất số 4804/2024/VBHN-BLĐTBXH của Bộ Lao động - Thương binh và Xã hội. **Phương thức thực hiện**: Chi trả hằng tháng tại địa phương nơi cư trú.",
+            "contexts": [
+                "4804_2024_VBHN_BLĐTBXH_appendix1",
+                "834_2024_VBHN_BLDTBXH_art5_8"
+            ]
+        },
+        {
+            "id": "q2",
+            "question": "Anh tôi là thương binh tỷ lệ tổn thương 75% muốn xin miễn giảm tiền sử dụng đất để làm nhà. Không biết được giảm bao nhiêu phần trăm và cần làm thủ tục gì?",
+            "answer": "Theo Điều 5 Quyết định số 31/2011/QĐ-UBND và Điều 6-7 cùng quyết định, anh được giảm 90% tiền sử dụng đất. **Mức tiền/Tỷ lệ**: Giảm 90% tiền sử dụng đất trong hạn mức đất ở do UBND tỉnh quy định. **Đối tượng**: Thương binh có tỷ lệ suy giảm khả năng lao động do thương tật từ 61% đến 80% gặp hoàn cảnh thật sự khó khăn về nhà ở, đất ở. **Thủ tục/Hồ sơ**: Lập 03 bộ hồ sơ gồm đơn đề nghị miễn giảm tiền sử dụng đất (theo mẫu), hộ khẩu thường trú (bản sao có công chứng), giấy tờ chứng minh thuộc đối tượng thương binh (bản sao có công chứng). **Trình tự thực hiện**: Nộp hồ sơ tại UBND xã nơi có đất, UBND xã bình xét công khai và đề nghị lên UBND huyện xem xét quyết định. **Thời hạn**: UBND xã có 15 ngày làm việc để xem xét, bình xét và đề nghị cấp trên. **Cơ quan thực hiện**: UBND xã tiếp nhận và bình xét, UBND huyện quyết định miễn giảm. **Điều kiện/Yêu cầu**: Phải có hộ khẩu thường trú tại nơi có đất hoặc có xác nhận của UBND xã nơi đăng ký hộ khẩu về việc xin miễn giảm lần đầu. **Địa điểm/Phạm vi**: Áp dụng trên địa bàn tỉnh Gia Lai. **Văn bản pháp luật**: Quyết định số 31/2011/QĐ-UBND ngày 10/11/2011. **Hiệu lực**: Có hiệu lực từ ngày 20/11/2011. **Kết quả/Sản phẩm**: Quyết định miễn giảm tiền sử dụng đất của UBND có thẩm quyền.",
+            "contexts": [
+                "31_2011_QD_UBND_quy_dinh_chuong2_art3_5",
+                "31_2011_QD_UBND_quy_dinh_chuong3_art6_7"
+            ]
+        },
+        {
+            "id": "q3",
+            "question": "Tôi là cán bộ được giao nhiệm vụ chi trả trợ cấp cho người có công tại xã. Muốn biết công việc cần làm gì và có được hưởng thù lao không?",
+            "answer": "Theo Điều 8 Quyết định số 49/2012/QĐ-UBND và Điều 6 Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH, anh/chị có nhiều trách nhiệm quan trọng và được hưởng thù lao. **Loại chính sách**: Chế độ thù lao cho cán bộ thực hiện công tác chi trả trợ cấp ưu đãi người có công. **Trách nhiệm chính**: Mở sổ theo dõi và quản lý từng loại đối tượng; kiểm tra, lập danh sách những đối tượng đã chết, hết tuổi, chuyển đi trước ngày 18 hàng tháng; chi trả trực tiếp các trợ cấp cho đối tượng; mở sổ theo dõi thu, chi và lập đầy đủ chứng từ, danh sách chi trả. **Cơ quan thực hiện**: UBND phường-xã-thị trấn giao nhiệm vụ và chỉ đạo thực hiện. **Thời hạn**: Báo cáo thay đổi đối tượng trước ngày 18 hàng tháng; thanh quyết toán kinh phí chậm nhất ngày 18 hàng tháng; thực hiện chi trả ngay khi nhận được kinh phí từ cấp trên. **Chế độ thù lao**: Được hưởng thù lao chi trả hàng tháng theo quy định, mức cụ thể do Giám đốc Sở LĐTBXH quy định phù hợp với điều kiện địa phương. **Nguồn kinh phí**: Chi từ 1,7% tổng kinh phí thực hiện chính sách ưu đãi người có công để chi quản lý. **Yêu cầu chất lượng**: Đảm bảo chi trả đúng đối tượng, đúng chế độ, kịp thời; bảo đảm an toàn tiền mặt, không để thất thoát. **Phương thức thực hiện**: Chi trả trực tiếp tại địa điểm cố định, thông báo công khai để người dân biết thời gian và địa điểm. **Văn bản pháp luật**: Quyết định số 49/2012/QĐ-UBND và Thông tư liên tịch số 47/2009/TTLT-BTC-BLĐTBXH ngày 11/3/2009.",
+            "contexts": [
+                "49_2012_QĐ_UBND_regulation_ch2_art8",
+                "47_2009_TTLT_BTC_BLĐTBXH_art5_6"
+            ]
+        },
+        {
+            "id": "q4",
+            "question": "Em gái tôi bị nhiễm chất độc da cam trong kháng chiến có tỷ lệ tổn thương 70% và sinh con dị tật. Muốn hỏi được hưởng trợ cấp bao nhiêu tiền mỗi tháng?",
+            "answer": "Theo Điều 30 Pháp lệnh số 02/2020/UBTVQH14 và Phụ lục I Văn bản hợp nhất số 55/2023/NĐ-CP, em gái được hưởng trợ cấp hằng tháng. **Mức tiền/Tỷ lệ**: Trợ cấp hằng tháng 3.406.000 đồng tương ứng với tỷ lệ tổn thương cơ thể từ 61%-70% do nhiễm chất độc hóa học. **Đối tượng**: Người hoạt động kháng chiến bị nhiễm chất độc hóa học có tỷ lệ tổn thương cơ thể 70% và sinh con dị dạng, dị tật. **Loại chính sách**: Trợ cấp hằng tháng đối với người hoạt động kháng chiến bị nhiễm chất độc hóa học. **Điều kiện/Yêu cầu**: Đã công tác, chiến đấu, phục vụ chiến đấu từ 01/8/1961 đến 30/4/1975 tại vùng quân đội Mỹ sử dụng chất độc hóa học ở chiến trường B, C, K và một số địa danh thuộc huyện Vĩnh Linh, tỉnh Quảng Trị. **Căn cứ tính trợ cấp**: Thuộc trường hợp sinh con dị dạng, dị tật và mắc bệnh có tỷ lệ tổn thương từ 61% trở lên nên được hưởng trợ cấp tương ứng. **Chế độ khác**: Được hưởng phụ cấp hằng tháng và trợ cấp người phục vụ nếu có tỷ lệ tổn thương từ 81% trở lên. **Bảo hiểm y tế**: Được hưởng bảo hiểm y tế theo quy định. **Cơ quan thực hiện**: Cơ quan có thẩm quyền cấp 'Giấy chứng nhận người hoạt động kháng chiến bị nhiễm chất độc hóa học'. **Văn bản pháp luật**: Pháp lệnh số 02/2020/UBTVQH14 ngày 09/12/2020 và Nghị định số 55/2023/NĐ-CP. **Nguồn kinh phí**: Ngân sách trung ương đảm bảo.",
+            "contexts": [
+                "02_2020_UBTVQH14_chuong2_muc8_9_10_11",
+                "55_2023_NĐ_CP_appendix1"
+            ]
+        },
+        {
+            "id": "q5",
+            "question": "Bố tôi là thương binh muốn làm chân giả và đi điều trị phục hồi chức năng. Chi phí đi lại và làm dụng cụ có được hỗ trợ không?",
+            "answer": "Theo Điều 7 Nghị định số 55/2023/NĐ-CP và Điều 8 Thông tư số 101/2018/TT-BTC, bố anh được hỗ trợ toàn diện. **Loại chính sách**: Hỗ trợ phương tiện trợ giúp, dụng cụ chỉnh hình và phục hồi chức năng cần thiết. **Mức tiền/Tỷ lệ**: Hỗ trợ mua dụng cụ chỉnh hình theo quy định tại Phụ lục V; hỗ trợ tiền đi lại 5.000 đồng/km/người tính theo khoảng cách từ nơi cư trú đến cơ sở y tế, tối đa 1.400.000 đồng/người/niên hạn. **Đối tượng**: Thương binh cần làm dụng cụ chỉnh hình và điều trị phục hồi chức năng. **Điều kiện/Yêu cầu**: Theo chỉ định của bệnh viện cấp tỉnh trở lên; phải đến cơ sở y tế gần nhất đủ điều kiện về chuyên môn kỹ thuật cung cấp dụng cụ chỉnh hình. **Thời hạn**: Mỗi niên hạn 01 lần cho việc làm dụng cụ chỉnh hình. **Hỗ trợ thêm**: Hỗ trợ tiền ăn cho đối tượng khi đi làm dụng cụ và điều trị phục hồi chức năng. **Chi phí giám định**: Sở LĐTBXH thanh toán chi phí thẩm định cấp giấy giám định y khoa theo quy định. **Cơ quan thực hiện**: Sở Lao động - Thương binh và Xã hội giới thiệu đến Hội đồng giám định y khoa và thanh toán chi phí. **Phương thức thực hiện**: Có hồ sơ đủ điều kiện, được cơ quan có thẩm quyền giới thiệu. **Địa điểm/Phạm vi**: Cơ sở y tế có đủ điều kiện chuyên môn kỹ thuật gần nơi cư trú nhất. **Văn bản pháp luật**: Nghị định số 55/2023/NĐ-CP và Thông tư số 101/2018/TT-BTC ngày 25/7/2018. **Kết quả/Sản phẩm**: Dụng cụ chỉnh hình phù hợp và được hỗ trợ chi phí đi lại, ăn uống.",
+            "contexts": [
+                "834_2024_VBHN_BLDTBXH_art5_8",
+                "101_2018_TT_BTC_ch2_art8_9"
+            ]
+        },
+        {
+            "id": "q6",
+            "question": "Tôi đang làm thủ tục hành chính xin cấp giấy chứng nhận gia đình liệt sĩ. Là người có công có được ưu tiên gì trong quá trình làm thủ tục không?",
+            "answer": "Theo Điều 18 và Điều 20 Nghị định số 63/2010/NĐ-CP, anh/chị được hỗ trợ đặc biệt khi làm thủ tục hành chính. **Loại chính sách**: Hỗ trợ đặc biệt cho người có công trong thực hiện thủ tục hành chính. **Quyền được hỗ trợ**: Cơ quan thực hiện thủ tục hành chính phải hỗ trợ người có công, người cao tuổi, người tàn tật trong thực hiện thủ tục hành chính. **Trách nhiệm của cán bộ**: Phải có tác phong, thái độ lịch sự, nghiêm túc, khiêm tốn; hướng dẫn đầy đủ, rõ ràng, chính xác không để phải đi lại bổ sung hồ sơ quá hai lần cho một vụ việc. **Cơ quan thực hiện**: Cơ quan thực hiện thủ tục hành chính phải bố trí cán bộ có phẩm chất đạo đức tốt, đủ trình độ chuyên môn nghiệp vụ phù hợp. **Quy trình hỗ trợ**: Hướng dẫn, giải thích, cung cấp thông tin chính xác, đầy đủ, kịp thời; cấp giấy biên nhận hồ sơ theo quy định; nêu rõ lý do bằng văn bản nếu từ chối hoặc yêu cầu bổ sung. **Cơ chế thực hiện**: Thực hiện cơ chế một cửa, một cửa liên thông; ứng dụng công nghệ thông tin trong thực hiện thủ tục. **Bảo mật thông tin**: Bảo quản và giữ bí mật hồ sơ, tài liệu và thông tin liên quan đến bí mật cá nhân. **Phối hợp**: Phối hợp và chia sẻ thông tin trong quá trình giải quyết công việc. **Nguyên tắc**: Thủ tục hành chính phải đơn giản, dễ hiểu, tiết kiệm thời gian và chi phí, bảo đảm quyền bình đẳng. **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010 về kiểm soát thủ tục hành chính. **Khiếu nại**: Có quyền phản ánh, kiến nghị, khiếu nại về việc thực hiện thủ tục hành chính.",
+            "contexts": [
+                "63_2010_NĐ_CP_ch3_art16_19",
+                "63_2010_NĐ_CP_ch3_art20_22"
+            ]
+        },
+        {
+            "id": "q7",
+            "question": "Con tôi đang học lớp 1, tôi là vợ thương binh tỷ lệ tổn thương 65%. Con có được hỗ trợ học phí và bảo hiểm y tế miễn phí không?",
+            "answer": "Theo Điều 24 Pháp lệnh số 02/2020/UBTVQH14 và Điều 8 Nghị định, con được hưởng nhiều chế độ ưu đãi. **Loại chính sách**: Chế độ ưu đãi giáo dục và bảo hiểm y tế cho thân nhân thương binh. **Đối tượng**: Con của thương binh có tỷ lệ tổn thương cơ thể từ 61% trở lên đang học cấp tiểu học. **Bảo hiểm y tế**: Con được hưởng bảo hiểm y tế miễn phí theo quy định của pháp luật về bảo hiểm y tế. **Hỗ trợ giáo dục**: Con được hưởng trợ cấp ưu đãi trong giáo dục với mức 0,2 lần mức chuẩn/01 đối tượng/01 năm đối với cơ sở giáo dục mầm non và 0,4 lần mức chuẩn/01 đối tượng/01 năm đối với giáo dục phổ thông. **Thời hạn**: Trợ cấp giáo dục được cấp đủ 12 tháng cho một năm học. **Điều kiện/Yêu cầu**: Con phải đang theo học tại cơ sở giáo dục thuộc hệ thống giáo dục quốc dân; thương binh phải có tỷ lệ tổn thương từ 61% trở lên. **Cơ quan thực hiện**: Các cơ sở giáo dục thực hiện việc miễn, giảm học phí; cơ quan bảo hiểm xã hội thực hiện chế độ bảo hiểm y tế. **Chế độ ưu đãi khác**: Ngoài ra còn được hưởng các chế độ ưu đãi về tín dụng, việc làm, nhà ở theo quy định. **Nguồn kinh phí**: Ngân sách trung ương bảo đảm thực hiện chế độ ưu đãi giáo dục và bảo hiểm y tế. **Văn bản pháp luật**: Pháp lệnh số 02/2020/UBTVQH14 ngày 09/12/2020 của Ủy ban Thường vụ Quốc hội. **Phương thức thực hiện**: Nộp hồ sơ tại cơ sở giáo dục và cơ quan bảo hiểm xã hội nơi cư trú.",
+            "contexts": [
+                "02_2020_UBTVQH14_chuong2_muc6_7",
+                "834_2024_VBHN_BLDTBXH_art5_8"
+            ]
+        },
+        {
+            "id": "q8",
+            "question": "Nghe nói có thay đổi mức trợ cấp mới, không biết cơ quan nào chịu trách nhiệm công bố thông tin để người dân biết?",
+            "answer": "Theo Điều 16 và Điều 19 Nghị định số 63/2010/NĐ-CP, việc công khai thông tin có quy định rất rõ ràng. **Loại chính sách**: Công khai thủ tục hành chính và thông tin thay đổi chính sách cho người dân. **Cơ quan chịu trách nhiệm**: Người đứng đầu Bộ, cơ quan ngang Bộ, UBND tỉnh, thành phố trực thuộc Trung ương chịu trách nhiệm công bố, tổ chức nhập dữ liệu về thủ tục hành chính. **Yêu cầu công khai**: Thông tin về thủ tục hành chính phải được công khai đầy đủ, thường xuyên, rõ ràng, đúng địa chỉ, dễ tiếp cận, dễ khai thác, sử dụng. **Hình thức công khai**: Bắt buộc đăng tải trên Cơ sở dữ liệu quốc gia về thủ tục hành chính và niêm yết tại trụ sở cơ quan; có thể đăng tải trên cổng thông tin điện tử, thông báo trên phương tiện thông tin đại chúng. **Thời hạn**: Cơ quan kiểm soát thủ tục hành chính có trách nhiệm đăng tải dữ liệu trong thời hạn 05 ngày làm việc kể từ ngày nhận được thông tin. **Nội dung công khai**: Tên thủ tục, trình tự thực hiện, cách thức, hồ sơ, thời hạn giải quyết, đối tượng, cơ quan thực hiện, kết quả, yêu cầu điều kiện, phí lệ phí. **Trách nhiệm tổ chức**: Tổ chức thực hiện nghiêm túc các thủ tục hành chính đã công bố công khai trên Cơ sở dữ liệu quốc gia. **Cơ sở dữ liệu**: Cơ sở dữ liệu quốc gia về thủ tục hành chính phải bảo đảm dễ dàng, tiện lợi cho người sử dụng tìm kiếm, tra cứu, khai thác. **Văn bản pháp luật**: Nghị định số 63/2010/NĐ-CP ngày 08/6/2010 về kiểm soát thủ tục hành chính. **Giám sát**: Người dân có quyền giám sát, phản ánh, kiến nghị về việc thực hiện công khai thông tin.",
+            "contexts": [
+                "63_2010_NĐ_CP_ch3_art16_19",
+                "63_2010_NĐ_CP_ch4_art23_26"
+            ]
+        }
+    ]
+}

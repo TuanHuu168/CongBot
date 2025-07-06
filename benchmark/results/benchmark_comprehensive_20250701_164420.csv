@@ -1,0 +1,82 @@
+﻿STT,question,benchmark_answer,current_answer,current_cosine_sim,current_bertscore_f1,current_llm_judge_overall,current_map@1,current_map@3,current_map@5,current_mrr@1,current_mrr@3,current_mrr@5,current_hitrate@1,current_hitrate@3,current_hitrate@5,current_processing_time,langchain_answer,langchain_cosine_sim,langchain_bertscore_f1,langchain_llm_judge_overall,langchain_map@1,langchain_map@3,langchain_map@5,langchain_mrr@1,langchain_mrr@3,langchain_mrr@5,langchain_hitrate@1,langchain_hitrate@3,langchain_hitrate@5,langchain_processing_time,haystack_answer,haystack_cosine_sim,haystack_bertscore_f1,haystack_llm_judge_overall,haystack_map@1,haystack_map@3,haystack_map@5,haystack_mrr@1,haystack_mrr@3,haystack_mrr@5,haystack_hitrate@1,haystack_hitrate@3,haystack_hitrate@5,haystack_processing_time,chatgpt_answer,chatgpt_cosine_sim,chatgpt_bertscore_f1,chatgpt_llm_judge_overall,chatgpt_processing_time,benchmark_chunks
+1,"Em muốn hỏi là ai chi trả tiền trợ cấp cho người có công ở các xã, phường vậy?","Theo Điều 8 Quyết định số 49/2012/QĐ-UBND, Ủy ban nhân dân phường-xã, thị trấn có trách nhiệm trực tiếp quản lý đối tượng, tiền mặt và các khoản chi trợ cấp ưu đãi người có công với cách mạng trên địa bàn, đảm bảo an toàn, không để xảy ra thất thoát, mất mát. Thực hiện chi trả các khoản trợ cấp, phụ cấp ưu đãi đảm bảo đúng đối tượng, đúng chế độ, kịp thời gian và được hưởng mức tiền thù lao chi trả hàng tháng theo quy định.","Theo Điều 2 của Nghị định số 131/2021/NĐ-CP ngày 30 tháng 12 năm 2021 của Chính phủ quy định chi tiết và biện pháp thi hành Pháp lệnh Ưu đãi người có công với cách mạng, thì kinh phí chi trả tiền trợ cấp cho người có công với cách mạng và thân nhân của họ được **ngân sách nhà nước bảo đảm** theo phân cấp ngân sách hiện hành. Mặc dù nguồn kinh phí là từ ngân sách nhà nước, việc tổ chức thực hiện chi trả tại các xã, phường thuộc trách nhiệm của Ủy ban nhân dân cấp xã, thường được thực hiện thông qua cán bộ làm công tác lao động - thương binh và xã hội cấp xã dưới sự chỉ đạo của Phòng Lao động - Thương binh và Xã hội cấp huyện.
+
+**Thông tin chi tiết:**
+- **Loại chính sách**: Nguồn kinh phí và cơ chế chi trả trợ cấp, phụ cấp ưu đãi người có công với cách mạng và thân nhân.
+- **Đối tượng**: Người có công với cách mạng và thân nhân của họ được hưởng chế độ ưu đãi theo quy định của pháp luật.
+- **Văn bản pháp luật**: Nghị định số 131/2021/NĐ-CP ngày 30/12/2021 của Chính phủ.
+- **Ngày tháng quan trọng**:
+    - Nghị định số 131/2021/NĐ-CP ban hành ngày 30/12/2021, có hiệu lực thi hành kể từ ngày 15 tháng 02 năm 2022.
+- **Trạng thái văn bản**: Có hiệu lực thi hành.
+- **Nguồn kinh phí**: Kinh phí thực hiện chế độ ưu đãi người có công với cách mạng và thân nhân do **ngân sách nhà nước bảo đảm** theo phân cấp ngân sách hiện hành.
+- **Cơ quan thực hiện**:
+    - Nguồn tài chính: Ngân sách nhà nước.
+    - Cơ quan tổ chức thực hiện chi trả tại cấp xã, phường: **Ủy ban nhân dân cấp xã** (UBND xã, phường, thị trấn) có trách nhiệm chỉ đạo thực hiện chính sách ưu đãi người có công với cách mạng tại địa phương mình theo quy định của Pháp lệnh và Nghị định này. Việc chi trả thường được thực hiện thông qua **cán bộ làm công tác Lao động - Thương binh và Xã hội cấp xã** hoặc các hình thức chi trả khác theo quy định (như qua dịch vụ bưu chính, tài khoản ngân hàng).
+- **Địa điểm/Phạm vi**: Thực hiện trên toàn quốc, chi trả tại các xã, phường, thị trấn nơi người có công cư trú hoặc nhận trợ cấp.
+- **Phương thức**: Việc chi trả có thể được thực hiện trực tiếp tại trụ sở UBND xã/phường, qua dịch vụ bưu chính công ích, hoặc qua tài khoản ngân hàng của đối tượng được hưởng, tùy thuộc vào quy định cụ thể của từng địa phương và lựa chọn của người nhận.
+
+*Lưu ý đặc biệt*: Mặc dù việc chi trả được thực hiện tại cấp xã, phường, nguồn tiền chi trả không phải do ngân sách xã, phường tự cân đối mà là từ ngân sách nhà nước cấp trên chuyển về, đảm bảo tính thống nhất và công bằng trong chế độ ưu đãi người có công.",0.8325,0.5000,5.00,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,25.875,LangChain DB Error: Embedding dimension 768 does not match collection dimensionality 384,0.6310,0.5000,1.00,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,5.763,"Dựa trên các văn bản pháp luật hiện hành, việc chi trả tiền trợ cấp cho người có công ở các xã, phường được thực hiện như sau:
+
+**1. Ủy ban nhân dân (UBND) xã, phường, thị trấn:**
+
+*   **Trách nhiệm:**
+    *   Trực tiếp quản lý đối tượng và tiền mặt, đảm bảo an toàn, không để xảy ra thất thoát.
+    *   Chi trả các khoản trợ cấp, phụ cấp ưu đãi đúng đối tượng, đúng chế độ, kịp thời gian.
+    *   Thực hiện chế độ thù lao cho người trực tiếp thực hiện công tác chi trả.
+*   **Nguồn kinh phí:**
+    *   UBND xã, phường, thị trấn nhận kinh phí từ Phòng Lao động - Thương binh và Xã hội (LĐTBXH) quận, huyện.
+    *   Phòng LĐTBXH quận, huyện rút dự toán và chuyển kinh phí vào tài khoản tiền gửi của UBND xã, phường, thị trấn chậm nhất là ngày 10 hàng tháng.
+
+**2. Phòng Lao động - Thương binh và Xã hội quận, huyện:**
+
+*   **Trách nhiệm:**
+    *   Quản lý đối tượng và kinh phí thực hiện chính sách người có công trên địa bàn.
+    *   Mở tài khoản tại Kho bạc Nhà nước (KBNN) để theo dõi nguồn kinh phí.
+    *   Lập dự toán kinh phí chi trả trợ cấp hàng năm.
+    *   Kiểm tra, rà soát đối tượng và danh sách chi trả hàng tháng.
+    *   Thanh toán với UBND xã, phường, thị trấn số tiền đã chi trả trợ cấp.
+*   **Nguồn kinh phí:**
+    *   Phòng LĐTBXH quận, huyện nhận kinh phí từ Sở LĐTBXH.
+    *   Hàng tháng, Phòng LĐTBXH rút dự toán tại KBNN và chuyển kinh phí cho các xã, phường, thị trấn.
+
+**3. Sở Lao động - Thương binh và Xã hội:**
+
+*   **Trách nhiệm:**
+    *   Thẩm tra dự toán kinh phí hàng năm của các Phòng LĐTBXH quận, huyện.
+    *   Phân bổ và giao dự toán cho các Phòng LĐTBXH quận, huyện.
+    *   Lập bảng kê tăng và in danh sách chi trả trợ cấp hàng tháng.
+    *   Thẩm tra, xét duyệt và thông báo kết quả thực hiện dự toán, quyết toán kinh phí.
+    *   Kiểm tra việc quản lý chi trả trợ cấp ở các Phòng LĐTBXH quận, huyện.
+    *   Hướng dẫn nghiệp vụ cho các Phòng LĐTBXH quận, huyện.
+*   **Nguồn kinh phí:**
+    *   Sở LĐTBXH nhận kinh phí từ Bộ LĐTBXH.
+
+**4. Kho bạc Nhà nước:**
+
+*   **Trách nhiệm:**
+    *   Hướng dẫn mở tài khoản rút dự toán, thanh toán và kiểm soát chi nguồn kinh phí.
+    *   Chuyển khoản kinh phí từ tài khoản dự toán của Phòng LĐTBXH về tài khoản tiền gửi của UBND xã, phường, thị trấn.
+
+**5. Tổ chức dịch vụ chi trả (nếu có):**
+
+*   Trong trường hợp địa phương lựa chọn chi trả thông qua tổ chức dịch vụ chi trả, cơ quan LĐTBXH (Sở hoặc Phòng LĐTBXH) ký hợp đồng với tổ chức này.
+*   Cơ quan LĐTBXH chuyển kinh phí vào tài khoản tiền gửi của tổ chức dịch vụ chi trả, đồng thời chuyển danh sách chi trả.
+*   Tổ chức dịch vụ chi trả thực hiện chi trả cho đối tượng thụ hưởng và báo cáo lại cho cơ quan LĐTBXH.
+
+**Tóm lại:** UBND xã, phường, thị trấn là đơn vị trực tiếp chi trả tiền trợ cấp cho người có công, nguồn kinh phí do Phòng LĐTBXH quận, huyện cấp, được cấp từ Sở LĐTBXH và Bộ LĐTBXH. Kho bạc Nhà nước có vai trò kiểm soát và thanh toán nguồn kinh phí này.
+",0.8379,0.5000,5.00,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,6.761,"Tiền trợ cấp cho người có công ở các xã, phường được chi trả bởi cơ quan Lao động - Thương binh và Xã hội (LĐTBXH) thông qua các tổ chức dịch vụ chi trả. Cụ thể, quy trình chi trả được quy định như sau:
+
+1. **Cơ quan Chi trả**: Sở LĐTBXH hoặc Phòng LĐTBXH tại địa phương sẽ là cơ quan chịu trách nhiệm chi trả trợ cấp cho người có công. Họ sẽ ký hợp đồng với tổ chức dịch vụ chi trả có kinh nghiệm và mạng lưới giao dịch tại các xã, phường.
+
+2. **Hợp đồng Chi trả**: Hợp đồng giữa cơ quan LĐTBXH và tổ chức dịch vụ chi trả sẽ quy định rõ phạm vi đối tượng chi trả, phương thức chi trả (tiền mặt hoặc qua thẻ ATM), thời hạn chi trả, và các điều khoản khác liên quan.
+
+3. **Quy trình Chi trả**: 
+   - Trước ngày 25 hàng tháng, cơ quan LĐTBXH sẽ căn cứ vào danh sách đối tượng thụ hưởng và số kinh phí cần chi trả để rút dự toán từ Kho bạc Nhà nước (KBNN) và chuyển vào tài khoản của tổ chức dịch vụ chi trả.
+   - Tổ chức dịch vụ chi trả sẽ thực hiện chi trả cho các đối tượng thụ hưởng trong tháng tiếp theo.
+
+4. **Giám sát Chi trả**: Cơ quan LĐTBXH có trách nhiệm cử người giám sát việc chi trả của tổ chức dịch vụ để đảm bảo tính kịp thời và an toàn trong quá trình chi trả.
+
+5. **Báo cáo**: Tổ chức dịch vụ chi trả sẽ tổng hợp và báo cáo danh sách đối tượng đã nhận tiền, số tiền đã chi trả, và danh sách đối tượng chưa nhận tiền cho cơ quan LĐTBXH.
+
+Như vậy, việc chi trả tiền trợ cấp cho người có công ở các xã, phường được thực hiện thông qua sự phối hợp giữa cơ quan LĐTBXH và các tổ chức dịch vụ chi trả, đảm bảo quyền lợi cho người có công theo quy định của pháp luật.",0.8321,0.5000,4.00,8.118,49_2012_QĐ_UBND_regulation_ch2_art8
+SUMMARY,Average results from 1 questions,Statistical Summary,See individual results above,0.8325,0.5000,5.00,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,25.875,See individual results above,0.6310,0.5000,1.00,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,5.763,See individual results above,0.8379,0.5000,5.00,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,1.0000,6.761,See individual results above,0.8321,0.5000,4.00,8.118,All benchmark chunks across questions

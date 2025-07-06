@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Dict, List, Any, Optional
+from datetime import datetime, timedelta
 from enum import Enum
 import sys
 import os
@@ -24,23 +23,23 @@ class ActivityService:
         self.db = mongodb_client.get_database()
         self.activities_collection = self.db.activity_logs
         
-        # Ensure indexes
+        # Đảm bảo tạo indexes
         try:
             self.activities_collection.create_index([("timestamp", -1)])
             self.activities_collection.create_index([("activity_type", 1)])
             self.activities_collection.create_index([("user_id", 1)])
         except Exception as e:
-            print(f"Warning: Could not create indexes for activity_logs: {e}")
+            print(f"Cảnh báo: Không thể tạo indexes cho activity_logs: {e}")
     
     def log_activity(
         self, 
-        activity_type: ActivityType, 
-        description: str,
-        user_id: Optional[str] = None,
-        user_email: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None
-    ) -> str:
-        """Log an activity to the database"""
+        activity_type, 
+        description,
+        user_id=None,
+        user_email=None,
+        metadata=None
+    ):
+        # Ghi log hoạt động vào database
         try:
             activity = {
                 "activity_type": activity_type.value,
@@ -53,14 +52,14 @@ class ActivityService:
             }
             
             result = self.activities_collection.insert_one(activity)
-            print(f"Activity logged: {activity_type.value} - {description}")
+            print(f"Đã ghi log hoạt động: {activity_type.value} - {description}")
             return str(result.inserted_id)
         except Exception as e:
-            print(f"Error logging activity: {e}")
+            print(f"Lỗi khi ghi log hoạt động: {e}")
             return ""
     
-    def get_recent_activities(self, limit: int = 10) -> List[Dict[str, Any]]:
-        """Get recent activities from the database"""
+    def get_recent_activities(self, limit=10):
+        # Lấy các hoạt động gần đây từ database
         try:
             activities = list(
                 self.activities_collection
@@ -69,7 +68,7 @@ class ActivityService:
                 .limit(limit)
             )
             
-            # Convert ObjectId to string
+            # Chuyển đổi ObjectId thành string
             for activity in activities:
                 activity["_id"] = str(activity["_id"])
                 if "timestamp" in activity:
@@ -79,11 +78,11 @@ class ActivityService:
             
             return activities
         except Exception as e:
-            print(f"Error getting recent activities: {e}")
+            print(f"Lỗi khi lấy các hoạt động gần đây: {e}")
             return []
     
-    def get_activities_by_type(self, activity_type: ActivityType, limit: int = 5) -> List[Dict[str, Any]]:
-        """Get activities filtered by type"""
+    def get_activities_by_type(self, activity_type, limit=5):
+        # Lấy hoạt động theo loại
         try:
             activities = list(
                 self.activities_collection
@@ -99,11 +98,11 @@ class ActivityService:
             
             return activities
         except Exception as e:
-            print(f"Error getting activities by type: {e}")
+            print(f"Lỗi khi lấy hoạt động theo loại: {e}")
             return []
     
-    def cleanup_old_activities(self, days_to_keep: int = 30) -> int:
-        """Clean up old activities older than specified days"""
+    def cleanup_old_activities(self, days_to_keep=30):
+        # Dọn dẹp các hoạt động cũ hơn số ngày được chỉ định
         try:
             cutoff_date = datetime.now() - timedelta(days=days_to_keep)
             result = self.activities_collection.delete_many(
@@ -111,7 +110,7 @@ class ActivityService:
             )
             return result.deleted_count
         except Exception as e:
-            print(f"Error cleaning up old activities: {e}")
+            print(f"Lỗi khi dọn dẹp các hoạt động cũ: {e}")
             return 0
 
 # Singleton instance

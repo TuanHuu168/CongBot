@@ -5,11 +5,10 @@ from dotenv import load_dotenv
 
 # Import các router
 from api.chat import router as chat_router
-from api.admin import router as admin_router  # Import từ admin package
+from api.admin import router as admin_router
 from api.user import router as user_router
 from database.mongodb_client import mongodb_client
 
-# Load .env file
 load_dotenv()
 
 # Tạo ứng dụng FastAPI
@@ -42,7 +41,7 @@ async def root():
         "status": "running"
     }
 
-# Endpoint kiểm tra trạng thái
+# Endpoint kiểm tra trạng thái hệ thống
 @app.get("/status")
 async def status():
     try:
@@ -98,6 +97,7 @@ async def status():
         }
 
 if __name__ == "__main__":
+    # Tạo indexes cho MongoDB khi khởi động
     mongodb_client.create_indexes()
    
     import uvicorn

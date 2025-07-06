@@ -3,7 +3,6 @@ import json
 import sys
 import os
 import re
-from typing import List, Dict, Tuple, Optional, Any
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
@@ -17,7 +16,7 @@ from services.activity_service import activity_service, ActivityType
 
 class RetrievalService:
     def __init__(self):
-        """Khởi tạo dịch vụ retrieval"""
+        # Khởi tạo dịch vụ truy xuất
         self.chroma = chroma_client
         self.db = mongodb_client.get_database()
         self.text_cache_collection = self.db.text_cache
@@ -37,19 +36,19 @@ class RetrievalService:
         except Exception as e:
             print(f"Lỗi kiểm tra cache: {str(e)}")
     
-    def _normalize_question(self, query: str) -> str:
-        """Chuẩn hóa câu hỏi để so sánh"""
+    def _normalize_question(self, query):
+        # Chuẩn hóa câu hỏi để so sánh
         normalized = re.sub(r'[.,;:!?()"\']', '', query.lower())
         return re.sub(r'\s+', ' ', normalized).strip()
     
-    def _extract_keywords(self, query: str) -> List[str]:
-        """Trích xuất từ khóa từ câu hỏi"""
+    def _extract_keywords(self, query):
+        # Trích xuất từ khóa từ câu hỏi
         normalized = self._normalize_question(query)
         keywords = [word for word in normalized.split() if len(word) >= 3]
         return list(set(keywords))
     
-    def _format_context(self, results: Dict[str, Any]) -> Tuple[List[str], List[str]]:
-        """Format kết quả retrieval thành context và chunks"""
+    def _format_context(self, results):
+        # Format kết quả truy xuất thành context và chunks
         context_items = []
         retrieved_chunks = []
         
@@ -76,8 +75,8 @@ class RetrievalService:
         
         return context_items, retrieved_chunks
     
-    def _check_cache(self, query: str) -> Optional[Dict[str, Any]]:
-        """Kiểm tra cache cho câu hỏi"""
+    def _check_cache(self, query):
+        # Kiểm tra cache cho câu hỏi
         print(f"Kiểm tra cache cho: '{query}'")
         
         normalized_query = self._normalize_question(query)
@@ -143,7 +142,7 @@ class RetrievalService:
             return None
     
     def _update_cache_usage(self, cache_id):
-        """Cập nhật thống kê sử dụng cache"""
+        # Cập nhật thống kê sử dụng cache
         try:
             self.text_cache_collection.update_one(
                 {"_id": cache_id},
@@ -155,8 +154,8 @@ class RetrievalService:
         except Exception as e:
             print(f"Lỗi cập nhật cache usage: {str(e)}")
     
-    def _extract_document_ids(self, chunk_ids: List[str]) -> List[str]:
-        """Trích xuất document IDs từ chunk IDs"""
+    def _extract_document_ids(self, chunk_ids):
+        # Trích xuất document IDs từ chunk IDs
         doc_ids = []
         for chunk_id in chunk_ids:
             parts = chunk_id.split('_', 1)
@@ -169,8 +168,8 @@ class RetrievalService:
                     doc_ids.append(doc_id)
         return doc_ids
     
-    def _create_cache_entry(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
-        """Tạo entry cache mới"""
+    def _create_cache_entry(self, query, answer, chunks, relevance_scores):
+        # Tạo entry cache mới
         cache_id = f"cache_{int(time.time() * 1000)}"
         print(f"Tạo cache entry: {cache_id}")
         
@@ -211,8 +210,8 @@ class RetrievalService:
             print(f"Lỗi tạo cache: {str(e)}")
             return ""
     
-    def _add_to_chroma_cache(self, cache_id: str, query: str, related_doc_ids: List[str]) -> bool:
-        """Thêm cache vào ChromaDB"""
+    def _add_to_chroma_cache(self, cache_id, query, related_doc_ids):
+        # Thêm cache vào ChromaDB
         query_text = f"query: {query}"
         metadata = {
             "validityStatus": str(CacheStatus.VALID),
@@ -237,10 +236,9 @@ class RetrievalService:
             print(f"Lỗi ChromaDB cache: {str(e)}")
             return False
     
-    def retrieve(self, query: str, use_cache: bool = True) -> Dict[str, Any]:
-        """Thực hiện retrieval chính"""
+    def retrieve(self, query, use_cache=True):
+        # Thực hiện truy xuất chính
         start_time = time.time()
-        print(f"Bắt đầu retrieval với embedding model: {EMBEDDING_MODEL_NAME}")
         
         # Kiểm tra cache
         if use_cache:
@@ -261,7 +259,7 @@ class RetrievalService:
                     "execution_time": time.time() - start_time
                 }
         
-        # Retrieval từ ChromaDB
+        # truy xuất từ ChromaDB
         print("Thực hiện retrieval từ ChromaDB")
         try:
             query_text = f"query: {query}"
@@ -283,7 +281,7 @@ class RetrievalService:
                     if 'chunk_id' in meta:
                         relevance_scores[meta['chunk_id']] = 1.0 - min(distance, 1.0)
             
-            print(f"Retrieval hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} chunks")
+            print(f"Truy xuất hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} chunks")
             
             return {
                 "context_items": context_items,
@@ -294,7 +292,7 @@ class RetrievalService:
             }
             
         except Exception as e:
-            print(f"Lỗi retrieval: {str(e)}")
+            print(f"Lỗi truy xuất: {str(e)}")
             return {
                 "context_items": [],
                 "retrieved_chunks": [],
@@ -303,16 +301,16 @@ class RetrievalService:
                 "execution_time": time.time() - start_time
             }
     
-    def add_to_cache(self, query: str, answer: str, chunks: List[str], relevance_scores: Dict[str, float]) -> str:
-        """Thêm kết quả vào cache"""
+    def add_to_cache(self, query, answer, chunks, relevance_scores):
+        # Thêm kết quả vào cache
         print(f"Thêm kết quả vào cache cho: '{query}'")
         cache_id = self._create_cache_entry(query, answer, chunks, relevance_scores)
         if cache_id:
             print(f"Cache ID: {cache_id}")
         return cache_id
     
-    def invalidate_document_cache(self, doc_id: str) -> int:
-        """Vô hiệu hóa cache liên quan đến document"""
+    def invalidate_document_cache(self, doc_id):
+        # Vô hiệu hóa cache liên quan đến document
         print(f"Vô hiệu hóa cache cho document: {doc_id}")
         
         # Vô hiệu hóa trong MongoDB
@@ -359,8 +357,8 @@ class RetrievalService:
         print(f"Đã vô hiệu hóa {result.modified_count} cache entries")
         return result.modified_count
     
-    def clear_all_cache(self) -> int:
-        """Xóa toàn bộ cache"""
+    def clear_all_cache(self):
+        # Xóa toàn bộ cache
         try:
             print("Đang xóa toàn bộ cache...")
             
@@ -403,8 +401,8 @@ class RetrievalService:
             )
             raise e
     
-    def clear_all_invalid_cache(self) -> int:
-        """Xóa cache không hợp lệ"""
+    def clear_all_invalid_cache(self):
+        # Xóa cache không hợp lệ
         try:
             print("Đang xóa cache không hợp lệ...")
             
@@ -454,8 +452,8 @@ class RetrievalService:
             )
             raise e
     
-    def get_cache_stats(self) -> Dict[str, Any]:
-        """Lấy thống kê cache"""
+    def get_cache_stats(self):
+        # Lấy thống kê cache
         try:
             total_count = self.text_cache_collection.count_documents({})
             valid_count = self.text_cache_collection.count_documents({"validityStatus": CacheStatus.VALID})
@@ -492,8 +490,8 @@ class RetrievalService:
                 "error": str(e)
             }
             
-    def delete_expired_cache(self) -> int:
-        """Xóa tất cả cache đã hết hạn"""
+    def delete_expired_cache(self):
+        # Xóa tất cả cache đã hết hạn
         try:
             print("Đang xóa cache đã hết hạn...")
             now = datetime.now()
@@ -528,8 +526,8 @@ class RetrievalService:
             print(f"Lỗi xóa expired cache: {str(e)}")
             raise e
 
-    def search_keyword(self, keyword: str, limit: int = 10) -> List[Dict[str, Any]]:
-        """Tìm kiếm cache bằng từ khóa"""
+    def search_keyword(self, keyword, limit=10):
+        # Tìm kiếm cache bằng từ khóa
         try:
             print(f"Tìm kiếm cache với từ khóa: '{keyword}'")
             

@@ -3,7 +3,6 @@ import json
 import time
 import uuid
 from datetime import datetime
-from typing import List, Dict, Any, Optional
 import fitz
 from docx import Document as DocxDocument
 import olefile
@@ -17,11 +16,11 @@ from config import GEMINI_API_KEY, GEMINI_MODEL, DATA_DIR
 
 class DocumentProcessingService:
     def __init__(self):
-        """Khởi tạo dịch vụ xử lý tài liệu"""
+        # Khởi tạo dịch vụ xử lý tài liệu
         self.gemini_client = genai.Client(api_key=GEMINI_API_KEY)
         print(f"Dịch vụ xử lý tài liệu đã được khởi tạo - hỗ trợ PDF, Word và Markdown với model: {GEMINI_MODEL}")
         
-        # Template prompt cho Gemini
+        # Template prompt
         self.chunking_prompt = """
 Bạn là chuyên gia phân tích và chia nhỏ văn bản pháp luật Việt Nam. 
 Nhiệm vụ của bạn là chia văn bản thành các chunk hợp lý và trích xuất thông tin về các văn bản liên quan.
@@ -165,7 +164,8 @@ Nếu văn bản có tiêu đề "THÔNG TƯ 47/2009/TTLT-BTC-BLĐTBXH", thì:
 
 LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH VỰC PHÁP LUẬT VIỆT NAM, HÃY TRẢ VỀ MỘT JSON RỖNG VỚI CÁC TRƯỜNG BẮT BUỘC."""
 
-    def extract_pdf_content(self, file_path: str) -> str:
+    def extract_pdf_content(self, file_path):
+        # Trích xuất nội dung từ file PDF
         try:
             print(f"Đang trích xuất nội dung từ PDF: {file_path}")
             
@@ -191,7 +191,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi trích xuất PDF: {str(e)}")
             raise Exception(f"Không thể đọc file PDF: {str(e)}")
 
-    def extract_docx_content(self, file_path: str) -> str:
+    def extract_docx_content(self, file_path):
+        # Trích xuất nội dung từ file Word DOCX
         try:
             print(f"Đang trích xuất nội dung từ Word DOCX: {file_path}")
             
@@ -224,8 +225,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi trích xuất DOCX: {str(e)}")
             raise Exception(f"Không thể đọc file Word DOCX: {str(e)}")
 
-    def extract_doc_content(self, file_path: str) -> str:
-        """Trích xuất nội dung từ file Word .doc (legacy format)"""
+    def extract_doc_content(self, file_path):
+        # Trích xuất nội dung từ file Word .doc (legacy format)
         try:
             print(f"Đang trích xuất nội dung từ Word DOC: {file_path}")
             
@@ -233,7 +234,6 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             with open(file_path, 'rb') as f:
                 content = f.read()
             
-            # Simple text extraction - có thể không hoàn hảo với DOC format
             text_content = ""
             try:
                 # Thử decode như text
@@ -262,7 +262,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi trích xuất DOC: {str(e)}")
             raise Exception(f"Không thể đọc file Word DOC: {str(e)}")
 
-    def extract_markdown_content(self, file_path: str) -> str:
+    def extract_markdown_content(self, file_path):
+        # Trích xuất nội dung từ file Markdown
         try:
             print(f"Đang trích xuất nội dung từ Markdown: {file_path}")
             
@@ -272,7 +273,6 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             # Làm sạch content nhưng giữ cấu trúc Markdown
             content = content.strip()
             
-            # Optional: Parse markdown để extract structure
             lines = content.split('\n')
             cleaned_lines = []
             
@@ -293,10 +293,11 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi trích xuất Markdown: {str(e)}")
             raise Exception(f"Không thể đọc file Markdown: {str(e)}")
     
-    def extract_document_content(self, file_path: str) -> str:
+    def extract_document_content(self, file_path):
+        # Phát hiện và trích xuất nội dung từ file tài liệu
         file_extension = os.path.splitext(file_path)[1].lower()
         
-        print(f"Detecting file type: {file_extension}")
+        print(f"Phát hiện loại file: {file_extension}")
         
         if file_extension == '.pdf':
             return self.extract_pdf_content(file_path)
@@ -309,8 +310,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
         else:
             raise Exception(f"Định dạng file không được hỗ trợ: {file_extension}. Chỉ hỗ trợ PDF, DOCX, DOC, MD")
 
-    def chunk_content_with_gemini(self, content: str, doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
-        """Sử dụng Gemini để chia chunk văn bản và auto-detect metadata"""
+    def chunk_content_with_gemini(self, content, doc_metadata):
+        # Sử dụng Gemini để chia chunk văn bản và auto-detect metadata
         try:
             print(f"Đang gọi Gemini model {GEMINI_MODEL} để phân tích văn bản, chia chunk và auto-detect metadata...")
             
@@ -379,8 +380,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi gọi Gemini {GEMINI_MODEL}: {str(e)}")
             raise Exception(f"Lỗi xử lý với Gemini {GEMINI_MODEL}: {str(e)}")
 
-    def _validate_and_clean_result(self, result: Dict[str, Any], original_metadata: Dict[str, Any]) -> Dict[str, Any]:
-        """Validate và làm sạch kết quả từ Gemini với auto-detection"""
+    def _validate_and_clean_result(self, result, original_metadata):
+        # Validate và làm sạch kết quả từ Gemini với auto-detection
         try:
             print("Đang validate và làm sạch kết quả từ Gemini với auto-detection...")
             
@@ -404,7 +405,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
                 "related_documents": result.get("related_documents", [])
             }
             
-            print(f"Auto-detection results:")
+            print(f"Kết quả auto-detection:")
             print(f"  - doc_id: {validated_result['doc_id']}")
             print(f"  - doc_type: {validated_result['doc_type']}")
             print(f"  - doc_title: {validated_result['doc_title'][:50]}...")
@@ -428,11 +429,11 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
                             "description": str(doc.get("description", "")).strip()
                         }
                         cleaned_related_docs.append(cleaned_doc)
-                        print(f"Validated related document: {doc_id} ({relationship})")
+                        print(f"Validated tài liệu liên quan: {doc_id} ({relationship})")
                     else:
                         print(f"Bỏ qua relationship không hợp lệ: {relationship}")
                 else:
-                    print(f"Bỏ qua related document không hợp lệ: {doc}")
+                    print(f"Bỏ qua tài liệu liên quan không hợp lệ: {doc}")
             
             validated_result["related_documents"] = cleaned_related_docs
             
@@ -450,8 +451,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi trong quá trình validate: {str(e)}")
             raise Exception(f"Lỗi validate kết quả: {str(e)}")
 
-    def save_chunks_to_files(self, chunks_data: List[Dict], doc_id: str) -> List[Dict]:
-        """Lưu các chunk vào file riêng biệt"""
+    def save_chunks_to_files(self, chunks_data, doc_id):
+        # Lưu các chunk vào file riêng biệt
         try:
             print(f"Đang lưu {len(chunks_data)} chunks vào files...")
             
@@ -489,8 +490,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi lưu chunks: {str(e)}")
             raise Exception(f"Không thể lưu chunks: {str(e)}")
 
-    def save_metadata(self, metadata: Dict[str, Any], doc_id: str) -> str:
-        """Lưu metadata vào file JSON"""
+    def save_metadata(self, metadata, doc_id):
+        # Lưu metadata vào file JSON
         try:
             doc_dir = os.path.join(DATA_DIR, doc_id)
             metadata_path = os.path.join(doc_dir, "metadata.json")
@@ -500,7 +501,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             
             print(f"Đã lưu metadata tại: {metadata_path}")
             
-            # Log summary metadata với auto-detection info
+            # Log summary metadata
             print("Tóm tắt metadata đã lưu (với auto-detection):")
             print(f"  - Mã văn bản (auto): {metadata.get('doc_id')}")
             print(f"  - Loại văn bản (auto): {metadata.get('doc_type')}")
@@ -516,32 +517,32 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"Lỗi khi lưu metadata: {str(e)}")
             raise Exception(f"Không thể lưu metadata: {str(e)}")
 
-    def process_document(self, file_path: str, doc_metadata: Dict[str, Any]) -> Dict[str, Any]:
-        """Xử lý toàn bộ quy trình từ tài liệu đến chunks và metadata với auto-detection"""
+    def process_document(self, file_path, doc_metadata):
+        # Xử lý toàn bộ quy trình từ tài liệu đến chunks và metadata với auto-detection
         try:
             doc_id = doc_metadata.get('doc_id')
             file_type = os.path.splitext(file_path)[1].lower()
             print(f"Bắt đầu xử lý tài liệu {file_type.upper()} cho document: {doc_id}")
             
             # Bước 1: Trích xuất nội dung tài liệu
-            print(f"=== BƯỚC 1: TRÍCH XUẤT {file_type.upper()} ===")
+            print(f"BƯỚC 1: TRÍCH XUẤT {file_type.upper()}")
             content = self.extract_document_content(file_path)
             
             # Bước 2: Gọi Gemini để phân tích, chia chunk và auto-detect metadata
-            print(f"=== BƯỚC 2: PHÂN TÍCH VỚI GEMINI gemini-2.5-flash (AUTO-DETECTION) ===")
+            print(f"BƯỚC 2: PHÂN TÍCH VỚI GEMINI gemini-2.5-flash (AUTO-DETECTION)")
             chunked_result = self.chunk_content_with_gemini(content, doc_metadata)
             
-            # Bước 3: Sử dụng auto-detected doc_id cho folder
+            # Sử dụng auto-detected doc_id cho folder
             final_doc_id = chunked_result.get('doc_id') or doc_id
             print(f"Sử dụng doc_id: {final_doc_id} (auto-detected: {chunked_result.get('doc_id')})")
             
-            # Bước 4: Lưu chunks vào files
-            print("=== BƯỚC 3: LƯU CHUNKS ===")
+            # Bước 3: Lưu chunks vào files
+            print("BƯỚC 3: LƯU CHUNKS")
             chunks_from_gemini = chunked_result.get('chunks', [])
             saved_chunks = self.save_chunks_to_files(chunks_from_gemini, final_doc_id)
             
-            # Bước 5: Tạo metadata hoàn chỉnh với auto-detected data
-            print("=== BƯỚC 4: TẠO METADATA HOÀN CHỈNH (AUTO-DETECTED) ===")
+            # Bước 4: Tạo metadata hoàn chỉnh với auto-detected data
+            print("BƯỚC 4: TẠO METADATA HOÀN CHỈNH (AUTO-DETECTED)")
             final_metadata = {
                 "doc_id": final_doc_id,
                 "doc_type": chunked_result.get('doc_type', doc_metadata.get('doc_type', '')),
@@ -561,8 +562,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
                 "related_documents": chunked_result.get('related_documents', [])
             }
             
-            # Bước 6: Lưu metadata
-            print("=== BƯỚC 5: LƯU METADATA ===")
+            # Bước 5: Lưu metadata
+            print("BƯỚC 5: LƯU METADATA")
             self.save_metadata(final_metadata, final_doc_id)
             
             print(f"=== HOÀN THÀNH XỬ LÝ {file_type.upper()} CHO {final_doc_id} ===")

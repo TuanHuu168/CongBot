@@ -1,4 +1,3 @@
-# backend/services/benchmark_service.py
 import os
 import json
 import csv
@@ -21,7 +20,7 @@ from services.retrieval_service import retrieval_service
 from services.generation_service import generation_service
 from database.chroma_client import chroma_client
 
-# LangChain imports
+# Import LangChain
 try:
     from langchain_chroma import Chroma
     from langchain_huggingface import HuggingFaceEmbeddings
@@ -31,7 +30,7 @@ try:
 except ImportError:
     LANGCHAIN_AVAILABLE = False
 
-# Haystack imports
+# Import Haystack
 try:
     from haystack import Document
     from haystack.document_stores.in_memory import InMemoryDocumentStore
@@ -48,7 +47,7 @@ class BenchmarkService:
         genai.configure(api_key=GEMINI_API_KEY)
         self._init_langchain_client()
         
-        # Prompt template giữ nguyên từ code cũ
+        # Prompt template
         self.prompt_template = """
 [SYSTEM INSTRUCTION]
 Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam, được phát triển để cung cấp thông tin chính xác, đầy đủ và có căn cứ pháp lý rõ ràng. Nhiệm vụ của bạn là phân tích và tổng hợp thông tin từ các văn bản pháp luật để đưa ra câu trả lời hoàn chỉnh với đầy đủ thông tin cấu trúc. (không được thêm emoji hay sticker gì)
@@ -127,7 +126,7 @@ Bạn là chuyên gia tư vấn chính sách người có công tại Việt Nam
 {context}
 """
 
-        # Entity extraction prompt mới theo format JSON
+        # Entity extraction prompt
         self.entity_extraction_prompt = """
 Bạn là chuyên gia phân tích văn bản pháp luật về chính sách người có công tại Việt Nam.
 Nhiệm vụ của bạn là trích xuất TOÀN BỘ thông tin có cấu trúc từ câu trả lời về chính sách để phục vụ đánh giá độ chính xác của hệ thống RAG.
@@ -184,21 +183,21 @@ JSON:
         }
 
     def _init_langchain_client(self):
-        """Khởi tạo ChromaDB client cho LangChain"""
+        # Khởi tạo ChromaDB client cho LangChain
         try:
             self.langchain_chroma_client = chromadb.PersistentClient(path=CHROMA_PERSIST_DIRECTORY)
             device = "cuda" if USE_GPU and self._check_gpu() else "cpu"
             self.langchain_embedding_function = SentenceTransformerEmbeddingFunction(
                 model_name=EMBEDDING_MODEL_NAME, device=device
             )
-            print(f"LangChain ChromaDB client initialized: {CHROMA_PERSIST_DIRECTORY}")
+            print(f"LangChain ChromaDB client đã khởi tạo: {CHROMA_PERSIST_DIRECTORY}")
         except Exception as e:
             print(f"Lỗi khởi tạo LangChain ChromaDB client: {str(e)}")
             self.langchain_chroma_client = None
             self.langchain_embedding_function = None
 
     def _check_gpu(self):
-        """Kiểm tra GPU availability"""
+        # Kiểm tra GPU
         try:
             import torch
             return torch.cuda.is_available()
@@ -206,7 +205,7 @@ JSON:
             return False
 
     def _convert_numpy_types(self, obj):
-        """Convert numpy types to Python native types"""
+        # Chuyển đổi numpy types thành Python native types
         if isinstance(obj, np.floating):
             return float(obj)
         elif isinstance(obj, np.integer):
@@ -220,9 +219,9 @@ JSON:
         return obj
 
     def extract_entities(self, answer_text):
-        """Trích xuất entities từ câu trả lời sử dụng Gemini với format JSON mới"""
+        # Trích xuất entities từ câu trả lời sử dụng Gemini với format JSON
         try:
-            time.sleep(0.5)  # Delay để tránh quá tải API
+            time.sleep(1)  # Delay để tránh quá tải API
             
             model = genai.GenerativeModel('gemini-2.0-flash')
             prompt = self.entity_extraction_prompt.format(answer_text=answer_text)
@@ -238,7 +237,6 @@ JSON:
                 json_str = result_text[json_start:json_end]
                 entities = json.loads(json_str)
                 
-                # Đảm bảo có đủ các key theo format mới
                 standard_entities = {}
                 for key in ["ma_dinh_danh", "loai_van_ban_chinh_sach", "so_lieu_muc_tien", 
                            "doi_tuong", "dieu_kien_yeu_cau", "thu_tuc_ho_so", "thoi_han",
@@ -254,7 +252,7 @@ JSON:
                 
         except Exception as e:
             print(f"Lỗi khi trích xuất entities: {str(e)}")
-            # Return empty structure
+            # Trả về cấu trúc rỗng nếu có lỗi
             return {key: [] for key in ["ma_dinh_danh", "loai_van_ban_chinh_sach", 
                    "so_lieu_muc_tien", "doi_tuong", "dieu_kien_yeu_cau", "thu_tuc_ho_so",
                    "thoi_han", "co_quan_to_chuc", "dia_diem_pham_vi", "phi_le_phi",
@@ -263,7 +261,7 @@ JSON:
                    "ket_qua_san_pham"]}
 
     def _normalize_for_exact_match(self, values):
-        """Chuẩn hóa giá trị để so sánh exact match"""
+        # Chuẩn hóa giá trị để so sánh exact match
         normalized = []
         for value in values:
             if isinstance(value, str):
@@ -277,7 +275,7 @@ JSON:
         return set(normalized)
 
     def _calculate_field_similarity(self, values1, values2, field_name):
-        """Tính similarity cho một field cụ thể"""
+        # Tính similarity cho một nội dung cụ thể
         if not values1 and not values2:
             return 1.0  # Cả hai đều rỗng
         
@@ -310,7 +308,7 @@ JSON:
                 return 0.0
 
     def calculate_entity_similarity(self, entities1, entities2):
-        """Tính độ tương đồng giữa 2 bộ entities với logic tối ưu"""
+        # Tính độ tương đồng giữa 2 bộ entities với logic tối ưu
         if not entities1 or not entities2:
             return 0.0
         
@@ -331,7 +329,7 @@ JSON:
         return total_score / field_count if field_count > 0 else 0.0
 
     def calculate_cosine_similarity(self, generated_answer, reference_answer):
-        """Tính cosine similarity giữa câu trả lời generated và reference"""
+        # Tính cosine similarity giữa câu trả lời generated và reference
         if isinstance(reference_answer, dict):
             ref_text = reference_answer.get("current_citation", str(reference_answer))
         else:
@@ -344,11 +342,11 @@ JSON:
             cosine_sim = cosine_similarity([embeddings[0]], [embeddings[1]])[0][0]
             return float(cosine_sim), ref_text
         except Exception as e:
-            print(f"Error calculating cosine similarity: {str(e)}")
+            print(f"Lỗi tính cosine similarity: {str(e)}")
             return 0.0, ref_text
 
     def evaluate_retrieval_accuracy(self, retrieved_chunks, benchmark_chunks):
-        """Đánh giá độ chính xác của retrieval"""
+        # Đánh giá độ chính xác của retrieval
         if not benchmark_chunks:
             return 1.0, []
         
@@ -364,7 +362,7 @@ JSON:
         return float(found / len(benchmark_chunks)), []
 
     def process_current_system(self, question):
-        """Xử lý câu hỏi bằng hệ thống hiện tại"""
+        # Xử lý câu hỏi bằng hệ thống hiện tại
         start_time = time.time()
         try:
             retrieval_result = retrieval_service.retrieve(question, use_cache=False)
@@ -381,14 +379,14 @@ JSON:
             
             return answer, retrieved_chunks, time.time() - start_time
         except Exception as e:
-            return f"ERROR: {str(e)}", [], time.time() - start_time
+            return f"LỖI: {str(e)}", [], time.time() - start_time
 
     def process_langchain(self, question):
-        """Xử lý câu hỏi bằng LangChain"""
+        # Xử lý câu hỏi bằng LangChain
         start_time = time.time()
         
         if not LANGCHAIN_AVAILABLE or not self.langchain_chroma_client:
-            return "LangChain not available", [], time.time() - start_time
+            return "LangChain không khả dụng", [], time.time() - start_time
         
         try:
             from langchain_google_genai import ChatGoogleGenerativeAI
@@ -412,7 +410,7 @@ JSON:
             time.sleep(0.5)
             
             if not results or results[0][1] < 0.7:
-                return "No relevant documents found", [], time.time() - start_time
+                return "Không tìm thấy tài liệu liên quan", [], time.time() - start_time
             
             context_text = "\n\n---\n\n".join([doc.page_content for doc, _ in results])
             prompt_template = ChatPromptTemplate.from_template(self.prompt_template)
@@ -428,21 +426,21 @@ JSON:
             return answer, retrieved_chunks, time.time() - start_time
             
         except Exception as e:
-            return f"ERROR: {str(e)}", [], time.time() - start_time
+            return f"LỖI: {str(e)}", [], time.time() - start_time
 
     def process_haystack(self, question):
-        """Xử lý câu hỏi bằng Haystack"""
+        # Xử lý câu hỏi bằng Haystack
         start_time = time.time()
         
         if not HAYSTACK_AVAILABLE:
-            return "Haystack not available", [], time.time() - start_time
+            return "Haystack không khả dụng", [], time.time() - start_time
         
         try:
             from haystack import Document
             from haystack.document_stores.in_memory import InMemoryDocumentStore
             from haystack.components.retrievers import InMemoryBM25Retriever
             
-            # Load documents
+            # Tải tài liệu
             data_dir = "data"
             all_docs = []
             
@@ -471,7 +469,7 @@ JSON:
                                 all_docs.append(doc)
             
             if not all_docs:
-                return "No documents found for Haystack", [], time.time() - start_time
+                return "Không tìm thấy tài liệu cho Haystack", [], time.time() - start_time
             
             document_store = InMemoryDocumentStore()
             document_store.write_documents(all_docs)
@@ -493,10 +491,10 @@ JSON:
             return answer, chunk_ids, time.time() - start_time
             
         except Exception as e:
-            return f"ERROR: {str(e)}", [], time.time() - start_time
+            return f"LỖI: {str(e)}", [], time.time() - start_time
 
     def process_chatgpt(self, question):
-        """Xử lý câu hỏi bằng ChatGPT"""
+        # Xử lý câu hỏi bằng ChatGPT
         start_time = time.time()
         
         try:
@@ -506,14 +504,14 @@ JSON:
             time.sleep(0.5)
             
             if not context_items:
-                return "No relevant context found", [], time.time() - start_time
+                return "Không tìm thấy ngữ cảnh liên quan", [], time.time() - start_time
             
             context_text = "\n\n---\n\n".join(context_items)
             prompt = self.prompt_template.format(context=context_text, question=question)
             
             openai_api_key = os.getenv("OPENAI_API_KEY")
             if not openai_api_key:
-                return "OpenAI API key not configured", [], time.time() - start_time
+                return "Chưa cấu hình OpenAI API key", [], time.time() - start_time
             
             client = OpenAI(api_key=openai_api_key)
             response = client.chat.completions.create(
@@ -527,10 +525,10 @@ JSON:
             return answer, [], time.time() - start_time
             
         except Exception as e:
-            return f"ERROR: {str(e)}", [], time.time() - start_time
+            return f"LỖI: {str(e)}", [], time.time() - start_time
 
     def save_uploaded_benchmark(self, file_content, filename):
-        """Save uploaded benchmark file"""
+        # Lưu file benchmark đã upload
         try:
             os.makedirs(BENCHMARK_DIR, exist_ok=True)
             file_path = os.path.join(BENCHMARK_DIR, filename)
@@ -538,20 +536,20 @@ JSON:
                 f.write(file_content)
             return filename
         except Exception as e:
-            raise Exception(f"Failed to save benchmark file: {str(e)}")
+            raise Exception(f"Lỗi lưu file benchmark: {str(e)}")
 
     def run_benchmark(self, benchmark_file="benchmark.json", progress_callback=None):
-        """Chạy benchmark so sánh 4 models với entity extraction tối ưu"""
+        # Chạy benchmark so sánh 4 models với entity extraction tối ưu
         try:
             benchmark_path = os.path.join(BENCHMARK_DIR, benchmark_file)
             if not os.path.exists(benchmark_path):
-                raise FileNotFoundError(f"Benchmark file not found: {benchmark_path}")
+                raise FileNotFoundError(f"Không tìm thấy file benchmark: {benchmark_path}")
             
             with open(benchmark_path, "r", encoding="utf-8-sig") as f:
                 benchmark_data = json.load(f).get("benchmark", [])
             
             if not benchmark_data:
-                raise ValueError("No benchmark questions found")
+                raise ValueError("Không tìm thấy câu hỏi benchmark")
             
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             output_file = f"benchmark_4models_{timestamp}.csv"
@@ -563,7 +561,7 @@ JSON:
             total_questions = len(benchmark_data)
             
             # Bước 1: Trích xuất entities từ benchmark
-            print("Bước 1: Đang trích xuất entities từ benchmark answers...")
+            print("Bước 1: Đang trích xuất entities từ câu trả lời benchmark...")
             benchmark_entities = []
             for i, entry in enumerate(benchmark_data):
                 if progress_callback:
@@ -611,12 +609,12 @@ JSON:
                             'progress': 10 + (i / total_questions * 85)
                         })
                     
-                    print(f"Processing question {i}/{total_questions}: {question[:50]}...")
+                    print(f"Đang xử lý câu hỏi {i}/{total_questions}: {question[:50]}...")
                     
-                    # Process với tất cả 4 models
+                    # Xử lý với tất cả 4 models
                     models_data = {}
                     
-                    # Current System
+                    # Hệ thống hiện tại
                     if progress_callback:
                         progress_callback({'phase': 'current_system', 'current_step': i, 'total_steps': total_questions, 'progress': 10 + (i-1) / total_questions * 85 + 85/total_questions * 0.1})
                     
@@ -692,7 +690,7 @@ JSON:
                 if progress_callback:
                     progress_callback({'phase': 'finalizing', 'current_step': total_questions, 'total_steps': total_questions, 'progress': 95})
                 
-                # Tính averages
+                # Tính trung bình
                 averages = {}
                 for model in ['current', 'langchain', 'haystack', 'chatgpt']:
                     avg_cosine = sum(r[model]['cosine_sim'] for r in results) / len(results)
@@ -709,15 +707,15 @@ JSON:
                 
                 # Ghi dòng SUMMARY
                 writer.writerow([
-                    "SUMMARY", f"Average results from {total_questions} questions", "Statistical Summary",
-                    "See individual results above", f"{averages['current_avg_cosine']:.4f}", f"{averages['current_avg_entity']:.4f}", f"{averages['current_avg_retrieval']:.4f}", f"{averages['current_avg_time']:.3f}",
-                    "See individual results above", f"{averages['langchain_avg_cosine']:.4f}", f"{averages['langchain_avg_entity']:.4f}", f"{averages['langchain_avg_retrieval']:.4f}", f"{averages['langchain_avg_time']:.3f}",
-                    "See individual results above", f"{averages['haystack_avg_cosine']:.4f}", f"{averages['haystack_avg_entity']:.4f}", f"{averages['haystack_avg_retrieval']:.4f}", f"{averages['haystack_avg_time']:.3f}",
-                    "See individual results above", f"{averages['chatgpt_avg_cosine']:.4f}", f"{averages['chatgpt_avg_entity']:.4f}", f"{averages['chatgpt_avg_time']:.3f}",
-                    "All benchmark chunks across questions"
+                    "SUMMARY", f"Kết quả trung bình từ {total_questions} câu hỏi", "Tổng kết thống kê",
+                    "Xem kết quả chi tiết ở trên", f"{averages['current_avg_cosine']:.4f}", f"{averages['current_avg_entity']:.4f}", f"{averages['current_avg_retrieval']:.4f}", f"{averages['current_avg_time']:.3f}",
+                    "Xem kết quả chi tiết ở trên", f"{averages['langchain_avg_cosine']:.4f}", f"{averages['langchain_avg_entity']:.4f}", f"{averages['langchain_avg_retrieval']:.4f}", f"{averages['langchain_avg_time']:.3f}",
+                    "Xem kết quả chi tiết ở trên", f"{averages['haystack_avg_cosine']:.4f}", f"{averages['haystack_avg_entity']:.4f}", f"{averages['haystack_avg_retrieval']:.4f}", f"{averages['haystack_avg_time']:.3f}",
+                    "Xem kết quả chi tiết ở trên", f"{averages['chatgpt_avg_cosine']:.4f}", f"{averages['chatgpt_avg_entity']:.4f}", f"{averages['chatgpt_avg_time']:.3f}",
+                    "Tất cả benchmark chunks từ các câu hỏi"
                 ])
             
-            # Return statistics
+            # Trả về thống kê
             stats = {**averages, 'total_questions': int(total_questions), 'output_file': output_file}
             stats = self._convert_numpy_types(stats)
             
@@ -727,7 +725,7 @@ JSON:
             return stats
             
         except Exception as e:
-            raise Exception(f"Benchmark failed: {str(e)}")
+            raise Exception(f"Benchmark thất bại: {str(e)}")
 
 # Singleton instance
 benchmark_service = BenchmarkService()
