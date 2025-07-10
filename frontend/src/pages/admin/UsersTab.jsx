@@ -14,25 +14,27 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
   const [newPassword, setNewPassword] = useState('');
   const [saving, setSaving] = useState(false);
 
+  // Hiệu ứng animation cho component
   const fadeInVariants = {
     hidden: { opacity: 0, y: 10 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
   };
 
+  // Hiệu ứng animation cho modal
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 30 } },
     exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } }
   };
 
-  // Lọc users theo search term
+  // Lọc danh sách người dùng theo từ khóa tìm kiếm
   const filteredUsers = users.filter(user => 
     user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.fullName?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Mở modal chỉnh sửa
+  // Mở modal chỉnh sửa thông tin người dùng
   const handleEdit = (user) => {
     setEditingUser(user);
     setFormData({
@@ -45,7 +47,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
     setShowEditModal(true);
   };
 
-  // Xử lý cập nhật user
+  // Xử lý cập nhật thông tin người dùng
   const handleUpdateUser = async () => {
     if (!editingUser) return;
     
@@ -62,7 +64,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
     }
   };
 
-  // Xử lý xóa user
+  // Xử lý xóa người dùng với xác nhận
   const handleDeleteUser = (user) => {
     showConfirm(
       `Bạn có chắc chắn muốn xóa người dùng "${user.username}"? Tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn.`,
@@ -80,7 +82,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
     });
   };
 
-  // Xử lý toggle status
+  // Xử lý thay đổi trạng thái hoạt động/vô hiệu hóa người dùng
   const handleToggleStatus = async (user) => {
     const action = user.status === 'active' ? 'vô hiệu hóa' : 'kích hoạt';
     
@@ -100,7 +102,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
     });
   };
 
-  // Xử lý reset password
+  // Xử lý reset mật khẩu người dùng
   const handleResetPassword = async () => {
     if (!editingUser || !newPassword.trim()) {
       showError('Vui lòng nhập mật khẩu mới');
@@ -125,7 +127,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
     }
   };
 
-  // Lấy màu badge theo role
+  // Lấy màu sắc badge theo vai trò người dùng
   const getRoleBadgeColor = (role) => {
     switch (role) {
       case 'admin':
@@ -137,7 +139,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
     }
   };
 
-  // Lấy màu badge theo status
+  // Lấy màu sắc badge theo trạng thái người dùng
   const getStatusBadgeColor = (status) => {
     return status === 'active' 
       ? 'bg-green-100 text-green-800' 
@@ -146,12 +148,14 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
 
   return (
     <div className="p-6">
+      {/* Khu vực chính hiển thị danh sách người dùng */}
       <motion.div
         className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
         variants={fadeInVariants}
         initial="hidden"
         animate="visible"
       >
+        {/* Header với tiêu đề và tìm kiếm */}
         <div className="p-5 border-b border-gray-100 flex justify-between items-center">
           <h2 className="text-lg font-semibold flex items-center">
             <User size={18} className="text-green-600 mr-2" />
@@ -172,6 +176,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
           </div>
         </div>
 
+        {/* Nội dung bảng danh sách người dùng */}
         <div className="p-5">
           {isLoading ? (
             <div className="flex justify-center py-8">
@@ -205,6 +210,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {filteredUsers.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-50">
+                      {/* Thông tin cơ bản người dùng */}
                       <td className="px-4 py-3 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
@@ -234,6 +240,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                           {user.lastLogin ? formatDate(user.lastLogin) : 'Chưa đăng nhập'}
                         </div>
                       </td>
+                      {/* Các nút thao tác */}
                       <td className="px-4 py-3 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-1">
                           <button
@@ -278,6 +285,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                 </tbody>
               </table>
 
+              {/* Hiển thị khi không có dữ liệu */}
               {filteredUsers.length === 0 && (
                 <div className="text-center py-10">
                   <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
@@ -293,7 +301,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
         </div>
       </motion.div>
 
-      {/* Modal chỉnh sửa user */}
+      {/* Modal chỉnh sửa thông tin người dùng */}
       <AnimatePresence>
         {showEditModal && (
           <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 p-4">
@@ -304,6 +312,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
               exit="exit"
               className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden"
             >
+              {/* Header modal */}
               <div className="p-5 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900">
@@ -318,6 +327,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                 </div>
               </div>
 
+              {/* Form chỉnh sửa */}
               <div className="p-5 space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
@@ -375,6 +385,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                 </div>
               </div>
 
+              {/* Footer modal với các nút hành động */}
               <div className="p-5 border-t border-gray-200 flex justify-end space-x-3">
                 <button
                   onClick={() => setShowEditModal(false)}
@@ -406,7 +417,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
         )}
       </AnimatePresence>
 
-      {/* Modal reset password */}
+      {/* Modal reset mật khẩu */}
       <AnimatePresence>
         {showPasswordModal && (
           <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 p-4">
@@ -417,6 +428,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
               exit="exit"
               className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden"
             >
+              {/* Header modal reset mật khẩu */}
               <div className="p-5 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900">
@@ -434,7 +446,9 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                 </div>
               </div>
 
+              {/* Nội dung modal reset mật khẩu */}
               <div className="p-5">
+                {/* Cảnh báo về việc reset mật khẩu */}
                 <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
                   <div className="flex items-start">
                     <AlertTriangle size={16} className="text-amber-500 mt-0.5 mr-2 flex-shrink-0" />
@@ -458,6 +472,7 @@ const UsersTab = ({ users, isLoading, refreshUsers }) => {
                 </div>
               </div>
 
+              {/* Footer modal reset mật khẩu */}
               <div className="p-5 border-t border-gray-200 flex justify-end space-x-3">
                 <button
                   onClick={() => {

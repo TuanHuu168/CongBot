@@ -6,6 +6,7 @@ import { formatDate } from '../../utils/formatUtils';
 import { getApiBaseUrl } from '../../apiService';
 import axios from 'axios';
 
+// Component tab benchmark với entity extraction
 const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
     const [runningBenchmark, setRunningBenchmark] = useState(false);
     const [benchmarkProgress, setBenchmarkProgress] = useState(0);
@@ -21,12 +22,13 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
 
     const API_BASE_URL = getApiBaseUrl();
 
+    // Cấu hình animation
     const fadeInVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
     };
 
-    // Load benchmark files
+    // Tải danh sách file benchmark
     useEffect(() => {
         loadBenchmarkFiles();
     }, []);
@@ -36,11 +38,11 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
             const response = await axios.get(`${API_BASE_URL}/benchmark-files`);
             setUploadedFiles(response.data.files || []);
         } catch (error) {
-            console.error('Error loading benchmark files:', error);
+            console.error('Lỗi tải danh sách file benchmark:', error);
         }
     };
 
-    // Poll benchmark progress
+    // Theo dõi tiến trình benchmark
     useEffect(() => {
         let interval;
         if (currentBenchmarkId && runningBenchmark) {
@@ -76,7 +78,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                         });
                     }
                 } catch (error) {
-                    console.error('Error polling benchmark progress:', error);
+                    console.error('Lỗi theo dõi tiến trình benchmark:', error);
                 }
             }, 1000);
         }
@@ -86,6 +88,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
         };
     }, [currentBenchmarkId, runningBenchmark]);
 
+    // Chuyển đổi tên phase sang tiếng Việt
     const getPhaseDisplay = (phase) => {
         const phaseMap = {
             'starting': 'Đang khởi động...',
@@ -102,6 +105,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
         return phaseMap[phase] || phase;
     };
 
+    // Lấy màu sắc cho từng phase
     const getPhaseColor = (phase) => {
         const colorMap = {
             'starting': 'text-blue-600',
@@ -118,6 +122,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
         return colorMap[phase] || 'text-gray-600';
     };
 
+    // Xử lý tải file benchmark mới
     const handleFileUpload = async (event) => {
         const file = event.target.files[0];
         if (!file) return;
@@ -149,7 +154,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
             loadBenchmarkFiles();
             event.target.value = '';
         } catch (error) {
-            console.error('Error uploading file:', error);
+            console.error('Lỗi tải file:', error);
             Swal.fire({
                 title: 'Lỗi tải file',
                 text: error.response?.data?.detail || 'Không thể tải lên file',
@@ -158,6 +163,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
         }
     };
 
+    // Bắt đầu chạy benchmark
     const handleStartBenchmark = async () => {
         let fileToUse = selectedBenchmarkFile;
 
@@ -204,7 +210,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
 
                     setCurrentBenchmarkId(response.data.benchmark_id);
                 } catch (error) {
-                    console.error('Error starting benchmark:', error);
+                    console.error('Lỗi khởi động benchmark:', error);
                     setRunningBenchmark(false);
 
                     Swal.fire({
@@ -217,6 +223,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
         });
     };
 
+    // Tải xuống file kết quả benchmark
     const downloadBenchmarkFile = async (filename) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/benchmark-results/${filename}`, {
@@ -234,7 +241,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
             document.body.removeChild(link);
             URL.revokeObjectURL(url);
         } catch (error) {
-            console.error('Error downloading file:', error);
+            console.error('Lỗi tải file:', error);
             Swal.fire({
                 title: 'Lỗi tải file',
                 text: error.response?.status === 404 ? 'File không tồn tại' : 'Không thể tải xuống file',
@@ -243,11 +250,13 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
         }
     };
 
+    // Xem chi tiết file benchmark
     const viewBenchmarkFile = async (filename) => {
         try {
             const response = await axios.get(`${API_BASE_URL}/view-benchmark/${filename}`);
             const data = response.data;
 
+            // Tạo HTML hiển thị thống kê theo model
             const modelStatsHtml = Object.entries(data.model_stats || {})
                 .map(([key, stats]) => {
                     const cosineAvg = stats.cosine_similarity?.avg || 0;
@@ -310,7 +319,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                 }
             });
         } catch (error) {
-            console.error('Error viewing file:', error);
+            console.error('Lỗi xem file:', error);
             Swal.fire({
                 title: 'Lỗi xem file',
                 text: 'Không thể xem nội dung file',
@@ -322,7 +331,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
     return (
         <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Benchmark Results */}
+                {/* Phần hiển thị kết quả benchmark */}
                 <motion.div
                     className="md:col-span-2 bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -337,7 +346,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                     </div>
 
                     <div className="p-5">
-                        {/* Benchmark status display */}
+                        {/* Hiển thị trạng thái benchmark đang chạy */}
                         {runningBenchmark && (
                             <div className="mb-6 p-4 bg-blue-50 rounded-lg">
                                 <div className="flex items-center justify-between mb-2">
@@ -369,7 +378,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                             </div>
                         )}
 
-                        {/* Benchmark stats với entity similarity */}
+                        {/* Hiển thị thống kê kết quả mới nhất */}
                         {benchmarkStats && (
                             <div className="mb-6 p-4 bg-green-50 rounded-lg">
                                 <h3 className="text-green-700 font-medium mb-3">Kết quả benchmark mới nhất</h3>
@@ -437,7 +446,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                             </div>
                         )}
 
-                        {/* Historical results */}
+                        {/* Danh sách kết quả lịch sử */}
                         {isLoading ? (
                             <div className="py-4 flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-500"></div>
@@ -499,7 +508,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                     </div>
                 </motion.div>
 
-                {/* Control Panel */}
+                {/* Panel điều khiển benchmark */}
                 <motion.div
                     className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -515,7 +524,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
 
                     <div className="p-5">
                         <div className="space-y-4">
-                            {/* Mode selection */}
+                            {/* Chọn chế độ benchmark */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">Chọn file benchmark</label>
                                 <div className="space-y-2">
@@ -547,7 +556,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                                 </div>
                             </div>
 
-                            {/* File selection for upload mode */}
+                            {/* Tùy chọn cho chế độ upload */}
                             {benchmarkMode === 'upload' && (
                                 <div className="space-y-3">
                                     <div>
@@ -584,7 +593,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                                 </div>
                             )}
 
-                            {/* Benchmark description */}
+                            {/* Mô tả benchmark */}
                             <div className="p-4 bg-amber-50 rounded-lg">
                                 <h3 className="text-amber-700 text-base font-medium mb-2">Benchmark với Entity Extraction</h3>
                                 <p className="text-sm text-gray-600 mb-3">
@@ -623,7 +632,7 @@ const BenchmarkTab = ({ benchmarkResults, isLoading }) => {
                                 </button>
                             </div>
 
-                            {/* Stats */}
+                            {/* Thống kê */}
                             <div className="mt-4">
                                 <h3 className="text-sm font-medium text-gray-700 mb-2">Thống kê</h3>
                                 <div className="space-y-2">

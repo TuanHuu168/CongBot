@@ -15,12 +15,14 @@ const ChatPage = () => {
   const location = useLocation();
   const { state } = location;
 
+  // Hook chat context để quản lý state chat toàn cục
   const {
     user, chatHistory, isLoading, setIsLoading, activeChatMessages, setActiveChatMessages,
     currentChatId, setCurrentChatId, createNewChat, switchChat, fetchChatHistory,
     fetchUserInfo, resetAuthState
   } = useChat();
 
+  // State quản lý UI và input
   const [input, setInput] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -30,18 +32,19 @@ const ChatPage = () => {
   const [formKey, setFormKey] = useState(Date.now());
   const [authChecked, setAuthChecked] = useState(false);
 
+  // Các ref để điều khiển DOM elements
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
   const chatContainerRef = useRef(null);
 
-  // Auth check và load user - chạy ngay khi component mount
+  // Kiểm tra xác thực và tải thông tin người dùng khi component mount
   useEffect(() => {
     const checkAuthAndLoadUser = async () => {
-      console.log('ChatPage: Kiểm tra auth và load user');
+      console.log('ChatPage: Kiểm tra xác thực và tải thông tin người dùng');
       const { token, userId } = getAuthData();
       
       if (!token || !userId) {
-        console.log('Không có token hoặc userId, chuyển hướng đến login');
+        console.log('Không có token hoặc userId, chuyển hướng đến trang đăng nhập');
         resetAuthState();
         navigate('/login');
         return;
@@ -49,13 +52,13 @@ const ChatPage = () => {
 
       setAuthChecked(true);
 
-      // Nếu chưa có user hoặc user chưa có name đúng, fetch lại
+      // Nếu chưa có user hoặc thông tin user chưa đầy đủ, tải lại
       if (!user || !user.name || user.name === 'Người dùng') {
-        console.log('User chưa có hoặc chưa đủ thông tin, fetch lại');
+        console.log('Thông tin người dùng chưa đầy đủ, đang tải lại');
         try {
-          await fetchUserInfo(userId, true); // Force refresh
+          await fetchUserInfo(userId, true);
         } catch (error) {
-          console.error('Lỗi khi load user:', error);
+          console.error('Lỗi khi tải thông tin người dùng:', error);
         }
       }
     };
@@ -63,12 +66,12 @@ const ChatPage = () => {
     checkAuthAndLoadUser();
   }, []);
 
-  // Xử lý state từ navigation
+  // Xử lý state từ navigation (fresh login, suggested question, etc.)
   useEffect(() => {
     if (!authChecked) return;
 
     if (state?.freshLogin) {
-      console.log('Fresh login detected, fetch chat history');
+      console.log('Phát hiện đăng nhập mới, tải lịch sử chat');
       fetchChatHistory();
     }
     
@@ -82,12 +85,12 @@ const ChatPage = () => {
     }
   }, [state, authChecked, fetchChatHistory, setCurrentChatId, setActiveChatMessages]);
 
-  // Auto scroll to bottom
+  // Tự động cuộn xuống cuối khi có tin nhắn mới
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [activeChatMessages]);
 
-  // Responsive handling
+  // Xử lý responsive design
   useEffect(() => {
     const handleResize = () => {
       const isMobileView = window.innerWidth < 768;
@@ -108,7 +111,7 @@ const ChatPage = () => {
     };
   }, []);
 
-  // Textarea height adjustment
+  // Điều chỉnh chiều cao textarea theo nội dung
   useEffect(() => {
     const adjustTextareaHeight = () => {
       if (!textareaRef.current) return;
@@ -126,27 +129,28 @@ const ChatPage = () => {
     adjustTextareaHeight();
   }, [input]);
 
-  // Focus textarea trên desktop
+  // Tự động focus vào textarea trên desktop
   useEffect(() => {
     if (textareaRef.current && !isMobile && authChecked) {
       textareaRef.current.focus();
     }
   }, [isMobile, authChecked]);
 
-  // Kiểm tra auth định kỳ (ít thường xuyên hơn)
+  // Kiểm tra xác thực định kỳ để đảm bảo session vẫn hợp lệ
   useEffect(() => {
     const authInterval = setInterval(() => {
       const { token, userId } = getAuthData();
       if (!token || !userId) {
-        console.log('Auth expired, redirect to login');
+        console.log('Phiên đăng nhập đã hết hạn, chuyển hướng đến trang đăng nhập');
         resetAuthState();
         navigate('/login');
       }
-    }, 30000); // 30 giây kiểm tra 1 lần
+    }, 30000); // Kiểm tra mỗi 30 giây
 
     return () => clearInterval(authInterval);
   }, [resetAuthState, navigate]);
 
+  // Chuẩn bị và gửi tin nhắn với xử lý lỗi và retry logic
   const prepareAndSendMessage = async (userQuestion) => {
     if (userQuestion.trim() === '' || isLoading) return;
 
@@ -156,19 +160,21 @@ const ChatPage = () => {
       if (isMobile) setIsSidebarOpen(false);
 
       let chatId = currentChatId;
+      // Tạo chat mới nếu chưa có
       if (!chatId) {
         try {
           const newChatResult = await createNewChat();
           chatId = newChatResult.id;
           setCurrentChatId(chatId);
         } catch (error) {
-          console.error('Lỗi tạo chat mới:', error);
+          console.error('Lỗi khi tạo cuộc trò chuyện mới:', error);
           setLocalError("Không thể tạo cuộc trò chuyện mới. Vui lòng thử lại.");
           setIsLoading(false);
           return;
         }
       }
 
+      // Thêm tin nhắn người dùng vào giao diện ngay lập tức
       setActiveChatMessages(prev => [...prev, {
         id: `user_${Date.now()}`,
         sender: 'user',
@@ -176,6 +182,7 @@ const ChatPage = () => {
         timestamp: new Date().toISOString()
       }]);
 
+      // Thử gửi request với retry logic
       let retryCount = 0;
       let response = null;
       while (retryCount < 3) {
@@ -193,6 +200,7 @@ const ChatPage = () => {
         throw new Error("Không thể kết nối đến máy chủ sau nhiều lần thử");
       }
 
+      // Thêm phản hồi của bot vào giao diện
       setActiveChatMessages(prev => [...prev, {
         id: `bot_${Date.now()}`,
         sender: 'bot',
@@ -202,6 +210,7 @@ const ChatPage = () => {
         context: response.top_chunks || []
       }]);
 
+      // Cập nhật tiêu đề chat nếu đây là tin nhắn đầu tiên
       const isFirstMessage = activeChatMessages.length <= 2;
       if (isFirstMessage && response.id) {
         const newTitle = userQuestion.length > 30
@@ -211,12 +220,13 @@ const ChatPage = () => {
           await updateChatTitle(response.id, newTitle);
           setTimeout(() => fetchChatHistory(), 100);
         } catch (titleError) {
-          console.error('Lỗi khi cập nhật tiêu đề:', titleError);
+          console.error('Lỗi khi cập nhật tiêu đề cuộc trò chuyện:', titleError);
         }
       }
     } catch (error) {
       console.error('Lỗi khi gửi tin nhắn:', error);
       setLocalError(error.detail || 'Có lỗi khi kết nối với máy chủ');
+      // Thêm tin nhắn lỗi vào giao diện
       setActiveChatMessages(prev => [...prev, {
         id: `error_${Date.now()}`,
         sender: 'bot',
@@ -229,6 +239,7 @@ const ChatPage = () => {
     }
   };
 
+  // Xử lý gửi tin nhắn từ form
   const handleSend = (e) => {
     e.preventDefault();
     const messageText = input.trim();
@@ -239,6 +250,7 @@ const ChatPage = () => {
     prepareAndSendMessage(messageToSend);
   };
 
+  // Xử lý phím tắt Enter để gửi tin nhắn
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -248,16 +260,18 @@ const ChatPage = () => {
     }
   };
 
+  // Xử lý tạo cuộc trò chuyện mới
   const handleNewChat = async () => {
     try {
       await createNewChat();
       if (isMobile) setIsSidebarOpen(false);
     } catch (error) {
-      console.error('Lỗi tạo chat mới:', error);
+      console.error('Lỗi khi tạo cuộc trò chuyện mới:', error);
       setLocalError("Không thể tạo cuộc trò chuyện mới");
     }
   };
 
+  // Lấy tiêu đề cuộc trò chuyện hiện tại
   const getCurrentChatTitle = () => {
     if (!currentChatId || !chatHistory) return "Cuộc trò chuyện mới";
     const currentChat = chatHistory.find(chat => chat.id === currentChatId);
@@ -267,7 +281,7 @@ const ChatPage = () => {
     return isMongoId ? "Cuộc trò chuyện mới" : title;
   };
 
-
+  // Hiển thị loading khi đang kiểm tra xác thực
   if (!authChecked) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50">
@@ -287,6 +301,7 @@ const ChatPage = () => {
       animate="animate"
       exit="exit"
     >
+      {/* CSS styles cho markdown content */}
       <style jsx>{`
         * { scrollbar-width: none; -ms-overflow-style: none; }
         *::-webkit-scrollbar { display: none; }
@@ -308,11 +323,13 @@ const ChatPage = () => {
         .markdown-content blockquote { border-left: 3px solid #10b981; padding-left: 0.75rem; margin: 0.75rem 0; color: #4b5563; background-color: #f0fdf4; border-radius: 0.25rem; }
       `}</style>
 
+      {/* Hiển thị thông báo lỗi nếu có */}
       <AnimatePresence mode="sync">
         {localError && <ErrorMessage message={localError} onClose={() => setLocalError(null)} />}
       </AnimatePresence>
 
       <div className="flex flex-col w-full h-full">
+        {/* Header với thanh điều hướng */}
         <div className="flex-shrink-0">
           <TopNavBar
             title={getCurrentChatTitle()}
@@ -323,6 +340,7 @@ const ChatPage = () => {
         </div>
 
         <div className="flex flex-1 overflow-hidden relative">
+          {/* Sidebar chứa lịch sử chat */}
           <ChatSidebar
             isMobile={isMobile}
             isSidebarOpen={isSidebarOpen}
@@ -337,6 +355,7 @@ const ChatPage = () => {
             fetchChatHistory={fetchChatHistory}
           />
 
+          {/* Overlay cho mobile khi sidebar mở */}
           {isSidebarOpen && isMobile && (
             <div
               className="fixed inset-0 bg-white/10 backdrop-blur-md z-45 md:hidden"
@@ -344,13 +363,16 @@ const ChatPage = () => {
             />
           )}
 
+          {/* Khu vực nội dung chat chính */}
           <div className="flex-1 flex flex-col h-full overflow-hidden relative">
+            {/* Khu vực hiển thị tin nhắn */}
             <div
               className="flex-1 overflow-y-auto p-4 pb-32 bg-transparent"
               ref={chatContainerRef}
               style={{ paddingTop: '1rem' }}
             >
               <div className="max-w-3xl mx-auto">
+                {/* Hiển thị giao diện welcome khi chưa có tin nhắn */}
                 {activeChatMessages.length === 0 ? (
                   <div className="flex flex-col items-center justify-center h-[calc(100vh-280px)] text-center text-gray-600">
                     <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center mb-4 shadow-lg">
@@ -362,6 +384,7 @@ const ChatPage = () => {
                     </p>
                   </div>
                 ) : (
+                  /* Hiển thị danh sách tin nhắn */
                   <div>
                     {activeChatMessages.map((message, index) => (
                       <MessageItem 
@@ -372,6 +395,7 @@ const ChatPage = () => {
                   </div>
                 )}
 
+                {/* Hiển thị indicator khi bot đang typing */}
                 {isLoading && activeChatMessages.length > 0 && (
                   <div className="flex justify-start mb-4">
                     <div className="w-10 h-10 rounded-full flex-shrink-0 mr-2 overflow-hidden shadow-md">
@@ -399,10 +423,12 @@ const ChatPage = () => {
               </div>
             </div>
 
+            {/* Khu vực input cố định ở dưới cùng */}
             <div className="fixed bottom-0 left-0 right-0 md:left-72 z-40">
               <div className="max-w-3xl mx-auto px-4 py-4 bg-gradient-to-t from-green-50 via-teal-50 to-transparent">
                 <div className="bg-white rounded-[20px] shadow-xl border border-gray-100 p-1.5 overflow-hidden">
                   <form key={formKey} onSubmit={handleSend} className="flex items-center">
+                    {/* Textarea để nhập tin nhắn */}
                     <div className="flex-1 relative">
                       <textarea
                         ref={textareaRef}
@@ -419,6 +445,7 @@ const ChatPage = () => {
                       ></textarea>
                     </div>
 
+                    {/* Nút gửi tin nhắn */}
                     <div className="flex items-center ml-2">
                       <button
                         type="submit"

@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from .base import BaseModelWithId, PyObjectId, BaseResponse
 
@@ -19,11 +20,6 @@ class CacheStatus(str, Enum):
     EXPIRED = "expired"
 
 class CacheType(str, Enum):
-    # Loại cache trong hệ thống
-    # - TEXT: Cache cho text queries và responses
-    # - VECTOR: Cache cho vector embeddings  
-    # - METADATA: Cache cho document metadata
-    # - SESSION: Cache cho session data
     TEXT = "text"
     VECTOR = "vector"
     METADATA = "metadata"
@@ -31,98 +27,97 @@ class CacheType(str, Enum):
 
 class RelevantDocument(BaseModel):
     # Thông tin về tài liệu liên quan được cache
-    chunk_id = Field(..., description="ID của chunk document")
-    score = Field(..., description="Điểm relevance (0-1)")
-    doc_id = Field(..., description="ID của document gốc")
-    doc_type = Field(None, description="Loại document (Luật, Nghị định, etc.)")
-    position = Field(..., description="Vị trí trong kết quả search")
+    chunk_id: str = Field(..., description="ID của chunk document")
+    score: float = Field(..., description="Điểm relevance (0-1)")
+    doc_id: str = Field(..., description="ID của document gốc")
+    doc_type: Optional[str] = Field(None, description="Loại document (Luật, Nghị định, etc.)")
+    position: int = Field(..., description="Vị trí trong kết quả search")
 
 class CacheMetrics(BaseModel):
     # Metrics để đánh giá hiệu quả của cache entry
-    hit_count = Field(default=0, description="Số lần cache được sử dụng")
-    miss_count = Field(default=0, description="Số lần cache miss")
-    last_used = Field(default_factory=datetime.now, description="Lần sử dụng cuối")
-    average_response_time = Field(default=0.0, description="Thời gian phản hồi trung bình khi dùng cache")
-    cache_size_bytes = Field(default=0, description="Kích thước cache entry (bytes)")
+    hit_count: int = Field(default=0, description="Số lần cache được sử dụng")
+    miss_count: int = Field(default=0, description="Số lần cache miss")
+    last_used: datetime = Field(default_factory=datetime.now, description="Lần sử dụng cuối")
+    average_response_time: float = Field(default=0.0, description="Thời gian phản hồi trung bình khi dùng cache")
+    cache_size_bytes: int = Field(default=0, description="Kích thước cache entry (bytes)")
 
 class CacheModel(BaseModelWithId):
     # Model chính cho cache entries
     
-    # Identifiers
-    cache_id = Field(..., description="ID duy nhất để liên kết với ChromaDB")
-    cache_type = Field(default=CacheType.TEXT, description="Loại cache")
+    cache_id: str = Field(..., description="ID duy nhất để liên kết với ChromaDB")
+    cache_type: CacheType = Field(default=CacheType.TEXT, description="Loại cache")
     
     # Content data
-    question_text = Field(..., description="Câu hỏi gốc")
-    normalized_question = Field(..., description="Câu hỏi đã chuẩn hóa để so sánh")
-    answer = Field(..., description="Câu trả lời được cache")
+    question_text: str = Field(..., description="Câu hỏi gốc")
+    normalized_question: str = Field(..., description="Câu hỏi đã chuẩn hóa để so sánh")
+    answer: str = Field(..., description="Câu trả lời được cache")
     
     # Context và retrieval info
-    relevant_documents = Field(default=[], description="Documents liên quan")
-    context_items = Field(default=[], description="Context text items")
+    relevant_documents: List[RelevantDocument] = Field(default=[], description="Documents liên quan")
+    context_items: List[str] = Field(default=[], description="Context text items")
     
-    # Cache management
-    validity_status = Field(default=CacheStatus.VALID, description="Trạng thái cache")
-    expires_at = Field(
+    # Quản lý cache
+    validity_status: CacheStatus = Field(default=CacheStatus.VALID, description="Trạng thái cache")
+    expires_at: datetime = Field(
         default_factory=lambda: datetime.now() + timedelta(days=PERF_CONFIG.CACHE_TTL_DAYS),
         description="Thời gian hết hạn cache"
     )
     
-    # Analytics và optimization
-    related_doc_ids = Field(default=[], description="IDs của documents liên quan")
-    keywords = Field(default=[], description="Keywords để tìm kiếm cache")
-    language = Field(default="vi", description="Ngôn ngữ của cache entry")
+    # Phân tích và tối ưu
+    related_doc_ids: List[str] = Field(default=[], description="IDs của documents liên quan")
+    keywords: List[str] = Field(default=[], description="Keywords để tìm kiếm cache")
+    language: str = Field(default="vi", description="Ngôn ngữ của cache entry")
     
     # Metrics
-    metrics = Field(default_factory=CacheMetrics, description="Metrics của cache entry")
+    metrics: CacheMetrics = Field(default_factory=CacheMetrics, description="Metrics của cache entry")
     
     # Metadata bổ sung
-    user_id = Field(None, description="User tạo cache (nếu có)")
-    source_model = Field(default="unknown", description="Model đã tạo cache này")
-    confidence_score = Field(None, description="Độ tin cậy của cached answer")
-    tags = Field(default=[], description="Tags để phân loại cache")
+    user_id: Optional[str] = Field(None, description="User tạo cache (nếu có)")
+    source_model: str = Field(default="unknown", description="Model đã tạo cache này")
+    confidence_score: Optional[float] = Field(None, description="Độ tin cậy của cached answer")
+    tags: List[str] = Field(default=[], description="Tags để phân loại cache")
 
 class CacheCreate(BaseModel):
     # Model cho việc tạo cache entry mới
-    cache_id = Field(..., description="ID duy nhất cho cache")
-    cache_type = Field(default=CacheType.TEXT)
-    question_text = Field(...)
-    normalized_question = Field(...)
-    answer = Field(...)
-    relevant_documents = Field(default=[])
-    context_items = Field(default=[])
-    related_doc_ids = Field(default=[])
-    keywords = Field(default=[])
-    user_id = None
-    source_model = Field(default="gemini")
-    confidence_score = Field(None)
-    expires_at = None
+    cache_id: str = Field(..., description="ID duy nhất cho cache")
+    cache_type: CacheType = Field(default=CacheType.TEXT)
+    question_text: str = Field(...)
+    normalized_question: str = Field(...)
+    answer: str = Field(...)
+    relevant_documents: List[RelevantDocument] = Field(default=[])
+    context_items: List[str] = Field(default=[])
+    related_doc_ids: List[str] = Field(default=[])
+    keywords: List[str] = Field(default=[])
+    user_id: Optional[str] = None
+    source_model: str = Field(default="gemini")
+    confidence_score: Optional[float] = Field(None)
+    expires_at: Optional[datetime] = None
 
 class CacheUpdate(BaseModel):
     # Model cho việc cập nhật cache entry
-    validity_status = None
-    answer = None
-    expires_at = None
-    confidence_score = Field(None)
-    tags = None
+    validity_status: Optional[CacheStatus] = None
+    answer: Optional[str] = None
+    expires_at: Optional[datetime] = None
+    confidence_score: Optional[float] = Field(None)
+    tags: Optional[List[str]] = None
     
     # Update metrics
-    increment_hit_count = Field(default=False, description="Có tăng hit count không")
-    new_response_time = Field(None, description="Response time mới để cập nhật average")
+    increment_hit_count: bool = Field(default=False, description="Có tăng hit count không")
+    new_response_time: Optional[float] = Field(None, description="Response time mới để cập nhật average")
 
 class CacheQuery(BaseModel):
     # Model cho việc query cache
-    query_text = Field(..., description="Text cần tìm trong cache")
-    cache_type = Field(default=CacheType.TEXT)
-    similarity_threshold = Field(default=0.85, description="Ngưỡng similarity")
-    max_results = Field(default=5, description="Số kết quả tối đa")
-    include_expired = Field(default=False, description="Có bao gồm cache đã hết hạn không")
+    query_text: str = Field(..., description="Text cần tìm trong cache")
+    cache_type: CacheType = Field(default=CacheType.TEXT)
+    similarity_threshold: float = Field(default=0.85, description="Ngưỡng similarity")
+    max_results: int = Field(default=5, description="Số kết quả tối đa")
+    include_expired: bool = Field(default=False, description="Có bao gồm cache đã hết hạn không")
 
 class CacheResponse(BaseResponse):
     # Model phản hồi khi truy vấn cache
-    data = Field(None, description="Cache data")
-    cache_hit = Field(default=False, description="Có cache hit không")
-    similarity_score = Field(default=0.0, description="Điểm similarity nếu có")
+    data: Optional[Dict[str, Any]] = Field(None, description="Cache data")
+    cache_hit: bool = Field(default=False, description="Có cache hit không")
+    similarity_score: float = Field(default=0.0, description="Điểm similarity nếu có")
     
     @classmethod
     def from_cache_model(cls, cache, similarity_score=1.0, message="Cache hit"):
@@ -139,41 +134,38 @@ class CacheResponse(BaseResponse):
         )
 
 class CacheStats(BaseModel):
-    # Model thống kê tổng thể của cache system
-    total_entries = Field(default=0, description="Tổng số cache entries")
-    valid_entries = Field(default=0, description="Số cache entries hợp lệ")
-    invalid_entries = Field(default=0, description="Số cache entries không hợp lệ")
-    expired_entries = Field(default=0, description="Số cache entries đã hết hạn")
+    # Model thống kê tổng thể của hệ thống cache
+    total_entries: int = Field(default=0, description="Tổng số cache entries")
+    valid_entries: int = Field(default=0, description="Số cache entries hợp lệ")
+    invalid_entries: int = Field(default=0, description="Số cache entries không hợp lệ")
+    expired_entries: int = Field(default=0, description="Số cache entries đã hết hạn")
     
-    # Performance metrics
-    total_hits = Field(default=0, description="Tổng số cache hits")
-    total_misses = Field(default=0, description="Tổng số cache misses")
-    hit_rate = Field(default=0.0, description="Tỷ lệ cache hit")
-    average_response_time = Field(default=0.0, description="Thời gian phản hồi trung bình")
+    total_hits: int = Field(default=0, description="Tổng số cache hits")
+    total_misses: int = Field(default=0, description="Tổng số cache misses")
+    hit_rate: float = Field(default=0.0, description="Tỷ lệ cache hit")
+    average_response_time: float = Field(default=0.0, description="Thời gian phản hồi trung bình")
     
-    # Storage metrics
-    total_size_bytes = Field(default=0, description="Tổng kích thước cache")
-    average_size_per_entry = Field(default=0.0, description="Kích thước trung bình per entry")
+    total_size_bytes: int = Field(default=0, description="Tổng kích thước cache")
+    average_size_per_entry: float = Field(default=0.0, description="Kích thước trung bình per entry")
     
-    # Type breakdown
-    cache_by_type = Field(default={}, description="Số lượng cache theo từng loại")
+    cache_by_type: Dict[str, int] = Field(default={}, description="Số lượng cache theo từng loại")
     
     # Time-based metrics
-    entries_created_today = Field(default=0, description="Số entries tạo hôm nay")
-    entries_used_today = Field(default=0, description="Số entries được dùng hôm nay")
-    most_popular_keywords = Field(default=[], description="Keywords phổ biến nhất")
+    entries_created_today: int = Field(default=0, description="Số entries tạo hôm nay")
+    entries_used_today: int = Field(default=0, description="Số entries được dùng hôm nay")
+    most_popular_keywords: List[str] = Field(default=[], description="Keywords phổ biến nhất")
 
 class CacheBatchOperation(BaseModel):
     # Model cho các thao tác batch trên cache
-    operation = Field(..., description="Loại operation: delete, invalidate, refresh")
-    cache_ids = Field(default=[], description="Danh sách cache IDs")
-    doc_ids = Field(default=[], description="Danh sách document IDs để invalidate")
-    criteria = Field(None, description="Criteria để filter cache")
-    dry_run = Field(default=False, description="Chỉ simulate, không thực hiện")
+    operation: str = Field(..., description="Loại operation: delete, invalidate, refresh")
+    cache_ids: List[str] = Field(default=[], description="Danh sách cache IDs")
+    doc_ids: List[str] = Field(default=[], description="Danh sách document IDs để invalidate")
+    criteria: Optional[Dict[str, Any]] = Field(None, description="Criteria để filter cache")
+    dry_run: bool = Field(default=False, description="Chỉ simulate, không thực hiện")
 
 class CacheBatchResponse(BaseResponse):
-    # Response cho batch operations
-    affected_count = Field(default=0, description="Số entries bị ảnh hưởng")
-    operations_performed = Field(default=[], description="Danh sách operations đã thực hiện")
-    errors = Field(default=[], description="Danh sách lỗi nếu có")
-    execution_time = Field(default=0.0, description="Thời gian thực hiện")
+    # Response cho batch hệ thống
+    affected_count: int = Field(default=0, description="Số entries bị ảnh hưởng")
+    operations_performed: List[str] = Field(default=[], description="Danh sách hệ thống đã thực hiện")
+    errors: List[str] = Field(default=[], description="Danh sách lỗi nếu có")
+    execution_time: float = Field(default=0.0, description="Thời gian thực hiện")

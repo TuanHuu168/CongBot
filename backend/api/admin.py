@@ -125,7 +125,7 @@ async def get_admin_status():
 async def get_recent_activities(limit: int = 10):
     try:
         activities = activity_service.get_recent_activities(limit)
-        return {"Các hoạt động": activities, "Số lượng": len(activities)}
+        return {"activities": activities, "count": len(activities)}
     except Exception as e:
         handle_error("get_recent_activities", e)
 

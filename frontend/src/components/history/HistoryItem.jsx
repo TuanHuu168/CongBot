@@ -3,22 +3,22 @@ import { motion } from 'framer-motion';
 import { MessageSquare, Trash2, Clock, ArrowRight } from 'lucide-react';
 import { formatDate } from '../../utils/formatUtils';
 
+// Component hiển thị từng item trong lịch sử trò chuyện
 const HistoryItem = ({
     chat,
-    viewMode = 'list', // 'list' or 'grid'
+    viewMode = 'list', // 'list' hoặc 'grid'
     onDelete,
     onClick,
     chatDetails,
     selectedChats,
     toggleSelectChat
 }) => {
-    // Format chat title
+    // Định dạng tiêu đề cuộc trò chuyện
     const getChatTitle = (chat) => {
         if (!chat.title || chat.title === "") {
             return "Cuộc trò chuyện mới";
         }
 
-        // Check if title is just a MongoDB ID
         const isMongoId = /^[0-9a-fA-F]{24}$/.test(chat.title);
         if (isMongoId) {
             return "Cuộc trò chuyện mới";
@@ -27,7 +27,7 @@ const HistoryItem = ({
         return chat.title;
     };
 
-    // Get message count for a chat
+    // Lấy số lượng tin nhắn cho cuộc trò chuyện
     const getMessageCount = (chatId) => {
         if (chatDetails[chatId] && chatDetails[chatId].messageCount !== undefined) {
             return chatDetails[chatId].messageCount;
@@ -35,7 +35,7 @@ const HistoryItem = ({
         return 0;
     };
 
-    // Get snippet for a chat
+    // Lấy đoạn trích nội dung cuộc trò chuyện
     const getSnippet = (chatId) => {
         if (chatDetails[chatId] && chatDetails[chatId].snippet) {
             return chatDetails[chatId].snippet;
@@ -43,6 +43,7 @@ const HistoryItem = ({
         return "Nhấn vào đây để xem chi tiết cuộc trò chuyện";
     };
 
+    // Hiển thị dạng danh sách
     if (viewMode === 'list') {
         return (
             <motion.div
@@ -52,6 +53,7 @@ const HistoryItem = ({
                         : 'border border-gray-100'}`}
             >
                 <div className="px-5 py-4 flex">
+                    {/* Checkbox chọn cuộc trò chuyện */}
                     <div className="mr-3 flex items-start pt-1">
                         <div className="relative">
                             <input
@@ -71,6 +73,8 @@ const HistoryItem = ({
                             </div>
                         </div>
                     </div>
+                    
+                    {/* Nội dung chính của cuộc trò chuyện */}
                     <div
                         className="flex-1 cursor-pointer"
                         onClick={onClick}
@@ -100,6 +104,8 @@ const HistoryItem = ({
                             </div>
                         </div>
                     </div>
+                    
+                    {/* Nút xóa */}
                     <div className="ml-3 flex items-start">
                         <button
                             className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
@@ -107,6 +113,7 @@ const HistoryItem = ({
                                 e.stopPropagation();
                                 onDelete(chat.id, getChatTitle(chat));
                             }}
+                            title="Xóa cuộc trò chuyện"
                         >
                             <Trash2 size={16} />
                         </button>
@@ -116,7 +123,7 @@ const HistoryItem = ({
         );
     }
     else {
-        // Grid view
+        // Hiển thị dạng lưới
         return (
             <motion.div
                 className={`bg-white rounded-xl shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md border 
@@ -125,6 +132,7 @@ const HistoryItem = ({
                         : 'border-gray-100'}`}
             >
                 <div className="p-4">
+                    {/* Header với checkbox và nút xóa */}
                     <div className="flex justify-between items-start mb-3">
                         <div className="relative mb-2 mr-2">
                             <input
@@ -154,12 +162,15 @@ const HistoryItem = ({
                                         e.stopPropagation();
                                         onDelete(chat.id, getChatTitle(chat));
                                     }}
+                                    title="Xóa cuộc trò chuyện"
                                 >
                                     <Trash2 size={14} />
                                 </button>
                             </div>
                         </div>
                     </div>
+                    
+                    {/* Nội dung cuộc trò chuyện */}
                     <div
                         className="cursor-pointer"
                         onClick={onClick}

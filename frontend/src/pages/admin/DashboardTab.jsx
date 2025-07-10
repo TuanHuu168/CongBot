@@ -8,12 +8,13 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
     const [recentActivities, setRecentActivities] = useState([]);
     const [activitiesLoading, setActivitiesLoading] = useState(false);
 
+    // Hiệu ứng animation cho component
     const fadeInVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
     };
 
-    // Fetch recent activities
+    // Lấy dữ liệu hoạt động gần đây từ API
     useEffect(() => {
         const fetchRecentActivities = async () => {
             try {
@@ -23,10 +24,10 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                     const data = await response.json();
                     setRecentActivities(data.activities || []);
                 } else {
-                    console.error('Failed to fetch recent activities');
+                    console.error('Lỗi khi tải danh sách hoạt động gần đây');
                 }
             } catch (error) {
-                console.error('Error fetching recent activities:', error);
+                console.error('Lỗi kết nối khi tải hoạt động gần đây:', error);
             } finally {
                 setActivitiesLoading(false);
             }
@@ -35,7 +36,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
         fetchRecentActivities();
     }, []);
 
-    // Helper function to get activity icon and color
+    // Hàm trợ giúp để lấy icon và màu sắc theo loại hoạt động
     const getActivityIconAndColor = (activityType) => {
         switch (activityType) {
             case 'login':
@@ -60,13 +61,14 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
 
     return (
         <div className="p-6">
+            {/* Khu vực hiển thị các thẻ thống kê tổng quan */}
             <motion.div
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6"
                 variants={fadeInVariants}
                 initial="hidden"
                 animate="visible"
             >
-                {/* User stats card */}
+                {/* Thẻ thống kê người dùng */}
                 <StatCard
                     title="Người dùng"
                     value={systemStats?.database?.mongodb?.user_count || users.length}
@@ -81,7 +83,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                     }
                 />
 
-                {/* Document stats card */}
+                {/* Thẻ thống kê văn bản */}
                 <StatCard
                     title="Văn bản"
                     value={documents.length}
@@ -98,7 +100,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                     }
                 />
 
-                {/* Cache stats card */}
+                {/* Thẻ thống kê cache */}
                 <StatCard
                     title="Cache"
                     value={systemStats?.cache_stats?.total_count || 0}
@@ -113,7 +115,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                     }
                 />
 
-                {/* Benchmark stats card */}
+                {/* Thẻ thống kê benchmark */}
                 <StatCard
                     title="Benchmark"
                     value={benchmarkResults.length}
@@ -129,7 +131,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                 />
             </motion.div>
 
-            {/* System Status */}
+            {/* Khu vực hiển thị trạng thái hệ thống */}
             <motion.div
                 className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                 variants={fadeInVariants}
@@ -150,6 +152,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Trạng thái database */}
                             <div>
                                 <h3 className="text-sm font-medium text-gray-500 mb-3">Database</h3>
                                 <div className="space-y-3">
@@ -189,6 +192,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                                 </div>
                             </div>
 
+                            {/* Thống kê chi tiết */}
                             <div>
                                 <h3 className="text-sm font-medium text-gray-500 mb-3">Thống kê</h3>
                                 <div className="space-y-3">
@@ -212,7 +216,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                 </div>
             </motion.div>
 
-            {/* Recent Activity - Updated to use real data */}
+            {/* Khu vực hiển thị hoạt động gần đây */}
             <motion.div
                 className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                 variants={fadeInVariants}
@@ -258,6 +262,7 @@ const DashboardTab = ({ systemStats, users, documents, benchmarkResults, isLoadi
                             })}
                         </div>
                     ) : (
+                        // Hiển thị khi chưa có hoạt động nào
                         <div className="py-10 text-center">
                             <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
                                 <Activity size={24} className="text-gray-400" />

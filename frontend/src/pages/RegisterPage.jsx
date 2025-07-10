@@ -7,7 +7,7 @@ import FormField from '../components/common/FormField';
 import { validateUsername, validateEmail, validatePassword, validateFullName, validatePhoneNumber, validateConfirmPassword, useFormValidation } from '../utils/validationUtils';
 import { pageVariants, containerVariants, itemVariants, ROUTES, showError, showSuccess } from '../utils/formatUtils';
 
-// Validation rules cho register form
+// Quy tắc validation cho form đăng ký
 const validationRules = {
   username: validateUsername,
   fullName: validateFullName,
@@ -19,6 +19,8 @@ const validationRules = {
 
 const RegisterPage = () => {
   const navigate = useNavigate();
+  
+  // State quản lý dữ liệu form
   const [formData, setFormData] = useState({
     username: '', fullName: '', email: '', phoneNumber: '', password: '', confirmPassword: ''
   });
@@ -30,18 +32,21 @@ const RegisterPage = () => {
   
   const { validateField, validateForm } = useFormValidation(validationRules);
 
+  // Xử lý thay đổi input
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   }, [errors]);
 
+  // Xử lý khi blur khỏi input
   const handleBlur = useCallback((e) => {
     const { name, value } = e.target;
     const error = validateField(name, value, formData);
     setErrors(prev => ({ ...prev, [name]: error }));
   }, [validateField, formData]);
 
+  // Xử lý submit form đăng ký
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -84,7 +89,7 @@ const RegisterPage = () => {
       animate="animate"
       exit="exit"
     >
-      {/* Left panel - Hero section */}
+      {/* Panel trái - Hero section */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
         <motion.div 
           className="relative h-full flex flex-col justify-center z-10"
@@ -109,7 +114,7 @@ const RegisterPage = () => {
         </motion.div>
       </div>
 
-      {/* Right panel - Register form */}
+      {/* Panel phải - Form đăng ký */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6 relative z-10">
         <motion.div 
           className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
@@ -117,6 +122,7 @@ const RegisterPage = () => {
           initial="hidden"
           animate="visible"
         >
+          {/* Header form */}
           <motion.div className="text-center mb-8" variants={itemVariants}>
             <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl mx-auto mb-4 shadow-lg flex items-center justify-center">
               <User size={32} className="text-white" />
@@ -125,7 +131,9 @@ const RegisterPage = () => {
             <p className="text-gray-600 mt-2">Chatbot hỗ trợ chính sách người có công</p>
           </motion.div>
 
+          {/* Form đăng ký */}
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Các trường input */}
             <FormField 
               name="username" 
               placeholder="Tên đăng nhập" 
@@ -200,6 +208,7 @@ const RegisterPage = () => {
               disabled={isLoading}
             />
 
+            {/* Checkbox đồng ý điều khoản */}
             <motion.div className="flex items-start" variants={itemVariants}>
               <label className="flex items-center group cursor-pointer">
                 <input 
@@ -223,6 +232,7 @@ const RegisterPage = () => {
               </label>
             </motion.div>
 
+            {/* Nút đăng ký */}
             <motion.button
               type="submit"
               disabled={isLoading}
@@ -245,6 +255,7 @@ const RegisterPage = () => {
             </motion.button>
           </form>
 
+          {/* Link chuyển đến trang đăng nhập */}
           <motion.div className="mt-2 text-center" variants={itemVariants}>
             <p className="text-gray-600">
               Đã có tài khoản?{' '}

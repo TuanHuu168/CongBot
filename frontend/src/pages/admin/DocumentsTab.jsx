@@ -52,7 +52,7 @@ const DocumentsTab = ({
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
     };
 
-    // Polling trạng thái document processing
+    // Theo dõi trạng thái xử lý tài liệu
     useEffect(() => {
         let interval;
         if (documentProcessingId && isProcessingDocument) {
@@ -73,7 +73,7 @@ const DocumentsTab = ({
                             const autoDetected = result?.auto_detected;
 
                             if (metadata || autoDetected) {
-                                console.log('Đang tự động điền metadata từ kết quả Gemini:', { metadata, autoDetected });
+                                console.log('Tự động điền metadata từ kết quả Gemini:', { metadata, autoDetected });
                                 setUploadMetadata({
                                     doc_id: autoDetected?.doc_id || metadata?.doc_id || '',
                                     doc_type: autoDetected?.doc_type || metadata?.doc_type || 'Thông tư',
@@ -96,9 +96,9 @@ const DocumentsTab = ({
                                         <p><strong>Văn bản liên quan:</strong> ${status.result?.related_documents_count || 0}</p>
                                         <div class="mt-2 p-2 bg-blue-50 rounded">
                                             <p class="text-sm font-medium text-blue-700">Thông tin được phát hiện tự động:</p>
-                                            <p class="text-xs text-blue-600">• Mã văn bản: ${autoDetected?.doc_id || 'Không xác định'}</p>
-                                            <p class="text-xs text-blue-600">• Loại: ${autoDetected?.doc_type || 'Không xác định'}</p>
-                                            <p class="text-xs text-blue-600">• Ngày hiệu lực: ${autoDetected?.effective_date || 'Không xác định'}</p>
+                                            <p class="text-xs text-blue-600">Mã văn bản: ${autoDetected?.doc_id || 'Không xác định'}</p>
+                                            <p class="text-xs text-blue-600">Loại: ${autoDetected?.doc_type || 'Không xác định'}</p>
+                                            <p class="text-xs text-blue-600">Ngày hiệu lực: ${autoDetected?.effective_date || 'Không xác định'}</p>
                                         </div>
                                         <p class="text-sm text-gray-600 mt-2">Thông tin đã được tự động điền vào biểu mẫu. Vui lòng kiểm tra và phê duyệt nếu hài lòng.</p>
                                     </div>
@@ -167,7 +167,7 @@ const DocumentsTab = ({
         }
     };
 
-    // Helper function để get file icon
+    // Lấy icon tệp dựa trên extension
     const getFileIcon = (fileName) => {
         const extension = fileName?.split('.').pop()?.toLowerCase();
         switch (extension) {
@@ -186,7 +186,7 @@ const DocumentsTab = ({
     // Xử lý chọn folder cho manual mode
     const handleFolderSelect = async (event) => {
         const files = Array.from(event.target.files);
-        console.log('Đã chọn thư mục với số tệp:', files.length);
+        console.log('Số tệp được chọn:', files.length);
 
         if (files.length === 0) {
             console.log('Không có tệp nào được chọn');
@@ -230,7 +230,7 @@ const DocumentsTab = ({
                 return;
             }
 
-            console.log('Đang tự động điền biểu mẫu từ metadata...');
+            console.log('Tự động điền biểu mẫu từ metadata...');
             setUploadMetadata({
                 doc_id: metadata.doc_id || '',
                 doc_type: metadata.doc_type || 'Thông tư',
@@ -442,7 +442,7 @@ const DocumentsTab = ({
                         confirmButtonColor: '#10b981'
                     });
 
-                    // Reset state và làm mới danh sách tài liệu KHÔNG redirect
+                    // Reset state và làm mới danh sách tài liệu
                     setDocumentProcessingId(null);
                     setDocumentProcessingStatus(null);
                     setDocumentFile(null);
@@ -454,7 +454,7 @@ const DocumentsTab = ({
                         document_scope: 'Quốc gia'
                     });
 
-                    // Làm mới chỉ danh sách tài liệu, KHÔNG reload toàn bộ trang
+                    // Làm mới danh sách tài liệu
                     setTimeout(() => {
                         window.location.reload();
                     }, 1000);
@@ -582,9 +582,9 @@ const DocumentsTab = ({
                                     <div className="bg-blue-50 p-2 rounded mb-2">
                                         <p className="text-xs font-medium text-blue-700 mb-1">Thông tin được phát hiện tự động:</p>
                                         <div className="text-xs text-blue-600 space-y-1">
-                                            <p>• Mã văn bản: {result.auto_detected.doc_id || 'Không xác định'}</p>
-                                            <p>• Loại: {result.auto_detected.doc_type || 'Không xác định'}</p>
-                                            <p>• Ngày hiệu lực: {result.auto_detected.effective_date || 'Không xác định'}</p>
+                                            <p>Mã văn bản: {result.auto_detected.doc_id || 'Không xác định'}</p>
+                                            <p>Loại: {result.auto_detected.doc_type || 'Không xác định'}</p>
+                                            <p>Ngày hiệu lực: {result.auto_detected.effective_date || 'Không xác định'}</p>
                                         </div>
                                     </div>
                                 )}
@@ -641,7 +641,6 @@ const DocumentsTab = ({
     // Render tab tải lên dữ liệu
     const renderUploadTab = () => (
         <div className="space-y-6">
-            {/* Mode Selection */}
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                     Chọn phương thức tải lên
@@ -688,14 +687,10 @@ const DocumentsTab = ({
                 </div>
             </div>
 
-            {/* Hiển thị trạng thái xử lý nếu có */}
             {renderProcessingStatus()}
 
-            {/* Form upload tùy theo mode */}
             {uploadMode === 'auto' ? (
-                // Form upload tài liệu tự động (PDF/Word)
                 <form onSubmit={handleDocumentUpload} className="space-y-6">
-                    {/* FILE UPLOAD Ở TRÊN CÙNG */}
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
                         <div className="text-center">
                             <div className="mb-4">
@@ -741,7 +736,6 @@ const DocumentsTab = ({
                         )}
                     </div>
 
-                    {/* THÔNG TIN METADATA Ở DƯỚI */}
                     <div className="border-t border-gray-200 pt-6">
                         <h4 className="text-sm font-medium text-gray-700 mb-4 flex items-center">
                             <AlertCircle size={16} className="text-blue-500 mr-2" />
@@ -851,9 +845,7 @@ const DocumentsTab = ({
                     </button>
                 </form>
             ) : (
-                // Form upload folder manual
                 <form onSubmit={handleManualUpload} className="space-y-6">
-                    {/* Chọn thư mục */}
                     <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 hover:border-gray-400 transition-colors">
                         <div className="text-center">
                             <FolderOpen className="mx-auto h-12 w-12 text-gray-400 mb-4" />
@@ -895,7 +887,6 @@ const DocumentsTab = ({
                         )}
                     </div>
 
-                    {/* Form metadata */}
                     <div className="border-t border-gray-200 pt-6">
                         <h4 className="text-sm font-medium text-gray-700 mb-4">
                             Thông tin văn bản (tự động điền từ metadata.json)
@@ -994,7 +985,6 @@ const DocumentsTab = ({
                 </form>
             )}
 
-            {/* Hướng dẫn sử dụng */}
             <div className="p-4 bg-blue-50 rounded-lg">
                 <h4 className="text-sm font-medium text-blue-700 mb-2 flex items-center">
                     <AlertCircle size={14} className="mr-1" />
@@ -1003,19 +993,19 @@ const DocumentsTab = ({
                 <div className="text-xs text-blue-600 space-y-1">
                     {uploadMode === 'auto' ? (
                         <>
-                            <p>• Tải lên tệp PDF/Word/Markdown, Gemini AI sẽ tự động phân tích và chia chunk theo logic</p>
-                            <p>• AI sẽ trích xuất và tự động điền: mã văn bản, tiêu đề, ngày hiệu lực</p>
-                            <p>• AI cũng tìm các văn bản liên quan và tạo metadata hoàn chỉnh</p>
-                            <p>• Bạn có thể để trống metadata để Gemini tự động phát hiện hoàn toàn</p>
-                            <p>• Kiểm tra kết quả trước khi phê duyệt để nhúng vào ChromaDB</p>
-                            <p>• Có thể tạo lại nếu kết quả chưa hài lòng</p>
+                            <p>Tải lên tệp PDF/Word/Markdown, Gemini AI sẽ tự động phân tích và chia chunk theo logic</p>
+                            <p>AI sẽ trích xuất và tự động điền: mã văn bản, tiêu đề, ngày hiệu lực</p>
+                            <p>AI cũng tìm các văn bản liên quan và tạo metadata hoàn chỉnh</p>
+                            <p>Bạn có thể để trống metadata để Gemini tự động phát hiện hoàn toàn</p>
+                            <p>Kiểm tra kết quả trước khi phê duyệt để nhúng vào ChromaDB</p>
+                            <p>Có thể tạo lại nếu kết quả chưa hài lòng</p>
                         </>
                     ) : (
                         <>
-                            <p>• Chọn thư mục chứa tệp metadata.json và các tệp chunk (.md)</p>
-                            <p>• Hệ thống sẽ tự động đọc metadata.json để điền biểu mẫu</p>
-                            <p>• Sau khi tải lên, dữ liệu sẽ được nhúng ngay vào ChromaDB</p>
-                            <p>• Cấu trúc thư mục: tên_thư_mục/metadata.json + chunk_1.md + chunk_2.md + ...</p>
+                            <p>Chọn thư mục chứa tệp metadata.json và các tệp chunk (.md)</p>
+                            <p>Hệ thống sẽ tự động đọc metadata.json để điền biểu mẫu</p>
+                            <p>Sau khi tải lên, dữ liệu sẽ được nhúng ngay vào ChromaDB</p>
+                            <p>Cấu trúc thư mục: tên_thư_mục/metadata.json + chunk_1.md + chunk_2.md + ...</p>
                         </>
                     )}
                 </div>
@@ -1060,7 +1050,6 @@ const DocumentsTab = ({
 
             {chunkInfo && !loadingChunks && (
                 <div className="space-y-4">
-                    {/* Thông tin tổng quan */}
                     <div className="bg-gray-50 p-4 rounded-lg">
                         <h3 className="font-medium text-gray-700 mb-2">Thông tin tổng quan</h3>
                         <div className="grid grid-cols-2 gap-4 text-sm">
@@ -1087,7 +1076,6 @@ const DocumentsTab = ({
                         </div>
                     </div>
 
-                    {/* Danh sách chunks */}
                     <div>
                         <h3 className="font-medium text-gray-700 mb-3">Chi tiết các chunks</h3>
                         <div className="space-y-3">
@@ -1143,7 +1131,6 @@ const DocumentsTab = ({
     return (
         <div className="p-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Phần tải lên và xem chunk info - CHIẾM NHIỀU KHÔNG GIAN HỠN */}
                 <motion.div
                     className="bg-white rounded-xl shadow-sm border border-gray-100"
                     variants={fadeInVariants}
@@ -1151,7 +1138,6 @@ const DocumentsTab = ({
                     animate="visible"
                 >
                     <div className="border-b border-gray-100">
-                        {/* Tab navigation */}
                         <div className="flex">
                             <button
                                 onClick={() => setActiveMainTab('upload')}
@@ -1181,7 +1167,6 @@ const DocumentsTab = ({
                     </div>
                 </motion.div>
 
-                {/* Danh sách văn bản - CHIẾM ÍT KHÔNG GIAN HỞN */}
                 <motion.div
                     className="bg-white rounded-xl shadow-sm border border-gray-100"
                     variants={fadeInVariants}

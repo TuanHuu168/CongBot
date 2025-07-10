@@ -6,7 +6,7 @@ const ChatContext = createContext();
 
 export const useChat = () => {
   const context = useContext(ChatContext);
-  if (!context) throw new Error('useChat must be used within ChatProvider');
+  if (!context) throw new Error('useChat phải được sử dụng trong ChatProvider');
   return context;
 };
 
@@ -20,7 +20,7 @@ export const ChatProvider = ({ children }) => {
   const [userLoaded, setUserLoaded] = useState(false);
 
   const resetAuthState = useCallback(() => {
-    console.log('Reset auth state');
+    console.log('Đặt lại trạng thái xác thực');
     setUser(null);
     setChatHistory([]);
     setActiveChatMessages([]);
@@ -32,33 +32,32 @@ export const ChatProvider = ({ children }) => {
 
   const fetchUserInfo = useCallback(async (userId, forceRefresh = false) => {
     if (!userId) {
-      console.log('Không có userId để fetch');
+      console.log('Không có userId để tải thông tin');
       return null;
     }
 
     if (userLoaded && !forceRefresh && user) {
-      console.log('User đã được load, không fetch lại');
+      console.log('Thông tin user đã được tải, không tải lại');
       return user;
     }
 
     try {
-      console.log(`Bắt đầu fetch user info cho userId: ${userId}`);
+      console.log(`Bắt đầu tải thông tin user cho userId: ${userId}`);
       setIsLoading(true);
 
       const response = await userAPI.getInfo(userId);
 
-
-      // Xử lý cả 2 trường hợp: response trực tiếp hoặc nested trong user object
+      // Xử lý cả 2 trường hợp: response trực tiếp hoặc trong user object
       let userInfo;
       if (response.user) {
-        // Nếu response có nested user object
+        // Nếu response có nằm trong user object
         userInfo = response.user;
       } else {
         // Nếu response là user data trực tiếp  
         userInfo = response;
       }
 
-      // Mapping user data
+      // Mapping dữ liệu user
       const userData = {
         id: userInfo.id || userId,
         username: userInfo.username || '',
@@ -74,7 +73,7 @@ export const ChatProvider = ({ children }) => {
         name: userInfo.fullName || userInfo.username || 'Người dùng'
       };
 
-      // Force re-render bằng cách tạo object mới
+      // Set thông tin người dùng
       setUser({ ...userData });
       setUserLoaded(true);
       setError(null);
@@ -88,7 +87,7 @@ export const ChatProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, []); // Remove all dependencies
+  }, []);
 
   const fetchChatHistory = useCallback(async (retries = 3) => {
     try {
@@ -127,7 +126,8 @@ export const ChatProvider = ({ children }) => {
       const newChatId = response.id;
 
       const newChat = {
-        id: newChatId, title,
+        id: newChatId, 
+        title,
         date: new Date().toLocaleDateString('vi-VN'),
         updated_at: new Date().toISOString(),
         status: 'active'
@@ -199,42 +199,42 @@ export const ChatProvider = ({ children }) => {
     setActiveChatMessages(prev => [...prev, userMsg, botMsg]);
   }, []);
 
-  // Load initial data khi component mount
+  // Tải dữ liệu ban đầu khi component mount
   useEffect(() => {
     const initializeData = async () => {
       const { userId, token } = getAuthData();
-      console.log('Initialize data - userId:', userId, 'token exists:', !!token);
+      console.log('Khởi tạo dữ liệu - userId:', userId, 'token tồn tại:', !!token);
 
       if (userId && token && !userLoaded) {
-        console.log('Bắt đầu load user và chat history');
+        console.log('Bắt đầu tải user và lịch sử chat');
         try {
-          // Đảm bảo user được load trước
+          // Đảm bảo user được tải trước
           const loadedUser = await fetchUserInfo(userId, true);
 
-          // Sau đó mới load chat history
+          // Sau đó mới tải chat history
           await fetchChatHistory();
         } catch (error) {
-          console.error('Lỗi khi initialize data:', error);
+          console.error('Lỗi khi khởi tạo dữ liệu:', error);
         }
       }
     };
 
     initializeData();
-  }, []); // Chỉ chạy 1 lần khi mount
+  }, []);
 
-  // Kiểm tra auth state định kỳ
+  // Kiểm tra trạng thái xác thực định kỳ
   useEffect(() => {
     const checkAuthState = () => {
       const { userId, token } = getAuthData();
       if (!userId || !token) {
         if (user) {
-          console.log('Auth không hợp lệ, reset state');
+          console.log('Xác thực không hợp lệ, đặt lại trạng thái');
           resetAuthState();
         }
       }
     };
 
-    const interval = setInterval(checkAuthState, 30000); // 30 giây
+    const interval = setInterval(checkAuthState, 30000);
     return () => clearInterval(interval);
   }, [user, resetAuthState]);
 

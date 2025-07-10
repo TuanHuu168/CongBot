@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field, ConfigDict
 from bson import ObjectId
 
@@ -28,9 +29,9 @@ class BaseModelWithId(BaseModel):
         }
     )
    
-    id = Field(default_factory=PyObjectId, alias="_id")
-    created_at = Field(default_factory=datetime.now)
-    updated_at = Field(default_factory=datetime.now)
+    id: Optional[PyObjectId] = Field(default_factory=PyObjectId, alias="_id")
+    created_at: datetime = Field(default_factory=datetime.now)
+    updated_at: datetime = Field(default_factory=datetime.now)
 
 class BaseResponse(BaseModel):
     # Base response model cho API responses
@@ -38,7 +39,7 @@ class BaseResponse(BaseModel):
         json_encoders={datetime: lambda dt: dt.isoformat()}
     )
    
-    success = True
-    message = ""
-    data = None
-    error = None
+    success: bool = True
+    message: str = ""
+    data: Optional[dict] = None
+    error: Optional[str] = None

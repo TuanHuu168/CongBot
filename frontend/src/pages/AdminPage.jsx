@@ -15,6 +15,7 @@ import BenchmarkTab from './admin/BenchmarkTab';
 const AdminPage = () => {
   const navigate = useNavigate();
   
+  // State quản lý tab hiện tại và dữ liệu hệ thống
   const [activeTab, setActiveTab] = useState('dashboard');
   const [systemStats, setSystemStats] = useState(null);
   const [users, setUsers] = useState([]);
@@ -24,22 +25,22 @@ const AdminPage = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  // Document management states
+  // State quản lý văn bản
   const [documentFilter, setDocumentFilter] = useState('');
   const [documentFiles, setDocumentFiles] = useState([]);
   const [uploadMetadata, setUploadMetadata] = useState({
     doc_id: '', doc_type: 'Thông tư', doc_title: '', effective_date: '', status: 'active', document_scope: 'Quốc gia'
   });
 
-  // Benchmark states
+  // State quản lý benchmark
   const [runningBenchmark, setRunningBenchmark] = useState(false);
   const [benchmarkProgress, setBenchmarkProgress] = useState(0);
 
-  // Cache states
+  // State quản lý cache
   const [invalidateDocId, setInvalidateDocId] = useState('');
   const [searchCacheKeyword, setSearchCacheKeyword] = useState('');
 
-  // Fetch functions được định nghĩa ở component level
+  // Các hàm fetch dữ liệu từ API
   const fetchSystemStats = async () => {
     try {
       setIsLoading(true);
@@ -97,7 +98,7 @@ const AdminPage = () => {
     }
   };
 
-  // Load initial data
+  // Tải dữ liệu ban đầu khi component mount
   useEffect(() => {
     Promise.allSettled([
       fetchSystemStats(),
@@ -107,11 +108,13 @@ const AdminPage = () => {
     ]);
   }, []);
 
+  // Lấy header xác thực từ localStorage
   const getAuthHeaders = () => {
     const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
     return { Authorization: `Bearer ${token}` };
   };
 
+  // Xử lý upload văn bản
   const handleUploadDocument = async (e) => {
     e.preventDefault();
 
@@ -159,6 +162,7 @@ const AdminPage = () => {
     }
   };
 
+  // Xử lý xóa văn bản
   const handleDeleteDocument = async (docId) => {
     showConfirm(`Bạn có chắc chắn muốn xóa văn bản ${docId}? Hành động này không thể hoàn tác.`, 'Xác nhận xóa').then(async (result) => {
       if (result.isConfirmed) {
@@ -177,6 +181,7 @@ const AdminPage = () => {
     });
   };
 
+  // Xử lý xóa toàn bộ cache
   const handleClearCache = () => {
     showConfirm('Bạn có chắc chắn muốn xóa toàn bộ cache? Hành động này không thể hoàn tác.', 'Xác nhận xóa cache').then(async (result) => {
       if (result.isConfirmed) {
@@ -195,6 +200,7 @@ const AdminPage = () => {
     });
   };
 
+  // Xử lý vô hiệu hóa cache theo document ID
   const handleInvalidateDocCache = async () => {
     if (!invalidateDocId) {
       showError('Vui lòng nhập ID văn bản để vô hiệu hóa cache.', 'Cần nhập ID văn bản');
@@ -226,6 +232,7 @@ const AdminPage = () => {
     }
   };
 
+  // Xử lý tìm kiếm cache (chức năng đang phát triển)
   const handleSearchCache = async () => {
     if (!searchCacheKeyword) {
       showError('Vui lòng nhập từ khóa để tìm kiếm trong cache.', 'Cần nhập từ khóa');
@@ -235,6 +242,7 @@ const AdminPage = () => {
     showSuccess('Chức năng tìm kiếm cache sẽ được triển khai trong phiên bản tiếp theo.', 'Tính năng đang phát triển');
   };
 
+  // Xử lý chạy benchmark
   const handleRunBenchmark = async () => {
     showConfirm('Quá trình benchmark có thể mất vài phút để hoàn thành. Bạn có muốn tiếp tục?', 'Xác nhận chạy benchmark').then(async (result) => {
       if (result.isConfirmed) {
@@ -247,6 +255,7 @@ const AdminPage = () => {
             output_dir: "benchmark_results"
           });
 
+          // Mô phỏng tiến trình benchmark
           const interval = setInterval(() => {
             setBenchmarkProgress(prev => {
               const newProgress = prev + Math.random() * 10;
@@ -279,6 +288,7 @@ const AdminPage = () => {
     });
   };
 
+  // Xử lý đăng xuất
   const handleLogout = () => {
     showConfirm('Bạn có chắc chắn muốn đăng xuất?', 'Đăng xuất').then((result) => {
       if (result.isConfirmed) {
@@ -288,6 +298,7 @@ const AdminPage = () => {
     });
   };
 
+  // Xử lý làm mới toàn bộ dữ liệu
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
@@ -305,6 +316,7 @@ const AdminPage = () => {
     }
   };
 
+  // Lấy tiêu đề tab hiện tại
   const getTabTitle = () => {
     const titles = {
       dashboard: 'Dashboard',
@@ -316,6 +328,7 @@ const AdminPage = () => {
     return titles[activeTab] || 'Admin Panel';
   };
 
+  // Render tab đang được chọn
   const renderActiveTab = () => {
     const commonProps = { isLoading };
 
@@ -376,6 +389,7 @@ const AdminPage = () => {
     }
   };
 
+  // Hiệu ứng animation cho sidebar
   const sidebarVariants = {
     hidden: { x: -280 },
     visible: { x: 0, transition: { type: "spring", stiffness: 300, damping: 30 } }
@@ -391,7 +405,7 @@ const AdminPage = () => {
     >
       {error && <ErrorMessage message={error} onClose={() => setError(null)} />}
 
-      {/* Sidebar */}
+      {/* Sidebar điều hướng */}
       <motion.div
         className="w-64 bg-white border-r border-gray-200 shadow-sm h-screen overflow-y-auto fixed left-0 top-0 z-10"
         variants={sidebarVariants}
@@ -399,7 +413,7 @@ const AdminPage = () => {
         animate="visible"
       >
         <div className="flex flex-col h-full">
-          {/* Logo and Header */}
+          {/* Logo và tiêu đề */}
           <div className="px-6 py-6 bg-gradient-to-r from-green-600 to-teal-600 text-white flex items-center space-x-2">
             <div className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center">
               <LayoutDashboard size={20} className="text-white" />
@@ -410,7 +424,7 @@ const AdminPage = () => {
             </div>
           </div>
 
-          {/* Navigation Links */}
+          {/* Menu điều hướng */}
           <nav className="flex-1 p-4">
             <div className="space-y-1">
               {[
@@ -435,7 +449,7 @@ const AdminPage = () => {
             </div>
           </nav>
 
-          {/* Admin Info & Logout */}
+          {/* Thông tin admin và nút đăng xuất */}
           <div className="p-4 border-t border-gray-200">
             <div className="flex items-center mb-3">
               <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
@@ -468,6 +482,7 @@ const AdminPage = () => {
         </div>
       </motion.div>
 
+      {/* Khu vực nội dung chính */}
       <div className="ml-64 flex-1 overflow-x-hidden">
         <TopNavBar 
           title={getTabTitle()}

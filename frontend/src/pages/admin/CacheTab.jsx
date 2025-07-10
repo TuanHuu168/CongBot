@@ -15,6 +15,7 @@ const CacheTab = ({
     handleInvalidateDocCache,
     handleSearchCache
 }) => {
+    // Hiệu ứng animation cho component
     const fadeInVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
@@ -23,7 +24,7 @@ const CacheTab = ({
     return (
         <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Cache Stats */}
+                {/* Khu vực hiển thị thống kê cache */}
                 <motion.div
                     className="md:col-span-2 bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -44,6 +45,7 @@ const CacheTab = ({
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Thống kê tổng quan cache */}
                                 <div>
                                     <div className="bg-green-50 p-4 rounded-lg">
                                         <h3 className="text-green-700 text-lg font-medium mb-2">Cache tổng quan</h3>
@@ -72,6 +74,7 @@ const CacheTab = ({
                                     </div>
                                 </div>
 
+                                {/* Biểu đồ phân phối cache */}
                                 <div>
                                     <div className="bg-purple-50 p-4 rounded-lg">
                                         <h3 className="text-purple-700 text-lg font-medium mb-2">Phân phối Cache</h3>
@@ -98,7 +101,7 @@ const CacheTab = ({
                                                 </div>
                                             </div>
 
-                                            {/* Hit rate visualization */}
+                                            {/* Biểu đồ tỷ lệ hit rate */}
                                             <div>
                                                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                                                     <span>Hit rate:</span>
@@ -124,7 +127,7 @@ const CacheTab = ({
                             </div>
                         )}
 
-                        {/* Sample cache entries */}
+                        {/* Bảng hiển thị mẫu cache gần đây */}
                         <div className="mt-6">
                             <h3 className="text-sm font-medium text-gray-700 mb-2">Mẫu cache gần đây</h3>
 
@@ -155,7 +158,7 @@ const CacheTab = ({
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
-                                            {/* Mẫu dữ liệu, thực tế sẽ được lấy từ API */}
+                                            {/* Dữ liệu mẫu để demo, sẽ được thay thế bằng dữ liệu thực từ API */}
                                             {[1, 2, 3].map((_, index) => (
                                                 <tr key={index} className="hover:bg-gray-50">
                                                     <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
@@ -187,7 +190,7 @@ const CacheTab = ({
                     </div>
                 </motion.div>
 
-                {/* Cache Actions */}
+                {/* Khu vực các thao tác với cache */}
                 <motion.div
                     className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -203,7 +206,7 @@ const CacheTab = ({
 
                     <div className="p-5">
                         <div className="space-y-4">
-                            {/* Xóa toàn bộ cache */}
+                            {/* Chức năng xóa toàn bộ cache */}
                             <div className="p-4 bg-red-50 rounded-lg">
                                 <h3 className="text-red-700 text-base font-medium mb-2">Xóa toàn bộ Cache</h3>
                                 <p className="text-sm text-gray-600 mb-3">
@@ -228,7 +231,7 @@ const CacheTab = ({
                                 </button>
                             </div>
 
-                            {/* Xóa cache không hợp lệ - Đây là nút mới */}
+                            {/* Chức năng xóa cache không hợp lệ */}
                             <div className="p-4 bg-yellow-50 rounded-lg">
                                 <h3 className="text-yellow-700 text-base font-medium mb-2">Xóa cache không hợp lệ</h3>
                                 <p className="text-sm text-gray-600 mb-3">
@@ -247,7 +250,7 @@ const CacheTab = ({
                                             cancelButtonColor: '#6b7280'
                                         }).then(async (result) => {
                                             if (result.isConfirmed) {
-                                                // Xử lý xóa cache không hợp lệ
+                                                // TODO: Thực hiện logic xóa cache không hợp lệ
                                                 Swal.fire({
                                                     title: 'Thành công',
                                                     text: 'Đã xóa cache không hợp lệ',
@@ -265,7 +268,7 @@ const CacheTab = ({
                                 </button>
                             </div>
 
-                            {/* Vô hiệu hóa cache */}
+                            {/* Chức năng vô hiệu hóa cache theo document ID */}
                             <div className="p-4 bg-amber-50 rounded-lg">
                                 <h3 className="text-amber-700 text-base font-medium mb-2">Vô hiệu hóa cache</h3>
                                 <p className="text-sm text-gray-600 mb-3">
@@ -289,7 +292,7 @@ const CacheTab = ({
                                 </div>
                             </div>
 
-                            {/* Tìm kiếm Cache */}
+                            {/* Chức năng tìm kiếm cache */}
                             <div className="p-4 bg-blue-50 rounded-lg">
                                 <h3 className="text-blue-700 text-base font-medium mb-2">Tìm kiếm Cache</h3>
                                 <p className="text-sm text-gray-600 mb-3">

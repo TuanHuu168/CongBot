@@ -15,7 +15,7 @@ const TopNavBar = ({
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // Click outside để đóng dropdown
+  // Bấm chỗ khác để đóng dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -50,7 +50,7 @@ const TopNavBar = ({
   };
   const isLoggedIn = Boolean(user?.id);
 
-  // Navigation items (loại bỏ current path)
+  // Navigation items
   const getNavigationItems = () => {
     const currentPath = location.pathname;
     const allItems = [
@@ -101,12 +101,12 @@ const TopNavBar = ({
             )}
           </div>
 
-          {/* Center Title */}
+          {/* Tiêu đề */}
           <div className="flex-1 text-center mx-4">
             <h1 className="text-lg font-semibold text-gray-800 truncate max-w-xs mx-auto">{title}</h1>
           </div>
 
-          {/* Right Section */}
+          {/* Section phải */}
           {customRight || (
             <>
               {isLoggedIn ? (

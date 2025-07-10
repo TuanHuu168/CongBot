@@ -261,7 +261,7 @@ const ChatSidebar = ({
                     </div>
                 </div>
 
-                {/* Chat history */}
+                {/* Lịch sử chat */}
                 <div className="px-4 flex-1 overflow-y-auto">
                     <div className="mb-3">
                         <div className="flex items-center justify-between mb-3">
@@ -301,7 +301,7 @@ const ChatSidebar = ({
                 </div>
             </div>
 
-            {/* Click outside to close menu */}
+            {/* Bấm ra ngoài để đóng menu */}
             {openMenuId && (
                 <div
                     className="fixed inset-0 z-40"

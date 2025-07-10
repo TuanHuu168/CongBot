@@ -1,16 +1,15 @@
 import Swal from 'sweetalert2';
 
-// Sử dụng Intl API để xử lý timezone Việt Nam chính xác
+// Múi giờ Việt Nam
 const VN_TIMEZONE = 'Asia/Ho_Chi_Minh';
 
-// Helper function để convert thời gian về múi giờ Việt Nam
+// Chuyển đổi thời gian về múi giờ Việt Nam
 const toVNTime = (dateInput) => {
   if (!dateInput) return null;
   
   try {
     let date;
     if (typeof dateInput === 'string') {
-      // Nếu là string, parse thành Date object
       date = new Date(dateInput);
     } else if (dateInput instanceof Date) {
       date = dateInput;
@@ -25,12 +24,12 @@ const toVNTime = (dateInput) => {
     
     return date;
   } catch (error) {
-    console.error('Error converting to VN time:', error);
+    console.error('Lỗi khi chuyển đổi thời gian VN:', error);
     return null;
   }
 };
 
-// Date formatting utilities với VN timezone
+// Định dạng ngày tháng theo múi giờ Việt Nam
 export const formatDate = (dateString) => {
   if (!dateString) return 'N/A';
   
@@ -91,6 +90,7 @@ export const formatDate = (dateString) => {
   }).format(date);
 };
 
+// Chỉ hiển thị ngày
 export const formatDateOnly = (dateString) => {
   if (!dateString) return 'N/A';
   const date = toVNTime(dateString);
@@ -104,6 +104,7 @@ export const formatDateOnly = (dateString) => {
   }).format(date);
 };
 
+// Chỉ hiển thị giờ
 export const formatTimeOnly = (dateString) => {
   if (!dateString) return 'N/A';
   const date = toVNTime(dateString);
@@ -116,6 +117,7 @@ export const formatTimeOnly = (dateString) => {
   }).format(date);
 };
 
+// Lấy nhãn ngày (hôm nay, hôm qua, ...)
 export const getDateLabel = (dateString) => {
   const date = toVNTime(dateString);
   if (!date) return 'Không xác định';
@@ -156,19 +158,20 @@ export const getDateLabel = (dateString) => {
   }).format(date);
 };
 
-// Chat utilities
+// Tiện ích cho chat
 export const getDisplayTitle = (chat) => {
   if (!chat?.title || chat.title.trim() === '') return "Cuộc trò chuyện mới";
   const isMongoId = /^[0-9a-fA-F]{24}$/.test(chat.title);
   return isMongoId ? "Cuộc trò chuyện mới" : chat.title;
 };
 
+// Cắt ngắn văn bản
 export const truncateText = (text, maxLength = 150) => {
   if (!text || text.length <= maxLength) return text;
   return text.substring(0, maxLength) + '...';
 };
 
-// Animation variants
+// Hiệu ứng animation
 export const pageVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.4 } },
@@ -191,7 +194,7 @@ export const containerVariants = {
   visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
 };
 
-// Alert utilities
+// Tiện ích thông báo
 const alertConfig = { confirmButtonColor: '#10b981', customClass: { popup: 'rounded-xl shadow-xl' } };
 
 export const showError = (message, title = 'Lỗi') => {
@@ -210,7 +213,7 @@ export const showConfirm = (message, title = 'Xác nhận') => {
   });
 };
 
-// Auth utilities
+// Tiện ích xác thực
 export const getAuthData = () => {
   const token = localStorage.getItem('auth_token') || sessionStorage.getItem('auth_token');
   const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
@@ -224,7 +227,7 @@ export const clearAuthData = () => {
   });
 };
 
-// Constants
+// Hằng số đường dẫn
 export const ROUTES = {
   HOME: '/', LOGIN: '/login', REGISTER: '/register', CHAT: '/chat',
   HISTORY: '/history', PROFILE: '/profile', ADMIN: '/admin'
@@ -232,10 +235,10 @@ export const ROUTES = {
 
 export const STORAGE_KEYS = { AUTH_TOKEN: 'auth_token', USER_ID: 'user_id' };
 
-// Utility functions
+// Lấy thời gian hiện tại theo múi giờ Việt Nam
 export const getCurrentVNTime = () => {
   return new Date().toLocaleString('sv-SE', { timeZone: VN_TIMEZONE });
 };
 
-// Export timezone constant
+// Xuất hằng số múi giờ
 export { VN_TIMEZONE };

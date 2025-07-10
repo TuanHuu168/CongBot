@@ -5,7 +5,9 @@ import {
 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+// Component thanh bên quản trị
 const AdminSidebar = ({ activeTab, setActiveTab, handleLogout, navigate }) => {
+    // Cấu hình animation cho sidebar
     const sidebarVariants = {
         hidden: { x: -280 },
         visible: { x: 0, transition: { type: "spring", stiffness: 300, damping: 30 } }
@@ -19,18 +21,18 @@ const AdminSidebar = ({ activeTab, setActiveTab, handleLogout, navigate }) => {
             animate="visible"
         >
             <div className="flex flex-col h-full">
-                {/* Logo and Header */}
+                {/* Phần header và logo */}
                 <div className="px-6 py-6 bg-gradient-to-r from-green-600 to-teal-600 text-white flex items-center space-x-2">
                     <div className="h-10 w-10 bg-white/10 rounded-lg flex items-center justify-center">
                         <LayoutDashboard size={20} className="text-white" />
                     </div>
                     <div>
-                        <h1 className="text-lg font-bold">Admin Panel</h1>
+                        <h1 className="text-lg font-bold">Bảng Quản Trị</h1>
                         <p className="text-xs text-white/80">Quản trị hệ thống</p>
                     </div>
                 </div>
 
-                {/* Navigation Links */}
+                {/* Menu điều hướng */}
                 <nav className="flex-1 p-4">
                     <div className="space-y-1">
                         <button
@@ -41,7 +43,7 @@ const AdminSidebar = ({ activeTab, setActiveTab, handleLogout, navigate }) => {
                                 }`}
                         >
                             <LayoutDashboard size={18} className="mr-3" />
-                            Dashboard
+                            Bảng điều khiển
                         </button>
 
                         <button
@@ -85,19 +87,19 @@ const AdminSidebar = ({ activeTab, setActiveTab, handleLogout, navigate }) => {
                                 }`}
                         >
                             <BarChart2 size={18} className="mr-3" />
-                            Benchmark
+                            Đánh giá hiệu năng
                         </button>
                     </div>
                 </nav>
 
-                {/* Admin Info & Logout */}
+                {/* Thông tin admin và nút đăng xuất */}
                 <div className="p-4 border-t border-gray-200">
                     <div className="flex items-center mb-3">
                         <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
                             <User size={20} className="text-green-600" />
                         </div>
                         <div className="ml-3">
-                            <p className="text-sm font-medium text-gray-700">Admin</p>
+                            <p className="text-sm font-medium text-gray-700">Quản trị viên</p>
                             <p className="text-xs text-gray-500">admin@example.com</p>
                         </div>
                     </div>

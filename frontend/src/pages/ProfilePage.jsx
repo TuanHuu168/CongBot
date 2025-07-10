@@ -16,12 +16,17 @@ const ProfilePage = () => {
   const navigate = useNavigate();
   const { user, fetchUserInfo, chatHistory, switchChat, fetchChatHistory } = useChat();
 
+  // State quản lý thông tin cá nhân
   const [formData, setFormData] = useState({
     fullName: '', email: '', phoneNumber: '', personalInfo: '', avatarUrl: ''
   });
+  
+  // State quản lý thay đổi mật khẩu
   const [passwordData, setPasswordData] = useState({
     currentPassword: '', newPassword: '', confirmPassword: ''
   });
+  
+  // State quản lý lỗi và UI
   const [passwordErrors, setPasswordErrors] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [stats, setStats] = useState({ 
@@ -35,6 +40,7 @@ const ProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [passwordLoading, setPasswordLoading] = useState(false);
 
+  // Kiểm tra xác thực và tải dữ liệu khi component mount
   useEffect(() => {
     const userId = localStorage.getItem('user_id') || sessionStorage.getItem('user_id');
     if (!userId) {
@@ -46,13 +52,14 @@ const ProfilePage = () => {
       try {
         await Promise.all([fetchUserInfo(userId), fetchChatHistory()]);
       } catch (error) {
-        console.error("Error loading data:", error);
+        console.error("Lỗi khi tải dữ liệu:", error);
       }
     };
 
     loadData();
   }, [fetchUserInfo, fetchChatHistory, navigate]);
 
+  // Cập nhật form data khi thông tin user thay đổi
   useEffect(() => {
     if (user) {
       setFormData({
@@ -65,6 +72,7 @@ const ProfilePage = () => {
     }
   }, [user]);
 
+  // Tính toán thống kê và chat gần đây khi lịch sử chat thay đổi
   useEffect(() => {
     if (chatHistory && chatHistory.length > 0) {
       const activeChats = chatHistory.filter(chat => chat.status === 'active');
@@ -74,6 +82,7 @@ const ProfilePage = () => {
       
       setRecentChats(sortedChats.slice(0, 3));
 
+      // Tính số ngày hoạt động duy nhất
       const activeDaysSet = new Set();
       activeChats.forEach(chat => {
         const chatDate = new Date(chat.updated_at || chat.created_at || chat.date);
@@ -89,6 +98,7 @@ const ProfilePage = () => {
     }
   }, [chatHistory]);
 
+  // Xử lý thay đổi form thông tin cá nhân
   const handleFormChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -97,6 +107,7 @@ const ProfilePage = () => {
     }
   }, [formErrors]);
 
+  // Xử lý thay đổi form mật khẩu
   const handlePasswordChange = useCallback((e) => {
     const { name, value } = e.target;
     setPasswordData(prev => ({ ...prev, [name]: value }));
@@ -105,6 +116,7 @@ const ProfilePage = () => {
     }
   }, [passwordErrors]);
 
+  // Xử lý submit form cập nhật thông tin cá nhân
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -130,9 +142,11 @@ const ProfilePage = () => {
     }
   };
 
+  // Xử lý submit form thay đổi mật khẩu
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate mật khẩu trước khi gửi
     const errors = {};
     const passwordError = validatePassword(passwordData.newPassword);
     const confirmError = validateConfirmPassword(passwordData.newPassword, passwordData.confirmPassword);
@@ -170,22 +184,26 @@ const ProfilePage = () => {
     }
   };
 
+  // Xử lý thay đổi ảnh đại diện (tính năng đang phát triển)
   const handleAvatarChange = () => {
     showSuccess('Tính năng này sẽ được cập nhật trong phiên bản tới', 'Thay đổi ảnh đại diện');
   };
 
+  // Xử lý click vào chat để chuyển đến trang chat
   const handleChatClick = (chatId) => {
     switchChat(chatId).then(() => {
       navigate('/chat');
     });
   };
 
+  // Format tiêu đề chat để hiển thị
   const formatChatTitle = (title) => {
     if (!title || title.trim() === '') return "Cuộc trò chuyện mới";
     const isMongoId = /^[0-9a-fA-F]{24}$/.test(title);
     return isMongoId ? "Cuộc trò chuyện mới" : title;
   };
 
+  // Toggle hiển thị/ẩn mật khẩu
   const togglePasswordVisibility = (field) => {
     setPasswordVisibility(prev => ({
       ...prev,
@@ -193,12 +211,14 @@ const ProfilePage = () => {
     }));
   };
 
+  // Hiệu ứng animation cho modal
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 30 } },
     exit: { opacity: 0, scale: 0.9, transition: { duration: 0.2 } }
   };
 
+  // Component thẻ thống kê
   const StatCard = ({ icon: Icon, value, label }) => (
     <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-xl p-4 text-center">
       <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-teal-500 text-white mb-2">
@@ -209,6 +229,7 @@ const ProfilePage = () => {
     </div>
   );
 
+  // Component field mật khẩu với toggle show/hide
   const PasswordField = ({ name, label, field, placeholder = "●●●●●●●●" }) => (
     <div>
       <label htmlFor={name} className="block text-xs font-medium text-gray-700 mb-1.5">{label}</label>
@@ -240,11 +261,14 @@ const ProfilePage = () => {
       className="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-emerald-50"
       variants={pageVariants} initial="initial" animate="animate" exit="exit"
     >
+      {/* Header với thông tin người dùng */}
       <TopNavBar title="Cài đặt" showBackButton={true} backButtonDestination="/chat" backButtonText="Quay lại chat" user={user} />
 
+      {/* Phần header profile với avatar và thông tin cơ bản */}
       <div className="bg-white shadow-md border-b border-gray-200 mb-6">
         <div className="container mx-auto px-4 sm:px-6 py-6">
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            {/* Avatar với nút thay đổi */}
             <div className="relative">
               <div className="w-24 h-24 rounded-full border-4 border-green-100 shadow-md overflow-hidden bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center">
                 {formData.avatarUrl ? (
@@ -258,6 +282,7 @@ const ProfilePage = () => {
               </button>
             </div>
 
+            {/* Thông tin cá nhân */}
             <div className="flex-1 text-center sm:text-left">
               <h1 className="text-2xl font-bold text-gray-900">{formData.fullName}</h1>
               <div className="mt-2 space-y-1">
@@ -284,10 +309,12 @@ const ProfilePage = () => {
         </div>
       </div>
 
+      {/* Modal chỉnh sửa thông tin cá nhân */}
       <AnimatePresence>
         {editMode && (
           <div className="fixed inset-0 backdrop-blur-sm bg-black/40 flex items-center justify-center z-50 p-4">
             <motion.div variants={modalVariants} initial="hidden" animate="visible" exit="exit" className="bg-white rounded-xl shadow-xl max-w-md w-full overflow-hidden">
+              {/* Header modal */}
               <div className="p-5 border-b border-gray-200">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-medium text-gray-900">Chỉnh sửa thông tin cá nhân</h3>
@@ -297,6 +324,7 @@ const ProfilePage = () => {
                   </button>
                 </div>
               </div>
+              {/* Form chỉnh sửa */}
               <div className="p-5">
                 <form onSubmit={handleFormSubmit} className="space-y-4">
                   <FormField
@@ -341,6 +369,7 @@ const ProfilePage = () => {
                       placeholder="VD: Thương binh hạng 1/4, Con liệt sĩ..."
                     />
                   </div>
+                  {/* Nút hành động */}
                   <div className="flex justify-end pt-4 space-x-3">
                     <button type="button" onClick={() => setEditMode(false)} className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors" disabled={isLoading}>
                       Hủy
@@ -366,10 +395,13 @@ const ProfilePage = () => {
         )}
       </AnimatePresence>
 
+      {/* Nội dung chính với layout 2 cột */}
       <div className="container mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Cột trái - Bảo mật và thông tin ứng dụng */}
           <div className="lg:col-span-1">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+              {/* Card bảo mật */}
               <motion.div variants={slideUpVariants} className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center">
@@ -380,6 +412,7 @@ const ProfilePage = () => {
                   </div>
                 </div>
                 <div className="p-5">
+                  {/* Form thay đổi mật khẩu */}
                   <form onSubmit={handlePasswordSubmit} className="space-y-4">
                     <PasswordField name="currentPassword" label="Mật khẩu hiện tại" field="current" />
                     <PasswordField name="newPassword" label="Mật khẩu mới" field="new" />
@@ -411,6 +444,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* Card thông tin ứng dụng */}
               <motion.div variants={slideUpVariants} className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center">
@@ -444,8 +478,10 @@ const ProfilePage = () => {
             </motion.div>
           </div>
 
+          {/* Cột phải - Thành tựu, hoạt động, gợi ý */}
           <div className="lg:col-span-2">
             <motion.div variants={containerVariants} initial="hidden" animate="visible" className="space-y-6">
+              {/* Card thành tựu */}
               <motion.div variants={slideUpVariants} className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center">
@@ -464,6 +500,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* Card hoạt động gần đây */}
               <motion.div variants={slideUpVariants} className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center justify-between">
@@ -506,6 +543,7 @@ const ProfilePage = () => {
                       </div>
                     </div>
                   ) : (
+                    /* Hiển thị khi chưa có hoạt động */
                     <div className="text-center py-10">
                       <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 text-gray-400 mb-4">
                         <Calendar size={24} />
@@ -521,6 +559,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* Card gợi ý câu hỏi */}
               <motion.div variants={slideUpVariants} className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center">
@@ -554,6 +593,7 @@ const ProfilePage = () => {
                 </div>
               </motion.div>
 
+              {/* Card góp ý cải thiện */}
               <motion.div variants={slideUpVariants} className="bg-white rounded-2xl shadow-md overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
                   <div className="flex items-center">

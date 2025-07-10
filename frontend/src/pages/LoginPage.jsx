@@ -7,7 +7,7 @@ import FormField from '../components/common/FormField';
 import { validateUsername, validatePassword, useFormValidation } from '../utils/validationUtils';
 import { pageVariants, containerVariants, itemVariants, ROUTES, STORAGE_KEYS, showError, showSuccess } from '../utils/formatUtils';
 
-// Validation rules cho login form
+// Quy tắc validation cho form đăng nhập
 const validationRules = {
   username: validateUsername,
   password: validatePassword
@@ -15,44 +15,54 @@ const validationRules = {
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  
+  // State quản lý form và UI
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   
+  // Hook validation cho form
   const { validateField, validateForm } = useFormValidation(validationRules);
 
+  // Xử lý thay đổi giá trị input và xóa lỗi khi người dùng nhập
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
   }, [errors]);
 
+  // Xử lý validation khi người dùng rời khỏi
   const handleBlur = useCallback((e) => {
     const { name, value } = e.target;
     const error = validateField(name, value);
     setErrors(prev => ({ ...prev, [name]: error }));
   }, [validateField]);
 
+  // Xử lý submit form đăng nhập
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    // Validate toàn bộ form trước khi gửi
     const formErrors = validateForm(formData);
     setErrors(formErrors);
     if (Object.values(formErrors).some(error => error)) return;
 
     setIsLoading(true);
     try {
+      // Gọi API đăng nhập
       const response = await userAPI.login(formData);
       const { access_token, user_id } = response;
 
+      // Lưu token vào storage (localStorage nếu remember me, sessionStorage nếu không)
       const storage = rememberMe ? localStorage : sessionStorage;
       storage.setItem(STORAGE_KEYS.AUTH_TOKEN, access_token);
       storage.setItem(STORAGE_KEYS.USER_ID, user_id);
 
       showSuccess('Chào mừng bạn quay trở lại hệ thống!', 'Đăng nhập thành công');
       
+      // Chuyển hướng đến trang chat sau khi đăng nhập thành công
       setTimeout(() => {
         navigate(ROUTES.CHAT, { state: { freshLogin: true, userId: user_id } });
       }, 1500);
@@ -71,7 +81,7 @@ const LoginPage = () => {
       animate="animate"
       exit="exit"
     >
-      {/* Left panel - Hero section */}
+      {/* Panel bên trái - Phần hero/giới thiệu (chỉ hiển thị trên desktop) */}
       <div className="hidden md:flex md:w-1/2 bg-gradient-to-br from-green-600 to-teal-700 p-12 relative">
         <motion.div
           className="relative h-full flex flex-col justify-center z-10"
@@ -79,12 +89,14 @@ const LoginPage = () => {
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3, duration: 0.5 }}
         >
+          {/* Icon chatbot */}
           <div className="w-20 h-20 bg-white/10 rounded-2xl mb-8 backdrop-blur-sm flex items-center justify-center shadow-xl">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
               <User size={20} className="text-green-600" />
             </div>
           </div>
 
+          {/* Nội dung giới thiệu */}
           <h2 className="text-4xl font-bold text-white mb-6">Chào mừng đến với Chatbot</h2>
           <p className="text-white/80 text-lg mb-8 max-w-lg">
             Hệ thống trí tuệ nhân tạo tư vấn chính sách dành cho người có công tại Việt Nam.
@@ -95,7 +107,7 @@ const LoginPage = () => {
         </motion.div>
       </div>
 
-      {/* Right panel - Login form */}
+      {/* Panel bên phải - Form đăng nhập */}
       <div className="w-full md:w-1/2 flex items-center justify-center p-6">
         <motion.div
           className="bg-white w-full max-w-md px-8 py-6 rounded-2xl shadow-2xl"
@@ -103,6 +115,7 @@ const LoginPage = () => {
           initial="hidden"
           animate="visible"
         >
+          {/* Header form với icon và tiêu đề */}
           <motion.div className="text-center mb-8" variants={itemVariants}>
             <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl mx-auto mb-4 shadow-lg flex items-center justify-center">
               <User size={32} className="text-white" />
@@ -113,7 +126,9 @@ const LoginPage = () => {
             <p className="text-gray-600 mt-2">Chatbot hỗ trợ chính sách người có công</p>
           </motion.div>
 
+          {/* Form đăng nhập */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Input tên đăng nhập */}
             <FormField 
               name="username" 
               placeholder="Tên đăng nhập" 
@@ -125,6 +140,7 @@ const LoginPage = () => {
               disabled={isLoading}
             />
             
+            {/* Input mật khẩu với toggle hiển thị */}
             <FormField 
               name="password" 
               type="password" 
@@ -140,7 +156,9 @@ const LoginPage = () => {
               disabled={isLoading}
             />
 
+            {/* Checkbox ghi nhớ đăng nhập và link quên mật khẩu */}
             <motion.div className="flex items-center justify-between" variants={itemVariants}>
+              {/* Custom checkbox cho "Ghi nhớ đăng nhập" */}
               <label className="flex items-center group cursor-pointer">
                 <input
                   type="checkbox"
@@ -163,6 +181,7 @@ const LoginPage = () => {
                 </span>
               </label>
 
+              {/* Link quên mật khẩu */}
               <button
                 type="button"
                 className="text-sm text-green-600 hover:text-green-800 transition-colors hover:underline px-2 py-1"
@@ -173,6 +192,7 @@ const LoginPage = () => {
               </button>
             </motion.div>
 
+            {/* Nút đăng nhập với loading state */}
             <motion.button
               type="submit"
               disabled={isLoading}
@@ -195,6 +215,7 @@ const LoginPage = () => {
             </motion.button>
           </form>
 
+          {/* Link chuyển đến trang đăng ký */}
           <motion.div className="mt-2 text-center" variants={itemVariants}>
             <p className="text-gray-600">
               Chưa có tài khoản?{' '}

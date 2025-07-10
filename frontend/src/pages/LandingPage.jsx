@@ -11,10 +11,13 @@ import { getAuthData, clearAuthData, showConfirm, showSuccess } from '../utils/f
 const LandingPage = () => {
   const navigate = useNavigate();
   const { user, fetchUserInfo } = useChat();
+  
+  // State quản lý trạng thái đăng nhập và thông tin user
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userInfo, setUserInfo] = useState(null);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
 
+  // Kiểm tra trạng thái đăng nhập khi component mount
   useEffect(() => {
     const checkAuthStatus = async () => {
       const { token, userId } = getAuthData();
@@ -34,7 +37,7 @@ const LandingPage = () => {
               });
             }
           } catch (error) {
-            console.error('Error fetching user info:', error);
+            console.error('Lỗi khi lấy thông tin người dùng:', error);
           }
         }
       } else {
@@ -46,6 +49,7 @@ const LandingPage = () => {
     checkAuthStatus();
   }, [user, fetchUserInfo]);
 
+  // Xử lý đăng xuất
   const handleLogout = () => {
     showConfirm('Bạn có chắc chắn muốn đăng xuất?', 'Đăng xuất').then((result) => {
       if (result.isConfirmed) {
@@ -64,6 +68,7 @@ const LandingPage = () => {
     });
   };
 
+  // Dữ liệu tính năng
   const features = [
     {
       title: 'Trò chuyện thông minh',
@@ -83,6 +88,7 @@ const LandingPage = () => {
     }
   ];
 
+  // Dữ liệu lợi ích
   const benefits = [
     'Tiếp cận thông tin chính sách một cách nhanh chóng',
     'Xác định chính xác quyền lợi và thủ tục cần thiết',
@@ -92,6 +98,7 @@ const LandingPage = () => {
     'Dữ liệu được cập nhật liên tục theo quy định mới nhất'
   ];
 
+  // Dữ liệu câu hỏi thường gặp
   const faqs = [
     {
       question: 'Chatbot này hoạt động như thế nào?',
@@ -111,6 +118,7 @@ const LandingPage = () => {
     }
   ];
 
+  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -133,9 +141,11 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-gray-50">
+      {/* Header */}
       <header className="w-full bg-white shadow-sm sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
+            {/* Logo và tên */}
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center shadow-md">
@@ -151,12 +161,14 @@ const LandingPage = () => {
               </div>
             </div>
             
+            {/* Menu điều hướng */}
             <nav className="hidden md:flex space-x-8">
               <a href="#features" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Tính năng</a>
               <a href="#benefits" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Lợi ích</a>
               <a href="#faq" className="text-gray-700 hover:text-green-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Hỏi đáp</a>
             </nav>
 
+            {/* User menu hoặc nút đăng nhập/đăng ký */}
             <div className="flex items-center space-x-4">
               {isLoggedIn ? (
                 <div className="relative">
@@ -239,10 +251,12 @@ const LandingPage = () => {
         </div>
       </header>
 
+      {/* Hero Section */}
       <section className="relative">
         <div className="absolute inset-0 bg-gradient-to-br from-green-600 to-teal-700 clip-hero-shape"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-28 md:pt-32 md:pb-40">
           <div className="flex flex-col md:flex-row items-center gap-12">
+            {/* Nội dung text */}
             <motion.div
               className="md:w-1/2 space-y-6 text-white"
               initial={{ opacity: 0, y: 20 }}
@@ -283,6 +297,8 @@ const LandingPage = () => {
                 )}
               </div>
             </motion.div>
+
+            {/* Demo chat interface */}
             <motion.div
               className="md:w-1/2 mt-8 md:mt-0"
               initial={{ opacity: 0, x: 50 }}
@@ -321,6 +337,7 @@ const LandingPage = () => {
         <div className="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-green-50"></div>
       </section>
 
+      {/* Features Section */}
       <section id="features" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -364,6 +381,7 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* How it works Section */}
       <section className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -409,6 +427,7 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Benefits Section */}
       <section id="benefits" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -455,6 +474,7 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* FAQ Section */}
       <section id="faq" className="py-20 bg-gradient-to-br from-green-50 to-teal-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -492,6 +512,7 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Testimonials Section */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -559,6 +580,7 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-green-600 to-teal-700 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -600,6 +622,7 @@ const LandingPage = () => {
             </div>
           </motion.div>
 
+          {/* Thống kê */}
           <motion.div
             className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 text-center"
             initial={{ opacity: 0 }}
@@ -627,9 +650,11 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between">
+            {/* Logo và mô tả */}
             <div className="mb-8 md:mb-0">
               <div className="flex items-center">
                 <div className="h-10 w-10 bg-gradient-to-br from-green-500 to-teal-600 rounded-lg flex items-center justify-center">
@@ -645,6 +670,7 @@ const LandingPage = () => {
               </p>
             </div>
 
+            {/* Menu footer */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
               <div>
                 <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wider mb-4">Truy cập nhanh</h3>
@@ -677,6 +703,7 @@ const LandingPage = () => {
         </div>
       </footer>
 
+      {/* CSS cho hero shape */}
       <style jsx>{`
         .clip-hero-shape {
           clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);

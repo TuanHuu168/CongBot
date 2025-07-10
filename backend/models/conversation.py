@@ -1,5 +1,6 @@
 from datetime import datetime
 from enum import Enum
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from .base import BaseModelWithId, PyObjectId, BaseResponse
 
@@ -11,89 +12,89 @@ class ConversationStatus(str, Enum):
 
 class ClientInfo(BaseModel):
     # Thông tin về thiết bị/client của người dùng khi tạo tin nhắn
-    platform = Field(..., description="Nền tảng: web, mobile, desktop")
-    device_type = Field(..., description="Loại thiết bị: desktop, mobile, tablet")
-    user_agent = Field(None, description="User agent string từ browser")
-    ip_address = Field(None, description="IP address (cho security)")
-    screen_resolution = Field(None, description="Độ phân giải màn hình")
+    platform: str = Field(..., description="Nền tảng: web, mobile, desktop")
+    device_type: str = Field(..., description="Loại thiết bị: desktop, mobile, tablet")
+    user_agent: Optional[str] = Field(None, description="User agent string từ browser")
+    ip_address: Optional[str] = Field(None, description="IP address (cho security)")
+    screen_resolution: Optional[str] = Field(None, description="Độ phân giải màn hình")
 
 class Exchange(BaseModel):
     # Mô hình lưu trữ một cặp câu hỏi-trả lời trong cuộc hội thoại
-    exchange_id = Field(..., description="ID duy nhất của exchange")
-    question = Field(..., description="Câu hỏi của người dùng")
-    answer = Field(..., description="Câu trả lời của chatbot")
-    timestamp = Field(default_factory=datetime.now, description="Thời gian tạo exchange")
+    exchange_id: str = Field(..., description="ID duy nhất của exchange")
+    question: str = Field(..., description="Câu hỏi của người dùng")
+    answer: str = Field(..., description="Câu trả lời của chatbot")
+    timestamp: datetime = Field(default_factory=datetime.now, description="Thời gian tạo exchange")
     
     # Metadata về performance và context
-    tokens_in_exchange = Field(default=0, description="Số tokens sử dụng trong exchange này")
-    processing_time = Field(default=0.0, description="Thời gian xử lý (seconds)")
-    source_documents = Field(default=[], description="Danh sách chunk IDs được sử dụng")
+    tokens_in_exchange: int = Field(default=0, description="Số tokens sử dụng trong exchange này")
+    processing_time: float = Field(default=0.0, description="Thời gian xử lý (seconds)")
+    source_documents: List[str] = Field(default=[], description="Danh sách chunk IDs được sử dụng")
     
     # Context và quality metrics  
-    retrieval_score = Field(None, description="Điểm số relevance của retrieval")
-    confidence_score = Field(None, description="Độ tin cậy của câu trả lời")
-    user_feedback = Field(None, description="Feedback từ người dùng")
+    retrieval_score: Optional[float] = Field(None, description="Điểm số relevance của retrieval")
+    confidence_score: Optional[float] = Field(None, description="Độ tin cậy của câu trả lời")
+    user_feedback: Optional[Dict[str, Any]] = Field(None, description="Feedback từ người dùng")
     
     # Client information
-    client_info = Field(None, description="Thông tin thiết bị client")
+    client_info: Optional[ClientInfo] = Field(None, description="Thông tin thiết bị client")
 
 class ConversationModel(BaseModelWithId):
     # Model chính cho cuộc hội thoại
-    user_id = Field(..., description="ID của người dùng sở hữu cuộc trò chuyện")
-    title = Field(default="Cuộc trò chuyện mới", description="Tiêu đề cuộc trò chuyện")
-    summary = Field(None, description="Tóm tắt nội dung cuộc trò chuyện")
+    user_id: str = Field(..., description="ID của người dùng sở hữu cuộc trò chuyện")
+    title: str = Field(default="Cuộc trò chuyện mới", description="Tiêu đề cuộc trò chuyện")
+    summary: Optional[str] = Field(None, description="Tóm tắt nội dung cuộc trò chuyện")
     
     # Trạng thái và metadata
-    status = Field(default=ConversationStatus.ACTIVE, description="Trạng thái cuộc trò chuyện")
-    total_tokens = Field(default=0, description="Tổng số tokens đã sử dụng")
-    total_exchanges = Field(default=0, description="Tổng số cặp hỏi-đáp")
+    status: ConversationStatus = Field(default=ConversationStatus.ACTIVE, description="Trạng thái cuộc trò chuyện")
+    total_tokens: int = Field(default=0, description="Tổng số tokens đã sử dụng")
+    total_exchanges: int = Field(default=0, description="Tổng số cặp hỏi-đáp")
     
     # Danh sách các exchanges
-    exchanges = Field(default=[], description="Danh sách các cặp hỏi-đáp")
+    exchanges: List[Exchange] = Field(default=[], description="Danh sách các cặp hỏi-đáp")
     
     # Thống kê và analytics
-    average_response_time = Field(default=0.0, description="Thời gian phản hồi trung bình")
-    topics_discussed = Field(default=[], description="Các chủ đề đã thảo luận")
-    language = Field(default="vi", description="Ngôn ngữ chính của cuộc trò chuyện")
+    average_response_time: float = Field(default=0.0, description="Thời gian phản hồi trung bình")
+    topics_discussed: List[str] = Field(default=[], description="Các chủ đề đã thảo luận")
+    language: str = Field(default="vi", description="Ngôn ngữ chính của cuộc trò chuyện")
     
     # Metadata bổ sung
-    tags = Field(default=[], description="Tags để phân loại cuộc trò chuyện")
-    is_favorite = Field(default=False, description="Người dùng có đánh dấu yêu thích không")
-    last_activity_at = Field(None, description="Thời gian hoạt động cuối")
+    tags: List[str] = Field(default=[], description="Tags để phân loại cuộc trò chuyện")
+    is_favorite: bool = Field(default=False, description="Người dùng có đánh dấu yêu thích không")
+    last_activity_at: Optional[datetime] = Field(None, description="Thời gian hoạt động cuối")
 
 class ConversationCreate(BaseModel):
     # Model cho việc tạo cuộc hội thoại mới
-    user_id = Field(..., description="ID của người dùng")
-    title = Field(default="Cuộc trò chuyện mới")
-    summary = Field(None)
-    tags = Field(default=[], description="Tags ban đầu")
+    user_id: str = Field(..., description="ID của người dùng")
+    title: str = Field(default="Cuộc trò chuyện mới")
+    summary: Optional[str] = Field(None)
+    tags: List[str] = Field(default=[], description="Tags ban đầu")
 
 class ConversationUpdate(BaseModel):
     # Model cho việc cập nhật thông tin cuộc hội thoại
-    title = Field(None)
-    summary = Field(None)
-    status = None
-    tags = None
-    is_favorite = None
+    title: Optional[str] = Field(None)
+    summary: Optional[str] = Field(None)
+    status: Optional[ConversationStatus] = None
+    tags: Optional[List[str]] = None
+    is_favorite: Optional[bool] = None
 
 class ExchangeCreate(BaseModel):
     # Model cho việc tạo một cặp hỏi-đáp mới
-    question = Field(..., description="Câu hỏi của người dùng")
-    client_info = Field(None, description="Thông tin client")
-    context_data = Field(None, description="Dữ liệu context bổ sung")
+    question: str = Field(..., description="Câu hỏi của người dùng")
+    client_info: Optional[ClientInfo] = Field(None, description="Thông tin client")
+    context_data: Optional[Dict[str, Any]] = Field(None, description="Dữ liệu context bổ sung")
 
 class ExchangeResponse(BaseModel):
     # Model response khi tạo exchange thành công
-    exchange_id = Field(..., description="ID của exchange vừa tạo")
-    question = Field(..., description="Câu hỏi")
-    answer = Field(..., description="Câu trả lời")
-    processing_time = Field(..., description="Thời gian xử lý")
-    source_documents = Field(default=[], description="Documents được sử dụng")
-    confidence_score = Field(None, description="Độ tin cậy")
+    exchange_id: str = Field(..., description="ID của exchange vừa tạo")
+    question: str = Field(..., description="Câu hỏi")
+    answer: str = Field(..., description="Câu trả lời")
+    processing_time: float = Field(..., description="Thời gian xử lý")
+    source_documents: List[str] = Field(default=[], description="Documents được sử dụng")
+    confidence_score: Optional[float] = Field(None, description="Độ tin cậy")
 
 class ConversationResponse(BaseResponse):
     # Model phản hồi khi truy vấn thông tin cuộc hội thoại
-    data = Field(None, description="Dữ liệu cuộc trò chuyện")
+    data: Optional[Dict[str, Any]] = Field(None, description="Dữ liệu cuộc trò chuyện")
     
     @classmethod
     def from_conversation_model(cls, conversation, message="Lấy cuộc trò chuyện thành công"):
@@ -110,17 +111,17 @@ class ConversationResponse(BaseResponse):
 
 class ConversationListResponse(BaseResponse):
     # Model response cho danh sách cuộc trò chuyện
-    data = Field(default=[], description="Danh sách cuộc trò chuyện")
-    total_count = Field(default=0, description="Tổng số cuộc trò chuyện")
-    page = Field(default=1, description="Trang hiện tại")
-    page_size = Field(default=20, description="Số items per page")
-    total_pages = Field(default=0, description="Tổng số trang")
+    data: List[Dict[str, Any]] = Field(default=[], description="Danh sách cuộc trò chuyện")
+    total_count: int = Field(default=0, description="Tổng số cuộc trò chuyện")
+    page: int = Field(default=1, description="Trang hiện tại")
+    page_size: int = Field(default=20, description="Số items per page")
+    total_pages: int = Field(default=0, description="Tổng số trang")
 
 class ConversationStats(BaseModel):
     # Model thống kê cho cuộc trò chuyện
-    total_conversations = Field(default=0, description="Tổng số cuộc trò chuyện")
-    active_conversations = Field(default=0, description="Cuộc trò chuyện đang hoạt động")
-    total_exchanges = Field(default=0, description="Tổng số exchanges")
-    average_exchanges_per_conversation = Field(default=0.0, description="Số exchanges trung bình")
-    total_tokens_used = Field(default=0, description="Tổng tokens đã sử dụng")
-    most_discussed_topics = Field(default=[], description="Chủ đề được thảo luận nhiều nhất")
+    total_conversations: int = Field(default=0, description="Tổng số cuộc trò chuyện")
+    active_conversations: int = Field(default=0, description="Cuộc trò chuyện đang hoạt động")
+    total_exchanges: int = Field(default=0, description="Tổng số exchanges")
+    average_exchanges_per_conversation: float = Field(default=0.0, description="Số exchanges trung bình")
+    total_tokens_used: int = Field(default=0, description="Tổng tokens đã sử dụng")
+    most_discussed_topics: List[str] = Field(default=[], description="Chủ đề được thảo luận nhiều nhất")

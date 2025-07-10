@@ -3,18 +3,21 @@ import { showError, getAuthData, clearAuthData } from './utils/formatUtils';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// Tạo axios client với cấu hình mặc định
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' }
 });
 
+// Interceptor để thêm token vào header
 apiClient.interceptors.request.use(config => {
   const { token } = getAuthData();
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
+// Interceptor để xử lý response và lỗi
 apiClient.interceptors.response.use(
   response => response,
   error => {
@@ -24,6 +27,7 @@ apiClient.interceptors.response.use(
         ? 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
         : error.response?.data?.detail || 'Có lỗi xảy ra. Vui lòng thử lại.';
 
+    // Xử lý lỗi 401 - chuyển hướng về trang đăng nhập
     if (error.response?.status === 401) {
       clearAuthData();
       window.location.href = '/login';
@@ -33,6 +37,7 @@ apiClient.interceptors.response.use(
   }
 );
 
+// Hàm gọi API
 const apiCall = async (method, url, data = null, config = {}) => {
   try {
     const response = await apiClient[method](url, data, config);
@@ -42,6 +47,7 @@ const apiCall = async (method, url, data = null, config = {}) => {
   }
 };
 
+// API cho quản lý người dùng
 export const userAPI = {
   getInfo: (userId) => apiCall('get', `/users/${userId}`),
   register: (userData) => apiCall('post', '/users/register', userData),
@@ -50,11 +56,14 @@ export const userAPI = {
   changePassword: (userId, passwords) => apiCall('put', `/users/${userId}/change-password`, passwords)
 };
 
+// API cho chat và cuộc trò chuyện
 export const chatAPI = {
   ask: (query, sessionId = null) => {
     const { userId } = getAuthData();
     return apiCall('post', '/ask', {
-      query, user_id: userId, session_id: sessionId,
+      query, 
+      user_id: userId, 
+      session_id: sessionId,
       client_info: {
         platform: 'web',
         deviceType: navigator.userAgent.includes('Mobile') ? 'mobile' : 'desktop'
@@ -81,6 +90,7 @@ export const chatAPI = {
   }
 };
 
+// API cho admin
 export const adminAPI = {
   getStatus: () => apiCall('get', '/status'),
   clearCache: () => apiCall('post', '/clear-cache'),
@@ -97,6 +107,7 @@ export const adminAPI = {
   toggleUserStatus: (userId) => apiCall('post', `/users/${userId}/toggle-status`)
 };
 
+// Export các API để sử dụng trong ứng dụng
 export const askQuestion = chatAPI.ask;
 export const getUserChats = chatAPI.getAll;
 export const getChatMessages = chatAPI.getMessages;
@@ -105,4 +116,5 @@ export const deleteChat = chatAPI.delete;
 export const deleteChatsBatch = chatAPI.deleteBatch;
 export const getUserInfo = userAPI.getInfo;
 
+// Hàm để lấy base URL
 export const getApiBaseUrl = () => API_BASE_URL;
