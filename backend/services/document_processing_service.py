@@ -11,6 +11,8 @@ import zipfile
 from google import genai
 import sys
 
+from services.hybrid_retrieval_service import hybrid_retrieval_service
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import GEMINI_API_KEY, GEMINI_MODEL, DATA_DIR
 
@@ -566,6 +568,34 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print("BƯỚC 5: LƯU METADATA")
             self.save_metadata(final_metadata, final_doc_id)
             
+            # BƯỚC 6 MỚI: Chuẩn bị data cho Elasticsearch (không embed, chỉ lưu để admin duyệt)
+            print("BƯỚC 6: CHUẨN BỊ DỮ LIỆU CHO ELASTICSEARCH")
+            es_chunks_data = []
+            for i, chunk_info in enumerate(saved_chunks):
+                chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
+                if os.path.exists(chunk_path):
+                    with open(chunk_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    
+                    es_chunk_data = {
+                        "chunk_id": chunk_info.get("chunk_id"),
+                        "doc_type": final_metadata.get("doc_type", ""),
+                        "doc_title": final_metadata.get("doc_title", ""),
+                        "content": content,
+                        "content_summary": chunk_info.get("content_summary", ""),
+                        "effective_date": final_metadata.get("effective_date", ""),
+                        "status": final_metadata.get("status", "active"),
+                        "document_scope": final_metadata.get("document_scope", ""),
+                        "chunk_type": chunk_info.get("chunk_type", ""),
+                        "chunk_index": i,
+                        "total_chunks": len(saved_chunks),
+                        "keywords": [],
+                        "created_at": final_metadata.get("issue_date", "")
+                    }
+                    es_chunks_data.append(es_chunk_data)
+            
+            print(f"Đã chuẩn bị {len(es_chunks_data)} chunks cho Elasticsearch (chờ admin duyệt)")
+            
             print(f"=== HOÀN THÀNH XỬ LÝ {file_type.upper()} CHO {final_doc_id} ===")
             print(f"Kết quả (với auto-detection):")
             print(f"  - Doc ID (final): {final_doc_id}")
@@ -575,6 +605,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
             print(f"  - Chunks: {len(saved_chunks)}")
             print(f"  - Related documents: {len(final_metadata['related_documents'])}")
             print(f"  - Model used: {GEMINI_MODEL}")
+            print(f"  - ES chunks prepared: {len(es_chunks_data)} (pending approval)")
             
             return {
                 "doc_id": final_doc_id,
@@ -587,7 +618,8 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
                     "doc_type": chunked_result.get('doc_type'),
                     "doc_title": chunked_result.get('doc_title'),
                     "effective_date": chunked_result.get('effective_date')
-                }
+                },
+                "elasticsearch_prepared": len(es_chunks_data)
             }
             
         except Exception as e:

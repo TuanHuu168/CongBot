@@ -23,6 +23,8 @@ from services.activity_service import activity_service, ActivityType
 from services.document_processing_service import document_processing_service
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
+from services.hybrid_retrieval_service import hybrid_retrieval_service
+from database.elasticsearch_client import elasticsearch_client
 
 # Import config
 from config import BENCHMARK_DIR, BENCHMARK_RESULTS_DIR, DATA_DIR, EMBEDDING_MODEL_NAME
@@ -761,12 +763,13 @@ async def approve_document_chunks(processing_id: str):
         # Sử dụng doc_id từ result (có thể đã được tự động nhận diện)
         final_doc_id = result.get("doc_id", doc_id)
         
-        print(f"Admin duyệt và embed {file_type.upper()} {final_doc_id} vào ChromaDB...")
+        print(f"Admin duyệt và embed {file_type.upper()} {final_doc_id} vào ChromaDB và Elasticsearch...")
         
         # Chuẩn bị dữ liệu để embed
         ids_to_add = []
         documents_to_add = []
         metadatas_to_add = []
+        es_chunks_data = []  # Thêm cho Elasticsearch
         
         for i, chunk_info in enumerate(chunks):
             # Đọc nội dung chunk
@@ -793,43 +796,70 @@ async def approve_document_chunks(processing_id: str):
                 ids_to_add.append(chunk_info.get("chunk_id"))
                 documents_to_add.append(document_text)
                 metadatas_to_add.append(chunk_metadata)
+                
+                # Chuẩn bị cho Elasticsearch
+                es_chunk_data = {
+                    "chunk_id": chunk_info.get("chunk_id"),
+                    "doc_type": metadata.get("doc_type", ""),
+                    "doc_title": metadata.get("doc_title", ""),
+                    "content": chunk_content,
+                    "content_summary": chunk_info.get("content_summary", ""),
+                    "effective_date": metadata.get("effective_date", ""),
+                    "status": metadata.get("status", "active"),
+                    "document_scope": metadata.get("document_scope", ""),
+                    "chunk_type": chunk_info.get("chunk_type", ""),
+                    "chunk_index": i,
+                    "total_chunks": len(chunks),
+                    "keywords": [],
+                    "created_at": metadata.get("issue_date", "")
+                }
+                es_chunks_data.append(es_chunk_data)
         
-        print(f"[UPLOAD TỰ ĐỘNG] Admin duyệt và embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
-        print(f"[UPLOAD TỰ ĐỘNG] Tài liệu: {final_doc_id} - Loại file: {file_type} - Sử dụng embedding model: {EMBEDDING_MODEL_NAME}")
+        print(f"Admin duyệt và embedding {len(ids_to_add)} chunks vào ChromaDB với model: {EMBEDDING_MODEL_NAME}")
+        print(f"Tài liệu: {final_doc_id} - Loại file: {file_type} - Sử dụng embedding model: {EMBEDDING_MODEL_NAME}")
 
         # Embedding vào ChromaDB
-        success = chroma_client.add_documents_to_main(
+        chroma_success = chroma_client.add_documents_to_main(
             ids=ids_to_add,
             documents=documents_to_add,
             metadatas=metadatas_to_add
         )
         
-        if not success:
+        # Index vào Elasticsearch
+        es_success = hybrid_retrieval_service.index_document_to_elasticsearch(final_doc_id, es_chunks_data)
+        
+        if not chroma_success:
             raise HTTPException(status_code=500, detail="Lỗi khi embedding vào ChromaDB")
         
         # Cập nhật trạng thái
         document_processing_status[processing_id].update({
-            "embedded_to_chroma": True,
+            "embedded_to_chroma": chroma_success,
+            "indexed_to_elasticsearch": es_success,
             "approved": True,
             "approved_at": datetime.now().isoformat(),
-            "message": f"Đã duyệt và embed {len(chunks)} chunks vào ChromaDB"
+            "message": f"Đã duyệt và embed {len(chunks)} chunks vào ChromaDB" + 
+                      (f" và Elasticsearch" if es_success else " (Elasticsearch thất bại)")
         })
         
         log_admin_activity(ActivityType.DOCUMENT_UPLOAD,
-                          f"Admin duyệt và embed {file_type.upper()}: {final_doc_id} - {len(chunks)} chunks",
+                          f"Admin duyệt và embed {file_type.upper()}: {final_doc_id} - {len(chunks)} chunks (ChromaDB: {chroma_success}, ES: {es_success})",
                           metadata={
                               "doc_id": final_doc_id,
                               "chunks_count": len(chunks),
                               "method": f"{file_type}_approved",
                               "processing_id": processing_id,
-                              "file_type": file_type
+                              "file_type": file_type,
+                              "chroma_success": chroma_success,
+                              "elasticsearch_success": es_success
                           })
         
         return {
-            "message": f"Đã duyệt và embed {len(chunks)} chunks vào ChromaDB thành công",
+            "message": f"Đã duyệt và embed {len(chunks)} chunks thành công",
             "doc_id": final_doc_id,
             "chunks_embedded": len(chunks),
-            "file_type": file_type
+            "file_type": file_type,
+            "chroma_success": chroma_success,
+            "elasticsearch_success": es_success
         }
         
     except Exception as e:
@@ -1045,7 +1075,6 @@ async def delete_document(doc_id: str, confirm: bool = False):
         
         # Xóa từ ChromaDB
         try:
-            # Lấy danh sách chunk IDs từ metadata
             metadata_path = os.path.join(doc_dir, "metadata.json")
             if os.path.exists(metadata_path):
                 with open(metadata_path, 'r', encoding='utf-8') as f:
@@ -1063,10 +1092,18 @@ async def delete_document(doc_id: str, confirm: bool = False):
         except Exception as e:
             print(f"Lỗi xử lý ChromaDB: {str(e)}")
         
+        # Xóa từ Elasticsearch
+        try:
+            es_success = hybrid_retrieval_service.delete_document_from_elasticsearch(doc_id)
+            if not es_success:
+                print(f"Cảnh báo: Không thể xóa document {doc_id} từ Elasticsearch")
+        except Exception as e:
+            print(f"Lỗi xóa từ Elasticsearch: {str(e)}")
+        
         # Xóa thư mục tài liệu
         shutil.rmtree(doc_dir)
         
-        return {"message": f"Đã xóa văn bản {doc_id} thành công"}
+        return {"message": f"Đã xóa văn bản {doc_id} thành công khỏi tất cả hệ thống"}
     except Exception as e:
         handle_error("delete_document", e)
 
@@ -1775,3 +1812,168 @@ async def toggle_user_status(user_id: str):
         raise he
     except Exception as e:
         handle_error("toggle_user_status", e)
+        
+@router.get("/elasticsearch/status")
+async def get_elasticsearch_status():
+    try:
+        health = elasticsearch_client.health_check()
+        stats = elasticsearch_client.get_index_stats()
+        
+        return {
+            "elasticsearch": health,
+            "index_stats": stats,
+            "hybrid_stats": hybrid_retrieval_service.get_stats()
+        }
+    except Exception as e:
+        handle_error("get_elasticsearch_status", e)
+
+@router.post("/elasticsearch/reindex-all")
+async def reindex_all_documents():
+    try:
+        print("Bắt đầu reindex tất cả documents vào Elasticsearch...")
+        
+        # Lấy danh sách tất cả documents
+        if not os.path.exists(DATA_DIR):
+            raise HTTPException(status_code=404, detail="Thư mục data không tồn tại")
+        
+        doc_folders = []
+        for item in os.listdir(DATA_DIR):
+            item_path = os.path.join(DATA_DIR, item)
+            if os.path.isdir(item_path):
+                doc_folders.append(item_path)
+        
+        if not doc_folders:
+            raise HTTPException(status_code=404, detail="Không tìm thấy document nào")
+        
+        success_count = 0
+        total_chunks = 0
+        
+        for doc_folder in doc_folders:
+            try:
+                metadata_path = os.path.join(doc_folder, "metadata.json")
+                if not os.path.exists(metadata_path):
+                    continue
+                
+                with open(metadata_path, 'r', encoding='utf-8') as f:
+                    metadata = json.load(f)
+                
+                doc_id = metadata.get("doc_id", os.path.basename(doc_folder))
+                chunks = metadata.get("chunks", [])
+                
+                # Chuẩn bị chunk data cho Elasticsearch
+                chunks_data = []
+                for chunk_info in chunks:
+                    chunk_path = os.path.join(DATA_DIR, chunk_info.get("file_path", "").replace("/data/", ""))
+                    if os.path.exists(chunk_path):
+                        with open(chunk_path, 'r', encoding='utf-8') as f:
+                            content = f.read()
+                        
+                        chunk_data = {
+                            "chunk_id": chunk_info.get("chunk_id"),
+                            "doc_type": metadata.get("doc_type", ""),
+                            "doc_title": metadata.get("doc_title", ""),
+                            "content": content,
+                            "content_summary": chunk_info.get("content_summary", ""),
+                            "effective_date": metadata.get("effective_date", ""),
+                            "status": metadata.get("status", "active"),
+                            "document_scope": metadata.get("document_scope", ""),
+                            "chunk_type": chunk_info.get("chunk_type", ""),
+                            "chunk_index": chunk_info.get("chunk_index", 0),
+                            "total_chunks": len(chunks),
+                            "keywords": [],
+                            "created_at": metadata.get("issue_date", "")
+                        }
+                        chunks_data.append(chunk_data)
+                
+                # Index vào Elasticsearch
+                if chunks_data:
+                    success = hybrid_retrieval_service.index_document_to_elasticsearch(doc_id, chunks_data)
+                    if success:
+                        success_count += 1
+                        total_chunks += len(chunks_data)
+                        print(f"Reindexed document {doc_id}: {len(chunks_data)} chunks")
+                    else:
+                        print(f"Failed to reindex document {doc_id}")
+                
+            except Exception as e:
+                print(f"Lỗi reindex document {doc_folder}: {str(e)}")
+                continue
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Reindex Elasticsearch: {success_count} documents, {total_chunks} chunks",
+                          {
+                              "action": "elasticsearch_reindex_all",
+                              "success_documents": success_count,
+                              "total_documents": len(doc_folders),
+                              "total_chunks": total_chunks
+                          })
+        
+        return {
+            "message": f"Reindex hoàn thành: {success_count}/{len(doc_folders)} documents",
+            "success_documents": success_count,
+            "total_documents": len(doc_folders),
+            "total_chunks": total_chunks
+        }
+        
+    except Exception as e:
+        handle_error("reindex_all_documents", e)
+
+@router.delete("/elasticsearch/index")
+async def clear_elasticsearch_index():
+    try:
+        # Xóa toàn bộ index và tạo lại
+        client = elasticsearch_client.get_client()
+        if not client:
+            raise HTTPException(status_code=500, detail="Không thể kết nối Elasticsearch")
+        
+        index_name = elasticsearch_client.index_name
+        
+        # Xóa index cũ
+        if client.indices.exists(index=index_name):
+            client.indices.delete(index=index_name)
+            print(f"Đã xóa index {index_name}")
+        
+        # Tạo lại index
+        elasticsearch_client._create_index_if_not_exists()
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Đã xóa và tạo lại Elasticsearch index",
+                          {"action": "elasticsearch_clear_index"})
+        
+        return {
+            "message": f"Đã xóa và tạo lại index {index_name} thành công"
+        }
+        
+    except Exception as e:
+        handle_error("clear_elasticsearch_index", e)
+
+@router.post("/elasticsearch/search-test")
+async def test_elasticsearch_search(search_data: dict = Body(...)):
+    try:
+        query = search_data.get("query", "")
+        if not query:
+            raise HTTPException(status_code=400, detail="Query không được để trống")
+        
+        # Test search với Elasticsearch
+        es_results = elasticsearch_client.search_documents(query, size=10)
+        
+        # Test hybrid search
+        hybrid_results = hybrid_retrieval_service.search(query, use_cache=False, top_k=10)
+        
+        return {
+            "query": query,
+            "elasticsearch_results": {
+                "total": es_results.get("total", 0),
+                "hits": es_results.get("hits", []),
+                "max_score": es_results.get("max_score", 0)
+            },
+            "hybrid_results": {
+                "total": len(hybrid_results.get("retrieved_chunks", [])),
+                "method": hybrid_results.get("search_method", "unknown"),
+                "execution_time": hybrid_results.get("execution_time", 0),
+                "stats": hybrid_results.get("stats", {})
+            }
+        }
+        
+    except Exception as e:
+        handle_error("test_elasticsearch_search", e)

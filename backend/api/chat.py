@@ -9,6 +9,7 @@ from bson.objectid import ObjectId
 # Import các service
 from services.generation_service import generation_service
 from services.retrieval_service import retrieval_service
+from services.hybrid_retrieval_service import hybrid_retrieval_service
 from database.mongodb_client import mongodb_client
 
 router = APIRouter(prefix="", tags=["chat"])
@@ -74,15 +75,18 @@ async def ask(input: QueryInput):
                 print(f"Lỗi khi tải lịch sử cuộc trò chuyện: {str(e)}")
                 conversation_context = []
         
-        # Tìm kiếm thông tin
+        # Sử dụng Hybrid Search thay vì chỉ Vector search
         retrieval_start = time.time()
-        retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
+        retrieval_result = hybrid_retrieval_service.search(input.query, use_cache=True)
         retrieval_end = time.time()
-        print(f"Tìm kiếm mất: {retrieval_end - retrieval_start:.3f} giây")
+        print(f"Hybrid search mất: {retrieval_end - retrieval_start:.3f} giây")
+        
         source = retrieval_result.get("source", "unknown")
         context_items = retrieval_result.get("context_items", [])
         retrieved_chunks = retrieval_result.get("retrieved_chunks", [])
         retrieval_time = retrieval_result.get("execution_time", 0)
+        search_method = retrieval_result.get("search_method", "unknown")
+        search_stats = retrieval_result.get("stats", {})
         
         # Xử lý câu trả lời
         generation_time = 0
@@ -99,18 +103,35 @@ async def ask(input: QueryInput):
                 answer = generation_result.get("answer", "")
                 generation_time = generation_result.get("generation_time", 0)
                 print(f"Tạo câu trả lời mất: {generation_time:.3f} giây")
-                if "retrieved_chunks" in generation_result:
-                    retrieved_chunks = generation_result.get("retrieved_chunks", retrieved_chunks)
+                
+                # Lưu vào cache nếu không phải từ cache
+                if source != "cache" and context_items:
+                    relevance_scores = retrieval_result.get("relevance_scores", {})
+                    hybrid_retrieval_service.vector_service.add_to_cache(
+                        input.query, answer, retrieved_chunks, relevance_scores
+                    )
             else:
                 answer = "Tôi không tìm thấy thông tin liên quan đến câu hỏi của bạn trong cơ sở dữ liệu."
         
-        # Lưu trữ tin nhắn với UTC timestamp
+        # Lưu trữ tin nhắn với thông tin hybrid search
         chat_id = input.session_id
         
         if input.user_id:
             current_time = now_utc()
             
             db = mongodb_client.get_database()
+            
+            exchange_data = {
+                "exchangeId": str(uuid.uuid4()),
+                "question": input.query,
+                "answer": answer,
+                "timestamp": current_time,
+                "sourceDocuments": retrieved_chunks,
+                "processingTime": retrieval_time + generation_time,
+                "clientInfo": input.client_info,
+                "searchMethod": search_method,
+                "searchStats": search_stats
+            }
             
             if input.session_id:
                 print(f"Thêm tin nhắn vào cuộc trò chuyện hiện tại: {input.session_id}")
@@ -124,17 +145,7 @@ async def ask(input: QueryInput):
                     success = db.chats.update_one(
                         {"_id": ObjectId(input.session_id)},
                         {
-                            "$push": {
-                                "exchanges": {
-                                    "exchangeId": str(uuid.uuid4()),
-                                    "question": input.query,
-                                    "answer": answer,
-                                    "timestamp": current_time,
-                                    "sourceDocuments": retrieved_chunks,
-                                    "processingTime": retrieval_time + generation_time,
-                                    "clientInfo": input.client_info
-                                }
-                            },
+                            "$push": {"exchanges": exchange_data},
                             "$set": {"updated_at": current_time}
                         }
                     )
@@ -146,15 +157,7 @@ async def ask(input: QueryInput):
                             "created_at": current_time,
                             "updated_at": current_time,
                             "status": "active",
-                            "exchanges": [{
-                                "exchangeId": str(uuid.uuid4()),
-                                "question": input.query,
-                                "answer": answer,
-                                "timestamp": current_time,
-                                "sourceDocuments": retrieved_chunks,
-                                "processingTime": retrieval_time + generation_time,
-                                "clientInfo": input.client_info
-                            }]
+                            "exchanges": [exchange_data]
                         }
                         result = db.chats.insert_one(chat_data)
                         chat_id = str(result.inserted_id)
@@ -165,15 +168,7 @@ async def ask(input: QueryInput):
                         "created_at": current_time,
                         "updated_at": current_time,
                         "status": "active",
-                        "exchanges": [{
-                            "exchangeId": str(uuid.uuid4()),
-                            "question": input.query,
-                            "answer": answer,
-                            "timestamp": current_time,
-                            "sourceDocuments": retrieved_chunks,
-                            "processingTime": retrieval_time + generation_time,
-                            "clientInfo": input.client_info
-                        }]
+                        "exchanges": [exchange_data]
                     }
                     result = db.chats.insert_one(chat_data)
                     chat_id = str(result.inserted_id)
@@ -185,15 +180,7 @@ async def ask(input: QueryInput):
                     "created_at": current_time,
                     "updated_at": current_time,
                     "status": "active",
-                    "exchanges": [{
-                        "exchangeId": str(uuid.uuid4()),
-                        "question": input.query,
-                        "answer": answer,
-                        "timestamp": current_time,
-                        "sourceDocuments": retrieved_chunks,
-                        "processingTime": retrieval_time + generation_time,
-                        "clientInfo": input.client_info
-                    }]
+                    "exchanges": [exchange_data]
                 }
                 result = db.chats.insert_one(chat_data)
                 chat_id = str(result.inserted_id)
@@ -201,10 +188,12 @@ async def ask(input: QueryInput):
         total_time = time.time() - start_time
         
         print(f"TÓM TẮT THỜI GIAN XỬ LÝ:")
-        print(f" - Tìm kiếm: {retrieval_time:.3f}s (nguồn: {source})")
+        print(f" - Hybrid search: {retrieval_time:.3f}s (method: {search_method})")
         print(f" - Tạo câu trả lời: {generation_time:.3f}s")  
         print(f" - Tổng thời gian xử lý: {total_time:.3f}s")
         print(f" - Sử dụng cache: {'Có' if source == 'cache' else 'Không'}")
+        if search_stats:
+            print(f" - Search stats: {search_stats}")
         
         return {
             "id": chat_id,
@@ -213,12 +202,33 @@ async def ask(input: QueryInput):
             "top_chunks": context_items[:5],
             "retrieval_time": retrieval_time,
             "generation_time": generation_time,
-            "total_time": total_time
+            "total_time": total_time,
+            "search_method": search_method,
+            "search_stats": search_stats
         }
     except Exception as e:
         print(f"Lỗi trong endpoint /ask: {str(e)}")
         import traceback
         traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Thêm endpoint mới cho hybrid search testing
+@router.post("/hybrid-retrieve")
+async def hybrid_retrieve(input: QueryInput):
+    try:
+        retrieval_result = hybrid_retrieval_service.search(input.query, use_cache=False)
+        
+        return {
+            "query": input.query,
+            "contexts": retrieval_result['context_items'],
+            "retrieved_chunks": retrieval_result['retrieved_chunks'],
+            "count": len(retrieval_result['context_items']),
+            "retrieval_time": retrieval_result.get('execution_time', 0),
+            "search_method": retrieval_result.get('search_method', 'unknown'),
+            "search_stats": retrieval_result.get('stats', {})
+        }
+    except Exception as e:
+        print(f"Lỗi trong endpoint /hybrid-retrieve: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/retrieve")

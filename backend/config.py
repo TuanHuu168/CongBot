@@ -73,3 +73,22 @@ MAX_CONVERSATION_TOKENS = PERF_CONFIG.MAX_CONVERSATION_TOKENS
 
 API_HOST = API_CONFIG.API_HOST
 API_PORT = API_CONFIG.API_PORT
+
+class ElasticsearchConfig:
+    # Bonsai URL từ user
+    BONSAI_URL = "https://tywexxg5ku:6orzuc2fxp@thuy-loi-university-4908748852.us-east-1.bonsaisearch.net:443"
+    
+    # Index settings
+    INDEX_NAME = "legal_documents"
+    BULK_SIZE = 100
+    SEARCH_SIZE = 10
+    
+    # Search settings
+    ENABLE_FUZZY_SEARCH = True
+    HIGHLIGHT_FRAGMENT_SIZE = 150
+    
+    # Ensemble settings
+    ELASTIC_WEIGHT = 0.6  # Trọng số cho Elasticsearch
+    VECTOR_WEIGHT = 0.4   # Trọng số cho Vector search
+
+ES_CONFIG = ElasticsearchConfig()
