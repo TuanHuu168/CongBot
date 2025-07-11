@@ -76,7 +76,7 @@ API_PORT = API_CONFIG.API_PORT
 
 class ElasticsearchConfig:
     # Bonsai URL từ user
-    BONSAI_URL = "https://tywexxg5ku:6orzuc2fxp@thuy-loi-university-4908748852.us-east-1.bonsaisearch.net:443"
+    BONSAI_URL = os.getenv("BONSAI_URL")
     
     # Index settings
     INDEX_NAME = "legal_documents"
