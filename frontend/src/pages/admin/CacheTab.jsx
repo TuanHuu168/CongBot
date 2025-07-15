@@ -1,30 +1,121 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Database, Search, Trash2, Info } from 'lucide-react';
+import { Database, Trash2, RefreshCw } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
 
 const CacheTab = ({
     systemStats,
     isLoading,
-    invalidateDocId,
-    setInvalidateDocId,
-    searchCacheKeyword,
-    setSearchCacheKeyword,
-    handleClearCache,
-    handleInvalidateDocCache,
-    handleSearchCache
+    handleClearCache
 }) => {
-    // Hiệu ứng animation cho component
+    const [recentCache, setRecentCache] = useState([]);
+    const [loadingRecentCache, setLoadingRecentCache] = useState(false);
+
     const fadeInVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
     };
 
+    // Lấy API base URL
+    const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8001';
+
+    // Hàm lấy dữ liệu cache gần đây từ API
+    const fetchRecentCache = async () => {
+        setLoadingRecentCache(true);
+        try {
+            console.log('Đang gọi API cache/recent...');
+            const response = await fetch(`${API_BASE_URL}/cache/recent?limit=5`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Dữ liệu cache nhận được:', data);
+            
+            setRecentCache(data.recent_cache || []);
+        } catch (error) {
+            console.error('Lỗi khi lấy dữ liệu cache gần đây:', error);
+            setRecentCache([]);
+            
+            // Hiển thị thông báo lỗi
+            Swal.fire({
+                title: 'Lỗi',
+                text: 'Không thể tải dữ liệu cache: ' + error.message,
+                icon: 'error',
+                confirmButtonColor: '#ef4444'
+            });
+        } finally {
+            setLoadingRecentCache(false);
+        }
+    };
+
+    // Hàm xóa cache không hợp lệ
+    const handleClearInvalidCache = async () => {
+        const result = await Swal.fire({
+            title: 'Xác nhận xóa cache không hợp lệ',
+            text: 'Bạn có chắc chắn muốn xóa tất cả cache không hợp lệ?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Xóa cache',
+            cancelButtonText: 'Hủy',
+            confirmButtonColor: '#eab308',
+            cancelButtonColor: '#6b7280'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                console.log('Đang gọi API clear-invalid-cache...');
+                const response = await fetch(`${API_BASE_URL}/clear-invalid-cache`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Kết quả xóa cache không hợp lệ:', data);
+                
+                await Swal.fire({
+                    title: 'Thành công',
+                    text: `Đã xóa ${data.deleted_count || 0} cache không hợp lệ`,
+                    icon: 'success',
+                    confirmButtonColor: '#10b981'
+                });
+                
+                // Refresh lại dữ liệu cache
+                fetchRecentCache();
+            } catch (error) {
+                console.error('Lỗi khi xóa cache không hợp lệ:', error);
+                await Swal.fire({
+                    title: 'Lỗi',
+                    text: 'Không thể xóa cache không hợp lệ: ' + error.message,
+                    icon: 'error',
+                    confirmButtonColor: '#ef4444'
+                });
+            }
+        }
+    };
+
+    // Hàm refresh dữ liệu cache
+    const handleRefreshCache = () => {
+        fetchRecentCache();
+    };
+
+    // Tự động tải dữ liệu cache khi component mount
+    useEffect(() => {
+        fetchRecentCache();
+    }, []);
+
     return (
         <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Khu vực hiển thị thống kê cache */}
+                {/* Phần thống kê cache - giữ nguyên */}
                 <motion.div
                     className="md:col-span-2 bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -32,20 +123,30 @@ const CacheTab = ({
                     animate="visible"
                 >
                     <div className="p-5 border-b border-gray-100">
-                        <h2 className="text-lg font-semibold flex items-center">
-                            <Database size={18} className="text-green-600 mr-2" />
-                            Thống kê Cache
-                        </h2>
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-lg font-semibold flex items-center">
+                                <Database size={18} className="text-green-600 mr-2" />
+                                Thống kê Cache
+                            </h2>
+                            <button
+                                onClick={handleRefreshCache}
+                                disabled={loadingRecentCache}
+                                className="flex items-center px-3 py-1 text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                            >
+                                <RefreshCw size={14} className={`mr-1 ${loadingRecentCache ? 'animate-spin' : ''}`} />
+                                Refresh
+                            </button>
+                        </div>
                     </div>
 
                     <div className="p-5">
+                        {/* Phần thống kê tổng quan - giữ nguyên */}
                         {isLoading ? (
                             <div className="py-4 flex justify-center">
                                 <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-green-500"></div>
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {/* Thống kê tổng quan cache */}
                                 <div>
                                     <div className="bg-green-50 p-4 rounded-lg">
                                         <h3 className="text-green-700 text-lg font-medium mb-2">Cache tổng quan</h3>
@@ -74,7 +175,6 @@ const CacheTab = ({
                                     </div>
                                 </div>
 
-                                {/* Biểu đồ phân phối cache */}
                                 <div>
                                     <div className="bg-purple-50 p-4 rounded-lg">
                                         <h3 className="text-purple-700 text-lg font-medium mb-2">Phân phối Cache</h3>
@@ -101,7 +201,6 @@ const CacheTab = ({
                                                 </div>
                                             </div>
 
-                                            {/* Biểu đồ tỷ lệ hit rate */}
                                             <div>
                                                 <div className="flex justify-between text-sm text-gray-600 mb-1">
                                                     <span>Hit rate:</span>
@@ -127,11 +226,11 @@ const CacheTab = ({
                             </div>
                         )}
 
-                        {/* Bảng hiển thị mẫu cache gần đây */}
+                        {/* Bảng hiển thị cache gần đây - cập nhật */}
                         <div className="mt-6">
-                            <h3 className="text-sm font-medium text-gray-700 mb-2">Mẫu cache gần đây</h3>
+                            <h3 className="text-sm font-medium text-gray-700 mb-2">Cache gần đây</h3>
 
-                            {isLoading ? (
+                            {loadingRecentCache ? (
                                 <div className="py-4 flex justify-center">
                                     <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-green-500"></div>
                                 </div>
@@ -158,30 +257,59 @@ const CacheTab = ({
                                             </tr>
                                         </thead>
                                         <tbody className="bg-white divide-y divide-gray-200">
-                                            {/* Dữ liệu mẫu để demo, sẽ được thay thế bằng dữ liệu thực từ API */}
-                                            {[1, 2, 3].map((_, index) => (
-                                                <tr key={index} className="hover:bg-gray-50">
-                                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                        cache_{1234567 + index}
-                                                    </td>
-                                                    <td className="px-3 py-2 text-sm text-gray-900">
-                                                        <div className="truncate max-w-xs">
-                                                            Mức trợ cấp hàng tháng cho thương binh hạng {index + 1}/4?
-                                                        </div>
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap">
-                                                        <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                            Hợp lệ
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                        {10 - index * 3}
-                                                    </td>
-                                                    <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
-                                                        {formatDate(new Date(Date.now() - 1000 * 60 * 60 * 24 * index).toISOString())}
+                                            {recentCache.length > 0 ? (
+                                                recentCache.map((cache, index) => (
+                                                    <tr key={index} className="hover:bg-gray-50">
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                            <div className="truncate max-w-xs" title={cache.cache_id}>
+                                                                {cache.cache_id}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-2 text-sm text-gray-900">
+                                                            <div 
+                                                                className="truncate max-w-xs cursor-help" 
+                                                                title={cache.full_question || cache.question_text}
+                                                            >
+                                                                {cache.question_text || 'Không có câu hỏi'}
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap">
+                                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                                cache.validity_status === 'valid' 
+                                                                    ? 'bg-green-100 text-green-800' 
+                                                                    : cache.validity_status === 'invalid'
+                                                                    ? 'bg-red-100 text-red-800'
+                                                                    : 'bg-gray-100 text-gray-800'
+                                                            }`}>
+                                                                {cache.validity_status === 'valid' ? 'Hợp lệ' : 
+                                                                 cache.validity_status === 'invalid' ? 'Không hợp lệ' : 
+                                                                 'Không xác định'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                            <div className="flex items-center">
+                                                                <span className="mr-1">{cache.hit_count}</span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="px-3 py-2 whitespace-nowrap text-sm text-gray-500">
+                                                            <div>
+                                                                {cache.created_at ? formatDate(cache.created_at) : 'N/A'}
+                                                            </div>
+                                                            {cache.last_used && cache.last_used !== cache.created_at && (
+                                                                <div className="text-xs text-gray-400">
+                                                                    Dùng: {formatDate(cache.last_used)}
+                                                                </div>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="5" className="px-3 py-4 text-center text-sm text-gray-500">
+                                                        {loadingRecentCache ? 'Đang tải dữ liệu...' : 'Không có dữ liệu cache'}
                                                     </td>
                                                 </tr>
-                                            ))}
+                                            )}
                                         </tbody>
                                     </table>
                                 </div>
@@ -190,7 +318,7 @@ const CacheTab = ({
                     </div>
                 </motion.div>
 
-                {/* Khu vực các thao tác với cache */}
+                {/* Khu vực thao tác cache - cập nhật */}
                 <motion.div
                     className="bg-white rounded-xl shadow-sm mb-6 border border-gray-100"
                     variants={fadeInVariants}
@@ -235,85 +363,16 @@ const CacheTab = ({
                             <div className="p-4 bg-yellow-50 rounded-lg">
                                 <h3 className="text-yellow-700 text-base font-medium mb-2">Xóa cache không hợp lệ</h3>
                                 <p className="text-sm text-gray-600 mb-3">
-                                    Chỉ xóa những cache đã được đánh dấu là không hợp lệ (validityStatus = invalid).
+                                    Chỉ xóa những cache đã được đánh dấu là không hợp lệ để tối ưu hóa hiệu năng hệ thống.
                                 </p>
                                 <button
-                                    onClick={() => {
-                                        Swal.fire({
-                                            title: 'Xác nhận xóa cache không hợp lệ',
-                                            text: 'Bạn có chắc chắn muốn xóa tất cả cache không hợp lệ?',
-                                            icon: 'question',
-                                            showCancelButton: true,
-                                            confirmButtonText: 'Xóa cache',
-                                            cancelButtonText: 'Hủy',
-                                            confirmButtonColor: '#eab308',
-                                            cancelButtonColor: '#6b7280'
-                                        }).then(async (result) => {
-                                            if (result.isConfirmed) {
-                                                // TODO: Thực hiện logic xóa cache không hợp lệ
-                                                Swal.fire({
-                                                    title: 'Thành công',
-                                                    text: 'Đã xóa cache không hợp lệ',
-                                                    icon: 'success',
-                                                    confirmButtonColor: '#10b981'
-                                                });
-                                            }
-                                        });
-                                    }}
+                                    onClick={handleClearInvalidCache}
                                     disabled={isLoading}
                                     className="flex items-center justify-center w-full py-2 px-4 bg-yellow-600 text-white hover:bg-yellow-700 transition-colors rounded-lg text-sm font-medium"
                                 >
                                     <Trash2 size={16} className="mr-2" />
                                     <span>Xóa cache không hợp lệ</span>
                                 </button>
-                            </div>
-
-                            {/* Chức năng vô hiệu hóa cache theo document ID */}
-                            <div className="p-4 bg-amber-50 rounded-lg">
-                                <h3 className="text-amber-700 text-base font-medium mb-2">Vô hiệu hóa cache</h3>
-                                <p className="text-sm text-gray-600 mb-3">
-                                    Đánh dấu cache liên quan đến một văn bản cụ thể là không hợp lệ mà không xóa chúng.
-                                </p>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        placeholder="Nhập ID văn bản..."
-                                        value={invalidateDocId}
-                                        onChange={(e) => setInvalidateDocId(e.target.value)}
-                                        className="flex-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent text-sm"
-                                    />
-                                    <button
-                                        onClick={handleInvalidateDocCache}
-                                        disabled={isLoading}
-                                        className="px-3 py-2 bg-amber-600 text-white rounded-lg text-sm font-medium hover:bg-amber-700 transition-colors"
-                                    >
-                                        Áp dụng
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Chức năng tìm kiếm cache */}
-                            <div className="p-4 bg-blue-50 rounded-lg">
-                                <h3 className="text-blue-700 text-base font-medium mb-2">Tìm kiếm Cache</h3>
-                                <p className="text-sm text-gray-600 mb-3">
-                                    Tìm kiếm cache theo từ khóa hoặc câu hỏi.
-                                </p>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        placeholder="Nhập từ khóa tìm kiếm..."
-                                        value={searchCacheKeyword}
-                                        onChange={(e) => setSearchCacheKeyword(e.target.value)}
-                                        className="flex-1 py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                                    />
-                                    <button
-                                        onClick={handleSearchCache}
-                                        disabled={isLoading}
-                                        className="px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                                    >
-                                        Tìm kiếm
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>

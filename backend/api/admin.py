@@ -228,6 +228,74 @@ async def get_cache_detailed_stats():
         }
     except Exception as e:
         handle_error("get_cache_detailed_stats", e)
+        
+@router.get("/cache/recent")
+async def get_recent_cache(limit: int = 10):
+    """Lấy danh sách cache gần đây với dữ liệu thật từ MongoDB"""
+    try:
+        db = mongodb_client.get_database()
+        
+        print(f"Đang lấy {limit} cache gần đây từ MongoDB...")
+        
+        # Kiểm tra xem có collection text_cache không
+        total_cache = db.text_cache.count_documents({})
+        print(f"Tổng số cache trong DB: {total_cache}")
+        
+        if total_cache == 0:
+            return {
+                "recent_cache": [],
+                "total_returned": 0,
+                "message": "Không có dữ liệu cache trong hệ thống"
+            }
+        
+        # Lấy cache gần đây nhất, sort theo thời gian tạo
+        recent_cache = list(db.text_cache.find(
+            {},
+            {
+                "cacheId": 1,
+                "questionText": 1,
+                "validityStatus": 1,
+                "hitCount": 1,
+                "createdAt": 1,
+                "lastUsed": 1,
+                "relatedDocIds": 1,
+                "answer": 1
+            }
+        ).sort("createdAt", -1).limit(limit))
+        
+        print(f"Đã tìm thấy {len(recent_cache)} cache entries")
+        
+        # Format dữ liệu để frontend hiển thị
+        formatted_cache = []
+        for cache in recent_cache:
+            question_text = cache.get("questionText", "")
+            if len(question_text) > 80:
+                question_display = question_text[:80] + "..."
+            else:
+                question_display = question_text
+            
+            cache_entry = {
+                "cache_id": cache.get("cacheId", "unknown"),
+                "question_text": question_display,
+                "full_question": question_text,
+                "validity_status": cache.get("validityStatus", "unknown"),
+                "hit_count": cache.get("hitCount", 0),
+                "created_at": cache.get("createdAt").isoformat() if cache.get("createdAt") else None,
+                "last_used": cache.get("lastUsed").isoformat() if cache.get("lastUsed") else None,
+                "related_docs_count": len(cache.get("relatedDocIds", [])),
+                "has_answer": bool(cache.get("answer", "").strip())
+            }
+            formatted_cache.append(cache_entry)
+        
+        return {
+            "recent_cache": formatted_cache,
+            "total_returned": len(formatted_cache),
+            "total_in_db": total_cache
+        }
+        
+    except Exception as e:
+        print(f"Lỗi khi lấy cache gần đây: {str(e)}")
+        handle_error("get_recent_cache", e)
 
 @router.post("/clear-cache")
 async def clear_cache():
@@ -326,17 +394,6 @@ async def clear_invalid_cache():
     except Exception as e:
         handle_error("clear_invalid_cache", e)
 
-@router.post("/invalidate-cache/{doc_id}")
-async def invalidate_cache(doc_id: str):
-    try:
-        count = retrieval_service.invalidate_document_cache(doc_id)
-        
-        return {
-            "message": f"Đã vô hiệu hóa {count} cache entries liên quan đến văn bản {doc_id}",
-            "affected_count": count
-        }
-    except Exception as e:
-        handle_error("invalidate_cache", e)
 
 @router.get("/cache/detailed-status")
 async def get_cache_detailed_status():
@@ -408,56 +465,7 @@ async def delete_expired_cache():
     except Exception as e:
         handle_error("delete_expired_cache", e)
 
-@router.get("/search-cache/{keyword}")
-async def search_cache(keyword: str, limit: int = 10):
-    try:
-        print(f"Admin tìm kiếm cache với từ khóa: '{keyword}'")
-        
-        if not keyword.strip():
-            raise HTTPException(status_code=400, detail="Từ khóa không được để trống")
-        
-        results = retrieval_service.search_keyword(keyword.strip(), limit)
-        
-        cache_results = []
-        for result in results:
-            try:
-                processed_result = {
-                    "id": str(result["_id"]),
-                    "cacheId": result.get("cacheId", ""),
-                    "questionText": result.get("questionText", ""),
-                    "answer": result.get("answer", "")[:200] + "..." if len(result.get("answer", "")) > 200 else result.get("answer", ""),
-                    "validityStatus": result.get("validityStatus", ""),
-                    "hitCount": result.get("hitCount", 0),
-                    "keywords": result.get("keywords", []),
-                    "relatedDocIds": result.get("relatedDocIds", [])
-                }
-                
-                for date_field in ["createdAt", "updatedAt", "lastUsed", "expiresAt"]:
-                    if date_field in result and result[date_field]:
-                        processed_result[date_field] = result[date_field].isoformat()
-                    else:
-                        processed_result[date_field] = None
-                
-                cache_results.append(processed_result)
-                
-            except Exception as e:
-                print(f"Lỗi xử lý cache result: {str(e)}")
-                continue
-        
-        return {
-            "keyword": keyword,
-            "limit": limit,
-            "count": len(cache_results),
-            "total_found": len(results),
-            "results": cache_results
-        }
-        
-    except HTTPException as he:
-        raise he
-    except Exception as e:
-        handle_error("search_cache", e)
-
-# Các endpoint quản lý tài liệu với upload có embedding
+# Các endpoint quản lý tài liệu
 @router.post("/upload-document")
 async def upload_document(
     metadata: str = Form(...),

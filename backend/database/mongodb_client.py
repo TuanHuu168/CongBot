@@ -67,42 +67,58 @@ class MongoDBClient:
 
         print("Bắt đầu tạo indexes cho MongoDB...")
         
+        def index_exists_by_spec(collection, index_spec):
+            # Kiểm tra index theo specification thay vì tên
+            existing_indexes = collection.list_indexes()
+            target_key = dict(index_spec)
+            
+            for idx in existing_indexes:
+                existing_key = idx.get('key', {})
+                if existing_key == target_key:
+                    return True, idx.get('name')
+            return False, None
+        
+        def create_index_safe(collection, index_spec, **options):
+            # Tạo index an toàn với kiểm tra specification
+            exists, existing_name = index_exists_by_spec(collection, index_spec)
+            
+            if exists:
+                return True
+            
+            try:
+                result = collection.create_index(index_spec, **options)
+                index_name = options.get('name', result)
+                print(f"Đã tạo index: {index_name}")
+                return True
+            except Exception as e:
+                index_name = options.get('name', 'unknown')
+                print(f"Lỗi tạo index {index_name}: {str(e)}")
+                return False
+        
         try:
             # Indexes cho collection users
             users_collection = self.get_collection("users")
+            print("  Tạo indexes cho users...")
             
-            # Index duy nhất cho username
-            users_collection.create_index([("username", 1)], unique=True, background=True)
-            
-            # Index duy nhất cho email
-            users_collection.create_index([("email", 1)], unique=True, background=True)
-            
-            # Index cho trạng thái và vai trò
-            users_collection.create_index([("status", 1)], background=True)
-            users_collection.create_index([("role", 1)], background=True)
-            
-            # Index cho thời gian đăng nhập cuối
-            users_collection.create_index([("last_login_at", -1)], background=True)
+            create_index_safe(users_collection, [("username", 1)], unique=True, background=True)
+            create_index_safe(users_collection, [("email", 1)], unique=True, background=True)
+            create_index_safe(users_collection, [("status", 1)], background=True)
+            create_index_safe(users_collection, [("role", 1)], background=True)
+            create_index_safe(users_collection, [("last_login_at", -1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho users: {str(e)}")
 
         try:
-            # Indexes cho colection chats
+            # Indexes cho collection chats
             conversations_collection = self.get_collection("chats")
+            print("  Tạo indexes cho chats...")
             
-            # Index cho user_id để tìm cuộc trò chuyện của user
-            conversations_collection.create_index([("user_id", 1)], background=True)
-            
-            # Index kết hợp cho user_id và thời gian cập nhật
-            conversations_collection.create_index([("user_id", 1), ("updated_at", -1)], background=True)
-            
-            # Index cho trạng thái và tìm kiếm full-text trong tiêu đề
-            conversations_collection.create_index([("status", 1)], background=True)
-            conversations_collection.create_index([("title", "text")], background=True)
-            
-            # Index cho thời gian tạo
-            conversations_collection.create_index([("created_at", -1)], background=True)
+            create_index_safe(conversations_collection, [("user_id", 1)], background=True)
+            create_index_safe(conversations_collection, [("user_id", 1), ("updated_at", -1)], background=True)
+            create_index_safe(conversations_collection, [("status", 1)], background=True)
+            create_index_safe(conversations_collection, [("title", "text")], background=True)
+            create_index_safe(conversations_collection, [("created_at", -1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho conversations: {str(e)}")
@@ -110,30 +126,49 @@ class MongoDBClient:
         try:
             # Indexes cho collection cache
             cache_collection = self.get_collection("text_cache")
+            print("  Tạo indexes cho cache...")
             
-            # Index duy nhất cho cache_id
-            cache_collection.create_index([("cache_id", 1)], unique=True, background=True)
+            # Dọn dẹp cache documents có cacheId không hợp lệ chỉ khi cần
+            invalid_count = cache_collection.count_documents({
+                "$or": [
+                    {"cacheId": None},
+                    {"cacheId": ""},
+                    {"cacheId": {"$exists": False}}
+                ]
+            })
             
-            # Tạo text index mới với tên duy nhất cho tìm kiếm full-text
-            try:
-                cache_collection.create_index([
-                    ("normalized_question", "text"), 
-                    ("question_text", "text")
-                ], background=True, name="unified_cache_text_search")
-            except Exception as text_err:
-                print(f"  Lỗi tạo text index: {str(text_err)}")
+            if invalid_count > 0:
+                print(f"    Đang dọn dẹp {invalid_count} cache documents có cacheId không hợp lệ...")
+                deleted_result = cache_collection.delete_many({
+                    "$or": [
+                        {"cacheId": None},
+                        {"cacheId": ""},
+                        {"cacheId": {"$exists": False}}
+                    ]
+                })
+                print(f"    Đã xóa {deleted_result.deleted_count} documents có cacheId không hợp lệ")
             
-            # Index cho từ khóa và tài liệu liên quan
-            cache_collection.create_index([("keywords", 1)], background=True)
-            cache_collection.create_index([("related_doc_ids", 1)], background=True)
-            cache_collection.create_index([("validity_status", 1)], background=True)
+            # Tạo các index cho cache
+            create_index_safe(cache_collection, [("cacheId", 1)], unique=True, background=True, sparse=True)
             
-            # Index TTL cho cache hết hạn tự động
-            cache_collection.create_index([("expires_at", 1)], expireAfterSeconds=0, background=True)
+            # Kiểm tra text index riêng vì có cấu trúc đặc biệt
+            existing_indexes = cache_collection.list_indexes()
+            has_text_index = any(idx.get('key', {}).get('_fts') == 'text' for idx in existing_indexes)
+            if not has_text_index:
+                try:
+                    cache_collection.create_index([("questionText", "text"), ("normalizedQuestion", "text")], background=True)
+                    print("    Đã tạo text index cho cache")
+                except Exception as e:
+                    print(f"    Lỗi tạo text index: {str(e)}")
+            else:
+                print("    Text index đã tồn tại")
             
-            # Index cho loại cache và số lần truy cập
-            cache_collection.create_index([("cache_type", 1)], background=True)
-            cache_collection.create_index([("metrics.hit_count", -1)], background=True)
+            create_index_safe(cache_collection, [("keywords", 1)], background=True)
+            create_index_safe(cache_collection, [("relatedDocIds", 1)], background=True)
+            create_index_safe(cache_collection, [("validityStatus", 1)], background=True)
+            create_index_safe(cache_collection, [("expiresAt", 1)], background=True)
+            create_index_safe(cache_collection, [("hitCount", -1)], background=True)
+            create_index_safe(cache_collection, [("createdAt", -1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho cache: {str(e)}")
@@ -141,27 +176,25 @@ class MongoDBClient:
         try:
             # Indexes cho collection feedback
             feedback_collection = self.get_collection("feedback")
+            print("  Tạo indexes cho feedback...")
             
-            # Index cho user_id và chat_id
-            feedback_collection.create_index([("user_id", 1)], background=True)
-            feedback_collection.create_index([("chat_id", 1)], background=True)
-            feedback_collection.create_index([("timestamp", -1)], background=True)
-            feedback_collection.create_index([("rating", 1)], background=True)
+            create_index_safe(feedback_collection, [("user_id", 1)], background=True)
+            create_index_safe(feedback_collection, [("chat_id", 1)], background=True)
+            create_index_safe(feedback_collection, [("timestamp", -1)], background=True)
+            create_index_safe(feedback_collection, [("rating", 1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho feedback: {str(e)}")
 
         try:
-            # Indexes cho colection activity_logs
+            # Indexes cho collection activity_logs
             activity_logs_collection = self.get_collection("activity_logs")
+            print("  Tạo indexes cho activity_logs...")
             
-            # Index cho loại hoạt động và user_id
-            activity_logs_collection.create_index([("activity_type", 1)], background=True)
-            activity_logs_collection.create_index([("user_id", 1)], background=True)
-            activity_logs_collection.create_index([("timestamp", -1)], background=True)
-            
-            # Index TTL để tự động xóa log cũ sau 30 ngày
-            activity_logs_collection.create_index([("created_at", 1)], expireAfterSeconds=2592000, background=True)
+            create_index_safe(activity_logs_collection, [("activity_type", 1)], background=True)
+            create_index_safe(activity_logs_collection, [("user_id", 1)], background=True)
+            create_index_safe(activity_logs_collection, [("timestamp", -1)], background=True)
+            create_index_safe(activity_logs_collection, [("created_at", 1)], background=True)
 
         except Exception as e:
             print(f"  Lỗi tạo indexes cho activity_logs: {str(e)}")

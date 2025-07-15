@@ -365,13 +365,8 @@ const AdminPage = () => {
           <CacheTab 
             {...commonProps}
             systemStats={systemStats}
-            invalidateDocId={invalidateDocId}
-            setInvalidateDocId={setInvalidateDocId}
-            searchCacheKeyword={searchCacheKeyword}
-            setSearchCacheKeyword={setSearchCacheKeyword}
+            isLoading={isLoading}
             handleClearCache={handleClearCache}
-            handleInvalidateDocCache={handleInvalidateDocCache}
-            handleSearchCache={handleSearchCache}
           />
         );
       case 'benchmark':
