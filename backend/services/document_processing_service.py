@@ -313,7 +313,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
     def chunk_content_with_gemini(self, content, doc_metadata):
         # Sử dụng Gemini để chia chunk văn bản và auto-detect metadata
         try:
-            print(f"Đang gọi Gemini model {GEMINI_MODEL} để phân tích văn bản, chia chunk và auto-detect metadata...")
+            print(f"Đang gọi Gemini để phân tích văn bản, chia chunk và auto-detect metadata...")
             
             # Tạo prompt với hướng dẫn chi tiết về auto-detection
             prompt = self.chunking_prompt.format(
@@ -325,7 +325,7 @@ LƯU Ý: NẾU NGƯỜI DÙNG CUNG CẤP VĂN BẢN KHÔNG THUỘC VỀ LĨNH V�
                 document_scope=doc_metadata.get('document_scope', 'Quốc gia')
             )
             
-            print(f"Đã tạo prompt để phân tích văn bản với auto-detection using model: {GEMINI_MODEL}")
+            print(f"Đã tạo prompt để phân tích văn bản")
             response_time = time.time()
             # Gọi Gemini API
             response = self.gemini_client.models.generate_content(

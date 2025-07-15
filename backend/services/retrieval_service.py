@@ -111,19 +111,44 @@ class RetrievalService:
         
         print(f"Đang merge {len(elastic_results)} kết quả ES và {len(vector_results)} kết quả Vector...")
         
+        # Filter invalid chunks trước khi merge
+        print("Filtering invalid chunks...")
+        
+        # Filter elastic results
+        valid_elastic_results = []
+        for result in elastic_results:
+            # Kiểm tra validity từ ES metadata hoặc query lại ChromaDB
+            chunk_id = result.get("chunk_id")
+            if self._is_chunk_valid(chunk_id):
+                valid_elastic_results.append(result)
+            else:
+                print(f"Filtered invalid chunk from ES: {chunk_id}")
+        
+        # Filter vector results  
+        valid_vector_results = []
+        for result in vector_results:
+            # Vector results đã có metadata, check trực tiếp
+            metadata = result.get("metadata", {})
+            if metadata.get("validity_status") != "invalid":
+                valid_vector_results.append(result)
+            else:
+                print(f"Filtered invalid chunk from Vector: {metadata.get('chunk_id', 'unknown')}")
+        
+        print(f"After filtering: ES {len(valid_elastic_results)}/{len(elastic_results)}, Vector {len(valid_vector_results)}/{len(vector_results)}")
+        
         # Tạo mapping từ chunk_id đến kết quả với RAW SCORES
-        elastic_map = {result["chunk_id"]: result for result in elastic_results}
-        vector_map = {result["chunk_id"]: result for result in vector_results}
+        elastic_map = {result["chunk_id"]: result for result in valid_elastic_results}
+        vector_map = {result["chunk_id"]: result for result in valid_vector_results}
         
         all_chunk_ids = set(elastic_map.keys()) | set(vector_map.keys())
-        print(f"Tổng cộng {len(all_chunk_ids)} unique chunks từ cả hai sources")
+        print(f"Tổng cộng {len(all_chunk_ids)} unique VALID chunks từ cả hai sources")
         
         # Thu thập tất cả raw scores để normalize
         elastic_scores = [elastic_map[cid]["score"] for cid in elastic_map.keys()]
         vector_scores = [vector_map[cid]["score"] for cid in vector_map.keys()]
         
-        print(f"ES scores range: {min(elastic_scores) if elastic_scores else 0:.3f} - {max(elastic_scores) if elastic_scores else 0:.3f}")
-        print(f"Vector scores range: {min(vector_scores) if vector_scores else 0:.3f} - {max(vector_scores) if vector_scores else 0:.3f}")
+        print(f"Valid scores - ES range: {min(elastic_scores) if elastic_scores else 0:.3f} - {max(elastic_scores) if elastic_scores else 0:.3f}")
+        print(f"Valid scores - Vector range: {min(vector_scores) if vector_scores else 0:.3f} - {max(vector_scores) if vector_scores else 0:.3f}")
         
         # Normalize scores về [0,1] dựa trên min-max của từng loại
         normalized_elastic_scores = self._normalize_scores(elastic_scores) if elastic_scores else []
@@ -181,13 +206,41 @@ class RetrievalService:
         merged_results.sort(key=lambda x: x["hybrid_score"], reverse=True)
         final_results = merged_results[:top_k]
         
-        print(f"Đã merge và chọn top {len(final_results)} chunks tốt nhất")
+        print(f"Đã merge và chọn top {len(final_results)} VALID chunks tốt nhất")
         print(f"Weights used: ES={elastic_weight}, Vector={vector_weight}")
         
         return final_results
+
+    def _is_chunk_valid(self, chunk_id: str) -> bool:
+        """Kiểm tra chunk có valid không bằng cách query ChromaDB main collection"""
+        try:
+            collection = self.chroma.get_main_collection()
+            if not collection:
+                return True  # Default là valid nếu không check được
+            
+            result = collection.get(
+                ids=[chunk_id],
+                include=["metadatas"]
+            )
+            
+            if result and result.get("ids") and len(result["ids"]) > 0:
+                metadata = result["metadatas"][0]
+                validity_status = metadata.get("validity_status")
+                
+                if validity_status == "invalid":
+                    return False
+                else:
+                    return True  # valid hoặc None đều coi là valid
+            else:
+                # Chunk không tồn tại
+                return False
+                
+        except Exception as e:
+            print(f"Lỗi check validity cho {chunk_id}: {str(e)}")
+            return True  # Default là valid nếu có lỗi
     
     def _format_context(self, results):
-        """Format kết quả truy xuất thành context và chunks từ ChromaDB"""
+        """Format kết quả truy xuất thành context và chunks, filter invalid chunks"""
         context_items = []
         retrieved_chunks = []
         
@@ -196,6 +249,12 @@ class RetrievalService:
             metadatas = results["metadatas"][0]
             
             for doc, meta in zip(documents, metadatas):
+                # Filter ra chunks bị invalid
+                validity_status = meta.get("validity_status")
+                if validity_status == "invalid":
+                    print(f"Bỏ qua chunk bị invalid: {meta.get('chunk_id', 'unknown')}")
+                    continue
+                
                 # Loại bỏ prefix "passage: "
                 if doc.startswith("passage: "):
                     doc = doc[9:]
@@ -427,15 +486,48 @@ class RetrievalService:
             }
     
     def _vector_search_only(self, query, start_time):
-        """Chỉ sử dụng Vector search"""
-        print("Thực hiện Vector search từ ChromaDB")
+        """Vector search với filter validity"""
+        print("Thực hiện Vector search từ ChromaDB với filter validity")
         try:
             query_text = f"query: {query}"
+            
+            # Search với where filter để chỉ lấy valid chunks
             results = self.chroma.search_main(
                 query_text=query_text,
-                n_results=TOP_K,
+                n_results=TOP_K * 2,  # Lấy nhiều hơn để sau khi filter vẫn đủ
                 include=["documents", "metadatas", "distances"]
             )
+            
+            # Manual filter vì ChromaDB where có thể không hoạt động với vector search
+            if results and results.get("metadatas"):
+                filtered_docs = []
+                filtered_metadatas = []
+                filtered_distances = []
+                filtered_ids = []
+                
+                for i, metadata in enumerate(results["metadatas"][0]):
+                    if metadata.get("validity_status") != "invalid":
+                        filtered_docs.append(results["documents"][0][i])
+                        filtered_metadatas.append(metadata)
+                        filtered_distances.append(results["distances"][0][i])
+                        filtered_ids.append(results["ids"][0][i])
+                
+                # Tạo lại results object với data đã filter
+                filtered_results = {
+                    "documents": [filtered_docs] if filtered_docs else [[]],
+                    "metadatas": [filtered_metadatas] if filtered_metadatas else [[]],
+                    "distances": [filtered_distances] if filtered_distances else [[]],
+                    "ids": [filtered_ids] if filtered_ids else [[]]
+                }
+                
+                print(f"Filtered vector results: {len(filtered_docs)}/{len(results['documents'][0])} valid chunks")
+                
+                # Chỉ lấy top K sau khi filter
+                for key in filtered_results:
+                    if filtered_results[key] and len(filtered_results[key][0]) > TOP_K:
+                        filtered_results[key] = [filtered_results[key][0][:TOP_K]]
+                
+                results = filtered_results
             
             context_items, retrieved_chunks = self._format_context(results)
             
@@ -449,7 +541,7 @@ class RetrievalService:
                     if 'chunk_id' in meta:
                         relevance_scores[meta['chunk_id']] = 1.0 - min(distance, 1.0)
             
-            print(f"Vector search hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} chunks")
+            print(f"Vector search hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} VALID chunks")
             
             return {
                 "context_items": context_items,
@@ -472,19 +564,30 @@ class RetrievalService:
             }
     
     def _elasticsearch_search_only(self, query, start_time):
-        """Chỉ sử dụng Elasticsearch"""
-        print("Thực hiện Elasticsearch search")
+        """Elasticsearch search với filter validity"""
+        print("Thực hiện Elasticsearch search với filter validity")
         try:
             es_response = self.es_client.search_documents(
                 query=query, 
-                size=TOP_K
+                size=TOP_K * 2  # Lấy nhiều hơn để filter
             )
             
             context_items = []
             retrieved_chunks = []
             relevance_scores = {}
+            valid_hits = []
             
             for hit in es_response.get("hits", []):
+                chunk_id = hit["chunk_id"]
+                
+                # Check validity của chunk
+                if self._is_chunk_valid(chunk_id):
+                    valid_hits.append(hit)
+                else:
+                    print(f"Filtered invalid chunk from ES: {chunk_id}")
+            
+            # Chỉ lấy top K chunks valid
+            for hit in valid_hits[:TOP_K]:
                 chunk_id = hit["chunk_id"]
                 retrieved_chunks.append(chunk_id)
                 relevance_scores[chunk_id] = hit["score"]
@@ -494,7 +597,7 @@ class RetrievalService:
                 context_text = f"[ES] {source.get('content_summary', '')} (Doc: {source.get('doc_id', '')})"
                 context_items.append(context_text)
             
-            print(f"Elasticsearch search hoàn tất: {len(context_items)} contexts")
+            print(f"Elasticsearch search hoàn tất: {len(valid_hits)}/{len(es_response.get('hits', []))} valid chunks, {len(context_items)} contexts")
             
             return {
                 "context_items": context_items,
@@ -505,6 +608,7 @@ class RetrievalService:
                 "search_method": "elasticsearch",
                 "stats": {
                     "total_hits": es_response.get("total", 0),
+                    "valid_hits": len(valid_hits),
                     "max_score": es_response.get("max_score", 0)
                 }
             }
@@ -521,10 +625,9 @@ class RetrievalService:
             }
     
     def _hybrid_search(self, query, start_time):
-        """Thực hiện Hybrid search (Vector + Elasticsearch) với full content retrieval"""
+        """Thực hiện Hybrid search (Vector + Elasticsearch) với full content retrieval và validity filter"""
         print("Thực hiện Hybrid search (Vector + Elasticsearch)")
         
-        # Lấy TOP_K * 2 để có nhiều candidates cho merge
         search_size = TOP_K * 2
         
         # 1. Elasticsearch search
@@ -532,7 +635,7 @@ class RetrievalService:
         try:
             elastic_response = self.es_client.search_documents(
                 query=query, 
-                size=search_size  # Lấy 10 results từ ES
+                size=search_size
             )
             elastic_time = time.time() - elastic_start
             
@@ -558,7 +661,7 @@ class RetrievalService:
             query_text = f"query: {query}"
             vector_response = self.chroma.search_main(
                 query_text=query_text,
-                n_results=search_size,  # Lấy 10 results từ Vector
+                n_results=search_size,
                 include=["documents", "metadatas", "distances"]
             )
             vector_time = time.time() - vector_start
@@ -585,12 +688,12 @@ class RetrievalService:
             vector_results = []
             vector_time = 0
         
-        # 3. Merge và lấy top 10 chunks tốt nhất
+        # 3. Merge và lấy top chunks tốt nhất với validity filter
         merge_start = time.time()
-        merged_results = self._merge_results(elastic_results, vector_results, search_size)
+        merged_results = self._merge_results(elastic_results, vector_results, TOP_K*2)
         merge_time = time.time() - merge_start
         
-        print(f"Merge: {len(merged_results)} final chunks ({merge_time:.3f}s)")
+        print(f"Merge với validity filter: {len(merged_results)} final VALID chunks ({merge_time:.3f}s)")
         
         # 4. Fetch full content cho tất cả chunks được chọn
         content_start = time.time()
@@ -631,20 +734,21 @@ class RetrievalService:
         
         total_time = time.time() - start_time
         
-        print(f"Hybrid search hoàn tất:")
+        print(f"Hybrid search với validity filter hoàn tất:")
         print(f"- Elasticsearch: {len(elastic_results)} results ({elastic_time:.3f}s)")
         print(f"- Vector search: {len(vector_results)} results ({vector_time:.3f}s)")
-        print(f"- Merged: {len(merged_results)} final chunks ({merge_time:.3f}s)")
+        print(f"- Merged: {len(merged_results)} final VALID chunks ({merge_time:.3f}s)")
         print(f"- Content fetch: {content_time:.3f}s")
         print(f"- Total time: {total_time:.3f}s")
         print(f"- Final context items: {len(context_items)} với full content")
         
-        # Debug: Show top 5 chunks
-        print(f"Top {len(merged_results)} chunks được chọn:")
+        print(f"Top {len(merged_results)} VALID chunks được chọn:")
         for i, result in enumerate(merged_results):
+            metadata = result.get('metadata', {})
+            validity = metadata.get('validity_status', 'valid')
             print(f"  {i+1}. {result['chunk_id']}: hybrid={result['hybrid_score']:.3f} "
                 f"(ES={result['elastic_score']:.3f}, Vec={result['vector_score']:.3f}, "
-                f"Method={result.get('search_method', 'unknown')})")
+                f"Method={result.get('search_method', 'unknown')}, Validity={validity})")
         
         return {
             "context_items": context_items,
@@ -662,6 +766,7 @@ class RetrievalService:
                 "vector_time": vector_time,
                 "merge_time": merge_time,
                 "content_fetch_time": content_time,
+                "validity_filtered": True,
                 "weights": {
                     "elasticsearch": self.elastic_weight,
                     "vector": self.vector_weight

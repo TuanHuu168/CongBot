@@ -1,7 +1,7 @@
 {
   "doc_id": "55_2023_NĐ_CP",
   "doc_type": "Nghị định",
-  "doc_title": "Nghị định sửa đổi, bổ sung một số điều của Nghị định số 75/2021/NĐ-CP ngày 24 tháng 7 năm 2021 của Chính phủ quy định mức hưởng trợ cấp, phụ cấp và các chế độ ưu đãi người có công với cách mạng",
+  "doc_title": "NGHỊ ĐỊNH SỬA ĐỔI, BỔ SUNG MỘT SỐ ĐIỀU CỦA NGHỊ ĐỊNH SỐ 75/2021/NĐ-CP NGÀY 24 THÁNG 7 NĂM 2021 CỦA CHÍNH PHỦ QUY ĐỊNH MỨC HƯỞNG TRỢ CẤP, PHỤ CẤP VÀ CÁC CHẾ ĐỘ ƯU ĐÃI NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG",
   "issue_date": "21-07-2023",
   "effective_date": "05-09-2023",
   "expiry_date": null,
@@ -17,88 +17,89 @@
     {
       "chunk_id": "55_2023_NĐ_CP_preamble",
       "chunk_type": "preamble",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_preamble.md",
-      "content_summary": "Phần mở đầu của Nghị định số 55/2023/NĐ-CP, bao gồm thông tin về cơ quan ban hành, số hiệu, ngày ban hành, tiêu đề và các căn cứ pháp lý để ban hành Nghị định này, mục đích là sửa đổi, bổ sung Nghị định số 75/2021/NĐ-CP."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_1.md",
+      "content_summary": "Phần mở đầu của Nghị định, bao gồm tiêu đề, căn cứ pháp lý cho việc ban hành Nghị định số 55/2023/NĐ-CP sửa đổi, bổ sung Nghị định số 75/2021/NĐ-CP về chế độ ưu đãi người có công với cách mạng."
     },
     {
-      "chunk_id": "55_2023_NĐ_CP_art1_1_to_3",
+      "chunk_id": "55_2023_NĐ_CP_art1_1",
       "chunk_type": "article",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_art1_1_to_3.md",
-      "content_summary": "Điều 1, Khoản 1, 2, 3 của Nghị định 55/2023/NĐ-CP sửa đổi, bổ sung các quy định về phạm vi điều chỉnh, mức chuẩn trợ cấp ưu đãi và mức hưởng trợ cấp, phụ cấp ưu đãi tại Nghị định số 75/2021/NĐ-CP."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_2.md",
+      "content_summary": "Nội dung sửa đổi, bổ sung các Điều 1, 3, 4 của Nghị định số 75/2021/NĐ-CP, tập trung vào phạm vi điều chỉnh, mức chuẩn trợ cấp ưu đãi, và các mức hưởng trợ cấp, phụ cấp ưu đãi hằng tháng và một lần đối với người có công và thân nhân."
+    },
+    {
+      "chunk_id": "55_2023_NĐ_CP_art1_2",
+      "chunk_type": "article",
+      "file_path": "/data/55_2023_NĐ_CP/chunk_3.md",
+      "content_summary": "Nội dung sửa đổi, bổ sung các điểm, khoản của Điều 12 Nghị định số 75/2021/NĐ-CP, quy định chi tiết về chi phí lấy mẫu, bảo quản mẫu, xác định danh tính hài cốt liệt sĩ bằng phương pháp giám định ADN và vận chuyển mẫu."
+    },
+    {
+      "chunk_id": "55_2023_NĐ_CP_art1_3",
+      "chunk_type": "article",
+      "file_path": "/data/55_2023_NĐ_CP/chunk_4.md",
+      "content_summary": "Nội dung sửa đổi, bổ sung các điểm, khoản của Điều 13 Nghị định số 75/2021/NĐ-CP, liên quan đến hỗ trợ thuốc, điều trị, bồi dưỡng phục hồi sức khỏe, phục vụ công tác nuôi dưỡng, điều dưỡng người có công, hỗ trợ đi lại khi về thăm gia đình và chế độ tặng quà."
     },
     {
       "chunk_id": "55_2023_NĐ_CP_art1_4",
       "chunk_type": "article",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_art1_4.md",
-      "content_summary": "Điều 1, Khoản 4 của Nghị định 55/2023/NĐ-CP sửa đổi, bổ sung Điều 12 của Nghị định 75/2021/NĐ-CP, quy định chi tiết về mức chi lấy mẫu hài cốt liệt sĩ, lấy mẫu đối chứng ADN, bảo quản mẫu và xác định danh tính hài cốt liệt sĩ bằng phương pháp giám định ADN."
-    },
-    {
-      "chunk_id": "55_2023_NĐ_CP_art1_5_and_6",
-      "chunk_type": "article",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_art1_5_and_6.md",
-      "content_summary": "Điều 1, Khoản 5 và 6 của Nghị định 55/2023/NĐ-CP sửa đổi, bổ sung các quy định về chế độ hỗ trợ tại các cơ sở nuôi dưỡng, điều dưỡng người có công, bao gồm hỗ trợ thuốc, điều trị, phục hồi sức khỏe, chi phí phục vụ công tác nuôi dưỡng, điều dưỡng, vận chuyển khi đối tượng về thăm gia đình và chế độ tặng quà."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_5.md",
+      "content_summary": "Nội dung sửa đổi, bổ sung khoản 4 Điều 14 của Nghị định số 75/2021/NĐ-CP về bố trí kinh phí chi quản lý từ nguồn ngân sách trung ương để thực hiện Pháp lệnh Ưu đãi người có công với cách mạng."
     },
     {
       "chunk_id": "55_2023_NĐ_CP_art2_3",
       "chunk_type": "article",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_art2_3.md",
-      "content_summary": "Điều 2 và Điều 3 của Nghị định 55/2023/NĐ-CP quy định về hiệu lực thi hành của Nghị định (từ 05/9/2023), thời điểm áp dụng các mức trợ cấp, phụ cấp ưu đãi (từ 01/7/2023 và 01/01/2024) và trách nhiệm thi hành của các bộ, cơ quan, địa phương liên quan."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_6.md",
+      "content_summary": "Điều khoản thi hành của Nghị định số 55/2023/NĐ-CP, quy định ngày có hiệu lực chung và các ngày có hiệu lực riêng cho từng loại mức hưởng trợ cấp, phụ cấp ưu đãi, cùng với trách nhiệm thi hành của các Bộ, ngành và địa phương."
     },
     {
       "chunk_id": "55_2023_NĐ_CP_appendix1",
       "chunk_type": "appendix",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_appendix1.md",
-      "content_summary": "Phụ lục I của Nghị định 55/2023/NĐ-CP, quy định chi tiết mức hưởng trợ cấp, phụ cấp ưu đãi hằng tháng đối với các đối tượng người có công với cách mạng và thân nhân, bao gồm cả người hoạt động cách mạng, thân nhân liệt sĩ, Bà mẹ Việt Nam anh hùng, Anh hùng Lực lượng vũ trang nhân dân, Anh hùng Lao động, thương binh, bệnh binh, người hoạt động kháng chiến bị nhiễm chất độc hóa học, người bị địch bắt tù đày, người có công giúp đỡ cách mạng và các đối tượng đang theo học."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_7.md",
+      "content_summary": "Phụ lục I quy định mức hưởng trợ cấp, phụ cấp ưu đãi hằng tháng đối với người có công với cách mạng và thân nhân của họ, bao gồm các đối tượng như người hoạt động cách mạng, thân nhân liệt sĩ, Bà mẹ Việt Nam anh hùng, Anh hùng Lực lượng vũ trang nhân dân, Anh hùng Lao động, thương binh, bệnh binh, và người hoạt động kháng chiến bị nhiễm chất độc hóa học."
     },
     {
       "chunk_id": "55_2023_NĐ_CP_appendix2",
       "chunk_type": "appendix",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_appendix2.md",
-      "content_summary": "Phụ lục II của Nghị định 55/2023/NĐ-CP, quy định chi tiết mức hưởng trợ cấp ưu đãi hằng tháng đối với thương binh và người hưởng chính sách như thương binh theo từng tỷ lệ tổn thương cơ thể cụ thể, từ 21% đến 100%."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_8.md",
+      "content_summary": "Phụ lục II chi tiết mức hưởng trợ cấp ưu đãi hằng tháng đối với thương binh và người hưởng chính sách như thương binh, phân loại theo tỷ lệ tổn thương cơ thể từ 21% đến 100%."
     },
     {
       "chunk_id": "55_2023_NĐ_CP_appendix3",
       "chunk_type": "appendix",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_appendix3.md",
-      "content_summary": "Phụ lục III của Nghị định 55/2023/NĐ-CP, quy định chi tiết mức hưởng trợ cấp ưu đãi hằng tháng đối với thương binh loại B theo từng tỷ lệ tổn thương cơ thể cụ thể, từ 21% đến 100%."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_9.md",
+      "content_summary": "Phụ lục III chi tiết mức hưởng trợ cấp ưu đãi hằng tháng đối với thương binh loại B, phân loại theo tỷ lệ tổn thương cơ thể từ 21% đến 100%."
     },
     {
       "chunk_id": "55_2023_NĐ_CP_appendix4",
       "chunk_type": "appendix",
-      "file_path": "/data/55_2023_NĐ_CP/55_2023_NĐ_CP_appendix4.md",
-      "content_summary": "Phụ lục IV của Nghị định 55/2023/NĐ-CP, quy định chi tiết mức hưởng trợ cấp ưu đãi một lần đối với người có công với cách mạng và thân nhân, áp dụng cho các trường hợp như người hoạt động cách mạng trước năm 1945, liệt sĩ, Bà mẹ Việt Nam anh hùng, Anh hùng Lực lượng vũ trang nhân dân, Anh hùng Lao động, người bị tù đày và người có công giúp đỡ cách mạng."
+      "file_path": "/data/55_2023_NĐ_CP/chunk_10.md",
+      "content_summary": "Phụ lục IV quy định các mức trợ cấp ưu đãi một lần đối với người có công với cách mạng và thân nhân của họ, bao gồm các trường hợp chưa được hưởng chế độ, truy tặng danh hiệu, hoặc trợ cấp theo thâm niên kháng chiến."
     }
   ],
   "related_documents": [
     {
-      "doc_id": "76_2015_QH13_Luật",
+      "doc_id": "76_2015_QH13",
       "relationship": "references",
-      "description": "Luật Tổ chức Chính phủ ngày 19 tháng 6 năm 2015"
+      "description": "Luật Tổ chức Chính phủ năm 2015 là căn cứ ban hành Nghị định này."
     },
     {
-      "doc_id": "47_2019_QH14_Luật",
+      "doc_id": "47_2019_QH14",
       "relationship": "references",
-      "description": "Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương ngày 22 tháng 11 năm 2019"
+      "description": "Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức chính quyền địa phương năm 2019 là căn cứ ban hành Nghị định này."
     },
     {
-      "doc_id": "02_2020_UBTVQH14_Pháp lệnh",
+      "doc_id": "02_2020_PL_UBTVQH14",
       "relationship": "references",
-      "description": "Pháp lệnh Ưu đãi người có công với cách mạng ngày 09 tháng 12 năm 2020"
+      "description": "Pháp lệnh Ưu đãi người có công với cách mạng năm 2020 là căn cứ ban hành và là văn bản được Nghị định này quy định chi tiết."
     },
     {
       "doc_id": "75_2021_NĐ_CP",
       "relationship": "amends",
-      "description": "Nghị định số 75/2021/NĐ-CP ngày 24 tháng 7 năm 2021 của Chính phủ quy định mức hưởng trợ cấp, phụ cấp và các chế độ ưu đãi người có công với cách mạng (Nghị định này sửa đổi, bổ sung Nghị định 75/2021/NĐ-CP)"
+      "description": "Nghị định số 75/2021/NĐ-CP ngày 24 tháng 7 năm 2021 của Chính phủ quy định mức hưởng trợ cấp, phụ cấp và các chế độ ưu đãi người có công với cách mạng bị sửa đổi, bổ sung bởi Nghị định này."
     },
     {
       "doc_id": "131_2021_NĐ_CP",
       "relationship": "references",
-      "description": "Nghị định số 131/2021/NĐ-CP ngày 30 tháng 12 năm 2021 của Chính phủ quy định chi tiết và biện pháp thi hành Pháp lệnh Ưu đãi người có công với cách mạng (được tham chiếu tại Điều 2 khoản 4)"
-    },
-    {
-      "doc_id": "45_2019_QH14_Luật",
-      "relationship": "references",
-      "description": "Bộ luật Lao động (được tham chiếu tại khoản 2 Điều 169 trong Phụ lục I và các phụ lục khác)"
+      "description": "Nghị định số 131/2021/NĐ-CP ngày 30 tháng 12 năm 2021 của Chính phủ quy định chi tiết và biện pháp thi hành Pháp lệnh Ưu đãi người có công với cách mạng được dẫn chiếu trong điều khoản thi hành liên quan đến hỗ trợ sức khỏe và nuôi dưỡng."
     }
   ]
 }
