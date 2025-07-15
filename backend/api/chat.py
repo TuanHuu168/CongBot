@@ -9,7 +9,6 @@ from bson.objectid import ObjectId
 # Import các service
 from services.generation_service import generation_service
 from services.retrieval_service import retrieval_service
-from services.hybrid_retrieval_service import hybrid_retrieval_service
 from database.mongodb_client import mongodb_client
 
 router = APIRouter(prefix="", tags=["chat"])
@@ -77,7 +76,7 @@ async def ask(input: QueryInput):
         
         # Sử dụng Hybrid Search thay vì chỉ Vector search
         retrieval_start = time.time()
-        retrieval_result = hybrid_retrieval_service.search(input.query, use_cache=True)
+        retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
         retrieval_end = time.time()
         print(f"Hybrid search mất: {retrieval_end - retrieval_start:.3f} giây")
         
@@ -107,7 +106,7 @@ async def ask(input: QueryInput):
                 # Lưu vào cache nếu không phải từ cache
                 if source != "cache" and context_items:
                     relevance_scores = retrieval_result.get("relevance_scores", {})
-                    hybrid_retrieval_service.vector_service.add_to_cache(
+                    retrieval_service.add_to_cache(
                         input.query, answer, retrieved_chunks, relevance_scores
                     )
             else:
@@ -216,7 +215,7 @@ async def ask(input: QueryInput):
 @router.post("/hybrid-retrieve")
 async def hybrid_retrieve(input: QueryInput):
     try:
-        retrieval_result = hybrid_retrieval_service.search(input.query, use_cache=False)
+        retrieval_result = retrieval_service.retrieve(input.query, use_cache=False)
         
         return {
             "query": input.query,

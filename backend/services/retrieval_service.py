@@ -3,52 +3,171 @@ import json
 import sys
 import os
 import re
+import numpy as np
 from datetime import datetime
 from sklearn.metrics.pairwise import cosine_similarity
-import numpy as np
+from typing import List, Dict, Any, Tuple
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from config import TOP_K, MAX_TOKENS_PER_DOC, EMBEDDING_MODEL_NAME
+from config import TOP_K, MAX_TOKENS_PER_DOC, EMBEDDING_MODEL_NAME, ES_CONFIG
 from database.chroma_client import chroma_client
 from database.mongodb_client import mongodb_client
+from database.elasticsearch_client import elasticsearch_client
 from models.cache import CacheModel, CacheCreate, CacheStatus
 from services.activity_service import activity_service, ActivityType
 
 class RetrievalService:
     def __init__(self):
-        # Khởi tạo dịch vụ truy xuất
+        """Khởi tạo dịch vụ truy xuất hybrid (Vector + Elasticsearch)"""
         self.chroma = chroma_client
+        self.es_client = elasticsearch_client
         self.db = mongodb_client.get_database()
         self.text_cache_collection = self.db.text_cache
         
-        # Log thông tin khởi tạo
-        print(f"RetrievalService khởi tạo với embedding model: {EMBEDDING_MODEL_NAME}")
+        # Cấu hình trọng số cho hybrid search
+        self.elastic_weight = ES_CONFIG.ELASTIC_WEIGHT
+        self.vector_weight = ES_CONFIG.VECTOR_WEIGHT
         
-        # Kiểm tra cache collections
+        print(f"RetrievalService khởi tạo với:")
+        print(f"- Embedding model: {EMBEDDING_MODEL_NAME}")
+        print(f"- Hybrid weights: ES({self.elastic_weight}) + Vector({self.vector_weight})")
+        
+        # Kiểm tra các collections
         try:
             cache_count = self.text_cache_collection.count_documents({})
-            print(f"MongoDB cache collection: {cache_count} documents")
+            print(f"- MongoDB cache collection: {cache_count} documents")
             
             cache_collection = self.chroma.get_cache_collection()
             if cache_collection:
                 chroma_count = cache_collection.count()
-                print(f"ChromaDB cache collection: {chroma_count} documents")
+                print(f"- ChromaDB cache collection: {chroma_count} documents")
+                
+            es_stats = self.es_client.get_index_stats()
+            print(f"- Elasticsearch index: {es_stats.get('document_count', 0)} documents")
         except Exception as e:
             print(f"Lỗi kiểm tra cache: {str(e)}")
     
     def _normalize_question(self, query):
-        # Chuẩn hóa câu hỏi để so sánh
+        """Chuẩn hóa câu hỏi để so sánh"""
         normalized = re.sub(r'[.,;:!?()"\']', '', query.lower())
         return re.sub(r'\s+', ' ', normalized).strip()
     
     def _extract_keywords(self, query):
-        # Trích xuất từ khóa từ câu hỏi
+        """Trích xuất từ khóa từ câu hỏi"""
         normalized = self._normalize_question(query)
         keywords = [word for word in normalized.split() if len(word) >= 3]
         return list(set(keywords))
     
+    def _normalize_scores(self, scores: List[float]) -> List[float]:
+        """Chuẩn hóa scores về range [0, 1]"""
+        if not scores:
+            return []
+        
+        scores = np.array(scores)
+        min_score = scores.min()
+        max_score = scores.max()
+        
+        if max_score == min_score:
+            return [1.0] * len(scores)
+        
+        normalized = (scores - min_score) / (max_score - min_score)
+        return normalized.tolist()
+    
+    def _fetch_full_content_for_chunks(self, chunk_ids: List[str]) -> Dict[str, str]:
+        """Lấy full content cho các chunks từ ChromaDB"""
+        try:
+            collection = self.chroma.get_main_collection()
+            if not collection:
+                print("Không thể lấy main collection từ ChromaDB")
+                return {}
+            
+            print(f"Đang fetch full content cho {len(chunk_ids)} chunks từ ChromaDB...")
+            
+            # Lấy full content từ ChromaDB
+            result = collection.get(
+                ids=chunk_ids,
+                include=["documents", "metadatas"]
+            )
+            
+            content_map = {}
+            if result and result.get("documents"):
+                for i, chunk_id in enumerate(result["ids"]):
+                    if i < len(result["documents"]):
+                        doc = result["documents"][i]
+                        # Bỏ prefix "passage: " nếu có
+                        if doc.startswith("passage: "):
+                            doc = doc[9:]
+                        content_map[chunk_id] = doc
+            
+            print(f"Đã lấy full content cho {len(content_map)} chunks")
+            return content_map
+            
+        except Exception as e:
+            print(f"Lỗi fetch full content từ ChromaDB: {str(e)}")
+            return {}
+    
+    def _merge_results(self, elastic_results: List[Dict], vector_results: List[Dict], 
+                    top_k: int = TOP_K) -> List[Dict]:
+        
+        print(f"Đang merge {len(elastic_results)} kết quả ES và {len(vector_results)} kết quả Vector...")
+        
+        # Tạo mapping từ chunk_id đến kết quả với RAW SCORES
+        elastic_map = {result["chunk_id"]: result for result in elastic_results}
+        vector_map = {result["chunk_id"]: result for result in vector_results}
+        
+        all_chunk_ids = set(elastic_map.keys()) | set(vector_map.keys())
+        print(f"Tổng cộng {len(all_chunk_ids)} unique chunks từ cả hai sources")
+        
+        merged_results = []
+        for chunk_id in all_chunk_ids:
+            # Lấy raw scores
+            elastic_score = elastic_map[chunk_id]["score"] if chunk_id in elastic_map else 0
+            vector_score = vector_map[chunk_id]["score"] if chunk_id in vector_map else 0
+            
+            normalized_es = min(elastic_score / 10.0, 1.0)  # Scale ES về [0-1]
+            normalized_vec = vector_score 
+            
+            # Hybrid score
+            hybrid_score = (self.elastic_weight * normalized_es + 
+                        self.vector_weight * normalized_vec)
+            
+            # Tạo result object
+            result = {
+                "chunk_id": chunk_id,
+                "hybrid_score": hybrid_score,
+                "elastic_score": normalized_es,  # Hiển thị score đã normalize
+                "vector_score": normalized_vec,
+                "raw_elastic_score": elastic_score,  # Giữ raw score để debug
+                "raw_vector_score": vector_score
+            }
+            
+            # Thêm metadata như cũ...
+            if chunk_id in elastic_map and chunk_id in vector_map:
+                result["search_method"] = "hybrid"
+                es_meta = elastic_map[chunk_id].get("metadata", {})
+                vec_meta = vector_map[chunk_id].get("metadata", {})
+                result["metadata"] = {**es_meta, **vec_meta}
+                result["highlights"] = elastic_map[chunk_id].get("highlights", {})
+            elif chunk_id in vector_map:
+                result["search_method"] = "vector"
+                result["metadata"] = vector_map[chunk_id].get("metadata", {})
+                result["highlights"] = {}
+            else:
+                result["search_method"] = "elasticsearch"
+                result["metadata"] = elastic_map[chunk_id].get("metadata", {})
+                result["highlights"] = elastic_map[chunk_id].get("highlights", {})
+            
+            merged_results.append(result)
+        
+        # Sort theo hybrid score
+        merged_results.sort(key=lambda x: x["hybrid_score"], reverse=True)
+        final_results = merged_results[:top_k]
+        
+        print(f"Đã merge và chọn top {len(final_results)} chunks tốt nhất")
+        return final_results
+    
     def _format_context(self, results):
-        # Format kết quả truy xuất thành context và chunks
+        """Format kết quả truy xuất thành context và chunks từ ChromaDB"""
         context_items = []
         retrieved_chunks = []
         
@@ -76,7 +195,7 @@ class RetrievalService:
         return context_items, retrieved_chunks
     
     def _check_cache(self, query):
-        # Kiểm tra cache cho câu hỏi
+        """Kiểm tra cache cho câu hỏi"""
         print(f"Kiểm tra cache cho: '{query}'")
         
         normalized_query = self._normalize_question(query)
@@ -142,7 +261,7 @@ class RetrievalService:
             return None
     
     def _update_cache_usage(self, cache_id):
-        # Cập nhật thống kê sử dụng cache
+        """Cập nhật thống kê sử dụng cache"""
         try:
             self.text_cache_collection.update_one(
                 {"_id": cache_id},
@@ -155,7 +274,7 @@ class RetrievalService:
             print(f"Lỗi cập nhật cache usage: {str(e)}")
     
     def _extract_document_ids(self, chunk_ids):
-        # Trích xuất document IDs từ chunk IDs
+        """Trích xuất document IDs từ chunk IDs"""
         doc_ids = []
         for chunk_id in chunk_ids:
             parts = chunk_id.split('_', 1)
@@ -169,7 +288,7 @@ class RetrievalService:
         return doc_ids
     
     def _create_cache_entry(self, query, answer, chunks, relevance_scores):
-        # Tạo entry cache mới
+        """Tạo entry cache mới"""
         cache_id = f"cache_{int(time.time() * 1000)}"
         print(f"Tạo cache entry: {cache_id}")
         
@@ -199,7 +318,7 @@ class RetrievalService:
         
         try:
             # Lưu vào MongoDB
-            self.text_cache_collection.insert_one(cache_data)
+            result = self.text_cache_collection.insert_one(cache_data)
             print("Đã lưu cache vào MongoDB")
             
             # Lưu vào ChromaDB
@@ -211,7 +330,7 @@ class RetrievalService:
             return ""
     
     def _add_to_chroma_cache(self, cache_id, query, related_doc_ids):
-        # Thêm cache vào ChromaDB
+        """Thêm cache vào ChromaDB"""
         query_text = f"query: {query}"
         metadata = {
             "validityStatus": str(CacheStatus.VALID),
@@ -236,9 +355,14 @@ class RetrievalService:
             print(f"Lỗi ChromaDB cache: {str(e)}")
             return False
     
-    def retrieve(self, query, use_cache=True):
-        # Thực hiện truy xuất chính
+    def retrieve(self, query, use_cache=True, search_method="hybrid"):
+        """
+        Thực hiện truy xuất hybrid (Vector + Elasticsearch)
+        search_method: "hybrid", "vector", "elasticsearch"
+        """
         start_time = time.time()
+        
+        print(f"Hybrid retrieval cho: '{query}' (method: {search_method})")
         
         # Kiểm tra cache
         if use_cache:
@@ -256,11 +380,35 @@ class RetrievalService:
                     "retrieved_chunks": retrieved_chunks,
                     "source": "cache",
                     "cache_id": cache_result["cacheId"],
-                    "execution_time": time.time() - start_time
+                    "execution_time": time.time() - start_time,
+                    "search_method": "cache"
                 }
         
-        # truy xuất từ ChromaDB
-        print("Thực hiện retrieval từ ChromaDB")
+        try:
+            if search_method == "vector":
+                # Chỉ sử dụng Vector search
+                return self._vector_search_only(query, start_time)
+            elif search_method == "elasticsearch":
+                # Chỉ sử dụng Elasticsearch
+                return self._elasticsearch_search_only(query, start_time)
+            else:
+                # Hybrid search (mặc định)
+                return self._hybrid_search(query, start_time)
+                
+        except Exception as e:
+            print(f"Lỗi trong retrieval: {str(e)}")
+            return {
+                "context_items": [],
+                "retrieved_chunks": [],
+                "source": "error",
+                "error": str(e),
+                "execution_time": time.time() - start_time,
+                "search_method": "error"
+            }
+    
+    def _vector_search_only(self, query, start_time):
+        """Chỉ sử dụng Vector search"""
+        print("Thực hiện Vector search từ ChromaDB")
         try:
             query_text = f"query: {query}"
             results = self.chroma.search_main(
@@ -281,36 +429,287 @@ class RetrievalService:
                     if 'chunk_id' in meta:
                         relevance_scores[meta['chunk_id']] = 1.0 - min(distance, 1.0)
             
-            print(f"Truy xuất hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} chunks")
+            print(f"Vector search hoàn tất: {len(context_items)} contexts, {len(retrieved_chunks)} chunks")
             
             return {
                 "context_items": context_items,
                 "retrieved_chunks": retrieved_chunks,
-                "source": "chroma",
+                "source": "vector",
                 "relevance_scores": relevance_scores,
-                "execution_time": time.time() - start_time
+                "execution_time": time.time() - start_time,
+                "search_method": "vector"
             }
             
         except Exception as e:
-            print(f"Lỗi truy xuất: {str(e)}")
+            print(f"Lỗi Vector search: {str(e)}")
             return {
                 "context_items": [],
                 "retrieved_chunks": [],
                 "source": "error",
                 "error": str(e),
-                "execution_time": time.time() - start_time
+                "execution_time": time.time() - start_time,
+                "search_method": "vector_error"
             }
     
+    def _elasticsearch_search_only(self, query, start_time):
+        """Chỉ sử dụng Elasticsearch"""
+        print("Thực hiện Elasticsearch search")
+        try:
+            es_response = self.es_client.search_documents(
+                query=query, 
+                size=TOP_K
+            )
+            
+            context_items = []
+            retrieved_chunks = []
+            relevance_scores = {}
+            
+            for hit in es_response.get("hits", []):
+                chunk_id = hit["chunk_id"]
+                retrieved_chunks.append(chunk_id)
+                relevance_scores[chunk_id] = hit["score"]
+                
+                # Tạo context text từ ES metadata
+                source = hit["source"]
+                context_text = f"[ES] {source.get('content_summary', '')} (Doc: {source.get('doc_id', '')})"
+                context_items.append(context_text)
+            
+            print(f"Elasticsearch search hoàn tất: {len(context_items)} contexts")
+            
+            return {
+                "context_items": context_items,
+                "retrieved_chunks": retrieved_chunks,
+                "source": "elasticsearch",
+                "relevance_scores": relevance_scores,
+                "execution_time": time.time() - start_time,
+                "search_method": "elasticsearch",
+                "stats": {
+                    "total_hits": es_response.get("total", 0),
+                    "max_score": es_response.get("max_score", 0)
+                }
+            }
+            
+        except Exception as e:
+            print(f"Lỗi Elasticsearch search: {str(e)}")
+            return {
+                "context_items": [],
+                "retrieved_chunks": [],
+                "source": "error",
+                "error": str(e),
+                "execution_time": time.time() - start_time,
+                "search_method": "elasticsearch_error"
+            }
+    
+    def _hybrid_search(self, query, start_time):
+        """Thực hiện Hybrid search (Vector + Elasticsearch) với full content retrieval"""
+        print("Thực hiện Hybrid search (Vector + Elasticsearch)")
+        
+        # Lấy TOP_K * 2 để có nhiều candidates cho merge
+        search_size = TOP_K * 2
+        
+        # 1. Elasticsearch search
+        elastic_start = time.time()
+        try:
+            elastic_response = self.es_client.search_documents(
+                query=query, 
+                size=search_size  # Lấy 10 results từ ES
+            )
+            elastic_time = time.time() - elastic_start
+            
+            elastic_results = []
+            for hit in elastic_response.get("hits", []):
+                elastic_results.append({
+                    "chunk_id": hit["chunk_id"],
+                    "score": hit["score"],
+                    "metadata": hit["source"],
+                    "highlights": hit.get("highlights", {})
+                })
+                
+            print(f"Elasticsearch: {len(elastic_results)} results ({elastic_time:.3f}s)")
+            
+        except Exception as e:
+            print(f"Lỗi Elasticsearch trong hybrid: {str(e)}")
+            elastic_results = []
+            elastic_time = 0
+        
+        # 2. Vector search
+        vector_start = time.time()
+        try:
+            query_text = f"query: {query}"
+            vector_response = self.chroma.search_main(
+                query_text=query_text,
+                n_results=search_size,  # Lấy 10 results từ Vector
+                include=["documents", "metadatas", "distances"]
+            )
+            vector_time = time.time() - vector_start
+            
+            vector_results = []
+            if vector_response and vector_response.get("metadatas"):
+                metadatas = vector_response["metadatas"][0]
+                distances = vector_response.get("distances", [[]])[0]
+                
+                for i, meta in enumerate(metadatas):
+                    if 'chunk_id' in meta:
+                        score = 1.0 - min(distances[i] if i < len(distances) else 0.5, 1.0)
+                        vector_results.append({
+                            "chunk_id": meta['chunk_id'],
+                            "score": score,
+                            "metadata": meta,
+                            "highlights": {}
+                        })
+                        
+            print(f"Vector search: {len(vector_results)} results ({vector_time:.3f}s)")
+            
+        except Exception as e:
+            print(f"Lỗi Vector search trong hybrid: {str(e)}")
+            vector_results = []
+            vector_time = 0
+        
+        # 3. Merge và lấy top 10 chunks tốt nhất
+        merge_start = time.time()
+        merged_results = self._merge_results(elastic_results, vector_results, search_size)
+        merge_time = time.time() - merge_start
+        
+        print(f"Merge: {len(merged_results)} final chunks ({merge_time:.3f}s)")
+        
+        # 4. Fetch full content cho tất cả chunks được chọn
+        content_start = time.time()
+        selected_chunk_ids = [result["chunk_id"] for result in merged_results]
+        full_contents = self._fetch_full_content_for_chunks(selected_chunk_ids)
+        content_time = time.time() - content_start
+        
+        print(f"Content fetch: {len(full_contents)} chunks with full content ({content_time:.3f}s)")
+        
+        # 5. Format output với full content cho Gemini
+        context_items = []
+        retrieved_chunks = []
+        relevance_scores = {}
+        
+        for result in merged_results:
+            chunk_id = result["chunk_id"]
+            retrieved_chunks.append(chunk_id)
+            relevance_scores[chunk_id] = result["hybrid_score"]
+            
+            # Sử dụng full content từ ChromaDB
+            full_content = full_contents.get(chunk_id, "")
+            if full_content:
+                # Tạo thông tin nguồn chi tiết
+                metadata = result.get("metadata", {})
+                source_info = f"(Nguồn: {metadata.get('doc_type', 'Văn bản')} {metadata.get('doc_id', '')}"
+                if metadata.get('effective_date'):
+                    source_info += f", có hiệu lực từ {metadata['effective_date']}"
+                if metadata.get('doc_title'):
+                    source_info += f" - {metadata['doc_title'][:100]}..."
+                source_info += f", Search: {result.get('search_method', 'hybrid')})"
+                
+                context_items.append(f"{full_content}\n\n{source_info}")
+            else:
+                # Fallback nếu không lấy được full content
+                print(f"Cảnh báo: Không lấy được full content cho chunk {chunk_id}")
+                context_text = f"[Lỗi] Không thể lấy nội dung cho chunk {chunk_id}"
+                context_items.append(context_text)
+        
+        total_time = time.time() - start_time
+        
+        print(f"Hybrid search hoàn tất:")
+        print(f"- Elasticsearch: {len(elastic_results)} results ({elastic_time:.3f}s)")
+        print(f"- Vector search: {len(vector_results)} results ({vector_time:.3f}s)")
+        print(f"- Merged: {len(merged_results)} final chunks ({merge_time:.3f}s)")
+        print(f"- Content fetch: {content_time:.3f}s")
+        print(f"- Total time: {total_time:.3f}s")
+        print(f"- Final context items: {len(context_items)} với full content")
+        
+        # Debug: Show top 5 chunks
+        print(f"Top {len(merged_results)} chunks được chọn:")
+        for i, result in enumerate(merged_results):
+            print(f"  {i+1}. {result['chunk_id']}: hybrid={result['hybrid_score']:.3f} "
+                f"(ES={result['elastic_score']:.3f}, Vec={result['vector_score']:.3f}, "
+                f"Method={result.get('search_method', 'unknown')})")
+        
+        return {
+            "context_items": context_items,
+            "retrieved_chunks": retrieved_chunks,
+            "source": "hybrid",
+            "relevance_scores": relevance_scores,
+            "execution_time": total_time,
+            "search_method": "hybrid",
+            "stats": {
+                "elasticsearch_results": len(elastic_results),
+                "vector_results": len(vector_results),
+                "merged_results": len(merged_results),
+                "final_context_items": len(context_items),
+                "elastic_time": elastic_time,
+                "vector_time": vector_time,
+                "merge_time": merge_time,
+                "content_fetch_time": content_time,
+                "weights": {
+                    "elasticsearch": self.elastic_weight,
+                    "vector": self.vector_weight
+                }
+            }
+        }
+    
     def add_to_cache(self, query, answer, chunks, relevance_scores):
-        # Thêm kết quả vào cache
+        """Thêm kết quả vào cache"""
         print(f"Thêm kết quả vào cache cho: '{query}'")
         cache_id = self._create_cache_entry(query, answer, chunks, relevance_scores)
         if cache_id:
             print(f"Cache ID: {cache_id}")
         return cache_id
     
+    def index_document_to_elasticsearch(self, doc_id: str, chunks_data: List[Dict]) -> bool:
+        """Index document chunks vào Elasticsearch"""
+        try:
+            print(f"Indexing document {doc_id} vào Elasticsearch...")
+            
+            # Chuẩn bị documents cho ES
+            es_documents = []
+            for chunk in chunks_data:
+                doc = {
+                    "chunk_id": chunk.get("chunk_id"),
+                    "doc_id": doc_id,
+                    "doc_type": chunk.get("doc_type", ""),
+                    "doc_title": chunk.get("doc_title", ""),
+                    "content": chunk.get("content", ""),
+                    "content_summary": chunk.get("content_summary", ""),
+                    "effective_date": chunk.get("effective_date", ""),
+                    "status": chunk.get("status", "active"),
+                    "document_scope": chunk.get("document_scope", ""),
+                    "chunk_type": chunk.get("chunk_type", ""),
+                    "chunk_index": chunk.get("chunk_index", 0),
+                    "total_chunks": chunk.get("total_chunks", 1),
+                    "keywords": chunk.get("keywords", []),
+                    "created_at": chunk.get("created_at", "")
+                }
+                es_documents.append(doc)
+            
+            # Bulk index
+            success = self.es_client.bulk_index_documents(es_documents)
+            
+            if success:
+                print(f"Đã index {len(es_documents)} chunks vào Elasticsearch")
+            else:
+                print(f"Thất bại khi index vào Elasticsearch")
+                
+            return success
+            
+        except Exception as e:
+            print(f"Lỗi index vào Elasticsearch: {str(e)}")
+            return False
+
+    def delete_document_from_elasticsearch(self, doc_id: str) -> bool:
+        """Xóa document khỏi Elasticsearch"""
+        try:
+            success = self.es_client.delete_documents_by_doc_id(doc_id)
+            if success:
+                print(f"Đã xóa document {doc_id} khỏi Elasticsearch")
+            return success
+        except Exception as e:
+            print(f"Lỗi xóa khỏi Elasticsearch: {str(e)}")
+            return False
+    
     def invalidate_document_cache(self, doc_id):
-        # Vô hiệu hóa cache liên quan đến document
+        """Vô hiệu hóa cache liên quan đến document"""
         print(f"Vô hiệu hóa cache cho document: {doc_id}")
         
         # Vô hiệu hóa trong MongoDB
@@ -358,7 +757,7 @@ class RetrievalService:
         return result.modified_count
     
     def clear_all_cache(self):
-        # Xóa toàn bộ cache
+        """Xóa toàn bộ cache"""
         try:
             print("Đang xóa toàn bộ cache...")
             
@@ -402,7 +801,7 @@ class RetrievalService:
             raise e
     
     def clear_all_invalid_cache(self):
-        # Xóa cache không hợp lệ
+        """Xóa cache không hợp lệ"""
         try:
             print("Đang xóa cache không hợp lệ...")
             
@@ -453,7 +852,7 @@ class RetrievalService:
             raise e
     
     def get_cache_stats(self):
-        # Lấy thống kê cache
+        """Lấy thống kê cache"""
         try:
             total_count = self.text_cache_collection.count_documents({})
             valid_count = self.text_cache_collection.count_documents({"validityStatus": CacheStatus.VALID})
@@ -489,9 +888,28 @@ class RetrievalService:
                 "hit_rate": 0,
                 "error": str(e)
             }
+    
+    def get_stats(self) -> Dict[str, Any]:
+        """Lấy thống kê của hybrid system"""
+        try:
+            es_stats = self.es_client.get_index_stats()
+            cache_stats = self.get_cache_stats()
+            
+            return {
+                "elasticsearch": es_stats,
+                "cache_system": cache_stats,
+                "hybrid_config": {
+                    "elastic_weight": self.elastic_weight,
+                    "vector_weight": self.vector_weight,
+                    "top_k": TOP_K,
+                    "embedding_model": EMBEDDING_MODEL_NAME
+                }
+            }
+        except Exception as e:
+            return {"error": str(e)}
             
     def delete_expired_cache(self):
-        # Xóa tất cả cache đã hết hạn
+        """Xóa tất cả cache đã hết hạn"""
         try:
             print("Đang xóa cache đã hết hạn...")
             now = datetime.now()
@@ -527,7 +945,7 @@ class RetrievalService:
             raise e
 
     def search_keyword(self, keyword, limit=10):
-        # Tìm kiếm cache bằng từ khóa
+        """Tìm kiếm cache bằng từ khóa"""
         try:
             print(f"Tìm kiếm cache với từ khóa: '{keyword}'")
             

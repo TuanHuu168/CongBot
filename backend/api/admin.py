@@ -23,7 +23,6 @@ from services.activity_service import activity_service, ActivityType
 from services.document_processing_service import document_processing_service
 from database.mongodb_client import mongodb_client
 from database.chroma_client import chroma_client
-from services.hybrid_retrieval_service import hybrid_retrieval_service
 from database.elasticsearch_client import elasticsearch_client
 
 # Import config
@@ -826,7 +825,7 @@ async def approve_document_chunks(processing_id: str):
         )
         
         # Index vào Elasticsearch
-        es_success = hybrid_retrieval_service.index_document_to_elasticsearch(final_doc_id, es_chunks_data)
+        es_success = retrieval_service.index_document_to_elasticsearch(final_doc_id, es_chunks_data)
         
         if not chroma_success:
             raise HTTPException(status_code=500, detail="Lỗi khi embedding vào ChromaDB")
@@ -1094,7 +1093,7 @@ async def delete_document(doc_id: str, confirm: bool = False):
         
         # Xóa từ Elasticsearch
         try:
-            es_success = hybrid_retrieval_service.delete_document_from_elasticsearch(doc_id)
+            es_success = retrieval_service.delete_document_from_elasticsearch(doc_id)
             if not es_success:
                 print(f"Cảnh báo: Không thể xóa document {doc_id} từ Elasticsearch")
         except Exception as e:
@@ -1822,7 +1821,7 @@ async def get_elasticsearch_status():
         return {
             "elasticsearch": health,
             "index_stats": stats,
-            "hybrid_stats": hybrid_retrieval_service.get_stats()
+            "hybrid_stats": retrieval_service.get_stats()
         }
     except Exception as e:
         handle_error("get_elasticsearch_status", e)
@@ -1887,7 +1886,7 @@ async def reindex_all_documents():
                 
                 # Index vào Elasticsearch
                 if chunks_data:
-                    success = hybrid_retrieval_service.index_document_to_elasticsearch(doc_id, chunks_data)
+                    success = retrieval_service.index_document_to_elasticsearch(doc_id, chunks_data)
                     if success:
                         success_count += 1
                         total_chunks += len(chunks_data)
@@ -1958,7 +1957,7 @@ async def test_elasticsearch_search(search_data: dict = Body(...)):
         es_results = elasticsearch_client.search_documents(query, size=10)
         
         # Test hybrid search
-        hybrid_results = hybrid_retrieval_service.search(query, use_cache=False, top_k=10)
+        hybrid_results = retrieval_service.retrieve(query, use_cache=False)
         
         return {
             "query": query,

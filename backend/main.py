@@ -11,7 +11,6 @@ from database.mongodb_client import mongodb_client
 
 # Import cho Elasticsearch integration
 from database.elasticsearch_client import elasticsearch_client
-from services.hybrid_retrieval_service import hybrid_retrieval_service
 
 load_dotenv()
 
@@ -85,7 +84,7 @@ async def status():
         
         # Kiểm tra Hybrid Service
         try:
-            hybrid_stats = hybrid_retrieval_service.get_stats()
+            hybrid_stats = retrieval_service.get_stats()
             hybrid_status = "connected"
         except Exception as e:
             hybrid_stats = {"error": str(e)}
@@ -230,14 +229,6 @@ if __name__ == "__main__":
             print("Warning: Elasticsearch connection failed")
     except Exception as e:
         print(f"Warning: Elasticsearch initialization failed: {str(e)}")
-    
-    # Khởi tạo Hybrid Retrieval Service
-    try:
-        print("Initializing Hybrid Retrieval Service...")
-        # Chỉ cần import là đã khởi tạo
-        print("Hybrid Retrieval Service initialized successfully")
-    except Exception as e:
-        print(f"Warning: Hybrid Retrieval Service initialization failed: {str(e)}")
     
     print("All services initialized. Starting API server...")
    

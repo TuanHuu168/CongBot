@@ -11,8 +11,6 @@ import zipfile
 from google import genai
 import sys
 
-from services.hybrid_retrieval_service import hybrid_retrieval_service
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import GEMINI_API_KEY, GEMINI_MODEL, DATA_DIR
 
