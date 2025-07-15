@@ -59,7 +59,7 @@ class RetrievalService:
         return list(set(keywords))
     
     def _normalize_scores(self, scores: List[float]) -> List[float]:
-        """Chuẩn hóa scores về range [0, 1]"""
+        """Chuẩn hóa scores về range [0, 1] bằng min-max normalization"""
         if not scores:
             return []
         
@@ -118,30 +118,48 @@ class RetrievalService:
         all_chunk_ids = set(elastic_map.keys()) | set(vector_map.keys())
         print(f"Tổng cộng {len(all_chunk_ids)} unique chunks từ cả hai sources")
         
+        # Thu thập tất cả raw scores để normalize
+        elastic_scores = [elastic_map[cid]["score"] for cid in elastic_map.keys()]
+        vector_scores = [vector_map[cid]["score"] for cid in vector_map.keys()]
+        
+        print(f"ES scores range: {min(elastic_scores) if elastic_scores else 0:.3f} - {max(elastic_scores) if elastic_scores else 0:.3f}")
+        print(f"Vector scores range: {min(vector_scores) if vector_scores else 0:.3f} - {max(vector_scores) if vector_scores else 0:.3f}")
+        
+        # Normalize scores về [0,1] dựa trên min-max của từng loại
+        normalized_elastic_scores = self._normalize_scores(elastic_scores) if elastic_scores else []
+        normalized_vector_scores = self._normalize_scores(vector_scores) if vector_scores else []
+        
+        # Tạo mapping cho normalized scores
+        elastic_norm_map = {}
+        if normalized_elastic_scores:
+            elastic_norm_map = dict(zip(elastic_map.keys(), normalized_elastic_scores))
+        
+        vector_norm_map = {}
+        if normalized_vector_scores:
+            vector_norm_map = dict(zip(vector_map.keys(), normalized_vector_scores))
+        
         merged_results = []
         for chunk_id in all_chunk_ids:
-            # Lấy raw scores
-            elastic_score = elastic_map[chunk_id]["score"] if chunk_id in elastic_map else 0
-            vector_score = vector_map[chunk_id]["score"] if chunk_id in vector_map else 0
+            # Lấy normalized scores
+            elastic_score = elastic_norm_map.get(chunk_id, 0)
+            vector_score = vector_norm_map.get(chunk_id, 0)
             
-            normalized_es = min(elastic_score / 10.0, 1.0)  # Scale ES về [0-1]
-            normalized_vec = vector_score 
-            
-            # Hybrid score
-            hybrid_score = (self.elastic_weight * normalized_es + 
-                        self.vector_weight * normalized_vec)
+            # Hybrid score với weights = 0.5 cho cả hai
+            elastic_weight = 0.5
+            vector_weight = 0.5
+            hybrid_score = (elastic_weight * elastic_score + vector_weight * vector_score)
             
             # Tạo result object
             result = {
                 "chunk_id": chunk_id,
                 "hybrid_score": hybrid_score,
-                "elastic_score": normalized_es,  # Hiển thị score đã normalize
-                "vector_score": normalized_vec,
-                "raw_elastic_score": elastic_score,  # Giữ raw score để debug
-                "raw_vector_score": vector_score
+                "elastic_score": elastic_score,  # Hiển thị score đã normalize
+                "vector_score": vector_score,
+                "raw_elastic_score": elastic_map.get(chunk_id, {}).get("score", 0),  # Giữ raw score để debug
+                "raw_vector_score": vector_map.get(chunk_id, {}).get("score", 0)
             }
             
-            # Thêm metadata như cũ...
+            # Thêm metadata và search method
             if chunk_id in elastic_map and chunk_id in vector_map:
                 result["search_method"] = "hybrid"
                 es_meta = elastic_map[chunk_id].get("metadata", {})
@@ -152,7 +170,7 @@ class RetrievalService:
                 result["search_method"] = "vector"
                 result["metadata"] = vector_map[chunk_id].get("metadata", {})
                 result["highlights"] = {}
-            else:
+            else:  # chunk_id in elastic_map
                 result["search_method"] = "elasticsearch"
                 result["metadata"] = elastic_map[chunk_id].get("metadata", {})
                 result["highlights"] = elastic_map[chunk_id].get("highlights", {})
@@ -164,6 +182,8 @@ class RetrievalService:
         final_results = merged_results[:top_k]
         
         print(f"Đã merge và chọn top {len(final_results)} chunks tốt nhất")
+        print(f"Weights used: ES={elastic_weight}, Vector={vector_weight}")
+        
         return final_results
     
     def _format_context(self, results):
