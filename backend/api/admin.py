@@ -1364,6 +1364,43 @@ async def delete_document(doc_id: str, confirm: bool = False):
         return {"message": f"Đã xóa văn bản {doc_id} thành công khỏi tất cả hệ thống"}
     except Exception as e:
         handle_error("delete_document", e)
+        
+@router.delete("/delete-cache/{cache_id}")
+async def delete_specific_cache(cache_id: str):
+    """Xóa cache cụ thể theo cache_id"""
+    try:
+        db = mongodb_client.get_database()
+        
+        # Tìm cache để xác nhận tồn tại
+        cache_entry = db.text_cache.find_one({"cacheId": cache_id})
+        if not cache_entry:
+            raise HTTPException(status_code=404, detail="Không tìm thấy cache")
+        
+        # Xóa trong MongoDB
+        mongo_result = db.text_cache.delete_one({"cacheId": cache_id})
+        
+        # Xóa trong ChromaDB
+        try:
+            cache_collection = chroma_client.get_cache_collection()
+            if cache_collection:
+                cache_collection.delete(ids=[cache_id])
+        except Exception as e:
+            print(f"Lỗi xóa cache trong ChromaDB: {str(e)}")
+        
+        log_admin_activity(ActivityType.CACHE_CLEAR,
+                          f"Admin xóa cache cụ thể: {cache_id}",
+                          {"cache_id": cache_id, "action": "delete_specific_cache"})
+        
+        return {
+            "message": "Đã xóa cache thành công",
+            "cache_id": cache_id,
+            "deleted_count": mongo_result.deleted_count
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        handle_error("delete_specific_cache", e)
 
 # Các endpoint Benchmark (giữ nguyên logic cũ)
 @router.post("/upload-benchmark")
