@@ -67,18 +67,14 @@ async def ask(input: QueryInput):
                             "question": exchange.get("question", ""),
                             "answer": exchange.get("answer", "")
                         })
-                    print(f"Đã tải {len(conversation_context)} trao đổi trước đó")
                 context_load_end = time.time()
-                print(f"Tải context mất: {context_load_end - context_load_start:.3f} giây")
+                print(f"Tải {len(conversation_context)} context mất: {context_load_end - context_load_start:.3f} giây")
             except Exception as e:
                 print(f"Lỗi khi tải lịch sử cuộc trò chuyện: {str(e)}")
                 conversation_context = []
         
-        # Sử dụng Hybrid Search thay vì chỉ Vector search
-        retrieval_start = time.time()
+        # Sử dụng Hybrid Search
         retrieval_result = retrieval_service.retrieve(input.query, use_cache=True)
-        retrieval_end = time.time()
-        print(f"Hybrid search mất: {retrieval_end - retrieval_start:.3f} giây")
         
         source = retrieval_result.get("source", "unknown")
         context_items = retrieval_result.get("context_items", [])

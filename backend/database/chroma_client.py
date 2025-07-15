@@ -197,9 +197,8 @@ class ChromaDBClient:
             if hasattr(self, 'embedding_function'):
                 try:
                     test_embed = self.embedding_function([query_text])
-                    print(f"[CHROMA DEBUG] Kích thước embedding truy vấn: {len(test_embed[0]) if test_embed and test_embed[0] else 'None'}")
                 except Exception as e:
-                    print(f"[CHROMA DEBUG] Lỗi khi kiểm tra embedding: {e}")
+                    pass
             
             results = collection.query(
                 query_texts=[query_text],
@@ -207,11 +206,10 @@ class ChromaDBClient:
                 include=include
             )
             
-            print(f"[CHROMA DEBUG] Truy vấn thành công, kết quả: {len(results.get('ids', [[]])[0])} mục")
+            print(f"ChromaDB: Truy vấn thành công, kết quả: {len(results.get('ids', [[]])[0])} mục")
             return results
         except Exception as e:
-            print(f"[CHROMA DEBUG] Lỗi truy vấn: {str(e)}")
-            print(f"Lỗi khi tìm kiếm trong main collection: {str(e)}")
+            print(f"Lỗi khi tìm kiếm trong collection: {str(e)}")
             return None
     
     def search_cache(self, query_text, n_results=5, include=None):

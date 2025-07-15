@@ -81,8 +81,6 @@ class RetrievalService:
                 print("Không thể lấy main collection từ ChromaDB")
                 return {}
             
-            print(f"Đang fetch full content cho {len(chunk_ids)} chunks từ ChromaDB...")
-            
             # Lấy full content từ ChromaDB
             result = collection.get(
                 ids=chunk_ids,
@@ -111,23 +109,20 @@ class RetrievalService:
         
         print(f"Đang merge {len(elastic_results)} kết quả ES và {len(vector_results)} kết quả Vector...")
         
-        # Filter invalid chunks trước khi merge
-        print("Filtering invalid chunks...")
-        
-        # Filter elastic results
+        # Filter kết quả từ elasticsearch
         valid_elastic_results = []
         for result in elastic_results:
-            # Kiểm tra validity từ ES metadata hoặc query lại ChromaDB
+            # Kiểm tra validity
             chunk_id = result.get("chunk_id")
             if self._is_chunk_valid(chunk_id):
                 valid_elastic_results.append(result)
             else:
                 print(f"Filtered invalid chunk from ES: {chunk_id}")
         
-        # Filter vector results  
+        # Filter kết quả từ chromadb 
         valid_vector_results = []
         for result in vector_results:
-            # Vector results đã có metadata, check trực tiếp
+            # Kiểm tra validity
             metadata = result.get("metadata", {})
             if metadata.get("validity_status") != "invalid":
                 valid_vector_results.append(result)
@@ -136,14 +131,14 @@ class RetrievalService:
         
         print(f"After filtering: ES {len(valid_elastic_results)}/{len(elastic_results)}, Vector {len(valid_vector_results)}/{len(vector_results)}")
         
-        # Tạo mapping từ chunk_id đến kết quả với RAW SCORES
+        # Tạo mapping từ chunk_id đến kết quả
         elastic_map = {result["chunk_id"]: result for result in valid_elastic_results}
         vector_map = {result["chunk_id"]: result for result in valid_vector_results}
         
         all_chunk_ids = set(elastic_map.keys()) | set(vector_map.keys())
         print(f"Tổng cộng {len(all_chunk_ids)} unique VALID chunks từ cả hai sources")
         
-        # Thu thập tất cả raw scores để normalize
+        # Thu thập tất cả raw scores
         elastic_scores = [elastic_map[cid]["score"] for cid in elastic_map.keys()]
         vector_scores = [vector_map[cid]["score"] for cid in vector_map.keys()]
         
@@ -169,7 +164,7 @@ class RetrievalService:
             elastic_score = elastic_norm_map.get(chunk_id, 0)
             vector_score = vector_norm_map.get(chunk_id, 0)
             
-            # Hybrid score với weights = 0.5 cho cả hai
+            # Hybrid score với weights = 0.5
             elastic_weight = 0.5
             vector_weight = 0.5
             hybrid_score = (elastic_weight * elastic_score + vector_weight * vector_score)
@@ -178,9 +173,9 @@ class RetrievalService:
             result = {
                 "chunk_id": chunk_id,
                 "hybrid_score": hybrid_score,
-                "elastic_score": elastic_score,  # Hiển thị score đã normalize
+                "elastic_score": elastic_score,
                 "vector_score": vector_score,
-                "raw_elastic_score": elastic_map.get(chunk_id, {}).get("score", 0),  # Giữ raw score để debug
+                "raw_elastic_score": elastic_map.get(chunk_id, {}).get("score", 0),
                 "raw_vector_score": vector_map.get(chunk_id, {}).get("score", 0)
             }
             
@@ -206,8 +201,7 @@ class RetrievalService:
         merged_results.sort(key=lambda x: x["hybrid_score"], reverse=True)
         final_results = merged_results[:top_k]
         
-        print(f"Đã merge và chọn top {len(final_results)} VALID chunks tốt nhất")
-        print(f"Weights used: ES={elastic_weight}, Vector={vector_weight}")
+        print(f"Đã merge và chọn {len(final_results)} valid chunks tốt nhất")
         
         return final_results
 
@@ -435,13 +429,7 @@ class RetrievalService:
             return False
     
     def retrieve(self, query, use_cache=True, search_method="hybrid"):
-        """
-        Thực hiện truy xuất hybrid (Vector + Elasticsearch)
-        search_method: "hybrid", "vector", "elasticsearch"
-        """
         start_time = time.time()
-        
-        print(f"Hybrid retrieval cho: '{query}' (method: {search_method})")
         
         # Kiểm tra cache
         if use_cache:
@@ -625,9 +613,7 @@ class RetrievalService:
             }
     
     def _hybrid_search(self, query, start_time):
-        """Thực hiện Hybrid search (Vector + Elasticsearch) với full content retrieval và validity filter"""
-        print("Thực hiện Hybrid search (Vector + Elasticsearch)")
-        
+        """Thực hiện Hybrid search (Vector + Elasticsearch)"""
         search_size = TOP_K * 2
         
         # 1. Elasticsearch search
@@ -693,8 +679,6 @@ class RetrievalService:
         merged_results = self._merge_results(elastic_results, vector_results, TOP_K*2)
         merge_time = time.time() - merge_start
         
-        print(f"Merge với validity filter: {len(merged_results)} final VALID chunks ({merge_time:.3f}s)")
-        
         # 4. Fetch full content cho tất cả chunks được chọn
         content_start = time.time()
         selected_chunk_ids = [result["chunk_id"] for result in merged_results]
@@ -734,15 +718,11 @@ class RetrievalService:
         
         total_time = time.time() - start_time
         
-        print(f"Hybrid search với validity filter hoàn tất:")
         print(f"- Elasticsearch: {len(elastic_results)} results ({elastic_time:.3f}s)")
         print(f"- Vector search: {len(vector_results)} results ({vector_time:.3f}s)")
-        print(f"- Merged: {len(merged_results)} final VALID chunks ({merge_time:.3f}s)")
-        print(f"- Content fetch: {content_time:.3f}s")
-        print(f"- Total time: {total_time:.3f}s")
-        print(f"- Final context items: {len(context_items)} với full content")
+        print(f"- Merged: {len(merged_results)} chunks ({merge_time:.3f}s)")
         
-        print(f"Top {len(merged_results)} VALID chunks được chọn:")
+        print(f"ID của {len(merged_results)} chunks được chọn:")
         for i, result in enumerate(merged_results):
             metadata = result.get('metadata', {})
             validity = metadata.get('validity_status', 'valid')
