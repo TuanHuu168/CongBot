@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage } from 'lucide-react';
+import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
 import { getApiBaseUrl } from '../../apiService';
@@ -45,6 +45,15 @@ const DocumentsTab = ({
     const [chunkInfo, setChunkInfo] = useState(null);
     const [loadingChunks, setLoadingChunks] = useState(false);
 
+    // State cho related chunks analysis
+    const [relatedChunksInfo, setRelatedChunksInfo] = useState(null);
+    const [loadingRelatedChunks, setLoadingRelatedChunks] = useState(false);
+    const [llmAnalysisResult, setLlmAnalysisResult] = useState(null);
+    const [isAnalyzingWithLLM, setIsAnalyzingWithLLM] = useState(false);
+    const [chunksToInvalidate, setChunksToInvalidate] = useState([]);
+    const [isInvalidatingChunks, setIsInvalidatingChunks] = useState(false);
+    const [showRelatedChunksPanel, setShowRelatedChunksPanel] = useState(false);
+
     const API_BASE_URL = getApiBaseUrl();
 
     const fadeInVariants = {
@@ -83,6 +92,14 @@ const DocumentsTab = ({
                                 });
                             }
 
+                            // Kiểm tra và xử lý related documents
+                            const relatedDocuments = metadata?.related_documents || [];
+                            if (relatedDocuments.length > 0) {
+                                console.log('Phát hiện related documents:', relatedDocuments);
+                                await fetchRelatedChunksInfo(relatedDocuments);
+                                setShowRelatedChunksPanel(true);
+                            }
+
                             const fileType = status.file_type?.toUpperCase() || 'TÀI LIỆU';
                             const fileName = status.original_filename || 'file';
 
@@ -100,6 +117,9 @@ const DocumentsTab = ({
                                             <p class="text-xs text-blue-600">Loại: ${autoDetected?.doc_type || 'Không xác định'}</p>
                                             <p class="text-xs text-blue-600">Ngày hiệu lực: ${autoDetected?.effective_date || 'Không xác định'}</p>
                                         </div>
+                                        ${relatedDocuments.length > 0 ? 
+                                            `<p class="text-sm text-orange-600 mt-2">⚠️ Phát hiện ${relatedDocuments.length} văn bản liên quan. Vui lòng kiểm tra phần "Phân tích văn bản liên quan" bên dưới.</p>` 
+                                            : ''}
                                         <p class="text-sm text-gray-600 mt-2">Thông tin đã được tự động điền vào biểu mẫu. Vui lòng kiểm tra và phê duyệt nếu hài lòng.</p>
                                     </div>
                                 `,
@@ -146,6 +166,12 @@ const DocumentsTab = ({
             effective_date: '',
             document_scope: 'Quốc gia'
         });
+
+        // Reset related chunks state
+        setRelatedChunksInfo(null);
+        setLlmAnalysisResult(null);
+        setChunksToInvalidate([]);
+        setShowRelatedChunksPanel(false);
     }, [uploadMode]);
 
     // Lấy thông tin chunks của document
@@ -165,6 +191,225 @@ const DocumentsTab = ({
         } finally {
             setLoadingChunks(false);
         }
+    };
+
+    // Lấy thông tin chunks liên quan từ related documents
+    const fetchRelatedChunksInfo = async (relatedDocuments) => {
+        try {
+            setLoadingRelatedChunks(true);
+            console.log('Đang fetch thông tin chunks liên quan cho:', relatedDocuments);
+
+            const relatedChunksData = [];
+
+            for (const relatedDoc of relatedDocuments) {
+                const docId = relatedDoc.doc_id;
+                try {
+                    // Tìm chunks trong ChromaDB dựa trên doc_id
+                    const response = await axios.post(`${API_BASE_URL}/search-related-chunks`, {
+                        doc_id: docId,
+                        relationship: relatedDoc.relationship,
+                        description: relatedDoc.description
+                    });
+
+                    if (response.data.chunks && response.data.chunks.length > 0) {
+                        relatedChunksData.push({
+                            doc_id: docId,
+                            relationship: relatedDoc.relationship,
+                            description: relatedDoc.description,
+                            chunks: response.data.chunks,
+                            exists_in_db: true
+                        });
+                    } else {
+                        relatedChunksData.push({
+                            doc_id: docId,
+                            relationship: relatedDoc.relationship,
+                            description: relatedDoc.description,
+                            chunks: [],
+                            exists_in_db: false
+                        });
+                    }
+                } catch (error) {
+                    console.error(`Lỗi khi tìm chunks cho ${docId}:`, error);
+                    relatedChunksData.push({
+                        doc_id: docId,
+                        relationship: relatedDoc.relationship,
+                        description: relatedDoc.description,
+                        chunks: [],
+                        exists_in_db: false,
+                        error: error.message
+                    });
+                }
+            }
+
+            setRelatedChunksInfo(relatedChunksData);
+            console.log('Thông tin chunks liên quan:', relatedChunksData);
+
+        } catch (error) {
+            console.error('Lỗi khi fetch thông tin chunks liên quan:', error);
+        } finally {
+            setLoadingRelatedChunks(false);
+        }
+    };
+
+    // Gọi LLM phân tích chunks cần vô hiệu hóa
+    const analyzeChunksWithLLM = async () => {
+        if (!relatedChunksInfo || !documentProcessingStatus?.result) {
+            return;
+        }
+
+        try {
+            setIsAnalyzingWithLLM(true);
+            console.log('Bắt đầu phân tích với LLM...');
+
+            // Chuẩn bị dữ liệu cho LLM
+            const newDocumentContent = documentProcessingStatus.result.metadata;
+            const existingChunks = relatedChunksInfo
+                .filter(item => item.exists_in_db && item.chunks.length > 0)
+                .flatMap(item => item.chunks);
+
+            const analysisData = {
+                new_document: {
+                    doc_id: newDocumentContent.doc_id,
+                    doc_type: newDocumentContent.doc_type,
+                    doc_title: newDocumentContent.doc_title,
+                    effective_date: newDocumentContent.effective_date,
+                    chunks: newDocumentContent.chunks,
+                    related_documents: newDocumentContent.related_documents
+                },
+                existing_chunks: existingChunks,
+                analysis_type: 'invalidation_check'
+            };
+
+            const response = await axios.post(`${API_BASE_URL}/analyze-chunks-for-invalidation`, analysisData);
+
+            setLlmAnalysisResult(response.data);
+            setChunksToInvalidate(response.data.chunks_to_invalidate || []);
+
+            console.log('Kết quả phân tích LLM:', response.data);
+
+            Swal.fire({
+                title: 'Phân tích hoàn thành',
+                html: `
+                    <div class="text-left">
+                        <p><strong>LLM đã phân tích:</strong></p>
+                        <p>• Tổng chunks được kiểm tra: ${existingChunks.length}</p>
+                        <p>• Chunks cần vô hiệu hóa: ${response.data.chunks_to_invalidate?.length || 0}</p>
+                        <p class="text-sm text-gray-600 mt-2">Vui lòng xem kết quả chi tiết bên dưới.</p>
+                    </div>
+                `,
+                icon: 'info',
+                confirmButtonColor: '#10b981'
+            });
+
+        } catch (error) {
+            console.error('Lỗi khi phân tích với LLM:', error);
+            Swal.fire({
+                title: 'Lỗi phân tích',
+                text: error.response?.data?.detail || 'Không thể phân tích với LLM',
+                icon: 'error',
+                confirmButtonColor: '#10b981'
+            });
+        } finally {
+            setIsAnalyzingWithLLM(false);
+        }
+    };
+
+    // Thực hiện vô hiệu hóa chunks
+    const executeChunkInvalidation = async () => {
+        if (chunksToInvalidate.length === 0) {
+            Swal.fire({
+                title: 'Không có chunks để vô hiệu hóa',
+                text: 'Danh sách chunks cần vô hiệu hóa đang trống.',
+                icon: 'warning',
+                confirmButtonColor: '#10b981'
+            });
+            return;
+        }
+
+        const confirmResult = await Swal.fire({
+            title: 'Xác nhận vô hiệu hóa',
+            html: `
+                <div class="text-left">
+                    <p>Bạn có chắc chắn muốn vô hiệu hóa <strong>${chunksToInvalidate.length}</strong> chunks?</p>
+                    <p class="text-sm text-gray-600 mt-2">Hành động này sẽ:</p>
+                    <ul class="text-sm text-gray-600 list-disc list-inside mt-1">
+                        <li>Vô hiệu hóa cache liên quan trong MongoDB</li>
+                        <li>Cập nhật validity status trong ChromaDB</li>
+                        <li>Không thể hoàn tác</li>
+                    </ul>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Vô hiệu hóa',
+            cancelButtonText: 'Hủy',
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280'
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
+        try {
+            setIsInvalidatingChunks(true);
+            console.log('Bắt đầu vô hiệu hóa chunks:', chunksToInvalidate);
+
+            const response = await axios.post(`${API_BASE_URL}/invalidate-chunks`, {
+                chunk_ids: chunksToInvalidate.map(c => c.chunk_id),
+                reason: 'Superseded by new document',
+                new_document_id: documentProcessingStatus?.result?.doc_id
+            });
+
+            Swal.fire({
+                title: 'Vô hiệu hóa thành công',
+                html: `
+                    <div class="text-left">
+                        <p><strong>Đã vô hiệu hóa:</strong></p>
+                        <p>• ${response.data.invalidated_cache_count} cache entries</p>
+                        <p>• ${response.data.invalidated_chunks_count} chunks</p>
+                        <p class="text-sm text-gray-600 mt-2">Hệ thống đã được cập nhật.</p>
+                    </div>
+                `,
+                icon: 'success',
+                confirmButtonColor: '#10b981'
+            });
+
+            // Reset related chunks state
+            setRelatedChunksInfo(null);
+            setLlmAnalysisResult(null);
+            setChunksToInvalidate([]);
+            setShowRelatedChunksPanel(false);
+
+        } catch (error) {
+            console.error('Lỗi khi vô hiệu hóa chunks:', error);
+            Swal.fire({
+                title: 'Lỗi vô hiệu hóa',
+                text: error.response?.data?.detail || 'Không thể vô hiệu hóa chunks',
+                icon: 'error',
+                confirmButtonColor: '#10b981'
+            });
+        } finally {
+            setIsInvalidatingChunks(false);
+        }
+    };
+
+    // Toggle chunk invalidation status
+    const toggleChunkInvalidation = (chunkId) => {
+        setChunksToInvalidate(prev => {
+            const exists = prev.find(c => c.chunk_id === chunkId);
+            if (exists) {
+                return prev.filter(c => c.chunk_id !== chunkId);
+            } else {
+                // Tìm chunk info từ relatedChunksInfo
+                const chunkInfo = relatedChunksInfo
+                    .flatMap(item => item.chunks)
+                    .find(chunk => chunk.chunk_id === chunkId);
+                
+                if (chunkInfo) {
+                    return [...prev, chunkInfo];
+                }
+                return prev;
+            }
+        });
     };
 
     // Lấy icon tệp dựa trên extension
@@ -425,7 +670,7 @@ const DocumentsTab = ({
             `,
             icon: 'question',
             showCancelButton: true,
-            confirmButtonText: 'Phê duyệt & Nhúng',
+            confirmButtonText: 'Phê duyệt và embedding',
             cancelButtonText: 'Hủy',
             confirmButtonColor: '#10b981',
             cancelButtonColor: '#6b7280'
@@ -453,6 +698,12 @@ const DocumentsTab = ({
                         effective_date: '',
                         document_scope: 'Quốc gia'
                     });
+
+                    // Reset related chunks state
+                    setRelatedChunksInfo(null);
+                    setLlmAnalysisResult(null);
+                    setChunksToInvalidate([]);
+                    setShowRelatedChunksPanel(false);
 
                     // Làm mới danh sách tài liệu
                     setTimeout(() => {
@@ -504,6 +755,10 @@ const DocumentsTab = ({
                     // Reset state để tải lên lại
                     setDocumentProcessingId(null);
                     setDocumentProcessingStatus(null);
+                    setRelatedChunksInfo(null);
+                    setLlmAnalysisResult(null);
+                    setChunksToInvalidate([]);
+                    setShowRelatedChunksPanel(false);
 
                 } catch (error) {
                     console.error('Lỗi khi tạo lại document chunks:', error);
@@ -516,6 +771,189 @@ const DocumentsTab = ({
                 }
             }
         });
+    };
+
+    // Render phần phân tích văn bản liên quan
+    const renderRelatedChunksAnalysis = () => {
+        if (!showRelatedChunksPanel) return null;
+
+        return (
+            <div className="mb-6 p-4 border border-orange-200 rounded-lg bg-orange-50">
+                <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-medium text-orange-800 flex items-center">
+                        <Brain size={16} className="mr-2" />
+                        Phân tích văn bản liên quan
+                    </h4>
+                    <button
+                        onClick={() => setShowRelatedChunksPanel(false)}
+                        className="text-orange-600 hover:text-orange-800"
+                    >
+                        <XCircle size={16} />
+                    </button>
+                </div>
+
+                {loadingRelatedChunks && (
+                    <div className="flex items-center justify-center py-4">
+                        <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-orange-600 mr-2"></div>
+                        <span className="text-orange-700">Đang tải thông tin chunks liên quan...</span>
+                    </div>
+                )}
+
+                {relatedChunksInfo && !loadingRelatedChunks && (
+                    <div className="space-y-4">
+                        {relatedChunksInfo.map((relatedDoc, index) => (
+                            <div key={index} className="bg-white p-3 rounded border">
+                                <div className="flex items-center justify-between mb-2">
+                                    <h5 className="font-medium text-gray-800">
+                                        {relatedDoc.doc_id} ({relatedDoc.relationship})
+                                    </h5>
+                                    <span className={`px-2 py-1 rounded text-xs ${
+                                        relatedDoc.exists_in_db 
+                                            ? 'bg-green-100 text-green-800' 
+                                            : 'bg-gray-100 text-gray-600'
+                                    }`}>
+                                        {relatedDoc.exists_in_db 
+                                            ? `${relatedDoc.chunks.length} chunks` 
+                                            : 'Không tồn tại trong DB'
+                                        }
+                                    </span>
+                                </div>
+                                
+                                <p className="text-sm text-gray-600 mb-2">{relatedDoc.description}</p>
+                                
+                                {relatedDoc.error && (
+                                    <p className="text-sm text-red-600">Lỗi: {relatedDoc.error}</p>
+                                )}
+
+                                {relatedDoc.exists_in_db && relatedDoc.chunks.length > 0 && (
+                                    <div className="mt-2">
+                                        <button
+                                            onClick={() => {
+                                                const expandedDiv = document.getElementById(`chunks-${index}`);
+                                                expandedDiv.style.display = expandedDiv.style.display === 'none' ? 'block' : 'none';
+                                            }}
+                                            className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                                        >
+                                            <ChevronDown size={14} className="mr-1" />
+                                            Xem chi tiết chunks
+                                        </button>
+                                        <div id={`chunks-${index}`} style={{display: 'none'}} className="mt-2 space-y-2">
+                                            {relatedDoc.chunks.slice(0, 3).map((chunk, chunkIndex) => (
+                                                <div key={chunkIndex} className="bg-gray-50 p-2 rounded text-xs">
+                                                    <p className="font-medium">{chunk.chunk_id}</p>
+                                                    <p className="text-gray-600 truncate">{chunk.content_summary || chunk.content?.substring(0, 100) + '...'}</p>
+                                                </div>
+                                            ))}
+                                            {relatedDoc.chunks.length > 3 && (
+                                                <p className="text-xs text-gray-500">... và {relatedDoc.chunks.length - 3} chunks khác</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+
+                        {/* Button để bắt đầu phân tích LLM */}
+                        {relatedChunksInfo.some(doc => doc.exists_in_db && doc.chunks.length > 0) && !llmAnalysisResult && (
+                            <div className="pt-3 border-t border-orange-200">
+                                <button
+                                    onClick={analyzeChunksWithLLM}
+                                    disabled={isAnalyzingWithLLM}
+                                    className="w-full py-2 px-4 bg-orange-600 text-white rounded-lg text-sm hover:bg-orange-700 transition-colors flex items-center justify-center"
+                                >
+                                    {isAnalyzingWithLLM ? (
+                                        <>
+                                            <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                                            LLM đang phân tích chunks cần vô hiệu hóa...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Brain size={16} className="mr-2" />
+                                            Phân tích với LLM để xác định chunks cần vô hiệu hóa
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+
+                        {/* Hiển thị kết quả phân tích LLM */}
+                        {llmAnalysisResult && (
+                            <div className="pt-3 border-t border-orange-200">
+                                <h5 className="font-medium text-orange-800 mb-2">Kết quả phân tích LLM:</h5>
+                                
+                                <div className="bg-white p-3 rounded border">
+                                    <p className="text-sm text-gray-700 mb-3">{llmAnalysisResult.analysis_summary}</p>
+                                    
+                                    {llmAnalysisResult.chunks_to_invalidate && llmAnalysisResult.chunks_to_invalidate.length > 0 && (
+                                        <div>
+                                            <h6 className="font-medium text-gray-800 mb-2">
+                                                Chunks cần vô hiệu hóa ({llmAnalysisResult.chunks_to_invalidate.length}):
+                                            </h6>
+                                            <div className="space-y-2 max-h-40 overflow-y-auto">
+                                                {llmAnalysisResult.chunks_to_invalidate.map((chunk, index) => (
+                                                    <div key={index} className="flex items-start justify-between bg-red-50 p-2 rounded">
+                                                        <div className="flex-1">
+                                                            <label className="flex items-start text-sm">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={chunksToInvalidate.some(c => c.chunk_id === chunk.chunk_id)}
+                                                                    onChange={() => toggleChunkInvalidation(chunk.chunk_id)}
+                                                                    className="mt-0.5 mr-2"
+                                                                />
+                                                                <div>
+                                                                    <span className="font-medium text-red-800">{chunk.chunk_id}</span>
+                                                                    <p className="text-red-600 text-xs">{chunk.reason}</p>
+                                                                </div>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {(!llmAnalysisResult.chunks_to_invalidate || llmAnalysisResult.chunks_to_invalidate.length === 0) && (
+                                        <p className="text-sm text-green-700 bg-green-50 p-2 rounded">
+                                            ✅ LLM không tìm thấy chunks nào cần vô hiệu hóa.
+                                        </p>
+                                    )}
+                                </div>
+
+                                {/* Button thực hiện vô hiệu hóa */}
+                                {chunksToInvalidate.length > 0 && (
+                                    <div className="mt-3 flex space-x-2">
+                                        <button
+                                            onClick={executeChunkInvalidation}
+                                            disabled={isInvalidatingChunks}
+                                            className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700 transition-colors flex items-center"
+                                        >
+                                            {isInvalidatingChunks ? (
+                                                <>
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                                                    Đang vô hiệu hóa...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <XCircle size={16} className="mr-2" />
+                                                    Vô hiệu hóa {chunksToInvalidate.length} chunks
+                                                </>
+                                            )}
+                                        </button>
+                                        
+                                        <button
+                                            onClick={() => setChunksToInvalidate([])}
+                                            className="px-4 py-2 bg-gray-500 text-white rounded-lg text-sm hover:bg-gray-600 transition-colors"
+                                        >
+                                            Bỏ chọn tất cả
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
+        );
     };
 
     // Render trạng thái xử lý
@@ -600,7 +1038,7 @@ const DocumentsTab = ({
                                 disabled={documentProcessingStatus?.embedded_to_chroma}
                             >
                                 <CheckCircle size={16} className="mr-2" />
-                                {documentProcessingStatus?.embedded_to_chroma ? 'Đã phê duyệt' : 'Phê duyệt & Nhúng'}
+                                {documentProcessingStatus?.embedded_to_chroma ? 'Đã phê duyệt' : 'Phê duyệt và embedding'}
                             </button>
 
                             {!documentProcessingStatus?.embedded_to_chroma && (
@@ -688,6 +1126,7 @@ const DocumentsTab = ({
             </div>
 
             {renderProcessingStatus()}
+            {renderRelatedChunksAnalysis()}
 
             {uploadMode === 'auto' ? (
                 <form onSubmit={handleDocumentUpload} className="space-y-6">
@@ -997,6 +1436,7 @@ const DocumentsTab = ({
                             <p>AI sẽ trích xuất và tự động điền: mã văn bản, tiêu đề, ngày hiệu lực</p>
                             <p>AI cũng tìm các văn bản liên quan và tạo metadata hoàn chỉnh</p>
                             <p>Bạn có thể để trống metadata để Gemini tự động phát hiện hoàn toàn</p>
+                            <p>Nếu có văn bản liên quan, hệ thống sẽ phân tích để xác định chunks cần vô hiệu hóa</p>
                             <p>Kiểm tra kết quả trước khi phê duyệt để nhúng vào ChromaDB</p>
                             <p>Có thể tạo lại nếu kết quả chưa hài lòng</p>
                         </>

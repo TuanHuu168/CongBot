@@ -53,6 +53,21 @@ class DocumentUpload(BaseModel):
     status: str = "active"
     document_scope: str = "Quốc gia"
 
+class SearchRelatedChunksRequest(BaseModel):
+    doc_id: str
+    relationship: str
+    description: str
+
+class AnalyzeChunksRequest(BaseModel):
+    new_document: Dict[str, Any]
+    existing_chunks: List[Dict[str, Any]]
+    analysis_type: str = "invalidation_check"
+
+class InvalidateChunksRequest(BaseModel):
+    chunk_ids: List[str]
+    reason: str
+    new_document_id: str
+
 class SystemStatus(BaseModel):
     status: str
     message: str
@@ -1984,3 +1999,470 @@ async def test_elasticsearch_search(search_data: dict = Body(...)):
         
     except Exception as e:
         handle_error("test_elasticsearch_search", e)
+        
+@router.post("/search-related-chunks")
+async def search_related_chunks(request: SearchRelatedChunksRequest):
+    """Tìm kiếm chunks liên quan trong ChromaDB dựa trên doc_id"""
+    try:
+        doc_id = request.doc_id
+        relationship = request.relationship
+        description = request.description
+        
+        print(f"Đang tìm chunks cho doc_id: {doc_id} với relationship: {relationship}")
+        
+        # Tìm kiếm trong ChromaDB bằng cách filter theo doc_id
+        collection = chroma_client.get_main_collection()
+        if not collection:
+            return {"chunks": [], "exists_in_db": False}
+        
+        try:
+            # Lấy tất cả chunks có doc_id tương ứng
+            results = collection.get(
+                where={"doc_id": doc_id},
+                include=["documents", "metadatas"]
+            )
+            
+            chunks_found = []
+            if results and results.get("ids"):
+                for i, chunk_id in enumerate(results["ids"]):
+                    metadata = results["metadatas"][i] if i < len(results["metadatas"]) else {}
+                    document = results["documents"][i] if i < len(results["documents"]) else ""
+                    
+                    # Loại bỏ prefix "passage: " nếu có
+                    if document.startswith("passage: "):
+                        document = document[9:]
+                    
+                    chunk_data = {
+                        "chunk_id": chunk_id,
+                        "content": document[:200] + "..." if len(document) > 200 else document,  # Trích dẫn ngắn
+                        "full_content": document,  # Nội dung đầy đủ cho LLM
+                        "content_summary": metadata.get("content_summary", ""),
+                        "doc_id": metadata.get("doc_id", ""),
+                        "doc_type": metadata.get("doc_type", ""),
+                        "doc_title": metadata.get("doc_title", ""),
+                        "chunk_type": metadata.get("chunk_type", ""),
+                        "chunk_index": metadata.get("chunk_index", ""),
+                        "effective_date": metadata.get("effective_date", "")
+                    }
+                    chunks_found.append(chunk_data)
+            
+            print(f"Tìm thấy {len(chunks_found)} chunks cho doc_id: {doc_id}")
+            
+            log_admin_activity(ActivityType.SYSTEM_STATUS,
+                              f"Tìm kiếm chunks liên quan: {doc_id} - {len(chunks_found)} chunks",
+                              {
+                                  "doc_id": doc_id,
+                                  "relationship": relationship,
+                                  "chunks_found": len(chunks_found),
+                                  "action": "search_related_chunks"
+                              })
+            
+            return {
+                "chunks": chunks_found,
+                "exists_in_db": len(chunks_found) > 0,
+                "total_found": len(chunks_found),
+                "doc_id": doc_id,
+                "relationship": relationship
+            }
+            
+        except Exception as e:
+            print(f"Lỗi khi tìm kiếm chunks trong ChromaDB: {str(e)}")
+            return {"chunks": [], "exists_in_db": False, "error": str(e)}
+            
+    except Exception as e:
+        handle_error("search_related_chunks", e)
+
+@router.post("/analyze-chunks-for-invalidation")
+async def analyze_chunks_for_invalidation(request: AnalyzeChunksRequest):
+    """Sử dụng LLM để phân tích chunks nào cần vô hiệu hóa"""
+    try:
+        new_document = request.new_document
+        existing_chunks = request.existing_chunks
+        
+        print(f"Bắt đầu phân tích LLM cho document mới: {new_document.get('doc_id')}")
+        print(f"Số chunks hiện có cần kiểm tra: {len(existing_chunks)}")
+        
+        if not existing_chunks:
+            return {
+                "analysis_summary": "Không có chunks hiện có để phân tích.",
+                "chunks_to_invalidate": [],
+                "reasoning": "Danh sách chunks trống."
+            }
+        
+        # Tạo prompt cho LLM phân tích
+        analysis_prompt = f"""
+Bạn là chuyên gia pháp luật Việt Nam. Nhiệm vụ của bạn là phân tích xem văn bản pháp luật mới có làm vô hiệu hóa (supersede) các chunks văn bản cũ nào không.
+
+**VĂN BẢN MỚI:**
+- Mã: {new_document.get('doc_id', '')}
+- Loại: {new_document.get('doc_type', '')}
+- Tiêu đề: {new_document.get('doc_title', '')}
+- Ngày hiệu lực: {new_document.get('effective_date', '')}
+- Số chunks: {len(new_document.get('chunks', []))}
+
+**CÁC CHUNKS HIỆN CÓ TRONG HỆ THỐNG:**
+{chr(10).join([f"- {chunk.get('chunk_id', '')}: {chunk.get('content_summary', '')} (Doc: {chunk.get('doc_id', '')}, Ngày hiệu lực: {chunk.get('effective_date', '')})" for chunk in existing_chunks[:10]])}
+{f"... và {len(existing_chunks) - 10} chunks khác" if len(existing_chunks) > 10 else ""}
+
+**YÊU CẦU PHÂN TÍCH:**
+1. **Phân tích mối quan hệ pháp lý:** Xác định văn bản mới có thay thế, bãi bỏ, hoặc sửa đổi các văn bản cũ không
+2. **Nguyên tắc vô hiệu hóa:**
+   - Văn bản có ngày hiệu lực muộn hơn thường thay thế văn bản cũ
+   - Văn bản cùng cơ quan ban hành có thể thay thế nhau
+   - Văn bản cấp cao hơn có thể bãi bỏ văn bản cấp thấp hơn
+   - Văn bản chuyên ngành thay thế trong phạm vi chuyên môn
+
+3. **Xác định chunks cần vô hiệu hóa:**
+   - Chỉ vô hiệu hóa chunks bị thay thế hoàn toàn
+   - Không vô hiệu hóa nếu chỉ bổ sung hoặc làm rõ
+   - Ưu tiên an toàn: khi có nghi ngờ, không vô hiệu hóa
+
+**TRẠNG THÁI VÔ HIỆU HÓA:**
+- "superseded": Bị thay thế hoàn toàn
+- "amended": Bị sửa đổi một phần (không vô hiệu hóa)
+- "supplemented": Được bổ sung (không vô hiệu hóa)
+
+Trả về JSON theo format:
+{{
+    "analysis_summary": "Tóm tắt kết quả phân tích",
+    "chunks_to_invalidate": [
+        {{
+            "chunk_id": "id_chunk_cần_vô_hiệu_hóa",
+            "reason": "Lý do cụ thể tại sao cần vô hiệu hóa",
+            "relationship": "superseded|replaced",
+            "confidence": 0.9
+        }}
+    ],
+    "chunks_to_keep": [
+        {{
+            "chunk_id": "id_chunk_giữ_lại", 
+            "reason": "Lý do tại sao không vô hiệu hóa"
+        }}
+    ],
+    "reasoning": "Giải thích chi tiết quá trình phân tích và quyết định"
+}}
+
+**LƯU Ý:** Chỉ vô hiệu hóa khi chắc chắn 100%. Khi có nghi ngờ, hãy giữ lại và giải thích trong reasoning.
+"""
+
+        try:
+            # Gọi GenerationService với method đúng
+            print("Đang gọi LLM để phân tích chunks...")
+            
+            response = generation_service.generate_answer(
+                query=analysis_prompt,
+                use_cache=False
+            )
+            
+            # Parse JSON response
+            response_text = response.get('answer', '').strip()
+            print("Preview response từ LLM:")
+            print(response_text[:500] + "..." if len(response_text) > 500 else response_text)
+            
+            # Tìm JSON trong response
+            json_start = response_text.find('{')
+            json_end = response_text.rfind('}') + 1
+            
+            if json_start == -1 or json_end <= json_start:
+                raise ValueError("Không tìm thấy JSON hợp lệ trong phản hồi LLM")
+            
+            json_str = response_text[json_start:json_end]
+            analysis_result = json.loads(json_str)
+            
+            # Validate kết quả
+            chunks_to_invalidate = analysis_result.get('chunks_to_invalidate', [])
+            chunks_to_keep = analysis_result.get('chunks_to_keep', [])
+            
+            print(f"LLM phân tích hoàn thành:")
+            print(f"  - Chunks cần vô hiệu hóa: {len(chunks_to_invalidate)}")
+            print(f"  - Chunks giữ lại: {len(chunks_to_keep)}")
+            
+            log_admin_activity(ActivityType.SYSTEM_STATUS,
+                              f"LLM phân tích chunks: {new_document.get('doc_id')} - {len(chunks_to_invalidate)} cần vô hiệu hóa",
+                              {
+                                  "new_doc_id": new_document.get('doc_id'),
+                                  "existing_chunks_count": len(existing_chunks),
+                                  "chunks_to_invalidate": len(chunks_to_invalidate),
+                                  "chunks_to_keep": len(chunks_to_keep),
+                                  "action": "llm_analyze_chunks"
+                              })
+            
+            return analysis_result
+            
+        except json.JSONDecodeError as je:
+            print(f"Lỗi parse JSON từ LLM: {str(je)}")
+            return {
+                "analysis_summary": f"Lỗi phân tích: {str(je)}",
+                "chunks_to_invalidate": [],
+                "chunks_to_keep": [],
+                "reasoning": "LLM trả về định dạng không hợp lệ",
+                "error": str(je)
+            }
+            
+    except Exception as e:
+        handle_error("analyze_chunks_for_invalidation", e)
+
+@router.post("/invalidate-chunks")
+async def invalidate_chunks(request: InvalidateChunksRequest):
+    """Thực hiện vô hiệu hóa các chunks được chỉ định"""
+    try:
+        chunk_ids = request.chunk_ids
+        reason = request.reason
+        new_document_id = request.new_document_id
+        
+        if not chunk_ids:
+            raise HTTPException(status_code=400, detail="Danh sách chunk_ids không được trống")
+        
+        print(f"Bắt đầu vô hiệu hóa {len(chunk_ids)} chunks:")
+        for chunk_id in chunk_ids:
+            print(f"  - {chunk_id}")
+        
+        invalidated_cache_count = 0
+        invalidated_chunks_count = 0
+        errors = []
+        
+        # 1. Vô hiệu hóa cache trong MongoDB cho từng chunk
+        db = mongodb_client.get_database()
+        for chunk_id in chunk_ids:
+            try:
+                # Tìm cache entries có chứa chunk này
+                cache_update_result = db.text_cache.update_many(
+                    {
+                        "relevantDocuments.chunkId": chunk_id,
+                        "validityStatus": "valid"
+                    },
+                    {
+                        "$set": {
+                            "validityStatus": "invalid",
+                            "invalidatedAt": datetime.now(),
+                            "invalidationReason": reason,
+                            "invalidatedBy": new_document_id
+                        }
+                    }
+                )
+                invalidated_cache_count += cache_update_result.modified_count
+                print(f"Đã vô hiệu hóa {cache_update_result.modified_count} cache entries cho chunk {chunk_id}")
+                
+            except Exception as e:
+                error_msg = f"Lỗi vô hiệu hóa cache cho {chunk_id}: {str(e)}"
+                print(error_msg)
+                errors.append(error_msg)
+        
+        # 2. Vô hiệu hóa chunks trong ChromaDB cache collection
+        try:
+            cache_collection = chroma_client.get_cache_collection()
+            if cache_collection:
+                # Tìm cache entries có chứa chunks này
+                for chunk_id in chunk_ids:
+                    try:
+                        # Tìm cache entries liên quan đến chunk
+                        related_caches = list(db.text_cache.find(
+                            {"relevantDocuments.chunkId": chunk_id},
+                            {"cacheId": 1}
+                        ))
+                        
+                        cache_ids_to_update = [cache["cacheId"] for cache in related_caches]
+                        
+                        if cache_ids_to_update:
+                            # Update metadata trong ChromaDB cache
+                            for cache_id in cache_ids_to_update:
+                                try:
+                                    # Lấy cache hiện tại
+                                    existing_cache = cache_collection.get(
+                                        ids=[cache_id],
+                                        include=["metadatas"]
+                                    )
+                                    
+                                    if existing_cache and existing_cache["ids"]:
+                                        # Update metadata
+                                        new_metadata = existing_cache["metadatas"][0].copy()
+                                        new_metadata["validityStatus"] = "invalid"
+                                        new_metadata["invalidatedAt"] = datetime.now().isoformat()
+                                        new_metadata["invalidationReason"] = reason
+                                        
+                                        cache_collection.update(
+                                            ids=[cache_id],
+                                            metadatas=[new_metadata]
+                                        )
+                                        invalidated_chunks_count += 1
+                                        
+                                except Exception as e:
+                                    error_msg = f"Lỗi update ChromaDB cache {cache_id}: {str(e)}"
+                                    print(error_msg)
+                                    errors.append(error_msg)
+                    
+                    except Exception as e:
+                        error_msg = f"Lỗi xử lý ChromaDB cho chunk {chunk_id}: {str(e)}"
+                        print(error_msg)
+                        errors.append(error_msg)
+            
+        except Exception as e:
+            error_msg = f"Lỗi truy cập ChromaDB cache collection: {str(e)}"
+            print(error_msg)
+            errors.append(error_msg)
+        
+        # 3. Log activity
+        log_admin_activity(ActivityType.CACHE_INVALIDATE,
+                          f"Vô hiệu hóa chunks: {len(chunk_ids)} chunks, {invalidated_cache_count} cache entries",
+                          {
+                              "chunk_ids": chunk_ids,
+                              "reason": reason,
+                              "new_document_id": new_document_id,
+                              "invalidated_cache_count": invalidated_cache_count,
+                              "invalidated_chunks_count": invalidated_chunks_count,
+                              "errors": errors,
+                              "action": "invalidate_chunks"
+                          })
+        
+        success_message = f"Đã vô hiệu hóa thành công {len(chunk_ids)} chunks"
+        if errors:
+            success_message += f" (có {len(errors)} lỗi)"
+        
+        print(f"Hoàn thành vô hiệu hóa chunks:")
+        print(f"  - Cache entries: {invalidated_cache_count}")
+        print(f"  - ChromaDB cache: {invalidated_chunks_count}")
+        print(f"  - Lỗi: {len(errors)}")
+        
+        return {
+            "message": success_message,
+            "invalidated_cache_count": invalidated_cache_count,
+            "invalidated_chunks_count": invalidated_chunks_count,
+            "total_processed": len(chunk_ids),
+            "errors": errors,
+            "reason": reason,
+            "new_document_id": new_document_id
+        }
+        
+    except Exception as e:
+        handle_error("invalidate_chunks", e)
+
+@router.get("/chunk-validity-status/{chunk_id}")
+async def get_chunk_validity_status(chunk_id: str):
+    """Kiểm tra trạng thái validity của một chunk"""
+    try:
+        db = mongodb_client.get_database()
+        
+        # Tìm cache entries có chứa chunk này
+        cache_entries = list(db.text_cache.find(
+            {"relevantDocuments.chunkId": chunk_id},
+            {
+                "cacheId": 1,
+                "validityStatus": 1,
+                "invalidatedAt": 1,
+                "invalidationReason": 1,
+                "invalidatedBy": 1
+            }
+        ))
+        
+        # Kiểm tra trong ChromaDB
+        collection = chroma_client.get_main_collection()
+        chunk_exists_in_main = False
+        chunk_metadata = {}
+        
+        if collection:
+            try:
+                result = collection.get(
+                    ids=[chunk_id],
+                    include=["metadatas"]
+                )
+                if result and result.get("ids"):
+                    chunk_exists_in_main = True
+                    chunk_metadata = result["metadatas"][0] if result["metadatas"] else {}
+            except Exception as e:
+                print(f"Lỗi kiểm tra chunk trong ChromaDB: {str(e)}")
+        
+        return {
+            "chunk_id": chunk_id,
+            "exists_in_main_db": chunk_exists_in_main,
+            "chunk_metadata": chunk_metadata,
+            "related_cache_entries": len(cache_entries),
+            "cache_details": cache_entries,
+            "overall_status": "valid" if any(ce.get("validityStatus") == "valid" for ce in cache_entries) else "invalid"
+        }
+        
+    except Exception as e:
+        handle_error("get_chunk_validity_status", e)
+
+@router.post("/restore-chunk-validity")
+async def restore_chunk_validity(request: dict):
+    """Khôi phục trạng thái valid cho chunk (undo invalidation)"""
+    try:
+        chunk_ids = request.get("chunk_ids", [])
+        restore_reason = request.get("reason", "Manual restoration by admin")
+        
+        if not chunk_ids:
+            raise HTTPException(status_code=400, detail="Danh sách chunk_ids không được trống")
+        
+        db = mongodb_client.get_database()
+        restored_cache_count = 0
+        
+        # Khôi phục validity status trong MongoDB
+        for chunk_id in chunk_ids:
+            cache_update_result = db.text_cache.update_many(
+                {"relevantDocuments.chunkId": chunk_id},
+                {
+                    "$set": {
+                        "validityStatus": "valid",
+                        "restoredAt": datetime.now(),
+                        "restorationReason": restore_reason
+                    },
+                    "$unset": {
+                        "invalidatedAt": "",
+                        "invalidationReason": "",
+                        "invalidatedBy": ""
+                    }
+                }
+            )
+            restored_cache_count += cache_update_result.modified_count
+        
+        # Khôi phục trong ChromaDB cache collection
+        try:
+            cache_collection = chroma_client.get_cache_collection()
+            if cache_collection:
+                for chunk_id in chunk_ids:
+                    related_caches = list(db.text_cache.find(
+                        {"relevantDocuments.chunkId": chunk_id},
+                        {"cacheId": 1}
+                    ))
+                    
+                    for cache in related_caches:
+                        cache_id = cache["cacheId"]
+                        try:
+                            existing_cache = cache_collection.get(
+                                ids=[cache_id],
+                                include=["metadatas"]
+                            )
+                            
+                            if existing_cache and existing_cache["ids"]:
+                                new_metadata = existing_cache["metadatas"][0].copy()
+                                new_metadata["validityStatus"] = "valid"
+                                new_metadata.pop("invalidatedAt", None)
+                                new_metadata.pop("invalidationReason", None)
+                                
+                                cache_collection.update(
+                                    ids=[cache_id],
+                                    metadatas=[new_metadata]
+                                )
+                        except Exception as e:
+                            print(f"Lỗi khôi phục ChromaDB cache {cache_id}: {str(e)}")
+        
+        except Exception as e:
+            print(f"Lỗi khôi phục ChromaDB: {str(e)}")
+        
+        log_admin_activity(ActivityType.CACHE_INVALIDATE,
+                          f"Khôi phục validity cho {len(chunk_ids)} chunks",
+                          {
+                              "chunk_ids": chunk_ids,
+                              "reason": restore_reason,
+                              "restored_cache_count": restored_cache_count,
+                              "action": "restore_chunk_validity"
+                          })
+        
+        return {
+            "message": f"Đã khôi phục validity cho {len(chunk_ids)} chunks",
+            "restored_cache_count": restored_cache_count,
+            "chunk_ids": chunk_ids
+        }
+        
+    except Exception as e:
+        handle_error("restore_chunk_validity", e)
