@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle,RotateCcw, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp, Shield, ShieldAlert, Info, Zap, Settings, PlayCircle, SkipForward } from 'lucide-react';
+import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle, RotateCcw, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp, Shield, ShieldAlert, Info, Zap, Settings, PlayCircle, SkipForward } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
 import { getApiBaseUrl } from '../../apiService';
@@ -102,6 +102,16 @@ const DocumentsTab = ({
                             const relatedDocuments = metadata?.related_documents || [];
                             if (relatedDocuments.length > 0) {
                                 console.log('Phát hiện related documents:', relatedDocuments);
+                                const currentDoc = {
+                                    doc_id: autoDetected?.doc_id || metadata?.doc_id || '',
+                                    doc_type: autoDetected?.doc_type || metadata?.doc_type || '',
+                                    doc_title: autoDetected?.doc_title || metadata?.doc_title || '',
+                                    effective_date: autoDetected?.effective_date || metadata?.effective_date || '',
+                                    metadata: metadata,
+                                    related_documents: relatedDocuments
+                                };
+                                setCurrentProcessingDoc(currentDoc);
+
                                 await fetchRelatedChunksInfo(relatedDocuments);
                                 setShowRelatedChunksPanel(true);
                             }
