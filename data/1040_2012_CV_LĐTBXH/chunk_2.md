@@ -1,0 +1,3 @@
+1. Tiếp tục xem xét, giải quyết đối với các hồ sơ người hoạt động kháng chiến bị nhiễm chất độc hóa học còn tồn theo Công văn số 1609/LĐTBXH-NCC ngày 23/5/2011 hiện đang lưu giữ tại Sở Lao động - Thương binh và Xã hội và các trường hợp hồ sơ mới xác lập nhưng bị mắc bệnh ung thư theo danh mục ban hành tại Quyết định số 09/2008/QĐ-BYT ngày 20/02/2008 của Bộ trưởng Bộ Y tế.
+
+Đối với các hồ sơ khác sẽ giải quyết khi Quy trình xác nhận người hoạt động kháng chiến bị nhiễm chất độc hóa học được ban hành.

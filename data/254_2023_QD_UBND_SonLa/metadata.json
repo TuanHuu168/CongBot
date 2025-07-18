@@ -1,0 +1,112 @@
+{
+  "doc_id": "254_2023_QD_UBND_SonLa",
+  "doc_type": "Quyết định",
+  "doc_title": "Quyết định ban hành Kế hoạch thực hiện công tác bảo vệ bí mật nhà nước năm 2023",
+  "issue_date": "17-02-2023",
+  "effective_date": "17-02-2023",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Địa phương (Sơn La)",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": [],
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "254_2023_QD_UBND_SonLa_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/254_2023_QD_UBND_SonLa/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định số 254/QĐ-UBND của UBND tỉnh Sơn La về việc ban hành Kế hoạch thực hiện công tác bảo vệ bí mật nhà nước năm 2023, bao gồm thông tin hành chính, căn cứ pháp lý và các điều khoản quyết định chính."
+    },
+    {
+      "chunk_id": "254_2023_QD_UBND_SonLa_appendix1",
+      "chunk_type": "appendix",
+      "file_path": "/data/254_2023_QD_UBND_SonLa/chunk_2.md",
+      "content_summary": "Kế hoạch chi tiết thực hiện công tác bảo vệ bí mật nhà nước năm 2023, kèm theo Quyết định số 254/QĐ-UBND, bao gồm mục đích, yêu cầu, nội dung công tác, phân công nhiệm vụ cho các sở, ban, ngành, và tổ chức thực hiện."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "77_2015_QH13",
+      "relationship": "references",
+      "description": "Luật Tổ chức Chính quyền địa phương ngày 19 tháng 6 năm 2015"
+    },
+    {
+      "doc_id": "61_2019_QH14",
+      "relationship": "references",
+      "description": "Luật Sửa đổi bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức Chính quyền địa phương ngày 22 tháng 11 năm 2019"
+    },
+    {
+      "doc_id": "29_2018_QH14",
+      "relationship": "references",
+      "description": "Luật Bảo vệ bí mật nhà nước ngày 15 tháng 11 năm 2018"
+    },
+    {
+      "doc_id": "26_2020_ND_CP",
+      "relationship": "references",
+      "description": "Nghị định số 26/2020/NĐ-CP ngày 28 tháng 02 năm 2020 của Chính phủ Quy định chi tiết một số điều của Luật Bảo vệ bí mật nhà nước"
+    },
+    {
+      "doc_id": "24_2020_TT_BCA",
+      "relationship": "references",
+      "description": "Thông tư số 24/2020/TT-BCA ngày 10 tháng 3 năm 2020 của Bộ trưởng Bộ Công an ban hành biểu mẫu sử dụng trong công tác bảo vệ bí mật nhà nước"
+    },
+    {
+      "doc_id": "02_2019_CT_TTg",
+      "relationship": "references",
+      "description": "Chỉ thị số 02/CT-TTg ngày 15 tháng 11 năm 2019 về tăng cường công tác bảo vệ bí mật nhà nước trong tình hình hiện nay"
+    },
+    {
+      "doc_id": "100_2015_QH13",
+      "relationship": "implements",
+      "description": "Bộ Luật hình sự năm 2015"
+    },
+    {
+      "doc_id": "12_2017_QH14",
+      "relationship": "implements",
+      "description": "Luật sửa đổi, bổ sung một số điều của Bộ Luật hình sự năm 2017"
+    },
+    {
+      "doc_id": "69_2022_QD_TW",
+      "relationship": "implements",
+      "description": "Quy định số 69-QĐ/TW ngày 06/7/2022 của Ban Chấp hành Trung ương quy định về kỷ luật tổ chức Đảng, Đảng viên vi phạm"
+    },
+    {
+      "doc_id": "112_2020_ND_CP",
+      "relationship": "implements",
+      "description": "Nghị định số 112/2020/NĐ-CP ngày 18/9/2020 của Chính phủ nghị định về xử lý kỷ luật cán bộ, công chức, viên chức"
+    },
+    {
+      "doc_id": "144_2021_ND_CP",
+      "relationship": "implements",
+      "description": "Nghị định số 144/2021/NĐ-CP ngày 31/12/2021 của Chính phủ Quy định về xử phạt vi phạm hành chính trong lĩnh vực an ninh trật tự, an toàn xã hội; phòng, chống tệ nạn xã hội; phòng cháy chữa cháy; phòng chống bạo lực gia đình"
+    },
+    {
+      "doc_id": "02_2018_CT_TTg",
+      "relationship": "implements",
+      "description": "Chỉ thị số 02/CT-TTg ngày 04/7/2018 của Thủ tướng Chính phủ về công tác bảo vệ BMNN trên không gian mạng"
+    },
+    {
+      "doc_id": "11_2020_KH_UBND_SonLa",
+      "relationship": "references",
+      "description": "Kế hoạch số 11/KH-UBND ngày 23/01/2020 của UBND tỉnh về thực hiện Chỉ thị số 02/CT-TTg ngày 15/11/2019 của Thủ tướng Chính phủ về tăng cường công tác bảo vệ BMNN trong tình hình hiện nay"
+    },
+    {
+      "doc_id": "4216_2021_CV_UBND_SonLa",
+      "relationship": "references",
+      "description": "Công văn số 4216/UBND-NC ngày 02/12/2021 của Chủ tịch UBND tỉnh"
+    },
+    {
+      "doc_id": "4478_2022_CV_UBND_SonLa",
+      "relationship": "references",
+      "description": "Công văn số 4478/UBND-NC ngày 18/11/2022 của Chủ tịch UBND tỉnh"
+    },
+    {
+      "doc_id": "2566_2022_QD_UBND_SonLa",
+      "relationship": "references",
+      "description": "Quyết định số 2566/QĐ-UBND ngày 08/12/2022 của UBND tỉnh"
+    }
+  ]
+}

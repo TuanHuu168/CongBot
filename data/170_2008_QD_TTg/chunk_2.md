@@ -1,0 +1,3 @@
+Điều 1. Đối tượng được hưởng chính sách theo Quyết định này là thanh niên xung phong tập trung trong kháng chiến chống Pháp đã hoàn thành nhiệm vụ, hiện còn sống.
+
+Điều 2. Đối tượng quy định tại Điều 1 Quyết định này được hưởng chế độ bảo hiểm y tế; khi chết, người lo mai táng được hưởng trợ cấp mai táng như thanh niên xung phong chống Mỹ theo Quyết định số 290/2005/QĐ-TTg ngày 08 tháng 11 năm 2005 của Thủ tướng Chính phủ về chế độ, chính sách đối với một số đối tượng trực tiếp tham gia kháng chiến chống Mỹ cứu nước nhưng chưa được hưởng chính sách của Đảng và Nhà nước.

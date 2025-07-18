@@ -1,0 +1,94 @@
+{
+  "doc_id": "40_2011_QD_TTg",
+  "doc_type": "Quyết định",
+  "doc_title": "Quy định về chế độ đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến",
+  "issue_date": "27-07-2011",
+  "effective_date": "01-10-2011",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [
+    {
+      "doc_id": "104_1999_QD_TTg",
+      "description": "Quyết định số 104/1999/QĐ-TTg ngày 14 tháng 4 năm 1999 của Thủ tướng Chính phủ về một số chính sách đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến."
+    }
+  ],
+  "replaced_by": [],
+  "amends": [],
+  "amended_by": [],
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "40_2011_QD_TTg_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/40_2011_QD_TTg/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định, bao gồm tiêu đề, thông tin về cơ quan ban hành, số hiệu, ngày ban hành và căn cứ pháp lý để ban hành văn bản."
+    },
+    {
+      "chunk_id": "40_2011_QD_TTg_art1_2",
+      "chunk_type": "article",
+      "file_path": "/data/40_2011_QD_TTg/chunk_2.md",
+      "content_summary": "Quy định chi tiết về phạm vi điều chỉnh, các đối tượng áp dụng và không áp dụng của Quyết định, đồng thời xác định chế độ trợ cấp một lần cho thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến."
+    },
+    {
+      "chunk_id": "40_2011_QD_TTg_art3_6",
+      "chunk_type": "article",
+      "file_path": "/data/40_2011_QD_TTg/chunk_3.md",
+      "content_summary": "Quy định về chế độ trợ cấp hàng tháng cho đối tượng không còn khả năng lao động, chính sách vay vốn sản xuất, nguồn kinh phí đảm bảo thực hiện các chế độ, và các quy định về xử lý vi phạm trong quá trình thực hiện."
+    },
+    {
+      "chunk_id": "40_2011_QD_TTg_art7_8",
+      "chunk_type": "article",
+      "file_path": "/data/40_2011_QD_TTg/chunk_4.md",
+      "content_summary": "Xác định trách nhiệm của các Bộ, ngành và Ủy ban nhân dân các cấp trong việc triển khai Quyết định, và quy định về hiệu lực thi hành của văn bản."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "Luật Tổ chức Chính phủ_2001",
+      "relationship": "references",
+      "description": "Luật Tổ chức Chính phủ ngày 25 tháng 12 năm 2001, là căn cứ pháp lý để Thủ tướng Chính phủ ban hành Quyết định này."
+    },
+    {
+      "doc_id": "104_1999_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 104/1999/QĐ-TTg ngày 14 tháng 4 năm 1999 của Thủ tướng Chính phủ về một số chính sách đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến. Văn bản này được thay thế bởi Quyết định số 40/2011/QĐ-TTg và được dùng để loại trừ đối tượng đã hưởng chế độ hoặc điều chỉnh chế độ hàng tháng."
+    },
+    {
+      "doc_id": "290_2005_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 290/2005/QĐ-TTg ngày 08 tháng 11 năm 2005 của Thủ tướng Chính phủ về chế độ, chính sách đối với một số đối tượng trực tiếp tham gia kháng chiến chống Mỹ cứu nước nhưng chưa được hưởng chính sách của Đảng và Nhà nước, được dùng để loại trừ đối tượng áp dụng của Quyết định này."
+    },
+    {
+      "doc_id": "142_2008_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 142/2008/QĐ-TTg ngày 27 tháng 10 năm 2008 của Thủ tướng Chính phủ về thực hiện chế độ đối với quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội đã phục viên, xuất ngũ về địa phương, được dùng để loại trừ đối tượng áp dụng của Quyết định này."
+    },
+    {
+      "doc_id": "38_2010_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 38/2010/QĐ-TTg ngày 06 tháng 5 năm 2010 của Thủ tướng Chính phủ về việc sửa đổi, bổ sung Quyết định số 142/2008/QĐ-TTg, được dùng để loại trừ đối tượng áp dụng của Quyết định này."
+    },
+    {
+      "doc_id": "53_2010_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 53/2010/QĐ-TTg ngày 20 tháng 8 năm 2010 của Thủ tướng Chính phủ quy định về chế độ đối với cán bộ, chiến sĩ Công an nhân dân tham gia kháng chiến chống Mỹ có dưới 20 năm công tác trong Công an nhân dân đã thôi việc, xuất ngũ về địa phương, được dùng để loại trừ đối tượng áp dụng của Quyết định này."
+    },
+    {
+      "doc_id": "13_2010_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 13/2010/NĐ-CP ngày 27 tháng 02 năm 2010 của Chính phủ về sửa đổi, bổ sung một số điều của Nghị định số 67/2007/NĐ-CP, dùng làm căn cứ để điều chỉnh mức trợ cấp hàng tháng."
+    },
+    {
+      "doc_id": "67_2007_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 67/2007/NĐ-CP ngày 13 tháng 4 năm 2007 của Chính phủ về chính sách trợ giúp các đối tượng bảo trợ xã hội, được sửa đổi bởi Nghị định số 13/2010/NĐ-CP và được dùng làm căn cứ để điều chỉnh mức trợ cấp hàng tháng."
+    },
+    {
+      "doc_id": "Luật Ngân sách nhà nước",
+      "relationship": "references",
+      "description": "Luật Ngân sách nhà nước, quy định về bố trí ngân sách và lệ phí chi trả để thực hiện chế độ."
+    }
+  ]
+}

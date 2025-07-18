@@ -1,0 +1,82 @@
+{
+  "doc_id": "142_2008_QD_TTg",
+  "doc_type": "Quyết định",
+  "doc_title": "Quyết định về thực hiện chế độ đối với quân nhân tham gia kháng chiến chống Mỹ cứu nước có dưới 20 năm công tác trong quân đội đã phục viên, xuất ngũ về địa phương",
+  "issue_date": "27-10-2008",
+  "effective_date": "01-01-2009",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "142_2008_QD_TTg_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/142_2008_QD_TTg/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định, bao gồm tiêu đề, thông tin ban hành và các căn cứ pháp lý để ban hành văn bản."
+    },
+    {
+      "chunk_id": "142_2008_QD_TTg_art1",
+      "chunk_type": "article",
+      "file_path": "/data/142_2008_QD_TTg/chunk_2.md",
+      "content_summary": "Quy định về phạm vi điều chỉnh và các đối tượng áp dụng, cũng như các trường hợp không được áp dụng chế độ theo Quyết định này."
+    },
+    {
+      "chunk_id": "142_2008_QD_TTg_art2",
+      "chunk_type": "article",
+      "file_path": "/data/142_2008_QD_TTg/chunk_3.md",
+      "content_summary": "Quy định chế độ trợ cấp hàng tháng đối với quân nhân có từ đủ 15 năm đến dưới 20 năm công tác trong quân đội và điều kiện hưởng trợ cấp khi người hưởng từ trần."
+    },
+    {
+      "chunk_id": "142_2008_QD_TTg_art3",
+      "chunk_type": "article",
+      "file_path": "/data/142_2008_QD_TTg/chunk_4.md",
+      "content_summary": "Quy định chế độ trợ cấp một lần đối với quân nhân có dưới 15 năm công tác trong quân đội, bao gồm cả cách tính mức trợ cấp theo thời gian công tác."
+    },
+    {
+      "chunk_id": "142_2008_QD_TTg_art4_5",
+      "chunk_type": "article",
+      "file_path": "/data/142_2008_QD_TTg/chunk_5.md",
+      "content_summary": "Quy định chế độ trợ cấp một lần cho thân nhân của các đối tượng đã từ trần trước thời điểm có hiệu lực, và xác định nguồn kinh phí thực hiện các chế độ."
+    },
+    {
+      "chunk_id": "142_2008_QD_TTg_art6_7",
+      "chunk_type": "article",
+      "file_path": "/data/142_2008_QD_TTg/chunk_6.md",
+      "content_summary": "Quy định về nguyên tắc xác nhận, xét duyệt hồ sơ, xử lý các hành vi vi phạm và trách nhiệm phối hợp thực hiện của Bộ Quốc phòng, Bộ Lao động - Thương binh và Xã hội, Bộ Tài chính, và Ủy ban nhân dân các tỉnh, thành phố."
+    },
+    {
+      "chunk_id": "142_2008_QD_TTg_art8_9",
+      "chunk_type": "article",
+      "file_path": "/data/142_2008_QD_TTg/chunk_7.md",
+      "content_summary": "Xác định hiệu lực thi hành của Quyết định, ngày bắt đầu thực hiện chế độ trợ cấp hàng tháng, quy định về truy thu trợ cấp một lần đã nhận, và trách nhiệm thi hành của các Bộ, cơ quan, địa phương liên quan."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "NULL_2001_LUAT_QH",
+      "relationship": "references",
+      "description": "Luật Tổ chức Chính phủ ngày 25 tháng 12 năm 2001, là căn cứ pháp lý để ban hành Quyết định này."
+    },
+    {
+      "doc_id": "NULL_1996_LUAT_QH",
+      "relationship": "references",
+      "description": "Luật Ban hành văn bản quy phạm pháp luật ngày 12 tháng 11 năm 1996 (đã được sửa đổi, bổ sung một số điều ngày 16 tháng 12 năm 2002), là căn cứ pháp lý để ban hành Quyết định này."
+    },
+    {
+      "doc_id": "290_2005_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 290/2005/QĐ-TTg ngày 08 tháng 11 năm 2005 của Thủ tướng Chính phủ, được tham chiếu để quy định các trường hợp không áp dụng chế độ trợ cấp một lần hoặc để truy thu khoản trợ cấp đã nhận."
+    },
+    {
+      "doc_id": "92_2005_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 92/2005/QĐ-TTg ngày 29 tháng 4 năm 2005 của Thủ tướng Chính phủ, được tham chiếu để quy định các trường hợp không áp dụng chế độ trợ cấp một lần hoặc để truy thu khoản trợ cấp đã nhận."
+    }
+  ]
+}

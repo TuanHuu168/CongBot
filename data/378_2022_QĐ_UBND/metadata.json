@@ -1,0 +1,83 @@
+{
+  "doc_id": "378_2022_QĐ_UBND",
+  "doc_type": "Quyết định",
+  "doc_title": "QUYẾT ĐỊNH VỀ VIỆC CÔNG BỐ DANH MỤC THỦ TỤC HÀNH CHÍNH MỚI BAN HÀNH, ĐƯỢC SỬA ĐỔI, BỔ SUNG LĨNH VỰC LƯU THÔNG HÀNG HÓA TRONG NƯỚC CỦA NGÀNH CÔNG THƯƠNG ÁP DỤNG TRÊN ĐỊA BÀN TỈNH HÀ GIANG",
+  "issue_date": "18-03-2022",
+  "effective_date": "18-03-2022",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Tỉnh",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "378_2022_QĐ_UBND_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/378_2022_QĐ_UBND/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định, bao gồm thông tin về cơ quan ban hành, số hiệu, ngày ban hành, tiêu đề đầy đủ, và các căn cứ pháp lý để ban hành Quyết định."
+    },
+    {
+      "chunk_id": "378_2022_QĐ_UBND_art1_2",
+      "chunk_type": "article",
+      "file_path": "/data/378_2022_QĐ_UBND/chunk_2.md",
+      "content_summary": "Quy định về việc công bố danh mục thủ tục hành chính mới ban hành, sửa đổi, bổ sung và trách nhiệm thi hành của các cơ quan, cá nhân liên quan."
+    },
+    {
+      "chunk_id": "378_2022_QĐ_UBND_appendix1",
+      "chunk_type": "appendix",
+      "file_path": "/data/378_2022_QĐ_UBND/chunk_3.md",
+      "content_summary": "Phần I công bố danh mục chi tiết các thủ tục hành chính mới ban hành và các thủ tục hành chính được sửa đổi, bổ sung trong lĩnh vực lưu thông hàng hóa trong nước của Ngành Công Thương áp dụng tại tỉnh Hà Giang."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "2015_Luật_QH",
+      "relationship": "references",
+      "description": "Luật Tổ chức Chính quyền địa phương ngày 19 tháng 6 năm 2015, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "2019_Luật_QH",
+      "relationship": "references",
+      "description": "Luật sửa đổi, bổ sung một số điều của Luật Tổ chức Chính phủ và Luật Tổ chức Chính quyền địa phương ngày 22 tháng 11 năm 2019, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "63_2010_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 63/2010/NĐ-CP ngày 08 tháng 6 năm 2010 của Chính phủ về kiểm soát thủ tục hành chính, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "92_2017_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 92/2017/NĐ-CP ngày 07 tháng 8 năm 2017 của Chính phủ, sửa đổi, bổ sung Nghị định số 63/2010/NĐ-CP, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "61_2018_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 61/2018/NĐ-CP ngày 23 tháng 4 năm 2018 của Chính phủ về thực hiện cơ chế một cửa, một cửa liên thông, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "107_2021_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 107/2021/NĐ-CP ngày 06 tháng 12 năm 2021 của Chính phủ, sửa đổi, bổ sung Nghị định số 61/2018/NĐ-CP, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "45_2020_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 45/2020/NĐ-CP ngày 08 tháng 4 năm 2020 của Chính phủ về thực hiện TTHC trên môi trường điện tử, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "2729_2021_QĐ_BCT",
+      "relationship": "references",
+      "description": "Quyết định số 2729/QĐ-BCT ngày 03 tháng 12 năm 2021 của Bộ Công Thương về việc công bố thủ tục hành chính, là căn cứ để ban hành Quyết định."
+    },
+    {
+      "doc_id": "95_2021_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 95/2021/NĐ-CP ngày 01 tháng 11 năm 2021 của Chính phủ, sửa đổi, bổ sung một số điều của Nghị định số 83/2014/NĐ-CP, là cơ sở để sửa đổi, bổ sung các thủ tục hành chính liên quan đến kinh doanh xăng dầu được công bố trong Quyết định này."
+    }
+  ]
+}

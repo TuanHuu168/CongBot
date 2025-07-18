@@ -1,0 +1,100 @@
+{
+  "doc_id": "98_2013_TT_BTC",
+  "doc_type": "Thông tư",
+  "doc_title": "Thông tư 98/2013/TT-BTC hướng dẫn việc quản lý, cấp phát, thanh toán, quyết toán nguồn vốn hỗ trợ người có công với cách mạng về nhà ở theo Quyết định số 22/2013/QĐ-TTg ngày 26/4/2013 của Thủ tướng Chính phủ về hỗ trợ người có công với cách mạng về nhà ở",
+  "issue_date": "24-07-2013",
+  "effective_date": "10-09-2013",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "98_2013_TT_BTC_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/98_2013_TT_BTC/chunk_1.md",
+      "content_summary": "Phần mở đầu của Thông tư, bao gồm tiêu đề đầy đủ, thông tin ban hành (số hiệu, ngày, cơ quan ban hành) và các căn cứ pháp lý để ban hành Thông tư."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_art1_3",
+      "chunk_type": "article",
+      "file_path": "/data/98_2013_TT_BTC/chunk_2.md",
+      "content_summary": "Quy định về phạm vi điều chỉnh, đối tượng áp dụng và các nguyên tắc quản lý kinh phí hỗ trợ người có công với cách mạng về nhà ở."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_art4",
+      "chunk_type": "article",
+      "file_path": "/data/98_2013_TT_BTC/chunk_3.md",
+      "content_summary": "Nêu rõ đối tượng, mức hỗ trợ từ ngân sách nhà nước (trung ương và địa phương) và các tỷ lệ hỗ trợ từ ngân sách trung ương cho các địa phương khác nhau, cùng với quy định về kinh phí quản lý."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_art5",
+      "chunk_type": "article",
+      "file_path": "/data/98_2013_TT_BTC/chunk_4.md",
+      "content_summary": "Chi tiết quy trình lập dự toán, cấp phát, thanh toán và quyết toán kinh phí hỗ trợ nhà ở cho người có công, từ cấp xã đến cấp trung ương, bao gồm cả các quy định về tạm ứng và thanh toán."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_art6",
+      "chunk_type": "article",
+      "file_path": "/data/98_2013_TT_BTC/chunk_5.md",
+      "content_summary": "Nêu rõ trách nhiệm của các cấp chính quyền trong việc tổ chức, giám sát, công khai chính sách hỗ trợ nhà ở; đồng thời quy định về hiệu lực thi hành của Thông tư và kênh tiếp nhận phản hồi."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_form1",
+      "chunk_type": "form",
+      "file_path": "/data/98_2013_TT_BTC/chunk_6.md",
+      "content_summary": "Mẫu đơn đề nghị tạm ứng kinh phí hỗ trợ xây dựng nhà ở, dành cho người có công với cách mạng."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_form2",
+      "chunk_type": "form",
+      "file_path": "/data/98_2013_TT_BTC/chunk_7.md",
+      "content_summary": "Mẫu biểu tổng hợp nhu cầu kinh phí hỗ trợ người có công với cách mạng về nhà ở cho năm 2013, bao gồm số hộ và tổng kinh phí theo từng loại hình hỗ trợ và nguồn ngân sách."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_form3",
+      "chunk_type": "form",
+      "file_path": "/data/98_2013_TT_BTC/chunk_8.md",
+      "content_summary": "Mẫu biểu tổng hợp danh sách người có công với cách mạng được hỗ trợ về nhà ở cho năm 2013, phân loại theo diện xây mới hoặc sửa chữa và tổng kinh phí."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_form4",
+      "chunk_type": "form",
+      "file_path": "/data/98_2013_TT_BTC/chunk_9.md",
+      "content_summary": "Mẫu biểu tổng hợp nhu cầu kinh phí hỗ trợ người có công với cách mạng về nhà ở cho năm 2014, tương tự Phụ lục số 2 nhưng dành cho danh sách bổ sung."
+    },
+    {
+      "chunk_id": "98_2013_TT_BTC_form5",
+      "chunk_type": "form",
+      "file_path": "/data/98_2013_TT_BTC/chunk_10.md",
+      "content_summary": "Mẫu biểu tổng hợp danh sách người có công với cách mạng được hỗ trợ về nhà ở cho năm 2014, tương tự Phụ lục số 3 nhưng dành cho danh sách bổ sung."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "118_2008_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định số 118/2008/NĐ-CP ngày 27/11/2008 của Chính phủ quy định chức năng, nhiệm vụ, quyền hạn và cơ cấu tổ chức của Bộ Tài chính, là căn cứ ban hành Thông tư này."
+    },
+    {
+      "doc_id": "22_2013_QĐ_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 22/2013/QĐ-TTg ngày 26/4/2013 của Thủ tướng Chính phủ về hỗ trợ người có công với cách mạng về nhà ở, là căn cứ và văn bản được Thông tư này hướng dẫn thi hành."
+    },
+    {
+      "doc_id": "22_2013_QĐ_TTg",
+      "relationship": "implements",
+      "description": "Thông tư này hướng dẫn việc quản lý, cấp phát, thanh toán, quyết toán nguồn vốn hỗ trợ người có công với cách mạng về nhà ở theo Quyết định số 22/2013/QĐ-TTg."
+    },
+    {
+      "doc_id": "54_2006_TT_BTC",
+      "relationship": "references",
+      "description": "Thông tư số 54/2006/TT-BTC ngày 19/6/2006 của Bộ Tài chính hướng dẫn thực hiện quy chế công khai hỗ trợ trực tiếp của ngân sách đối với các cá nhân, dân cư, được viện dẫn trong Điều 6 về tổ chức thực hiện."
+    }
+  ]
+}

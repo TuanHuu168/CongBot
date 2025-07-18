@@ -1,0 +1,64 @@
+{
+  "doc_id": "1040_2012_CV_LĐTBXH",
+  "doc_type": "Công văn",
+  "doc_title": "V/v hướng dẫn giải quyết chế độ người HĐKC bị nhiễm chất độc hóa học",
+  "issue_date": "09-04-2012",
+  "effective_date": "09-04-2012",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "1040_2012_CV_LĐTBXH_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/1040_2012_CV_LĐTBXH/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn, trình bày bối cảnh về tình trạng tiêu cực trong việc lập hồ sơ người hoạt động kháng chiến bị nhiễm chất độc hóa học và các văn bản đã ban hành trước đó để xử lý vấn đề, đồng thời thông báo kết luận của Phó Thủ tướng về việc xây dựng tiêu chí xác định nạn nhân chất độc hóa học/dioxin, dẫn đến yêu cầu các địa phương thực hiện các chỉ đạo mới."
+    },
+    {
+      "chunk_id": "1040_2012_CV_LĐTBXH_art1",
+      "chunk_type": "article",
+      "file_path": "/data/1040_2012_CV_LĐTBXH/chunk_2.md",
+      "content_summary": "Hướng dẫn tiếp tục xem xét và giải quyết hồ sơ tồn đọng và hồ sơ mới về người hoạt động kháng chiến bị nhiễm chất độc hóa học, đặc biệt là các trường hợp ung thư theo danh mục hiện hành, trong khi chờ ban hành quy trình xác nhận mới."
+    },
+    {
+      "chunk_id": "1040_2012_CV_LĐTBXH_art2",
+      "chunk_type": "article",
+      "file_path": "/data/1040_2012_CV_LĐTBXH/chunk_3.md",
+      "content_summary": "Yêu cầu Ủy ban nhân dân các tỉnh, thành phố chỉ đạo Sở Lao động - Thương binh và Xã hội phối hợp với các cơ quan liên quan để kiểm tra, rà soát lại các hồ sơ, đảm bảo tính chính xác của giấy tờ chứng minh tham gia kháng chiến và hồ sơ bệnh án, từ đó giới thiệu đối tượng đi giám định hoặc ra quyết định trợ cấp."
+    },
+    {
+      "chunk_id": "1040_2012_CV_LĐTBXH_closing",
+      "chunk_type": "article",
+      "file_path": "/data/1040_2012_CV_LĐTBXH/chunk_4.md",
+      "content_summary": "Phần kết Công văn, đề nghị các tỉnh tăng cường kiểm tra việc thực hiện chính sách, thông báo về kế hoạch thành lập đoàn kiểm tra liên ngành của Bộ, và hướng dẫn phản ánh vướng mắc, kèm theo danh sách các nơi nhận và chữ ký."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "08_2009_TT_BLĐTBXH",
+      "relationship": "references",
+      "description": "Thông tư số 08/2009/TT-BLĐTBXH ngày 07/4/2009 của Bộ Lao động - Thương binh và Xã hội hướng dẫn áp dụng danh mục bệnh, tật."
+    },
+    {
+      "doc_id": "09_2008_QĐ_BYT",
+      "relationship": "references",
+      "description": "Quyết định số 09/2008/QĐ-BYT ngày 20/02/2008 của Bộ trưởng Bộ Y tế ban hành danh mục bệnh, tật, dị dạng, dị tật liên quan đến phơi nhiễm chất độc hóa học/dioxin."
+    },
+    {
+      "doc_id": "1609_2011_CV_LĐTBXH",
+      "relationship": "references",
+      "description": "Công văn số 1609/LĐTBXH-NCC ngày 23/5/2011 của Bộ Lao động - Thương binh và Xã hội về việc hướng dẫn xử lý vướng mắc khi tiếp nhận hồ sơ giải quyết chế độ người hoạt động kháng chiến bị nhiễm chất độc hóa học."
+    },
+    {
+      "doc_id": "87_2012_TB_VPCP",
+      "relationship": "references",
+      "description": "Văn bản số 87/TB-VPCP ngày 12/3/2012 của Văn phòng Chính phủ thông báo kết luận của Phó Thủ tướng Nguyễn Thiện Nhân."
+    }
+  ]
+}

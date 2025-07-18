@@ -1,0 +1,19 @@
+Điều 5. Lập dự toán, cấp phát, thanh toán và quyết toán kinh phí
+
+Việc lập dự toán, cấp phát, thanh toán và quyết toán kinh phí hỗ trợ người có công với cách mạng về nhà ở thực hiện theo quy định hiện hành về quản lý ngân sách nhà nước. Thông tư này hướng dẫn một số điểm cụ thể như sau:
+
+1. Ủy ban nhân dân cấp xã có trách nhiệm lập danh sách người có công với cách mạng được hỗ trợ về nhà ở theo quy định tại Quyết định số 22/2013/QĐ-TTg, mức hỗ trợ theo từng hộ và tổng hợp nhu cầu kinh phí hỗ trợ về nhà ở trên địa bàn gửi Phòng Lao động Thương binh và Xã hội chủ trì, phối hợp với Phòng Tài chính - Kế hoạch và các cơ quan liên quan xét duyệt, tổng hợp trình UBND cấp huyện phê duyệt.
+
+2. Căn cứ Quyết định phê duyệt của UBND cấp huyện về danh sách, mức hỗ trợ người có công với cách mạng về nhà ở và kinh phí hỗ trợ, Sở Xây dựng tổng hợp danh sách, mức hỗ trợ, nhu cầu kinh phí hỗ trợ về nhà ở cho người có công với cách mạng trên địa bàn địa phương gửi Sở Tài chính để thẩm định và làm cơ sở xác định nguồn kinh phí thực hiện (chi tiết theo nguồn ngân sách trung ương hỗ trợ, ngân sách địa phương đảm bảo và các nguồn vốn huy động hợp pháp khác), báo cáo UBND cấp tỉnh phê duyệt để tổ chức triển khai thực hiện; đồng thời báo cáo Bộ Tài chính, Bộ Xây dựng và các Bộ, ngành liên quan xem xét trình cấp có thẩm quyền bổ sung kinh phí.
+
+3. Căn cứ đề nghị hỗ trợ kinh phí của UBND các tỉnh, thành phố trực thuộc Trung ương và Quyết định phê duyệt của UBND cấp tỉnh (kèm theo danh sách, mức hỗ trợ từng đối tượng theo địa bàn từng đơn vị hành chính cấp huyện, cấp xã), Bộ Tài chính xác định phần kinh phí ngân sách trung ương hỗ trợ cho các địa phương theo quy định và tổng hợp báo cáo Thủ tướng Chính phủ xem xét, quyết định.
+
+4. Căn cứ kinh phí ngân sách trung ương hỗ trợ, bố trí của ngân sách địa phương và huy động đóng góp từ các nguồn tài chính hợp pháp khác theo quy định của pháp Luật, Ủy ban nhân dân các tỉnh, thành phố trực thuộc Trung ương quyết định giao dự toán cho UBND cấp huyện để triển khai thực hiện (trong đó chi tiết nguồn hỗ trợ từ ngân sách nhà nước). UBND cấp huyện thực hiện phân bổ kinh phí hỗ trợ người có công với cách mạng về nhà ở và cấp kinh phí uỷ quyền cho Ủy ban nhân dân cấp xã hoặc giao dự toán cho Ủy ban nhân dân cấp xã theo hình thức bổ sung có mục tiêu từ ngân sách cấp trên cho ngân sách cấp dưới (kèm theo danh sách đối tượng được hỗ trợ về nhà ở, mức hỗ trợ từng hộ gia đình theo địa bàn từng xã).
+
+UBND cấp xã thực hiện rút dự toán tại KBNN để tạm ứng lần đầu hoặc thanh toán kinh phí hỗ trợ cho các hộ gia đình. Hồ sơ tạm ứng lần đầu gồm danh sách các hộ gia đình đề nghị tạm ứng và mức vốn đề nghị tạm ứng. Mức tạm ứng cho đối tượng tối đa không vượt quá 60% mức ngân sách nhà nước hỗ trợ. Việc tạm ứng cho các hộ gia đình trên cơ sở đề nghị của từng hộ gia đình theo mẫu đề nghị tạm ứng (Phụ lục số 1 đính kèm).
+
+Sau khi có hồ sơ xác nhận khối lượng hoàn thành (xác định việc xây xong nhà hoặc sửa chữa xong nhà theo quy định của Bộ Xây dựng) của UBND xã (kèm theo bảng kê, ký nhận của hộ gia đình đã nhận tạm ứng, mức vốn còn lại đề nghị được thanh toán), KBNN thanh toán tiếp phần còn lại cho UBND cấp xã để chi trả cho các hộ gia đình; đồng thời chuyển từ tạm ứng sang thực chi ngân sách. Khi cấp tiếp số tiền còn lại cho các hộ gia đình, UBND xã lập bảng kê, ký nhận của hộ gia đình đã nhận kinh phí hỗ trợ về nhà ở để làm căn cứ quyết toán ngân sách theo quy định.
+
+5. Kinh phí hỗ trợ người có công với cách mạng về nhà ở được hạch toán, tổng hợp vào quyết toán ngân sách huyện (ngân sách huyện cấp kinh phí uỷ quyền cho ngân sách cấp xã) hoặc quyết toán ngân sách cấp xã (ngân sách huyện bổ sung có mục tiêu cho ngân sách cấp xã) theo phân cấp ngân sách do UBND cấp tỉnh quyết định.
+
+6. Kho bạc nhà nước thực hiện kiểm soát thanh toán vốn đảm bảo số tiền hỗ trợ theo đúng danh sách phê duyệt của UBND cấp huyện và mức hỗ trợ theo quy định.

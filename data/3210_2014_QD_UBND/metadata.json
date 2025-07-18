@@ -1,0 +1,92 @@
+{
+  "doc_id": "3210_2014_QD_UBND",
+  "doc_type": "Quyết định",
+  "doc_title": "QUYẾT ĐỊNH VỀ BAN HÀNH KẾ HOẠCH TRIỂN KHAI THỰC HIỆN THÔNG TƯ SỐ 09/2013/TT-BXD NGÀY 01 THÁNG 7 NĂM 2013 CỦA BỘ XÂY DỰNG VỀ HƯỚNG DẪN THỰC HIỆN QUYẾT ĐỊNH SỐ 22/2013/QĐ-TTG NGÀY 26 THÁNG 4 NĂNG 2013 CỦA THỦ TƯỚNG CHÍNH PHỦ VỀ HỖ TRỢ NGƯỜI CÓ CÔNG VỚI CÁCH MẠNG VỀ NHÀ Ở TRÊN ĐỊA BÀN THÀNH PHỐ HỒ CHÍ MINH",
+  "issue_date": "28-06-2014",
+  "effective_date": "28-06-2014",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Địa phương",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "3210_2014_QD_UBND_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định, bao gồm quốc hiệu, tiêu ngữ, số hiệu, ngày ban hành, tên đầy đủ của quyết định, và các căn cứ pháp lý."
+    },
+    {
+      "chunk_id": "3210_2014_QD_UBND_article1_3",
+      "chunk_type": "article",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_2.md",
+      "content_summary": "Các điều khoản chính của Quyết định, quy định việc ban hành Kế hoạch, hiệu lực thi hành và trách nhiệm thi hành của các cơ quan, cá nhân liên quan."
+    },
+    {
+      "chunk_id": "3210_2014_QD_UBND_plan_part1",
+      "chunk_type": "article",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_3.md",
+      "content_summary": "Phần mở đầu của Kế hoạch triển khai, nêu rõ mục đích và yêu cầu của việc hỗ trợ nhà ở cho người có công với cách mạng."
+    },
+    {
+      "chunk_id": "3210_2014_QD_UBND_plan_part2_section2_1_2",
+      "chunk_type": "article",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_4.md",
+      "content_summary": "Quy định chi tiết về việc xác định đối tượng được hỗ trợ và trình tự, thời gian lập, phê duyệt danh sách hỗ trợ nhà ở trong Kế hoạch."
+    },
+    {
+      "chunk_id": "3210_2014_QD_UBND_plan_part2_section2_3_5",
+      "chunk_type": "article",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_5.md",
+      "content_summary": "Quy định các vấn đề cần lưu ý khi xây dựng Đề án hỗ trợ, phương thức thực hiện xây dựng/sửa chữa nhà ở, và yêu cầu về cấp Giấy chứng nhận quyền sử dụng đất."
+    },
+    {
+      "chunk_id": "3210_2014_QD_UBND_plan_part3_section3_1",
+      "chunk_type": "article",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_6.md",
+      "content_summary": "Phân công trách nhiệm của các cấp Ủy ban nhân dân (Thành phố, quận/huyện, xã/phường/thị trấn) trong việc tổ chức thực hiện Kế hoạch."
+    },
+    {
+      "chunk_id": "3210_2014_QD_UBND_plan_part3_section3_2_conclusion",
+      "chunk_type": "article",
+      "file_path": "/data/3210_2014_QD_UBND/chunk_7.md",
+      "content_summary": "Phân công trách nhiệm của các Sở, ngành liên quan, các tổ chức khác, và quy định chế độ phối hợp, báo cáo, cùng với lời kết của Kế hoạch."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "Luat_To_chuc_HDND_UBND_2003",
+      "relationship": "references",
+      "description": "Luật Tổ chức Hội đồng nhân dân và Ủy ban nhân dân ngày 26 tháng 11 năm 2003."
+    },
+    {
+      "doc_id": "22_2013_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 22/2013/QĐ-TTg ngày 26 tháng 4 năm 2013 của Thủ tướng Chính phủ về hỗ trợ người có công với cách mạng về nhà ở."
+    },
+    {
+      "doc_id": "22_2013_QD_TTg",
+      "relationship": "implements",
+      "description": "Quyết định này hướng dẫn triển khai thực hiện Quyết định số 22/2013/QĐ-TTg của Thủ tướng Chính phủ."
+    },
+    {
+      "doc_id": "09_2013_TT_BXD",
+      "relationship": "references",
+      "description": "Thông tư số 09/2013/TT-BXD ngày 01 tháng 7 năm 2013 của Bộ Xây dựng về hướng dẫn thực hiện Quyết định số 22/2013/QĐ-TTg."
+    },
+    {
+      "doc_id": "09_2013_TT_BXD",
+      "relationship": "implements",
+      "description": "Kế hoạch này triển khai thực hiện Thông tư số 09/2013/TT-BXD của Bộ Xây dựng."
+    },
+    {
+      "doc_id": "98_2013_TT_BTC",
+      "relationship": "references",
+      "description": "Thông tư số 98/2013/TT-BTC ngày 24 tháng 7 năm 2013 của Bộ Tài chính hướng dẫn việc quản lý, cấp phát, thanh toán, quyết toán nguồn vốn hỗ trợ."
+    }
+  ]
+}

@@ -2347,80 +2347,251 @@ async def search_related_chunks(request: SearchRelatedChunksRequest):
 
 @router.post("/analyze-chunks-for-invalidation")
 async def analyze_chunks_for_invalidation(request: AnalyzeChunksRequest):
-    """Sử dụng LLM để phân tích chunks nào cần vô hiệu hóa"""
+    """Sử dụng LLM để phân tích chunks nào cần vô hiệu hóa - với full content cả 2 bên"""
     try:
         new_document = request.new_document
         existing_chunks = request.existing_chunks
         
-        print(f"Bắt đầu phân tích LLM cho document mới: {new_document.get('doc_id')}")
-        print(f"Số chunks hiện có cần kiểm tra: {len(existing_chunks)}")
+        new_doc_effective_date = new_document.get('effective_date')
+        new_doc_id = new_document.get('doc_id')
+        new_doc_issue_date = new_document.get('issue_date', '')
+        
+        print(f"Bắt đầu phân tích LLM cho document: {new_doc_id}")
+        print(f"  - Ngày hiệu lực: {new_doc_effective_date}")
+        print(f"  - Ngày ban hành: {new_doc_issue_date}")
+        print(f"  - Số chunks hiện có cần kiểm tra: {len(existing_chunks)}")
         
         if not existing_chunks:
             return {
                 "analysis_summary": "Không có chunks hiện có để phân tích.",
                 "chunks_to_invalidate": [],
+                "chunks_to_keep": [],
                 "reasoning": "Danh sách chunks trống."
             }
         
-        # Tạo prompt cho LLM phân tích
+        # Helper function để parse ngày DD-MM-YYYY
+        def parse_date_string(date_str):
+            try:
+                if not date_str or date_str == "N/A":
+                    return datetime.min
+                parts = date_str.split('-')
+                if len(parts) != 3:
+                    return datetime.min
+                day, month, year = int(parts[0]), int(parts[1]), int(parts[2])
+                return datetime(year, month, day)
+            except:
+                return datetime.min
+        
+        # PRE-VALIDATION: Lọc chunks có ngày hiệu lực sớm hơn
+        valid_chunks_for_analysis = []
+        skipped_chunks = []
+        
+        new_date = parse_date_string(new_doc_effective_date)
+        print(f"Ngày hiệu lực văn bản mới parsed: {new_date}")
+        
+        for chunk in existing_chunks:
+            chunk_effective_date = chunk.get('effective_date', '')
+            chunk_id = chunk.get('chunk_id', '')
+            chunk_doc_id = chunk.get('doc_id', '')
+            
+            if chunk_effective_date and new_doc_effective_date:
+                chunk_date = parse_date_string(chunk_effective_date)
+                
+                print(f"So sánh chunk {chunk_id} ({chunk_doc_id}): {chunk_effective_date} vs {new_doc_effective_date}")
+                print(f"  - Chunk date parsed: {chunk_date}")
+                print(f"  - New date parsed: {new_date}")
+                
+                if chunk_date < new_date:
+                    valid_chunks_for_analysis.append(chunk)
+                    print(f"  ✓ Hợp lệ để phân tích (cũ hơn)")
+                else:
+                    skipped_chunks.append({
+                        'chunk_id': chunk_id,
+                        'doc_id': chunk_doc_id,
+                        'effective_date': chunk_effective_date,
+                        'reason': f'Ngày hiệu lực {chunk_effective_date} muộn hơn hoặc bằng {new_doc_effective_date}'
+                    })
+                    print(f"  ✗ Bỏ qua (mới hơn hoặc bằng)")
+            else:
+                # Nếu không có ngày hiệu lực, thêm vào phân tích để AI quyết định
+                valid_chunks_for_analysis.append(chunk)
+                print(f"  ? Thêm vào phân tích (thiếu ngày hiệu lực)")
+        
+        print(f"Pre-validation: {len(valid_chunks_for_analysis)} chunks hợp lệ, {len(skipped_chunks)} bị bỏ qua")
+        
+        if not valid_chunks_for_analysis:
+            return {
+                "analysis_summary": f"Không có chunks nào có ngày hiệu lực sớm hơn {new_doc_effective_date} để phân tích.",
+                "chunks_to_invalidate": [],
+                "chunks_to_keep": [{"chunk_id": chunk['chunk_id'], "reason": chunk['reason']} for chunk in skipped_chunks],
+                "reasoning": f"Tất cả chunks hiện có đều có ngày hiệu lực muộn hơn hoặc bằng {new_doc_effective_date}. Theo nguyên tắc thời gian, văn bản mới không thể vô hiệu hóa văn bản có ngày hiệu lực muộn hơn."
+            }
+        
+        # MỚI: Lấy full content chunks của văn bản mới để so sánh
+        print(f"Đang tải full content chunks của văn bản mới: {new_doc_id}")
+        new_document_chunks = []
+        
+        try:
+            # Lấy chunks từ metadata của văn bản mới
+            new_doc_chunks_info = new_document.get('chunks', [])
+            print(f"Văn bản mới có {len(new_doc_chunks_info)} chunks trong metadata")
+            
+            for chunk_info in new_doc_chunks_info:
+                chunk_id = chunk_info.get('chunk_id', '')
+                file_path = chunk_info.get('file_path', '')
+                content_summary = chunk_info.get('content_summary', '')
+                chunk_type = chunk_info.get('chunk_type', '')
+                
+                # Đọc full content từ file
+                chunk_content = ""
+                if file_path:
+                    # Chuyển đổi path
+                    if file_path.startswith("/data/"):
+                        relative_path = file_path[1:]  # Bỏ "/" đầu
+                        full_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), relative_path)
+                    elif file_path.startswith("data/"):
+                        full_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), file_path)
+                    else:
+                        full_path = os.path.join(DATA_DIR, file_path)
+                    
+                    print(f"Đang đọc chunk {chunk_id} từ: {full_path}")
+                    
+                    if os.path.exists(full_path):
+                        try:
+                            with open(full_path, 'r', encoding='utf-8') as f:
+                                chunk_content = f.read().strip()
+                            print(f"  ✓ Đọc thành công: {len(chunk_content)} ký tự")
+                        except Exception as e:
+                            print(f"  ✗ Lỗi đọc file: {str(e)}")
+                    else:
+                        print(f"  ✗ File không tồn tại: {full_path}")
+                
+                new_chunk = {
+                    "chunk_id": chunk_id,
+                    "content": chunk_content,
+                    "content_summary": content_summary,
+                    "chunk_type": chunk_type,
+                    "doc_id": new_doc_id,
+                    "doc_type": new_document.get('doc_type', ''),
+                    "doc_title": new_document.get('doc_title', ''),
+                    "effective_date": new_doc_effective_date
+                }
+                new_document_chunks.append(new_chunk)
+            
+            print(f"Đã tải {len(new_document_chunks)} chunks của văn bản mới với full content")
+            
+        except Exception as e:
+            print(f"Lỗi khi tải chunks của văn bản mới: {str(e)}")
+            # Tiếp tục với thông tin cơ bản nếu không đọc được file
+        
+        # Tạo prompt cho LLM với FULL CONTENT cả 2 bên
         analysis_prompt = f"""
-Bạn là chuyên gia pháp luật Việt Nam. Nhiệm vụ của bạn là phân tích xem văn bản pháp luật mới có làm vô hiệu hóa (supersede) các chunks văn bản cũ nào không.
+Bạn là chuyên gia pháp luật Việt Nam. Nhiệm vụ của bạn là so sánh chi tiết nội dung 2 bộ văn bản để xác định chunks nào cần vô hiệu hóa.
 
-**VĂN BẢN MỚI:**
+**NGUYÊN TẮC THỜI GIAN QUAN TRỌNG (BẮT BUỘC TUÂN THỦ):**
+- Văn bản có ngày hiệu lực muộn hơn LUÔN thay thế văn bản có ngày hiệu lực sớm hơn
+- CHỈ vô hiệu hóa chunks của văn bản CŨ (ngày hiệu lực sớm hơn)  
+- KHÔNG BAO GIỜ vô hiệu hóa chunks của văn bản MỚI (ngày hiệu lực muộn hơn hoặc bằng)
+- Khi có nghi ngờ về thời gian hoặc mối quan hệ, KHÔNG vô hiệu hóa
+
+**VĂN BẢN MỚI (ĐANG XỬ LÝ):**
 - Mã: {new_document.get('doc_id', '')}
 - Loại: {new_document.get('doc_type', '')}
 - Tiêu đề: {new_document.get('doc_title', '')}
 - Ngày hiệu lực: {new_document.get('effective_date', '')}
-- Số chunks: {len(new_document.get('chunks', []))}
+- Ngày ban hành: {new_document.get('issue_date', '')}
+- Số chunks: {len(new_document_chunks)}
 
-**CÁC CHUNKS HIỆN CÓ TRONG HỆ THỐNG:**
-{chr(10).join([f"- {chunk.get('chunk_id', '')}: {chunk.get('content_summary', '')} (Doc: {chunk.get('doc_id', '')}, Ngày hiệu lực: {chunk.get('effective_date', '')})" for chunk in existing_chunks[:10]])}
-{f"... và {len(existing_chunks) - 10} chunks khác" if len(existing_chunks) > 10 else ""}
+**CHUNKS CỦA VĂN BẢN MỚI (FULL CONTENT):**
+{chr(10).join([f'''
+--- CHUNK {i+1}: {chunk.get('chunk_id', '')} ---
+Loại: {chunk.get('chunk_type', '')}
+Mô tả: {chunk.get('content_summary', '')}
+Nội dung ({len(chunk.get('content', ''))} ký tự):
+{chunk.get('content', '')[:2000]}{'...' if len(chunk.get('content', '')) > 2000 else ''}
+''' for i, chunk in enumerate(new_document_chunks[:5])])}
+{f"... và {len(new_document_chunks) - 5} chunks khác của văn bản mới" if len(new_document_chunks) > 5 else ""}
 
-**YÊU CẦU PHÂN TÍCH:**
-1. **Phân tích mối quan hệ pháp lý:** Xác định văn bản mới có thay thế, bãi bỏ, hoặc sửa đổi các văn bản cũ không
-2. **Nguyên tắc vô hiệu hóa:**
-   - Văn bản có ngày hiệu lực muộn hơn thường thay thế văn bản cũ
-   - Văn bản cùng cơ quan ban hành có thể thay thế nhau
-   - Văn bản cấp cao hơn có thể bãi bỏ văn bản cấp thấp hơn
-   - Văn bản chuyên ngành thay thế trong phạm vi chuyên môn
+**CÁC CHUNKS HIỆN CÓ (VĂN BẢN CŨ) - FULL CONTENT:**
+Đã lọc {len(valid_chunks_for_analysis)} chunks có ngày hiệu lực SỚM HƠN {new_doc_effective_date}:
 
-3. **Xác định chunks cần vô hiệu hóa:**
-   - Chỉ vô hiệu hóa chunks bị thay thế hoàn toàn
-   - Không vô hiệu hóa nếu chỉ bổ sung hoặc làm rõ
-   - Ưu tiên an toàn: khi có nghi ngờ, không vô hiệu hóa
+{chr(10).join([f'''
+--- CHUNK CŨ {i+1}: {chunk.get('chunk_id', '')} ---
+Document: {chunk.get('doc_id', '')} (Hiệu lực: {chunk.get('effective_date', '')})
+Loại: {chunk.get('chunk_type', '')}
+Mô tả: {chunk.get('content_summary', '')}
+Nội dung ({len(chunk.get('full_content', chunk.get('content', '')))} ký tự):
+{chunk.get('full_content', chunk.get('content', ''))[:2000]}{'...' if len(chunk.get('full_content', chunk.get('content', ''))) > 2000 else ''}
+''' for i, chunk in enumerate(valid_chunks_for_analysis[:5])])}
+{f"... và {len(valid_chunks_for_analysis) - 5} chunks cũ khác" if len(valid_chunks_for_analysis) > 5 else ""}
 
-**TRẠNG THÁI VÔ HIỆU HÓA:**
-- "superseded": Bị thay thế hoàn toàn
-- "amended": Bị sửa đổi một phần (không vô hiệu hóa)
-- "supplemented": Được bổ sung (không vô hiệu hóa)
+**YÊU CẦU PHÂN TÍCH CHI TIẾT:**
+
+1. **SO SÁNH NỘI DUNG THỰC TẾ:**
+   - So sánh từng chunk cũ với tất cả chunks mới
+   - Xác định chunks cũ có nội dung BỊ THAY THẾ HOÀN TOÀN bởi chunks mới
+   - Chỉ vô hiệu hóa khi nội dung chunk cũ HOÀN TOÀN trùng lặp hoặc bị thay thế
+
+2. **PHÂN TÍCH MỐI QUAN HỆ PHÁP LÝ:**
+   - Kiểm tra văn bản mới có THAY THẾ HOÀN TOÀN hay chỉ bổ sung/sửa đổi
+   - Văn bản hợp nhất (VBHN) có thể thay thế toàn bộ các văn bản được hợp nhất
+   - Chỉ vô hiệu hóa khi có bằng chứng thay thế rõ ràng
+
+3. **NGUYÊN TẮC VÔ HIỆU HÓA AN TOÀN:**
+   - CHỈ vô hiệu hóa chunks bị thay thế về NỘI DUNG (không chỉ về thời gian)
+   - KHÔNG vô hiệu hóa nếu chỉ bổ sung, làm rõ, hoặc sửa đổi một phần
+   - KHÔNG vô hiệu hóa khi nội dung chunk cũ vẫn còn giá trị độc lập
+   - Ưu tiên giữ lại thông tin hơn là xóa nhầm
+
+4. **CÁC TRƯỜNG HỢP THƯỜNG GẶP:**
+   - Nếu chunk cũ = chunk mới về nội dung → có thể vô hiệu hóa chunk cũ
+   - Nếu chunk mới bao gồm và mở rộng chunk cũ → có thể vô hiệu hóa chunk cũ  
+   - Nếu chunk cũ có nội dung độc lập không có trong chunk mới → KHÔNG vô hiệu hóa
+   - Nếu chunk cũ chỉ bị sửa đổi một phần → KHÔNG vô hiệu hóa
+
+**VÍ DỤ LOGIC ĐÚNG:**
+- Chunk cũ có điều khoản X với nội dung A
+- Chunk mới có điều khoản X với nội dung A' (thay thế hoàn toàn)
+- → Vô hiệu hóa chunk cũ
+
+**VÍ DỤ LOGIC SAI (TUYỆT ĐỐI TRÁNH):**
+- Chunk cũ có điều khoản X, chunk mới có điều khoản Y (khác nhau)
+- Chunk cũ có thông tin độc lập không có trong chunk mới
+- → KHÔNG vô hiệu hóa
 
 Trả về JSON theo format:
 {{
-    "analysis_summary": "Tóm tắt kết quả phân tích",
+    "analysis_summary": "Tóm tắt kết quả so sánh nội dung thực tế và nguyên tắc thời gian",
     "chunks_to_invalidate": [
         {{
             "chunk_id": "id_chunk_cần_vô_hiệu_hóa",
-            "reason": "Lý do cụ thể tại sao cần vô hiệu hóa",
-            "relationship": "superseded|replaced",
-            "confidence": 0.9
+            "reason": "Lý do cụ thể dựa trên so sánh nội dung: chunk này có nội dung [X] đã được thay thế hoàn toàn bởi chunk mới [Y] của văn bản {new_document.get('doc_id')}",
+            "relationship": "content_superseded",
+            "confidence": 0.95,
+            "old_effective_date": "ngày hiệu lực của chunk bị vô hiệu hóa",
+            "new_effective_date": "{new_document.get('effective_date')}",
+            "content_comparison": "Mô tả ngắn về việc so sánh nội dung"
         }}
     ],
     "chunks_to_keep": [
         {{
             "chunk_id": "id_chunk_giữ_lại", 
-            "reason": "Lý do tại sao không vô hiệu hóa"
+            "reason": "Lý do dựa trên nội dung: chunk này có nội dung độc lập / chỉ bị sửa đổi một phần / không có tương đương trong văn bản mới"
         }}
     ],
-    "reasoning": "Giải thích chi tiết quá trình phân tích và quyết định"
+    "reasoning": "Giải thích chi tiết quá trình so sánh nội dung thực tế, LUÔN đề cập đến việc phân tích từng chunk và quyết định dựa trên nội dung"
 }}
 
-**LƯU Ý:** Chỉ vô hiệu hóa khi chắc chắn 100%. Khi có nghi ngờ, hãy giữ lại và giải thích trong reasoning.
+**LƯU Ý QUAN TRỌNG:** 
+- LUÔN ưu tiên an toàn: khi có nghi ngờ về nội dung, KHÔNG vô hiệu hóa
+- Chỉ vô hiệu hóa khi có bằng chứng RÕ RÀNG về việc thay thế nội dung
+- Phân tích chi tiết từng chunk, không quyết định theo tổng thể
+- Giải thích rõ ràng lý do cho mỗi quyết định dựa trên so sánh nội dung thực tế
 """
 
         try:
-            # Gọi GenerationService với method đúng
-            print("Đang gọi LLM để phân tích chunks...")
+            # Gọi GenerationService
+            print("Đang gọi LLM để phân tích với FULL CONTENT cả 2 bên...")
             
             response = generation_service.generate_answer(
                 query=analysis_prompt,
@@ -2442,22 +2613,81 @@ Trả về JSON theo format:
             json_str = response_text[json_start:json_end]
             analysis_result = json.loads(json_str)
             
-            # Validate kết quả
+            # POST-VALIDATION: Double-check kết quả AI
             chunks_to_invalidate = analysis_result.get('chunks_to_invalidate', [])
-            chunks_to_keep = analysis_result.get('chunks_to_keep', [])
+            final_chunks_to_invalidate = []
+            rejected_chunks = []
             
-            print(f"LLM phân tích hoàn thành:")
-            print(f"  - Chunks cần vô hiệu hóa: {len(chunks_to_invalidate)}")
+            for chunk in chunks_to_invalidate:
+                chunk_id = chunk.get('chunk_id', '')
+                old_effective_date = chunk.get('old_effective_date', '')
+                
+                # Tìm chunk trong danh sách gốc để kiểm tra
+                original_chunk = None
+                for orig_chunk in existing_chunks:
+                    if orig_chunk.get('chunk_id') == chunk_id:
+                        original_chunk = orig_chunk
+                        break
+                
+                if original_chunk:
+                    chunk_date = parse_date_string(original_chunk.get('effective_date', ''))
+                    if chunk_date < new_date:
+                        final_chunks_to_invalidate.append(chunk)
+                        print(f"✓ Chấp nhận vô hiệu hóa {chunk_id}: {original_chunk.get('effective_date')} < {new_doc_effective_date} + content superseded")
+                    else:
+                        rejected_chunks.append({
+                            'chunk_id': chunk_id,
+                            'reason': f'AI đề xuất sai: ngày hiệu lực {original_chunk.get("effective_date")} không sớm hơn {new_doc_effective_date}'
+                        })
+                        print(f"✗ Từ chối vô hiệu hóa {chunk_id}: Vi phạm nguyên tắc thời gian")
+                else:
+                    rejected_chunks.append({
+                        'chunk_id': chunk_id,
+                        'reason': 'Không tìm thấy chunk trong danh sách gốc'
+                    })
+                    print(f"✗ Từ chối vô hiệu hóa {chunk_id}: Không tìm thấy")
+            
+            # Cập nhật kết quả cuối
+            analysis_result['chunks_to_invalidate'] = final_chunks_to_invalidate
+            
+            # Thêm rejected chunks vào chunks_to_keep
+            chunks_to_keep = analysis_result.get('chunks_to_keep', [])
+            for rejected in rejected_chunks:
+                chunks_to_keep.append(rejected)
+            analysis_result['chunks_to_keep'] = chunks_to_keep
+            
+            # Thêm thông tin skipped chunks
+            for skipped in skipped_chunks:
+                chunks_to_keep.append({
+                    'chunk_id': skipped['chunk_id'],
+                    'reason': skipped['reason']
+                })
+            
+            print(f"LLM phân tích với full content hoàn thành:")
+            print(f"  - Văn bản mới chunks: {len(new_document_chunks)}")
+            print(f"  - Văn bản cũ chunks analyzed: {len(valid_chunks_for_analysis)}")
+            print(f"  - Chunks AI đề xuất vô hiệu hóa: {len(chunks_to_invalidate)}")
+            print(f"  - Chunks được chấp nhận: {len(final_chunks_to_invalidate)}")
+            print(f"  - Chunks bị từ chối: {len(rejected_chunks)}")
             print(f"  - Chunks giữ lại: {len(chunks_to_keep)}")
             
+            # Thêm thông tin bổ sung vào analysis_summary
+            original_summary = analysis_result.get('analysis_summary', '')
+            analysis_result['analysis_summary'] = f"{original_summary}\n\nKết quả so sánh full content: Đã phân tích {len(new_document_chunks)} chunks mới vs {len(valid_chunks_for_analysis)} chunks cũ. {len(final_chunks_to_invalidate)}/{len(chunks_to_invalidate)} chunks được chấp nhận vô hiệu hóa sau validation."
+            
             log_admin_activity(ActivityType.SYSTEM_STATUS,
-                              f"LLM phân tích chunks: {new_document.get('doc_id')} - {len(chunks_to_invalidate)} cần vô hiệu hóa",
+                              f"LLM phân tích chunks với full content: {new_doc_id} - {len(final_chunks_to_invalidate)} cần vô hiệu hóa",
                               {
-                                  "new_doc_id": new_document.get('doc_id'),
+                                  "new_doc_id": new_doc_id,
+                                  "new_doc_effective_date": new_doc_effective_date,
+                                  "new_doc_chunks": len(new_document_chunks),
                                   "existing_chunks_count": len(existing_chunks),
-                                  "chunks_to_invalidate": len(chunks_to_invalidate),
-                                  "chunks_to_keep": len(chunks_to_keep),
-                                  "action": "llm_analyze_chunks"
+                                  "valid_chunks_analyzed": len(valid_chunks_for_analysis),
+                                  "skipped_chunks": len(skipped_chunks),
+                                  "ai_suggested": len(chunks_to_invalidate),
+                                  "final_accepted": len(final_chunks_to_invalidate),
+                                  "rejected_by_validation": len(rejected_chunks),
+                                  "action": "llm_analyze_chunks_with_full_content"
                               })
             
             return analysis_result
@@ -2465,10 +2695,10 @@ Trả về JSON theo format:
         except json.JSONDecodeError as je:
             print(f"Lỗi parse JSON từ LLM: {str(je)}")
             return {
-                "analysis_summary": f"Lỗi phân tích: {str(je)}",
+                "analysis_summary": f"Lỗi phân tích: AI trả về JSON không hợp lệ - {str(je)}",
                 "chunks_to_invalidate": [],
-                "chunks_to_keep": [],
-                "reasoning": "LLM trả về định dạng không hợp lệ",
+                "chunks_to_keep": [{"chunk_id": chunk.get('chunk_id', ''), "reason": "LLM response error"} for chunk in valid_chunks_for_analysis],
+                "reasoning": "LLM trả về định dạng không hợp lệ. Giữ nguyên tất cả chunks để an toàn.",
                 "error": str(je)
             }
             
@@ -2783,109 +3013,118 @@ async def scan_system_relationships():
         if not os.path.exists(DATA_DIR):
             raise HTTPException(status_code=404, detail="Thư mục data không tồn tại")
         
+        print("=== DEBUG SCAN SYSTEM RELATIONSHIPS ===")
+        print(f"DATA_DIR: {DATA_DIR}")
+        print(f"Các thư mục tìm thấy: {os.listdir(DATA_DIR)}")
+        
         # Đọc metadata của tất cả documents
         documents_metadata = []
         for doc_dir in os.listdir(DATA_DIR):
             doc_path = os.path.join(DATA_DIR, doc_dir)
             metadata_path = os.path.join(doc_path, "metadata.json")
             
+            print(f"Kiểm tra: {doc_dir}")
+            print(f"  - Là thư mục: {os.path.isdir(doc_path)}")
+            print(f"  - Có metadata.json: {os.path.exists(metadata_path)}")
+            
             if os.path.isdir(doc_path) and os.path.exists(metadata_path):
                 try:
                     with open(metadata_path, 'r', encoding='utf-8') as f:
                         metadata = json.load(f)
+                    
+                    doc_id = metadata.get("doc_id")
+                    related_docs = metadata.get("related_documents", [])
+                    replaces = metadata.get("replaces", [])
+                    amends = metadata.get("amends")
+                    
+                    print(f"  - Doc ID: {doc_id}")
+                    print(f"  - Related documents: {len(related_docs)}")
+                    print(f"  - Replaces: {replaces}")
+                    print(f"  - Amends: {amends}")
+                    
                     documents_metadata.append(metadata)
                 except Exception as e:
-                    print(f"Lỗi đọc metadata của {doc_dir}: {str(e)}")
+                    print(f"  - LỖI đọc metadata: {str(e)}")
         
         if not documents_metadata:
             raise HTTPException(status_code=404, detail="Không tìm thấy document nào")
         
-        # Tìm documents có relationships
+        print(f"Tổng cộng đọc được {len(documents_metadata)} documents")
+        
+        # Tìm documents có relationships - logic mới hoàn toàn
         documents_with_relationships = []
         
         for doc in documents_metadata:
             doc_id = doc.get("doc_id")
-            related_documents = []
+            has_relationships = False
+            related_documents_list = []
             
-            # Kiểm tra replaces
-            if doc.get("replaces") and isinstance(doc.get("replaces"), list):
+            # Kiểm tra trực tiếp trong related_documents array (ưu tiên cao nhất)
+            existing_related_docs = doc.get("related_documents", [])
+            if existing_related_docs and len(existing_related_docs) > 0:
+                print(f"Document {doc_id} có {len(existing_related_docs)} related_documents trong array")
+                for rel_doc in existing_related_docs:
+                    if isinstance(rel_doc, dict):
+                        related_documents_list.append({
+                            "doc_id": rel_doc.get("doc_id", ""),
+                            "relationship": rel_doc.get("relationship", "unknown"),
+                            "description": rel_doc.get("description", f"Liên quan đến {rel_doc.get('doc_id', '')}")
+                        })
+                has_relationships = True
+            
+            # Kiểm tra các trường legacy để tương thích ngược
+            if doc.get("replaces") and isinstance(doc.get("replaces"), list) and len(doc.get("replaces")) > 0:
+                print(f"Document {doc_id} có replaces: {doc.get('replaces')}")
                 for replaced_doc in doc["replaces"]:
-                    related_documents.append({
-                        "doc_id": replaced_doc,
-                        "relationship": "replaces", 
-                        "description": f"{doc_id} thay thế {replaced_doc}"
-                    })
+                    if replaced_doc and str(replaced_doc).strip():
+                        related_documents_list.append({
+                            "doc_id": str(replaced_doc).strip(),
+                            "relationship": "replaces",
+                            "description": f"{doc_id} thay thế {replaced_doc}"
+                        })
+                has_relationships = True
             
-            # Kiểm tra amends
-            if doc.get("amends"):
-                related_documents.append({
-                    "doc_id": doc.get("amends"),
+            if doc.get("amends") and str(doc.get("amends")).strip():
+                print(f"Document {doc_id} có amends: {doc.get('amends')}")
+                related_documents_list.append({
+                    "doc_id": str(doc.get("amends")).strip(),
                     "relationship": "amends",
                     "description": f"{doc_id} sửa đổi {doc.get('amends')}"
                 })
+                has_relationships = True
             
-            # Kiểm tra replaced_by (doc này bị thay thế)
-            if doc.get("replaced_by"):
-                # Tìm document thay thế để xử lý
-                replacing_doc = None
-                for other_doc in documents_metadata:
-                    if other_doc.get("doc_id") == doc.get("replaced_by"):
-                        replacing_doc = other_doc
-                        break
-                
-                if replacing_doc and replacing_doc.get("doc_id") not in [d["doc_id"] for d in documents_with_relationships]:
-                    # Thêm document thay thế vào list với relationship tới doc hiện tại
-                    related_docs = [{
-                        "doc_id": doc_id,
-                        "relationship": "replaces",
-                        "description": f"{replacing_doc.get('doc_id')} thay thế {doc_id}"
-                    }]
-                    
-                    documents_with_relationships.append({
-                        "doc_id": replacing_doc.get("doc_id"),
-                        "doc_type": replacing_doc.get("doc_type"),
-                        "doc_title": replacing_doc.get("doc_title"),
-                        "effective_date": replacing_doc.get("effective_date"),
-                        "metadata": replacing_doc,
-                        "related_documents": related_docs
-                    })
+            if doc.get("replaced_by") and str(doc.get("replaced_by")).strip():
+                print(f"Document {doc_id} có replaced_by: {doc.get('replaced_by')}")
+                related_documents_list.append({
+                    "doc_id": str(doc.get("replaced_by")).strip(),
+                    "relationship": "replaced_by",
+                    "description": f"{doc_id} bị thay thế bởi {doc.get('replaced_by')}"
+                })
+                has_relationships = True
             
-            # Kiểm tra amended_by (doc này bị sửa đổi)
-            if doc.get("amended_by"):
-                # Tìm document sửa đổi để xử lý
-                amending_doc = None
-                for other_doc in documents_metadata:
-                    if other_doc.get("doc_id") == doc.get("amended_by"):
-                        amending_doc = other_doc
-                        break
-                
-                if amending_doc and amending_doc.get("doc_id") not in [d["doc_id"] for d in documents_with_relationships]:
-                    # Thêm document sửa đổi vào list
-                    related_docs = [{
-                        "doc_id": doc_id,
-                        "relationship": "amends",
-                        "description": f"{amending_doc.get('doc_id')} sửa đổi {doc_id}"
-                    }]
-                    
-                    documents_with_relationships.append({
-                        "doc_id": amending_doc.get("doc_id"),
-                        "doc_type": amending_doc.get("doc_type"),
-                        "doc_title": amending_doc.get("doc_title"),
-                        "effective_date": amending_doc.get("effective_date"),
-                        "metadata": amending_doc,
-                        "related_documents": related_docs
-                    })
+            if doc.get("amended_by") and str(doc.get("amended_by")).strip():
+                print(f"Document {doc_id} có amended_by: {doc.get('amended_by')}")
+                related_documents_list.append({
+                    "doc_id": str(doc.get("amended_by")).strip(),
+                    "relationship": "amended_by",
+                    "description": f"{doc_id} bị sửa đổi bởi {doc.get('amended_by')}"
+                })
+                has_relationships = True
             
-            # Nếu document hiện tại có relationships trực tiếp
-            if related_documents:
+            # Nếu document này có relationships
+            if has_relationships and len(related_documents_list) > 0:
                 documents_with_relationships.append({
                     "doc_id": doc_id,
                     "doc_type": doc.get("doc_type"),
                     "doc_title": doc.get("doc_title"),
                     "effective_date": doc.get("effective_date"),
+                    "issue_date": doc.get("issue_date"),
                     "metadata": doc,
-                    "related_documents": related_documents
+                    "related_documents": related_documents_list
                 })
+                print(f"✓ Thêm document {doc_id} với {len(related_documents_list)} relationships")
+            else:
+                print(f"✗ Bỏ qua document {doc_id} - không có relationships")
         
         # Loại bỏ duplicates dựa trên doc_id
         unique_documents = []
@@ -2895,12 +3134,17 @@ async def scan_system_relationships():
                 unique_documents.append(doc)
                 seen_doc_ids.add(doc["doc_id"])
         
+        print(f"Kết quả cuối: {len(unique_documents)} documents có relationships")
+        for doc in unique_documents:
+            print(f"  - {doc['doc_id']}: {len(doc['related_documents'])} relationships")
+        
         log_admin_activity(ActivityType.SYSTEM_STATUS,
                           f"Scan system relationships: {len(documents_metadata)} total docs, {len(unique_documents)} with relationships",
                           {
                               "total_documents": len(documents_metadata),
                               "documents_with_relationships": len(unique_documents),
-                              "action": "scan_system_relationships"
+                              "action": "scan_system_relationships",
+                              "found_doc_ids": [doc["doc_id"] for doc in unique_documents]
                           })
         
         return {
@@ -3020,3 +3264,379 @@ async def process_document_relationships(request: dict):
         
     except Exception as e:
         handle_error("process_document_relationships", e)
+        
+@router.get("/invalidated-chunks")
+async def get_invalidated_chunks(limit: int = 100):
+    """Lấy danh sách tất cả chunks đã bị vô hiệu hóa"""
+    try:
+        db = mongodb_client.get_database()
+        main_collection = chroma_client.get_main_collection()
+        
+        invalidated_chunks = []
+        
+        # 1. Tìm chunks bị đánh dấu invalid trong ChromaDB main collection
+        if main_collection:
+            try:
+                # Lấy tất cả chunks có validity_status = invalid
+                all_chunks = main_collection.get(
+                    include=["metadatas"],
+                    limit=limit * 2  # Lấy nhiều hơn để filter
+                )
+                
+                if all_chunks and all_chunks.get("ids"):
+                    for i, chunk_id in enumerate(all_chunks["ids"]):
+                        metadata = all_chunks["metadatas"][i] if i < len(all_chunks["metadatas"]) else {}
+                        
+                        if metadata.get("validity_status") == "invalid":
+                            chunk_info = {
+                                "chunk_id": chunk_id,
+                                "doc_id": metadata.get("doc_id", ""),
+                                "doc_type": metadata.get("doc_type", ""),
+                                "doc_title": metadata.get("doc_title", ""),
+                                "content_summary": metadata.get("content_summary", ""),
+                                "effective_date": metadata.get("effective_date", ""),
+                                "chunk_type": metadata.get("chunk_type", ""),
+                                "invalidated_at": metadata.get("invalidated_at", ""),
+                                "invalidation_reason": metadata.get("invalidation_reason", ""),
+                                "invalidated_by": metadata.get("invalidated_by", ""),
+                                "source": "main_collection"
+                            }
+                            invalidated_chunks.append(chunk_info)
+            except Exception as e:
+                print(f"Lỗi khi lấy chunks từ main collection: {str(e)}")
+        
+        # 2. Tìm cache entries bị vô hiệu hóa
+        try:
+            invalid_cache_entries = list(db.text_cache.find(
+                {"validityStatus": "invalid"},
+                {
+                    "cacheId": 1,
+                    "questionText": 1,
+                    "relevantDocuments": 1,
+                    "invalidatedAt": 1,
+                    "invalidationReason": 1,
+                    "invalidatedBy": 1
+                }
+            ).limit(limit))
+            
+            # Trích xuất chunk IDs từ cache entries
+            cache_chunk_ids = set()
+            for cache in invalid_cache_entries:
+                relevant_docs = cache.get("relevantDocuments", [])
+                for doc in relevant_docs:
+                    if isinstance(doc, dict) and "chunkId" in doc:
+                        chunk_id = doc["chunkId"]
+                        cache_chunk_ids.add(chunk_id)
+                        
+                        # Kiểm tra xem chunk này đã có trong danh sách chưa
+                        existing = next((c for c in invalidated_chunks if c["chunk_id"] == chunk_id), None)
+                        if not existing:
+                            # Lấy thông tin chunk từ main collection
+                            if main_collection:
+                                try:
+                                    chunk_data = main_collection.get(
+                                        ids=[chunk_id],
+                                        include=["metadatas"]
+                                    )
+                                    
+                                    if chunk_data and chunk_data.get("ids"):
+                                        chunk_metadata = chunk_data["metadatas"][0]
+                                        chunk_info = {
+                                            "chunk_id": chunk_id,
+                                            "doc_id": chunk_metadata.get("doc_id", ""),
+                                            "doc_type": chunk_metadata.get("doc_type", ""),
+                                            "doc_title": chunk_metadata.get("doc_title", ""),
+                                            "content_summary": chunk_metadata.get("content_summary", ""),
+                                            "effective_date": chunk_metadata.get("effective_date", ""),
+                                            "chunk_type": chunk_metadata.get("chunk_type", ""),
+                                            "invalidated_at": cache.get("invalidatedAt", "").isoformat() if cache.get("invalidatedAt") else "",
+                                            "invalidation_reason": cache.get("invalidationReason", ""),
+                                            "invalidated_by": cache.get("invalidatedBy", ""),
+                                            "source": "cache_entries",
+                                            "related_cache_count": 1
+                                        }
+                                        invalidated_chunks.append(chunk_info)
+                                except Exception as e:
+                                    print(f"Lỗi khi lấy thông tin chunk {chunk_id}: {str(e)}")
+                        else:
+                            # Cập nhật cache count cho chunk đã tồn tại
+                            existing["related_cache_count"] = existing.get("related_cache_count", 0) + 1
+        
+        except Exception as e:
+            print(f"Lỗi khi lấy cache entries: {str(e)}")
+        
+        # Sắp xếp theo thời gian vô hiệu hóa (mới nhất trước)
+        invalidated_chunks.sort(key=lambda x: x.get("invalidated_at", ""), reverse=True)
+        
+        # Giới hạn kết quả
+        invalidated_chunks = invalidated_chunks[:limit]
+        
+        return {
+            "invalidated_chunks": invalidated_chunks,
+            "total_found": len(invalidated_chunks),
+            "message": f"Tìm thấy {len(invalidated_chunks)} chunks đã bị vô hiệu hóa"
+        }
+        
+    except Exception as e:
+        handle_error("get_invalidated_chunks", e)
+
+@router.post("/restore-chunks")
+async def restore_chunks(request: dict):
+    """Khôi phục trạng thái valid cho các chunks được chọn"""
+    try:
+        chunk_ids = request.get("chunk_ids", [])
+        restore_reason = request.get("reason", "Manual restoration by admin")
+        restore_all_related = request.get("restore_all_related", False)
+        
+        if not chunk_ids:
+            raise HTTPException(status_code=400, detail="Danh sách chunk_ids không được trống")
+        
+        print(f"Bắt đầu khôi phục {len(chunk_ids)} chunks:")
+        for chunk_id in chunk_ids:
+            print(f"  - {chunk_id}")
+        
+        db = mongodb_client.get_database()
+        main_collection = chroma_client.get_main_collection()
+        cache_collection = chroma_client.get_cache_collection()
+        
+        restored_main_chunks = 0
+        restored_cache_entries = 0
+        restored_cache_chunks = 0
+        errors = []
+        
+        # 1. Khôi phục chunks trong ChromaDB main collection
+        if main_collection:
+            for chunk_id in chunk_ids:
+                try:
+                    # Lấy metadata hiện tại
+                    existing_chunk = main_collection.get(
+                        ids=[chunk_id],
+                        include=["metadatas"]
+                    )
+                    
+                    if existing_chunk and existing_chunk["ids"]:
+                        current_metadata = existing_chunk["metadatas"][0].copy()
+                        
+                        # Khôi phục validity status
+                        current_metadata["validity_status"] = "valid"
+                        current_metadata["restored_at"] = datetime.now().isoformat()
+                        current_metadata["restoration_reason"] = restore_reason
+                        
+                        # Xóa thông tin invalidation
+                        current_metadata.pop("invalidated_at", None)
+                        current_metadata.pop("invalidation_reason", None)
+                        current_metadata.pop("invalidated_by", None)
+                        
+                        main_collection.update(
+                            ids=[chunk_id],
+                            metadatas=[current_metadata]
+                        )
+                        restored_main_chunks += 1
+                        print(f"✓ Khôi phục chunk {chunk_id} trong main collection")
+                    else:
+                        print(f"⚠️ Không tìm thấy chunk {chunk_id} trong main collection")
+                
+                except Exception as e:
+                    error_msg = f"Lỗi khôi phục main collection cho {chunk_id}: {str(e)}"
+                    print(error_msg)
+                    errors.append(error_msg)
+        
+        # 2. Khôi phục cache entries trong MongoDB
+        for chunk_id in chunk_ids:
+            try:
+                if restore_all_related:
+                    # Khôi phục tất cả cache entries có chứa chunk này
+                    result = db.text_cache.update_many(
+                        {"relevantDocuments.chunkId": chunk_id},
+                        {
+                            "$set": {
+                                "validityStatus": "valid",
+                                "restoredAt": datetime.now(),
+                                "restorationReason": restore_reason
+                            },
+                            "$unset": {
+                                "invalidatedAt": "",
+                                "invalidationReason": "",
+                                "invalidatedBy": ""
+                            }
+                        }
+                    )
+                    restored_cache_entries += result.modified_count
+                    print(f"✓ Khôi phục {result.modified_count} cache entries cho chunk {chunk_id}")
+                else:
+                    # Chỉ khôi phục cache entries bị vô hiệu hóa do cùng một lý do
+                    result = db.text_cache.update_many(
+                        {
+                            "relevantDocuments.chunkId": chunk_id,
+                            "validityStatus": "invalid"
+                        },
+                        {
+                            "$set": {
+                                "validityStatus": "valid",
+                                "restoredAt": datetime.now(),
+                                "restorationReason": restore_reason
+                            },
+                            "$unset": {
+                                "invalidatedAt": "",
+                                "invalidationReason": "",
+                                "invalidatedBy": ""
+                            }
+                        }
+                    )
+                    restored_cache_entries += result.modified_count
+                    print(f"✓ Khôi phục {result.modified_count} cache entries cho chunk {chunk_id}")
+            
+            except Exception as e:
+                error_msg = f"Lỗi khôi phục cache entries cho {chunk_id}: {str(e)}"
+                print(error_msg)
+                errors.append(error_msg)
+        
+        # 3. Khôi phục ChromaDB cache collection
+        if cache_collection:
+            for chunk_id in chunk_ids:
+                try:
+                    # Tìm cache IDs liên quan đến chunk này
+                    related_caches = list(db.text_cache.find(
+                        {"relevantDocuments.chunkId": chunk_id},
+                        {"cacheId": 1}
+                    ))
+                    
+                    for cache in related_caches:
+                        cache_id = cache["cacheId"]
+                        try:
+                            existing_cache = cache_collection.get(
+                                ids=[cache_id],
+                                include=["metadatas"]
+                            )
+                            
+                            if existing_cache and existing_cache["ids"]:
+                                new_metadata = existing_cache["metadatas"][0].copy()
+                                new_metadata["validityStatus"] = "valid"
+                                new_metadata["restoredAt"] = datetime.now().isoformat()
+                                new_metadata["restorationReason"] = restore_reason
+                                
+                                # Xóa thông tin invalidation
+                                new_metadata.pop("invalidatedAt", None)
+                                new_metadata.pop("invalidationReason", None)
+                                new_metadata.pop("invalidatedBy", None)
+                                
+                                cache_collection.update(
+                                    ids=[cache_id],
+                                    metadatas=[new_metadata]
+                                )
+                                restored_cache_chunks += 1
+                        
+                        except Exception as e:
+                            error_msg = f"Lỗi khôi phục ChromaDB cache {cache_id}: {str(e)}"
+                            print(error_msg)
+                            errors.append(error_msg)
+                
+                except Exception as e:
+                    error_msg = f"Lỗi xử lý ChromaDB cache cho chunk {chunk_id}: {str(e)}"
+                    print(error_msg)
+                    errors.append(error_msg)
+        
+        # Log activity
+        log_admin_activity(ActivityType.CACHE_INVALIDATE,
+                          f"Khôi phục chunks: {len(chunk_ids)} chunks, {restored_cache_entries} cache entries, {restored_main_chunks} main chunks",
+                          {
+                              "chunk_ids": chunk_ids,
+                              "reason": restore_reason,
+                              "restore_all_related": restore_all_related,
+                              "restored_main_chunks": restored_main_chunks,
+                              "restored_cache_entries": restored_cache_entries,
+                              "restored_cache_chunks": restored_cache_chunks,
+                              "errors": errors,
+                              "action": "restore_chunks_admin"
+                          })
+        
+        success_message = f"Đã khôi phục thành công {len(chunk_ids)} chunks"
+        if errors:
+            success_message += f" (có {len(errors)} lỗi)"
+        
+        print(f"Hoàn thành khôi phục chunks:")
+        print(f"  - Main chunks: {restored_main_chunks}")
+        print(f"  - Cache entries: {restored_cache_entries}")
+        print(f"  - Cache chunks: {restored_cache_chunks}")
+        print(f"  - Lỗi: {len(errors)}")
+        
+        return {
+            "message": success_message,
+            "restored_main_chunks": restored_main_chunks,
+            "restored_cache_entries": restored_cache_entries,
+            "restored_cache_chunks": restored_cache_chunks,
+            "total_processed": len(chunk_ids),
+            "errors": errors,
+            "reason": restore_reason
+        }
+        
+    except Exception as e:
+        handle_error("restore_chunks", e)
+
+@router.get("/chunks-by-document/{doc_id}")
+async def get_chunks_by_document_with_status(doc_id: str):
+    """Lấy tất cả chunks của một document với trạng thái validity"""
+    try:
+        main_collection = chroma_client.get_main_collection()
+        db = mongodb_client.get_database()
+        
+        if not main_collection:
+            raise HTTPException(status_code=500, detail="Không thể kết nối ChromaDB")
+        
+        # Lấy tất cả chunks của document
+        results = main_collection.get(
+            where={"doc_id": doc_id},
+            include=["documents", "metadatas"]
+        )
+        
+        chunks = []
+        if results and results.get("ids"):
+            for i, chunk_id in enumerate(results["ids"]):
+                metadata = results["metadatas"][i] if i < len(results["metadatas"]) else {}
+                document = results["documents"][i] if i < len(results["documents"]) else ""
+                
+                # Loại bỏ prefix "passage: "
+                if document.startswith("passage: "):
+                    document = document[9:]
+                
+                # Đếm cache entries liên quan
+                related_cache_count = db.text_cache.count_documents({
+                    "relevantDocuments.chunkId": chunk_id
+                })
+                
+                invalid_cache_count = db.text_cache.count_documents({
+                    "relevantDocuments.chunkId": chunk_id,
+                    "validityStatus": "invalid"
+                })
+                
+                chunk_info = {
+                    "chunk_id": chunk_id,
+                    "content_summary": metadata.get("content_summary", ""),
+                    "chunk_type": metadata.get("chunk_type", ""),
+                    "chunk_index": metadata.get("chunk_index", ""),
+                    "effective_date": metadata.get("effective_date", ""),
+                    "validity_status": metadata.get("validity_status", "valid"),
+                    "invalidated_at": metadata.get("invalidated_at", ""),
+                    "invalidation_reason": metadata.get("invalidation_reason", ""),
+                    "invalidated_by": metadata.get("invalidated_by", ""),
+                    "restored_at": metadata.get("restored_at", ""),
+                    "restoration_reason": metadata.get("restoration_reason", ""),
+                    "related_cache_count": related_cache_count,
+                    "invalid_cache_count": invalid_cache_count,
+                    "content_preview": document[:200] + "..." if len(document) > 200 else document
+                }
+                chunks.append(chunk_info)
+        
+        # Sắp xếp theo chunk_index
+        chunks.sort(key=lambda x: int(x.get("chunk_index", 0)) if str(x.get("chunk_index", "")).isdigit() else 999)
+        
+        return {
+            "doc_id": doc_id,
+            "chunks": chunks,
+            "total_chunks": len(chunks),
+            "valid_chunks": len([c for c in chunks if c["validity_status"] == "valid"]),
+            "invalid_chunks": len([c for c in chunks if c["validity_status"] == "invalid"])
+        }
+        
+    except Exception as e:
+        handle_error("get_chunks_by_document_with_status", e)

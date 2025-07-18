@@ -1,0 +1,7 @@
+Điều 1. Ban hành kèm theo Quyết định này “Kế hoạch triển khai thực hiện Thông tư số 09/2013/TT-BXD ngày 01 tháng 7 năm 2013 của Bộ Xây dựng hướng dẫn thực hiện Quyết định số 22/2013/QĐ-TTg ngày 26 tháng 4 năm 2013 của Thủ tướng Chính phủ về hỗ trợ người có công với cách mạng về nhà ở” trên địa bàn Thành phố Hồ Chí Minh.
+
+Điều 2. Quyết định này có hiệu lực kể từ ngày ký.
+
+Điều 3. Chánh Văn phòng Ủy ban nhân dân Thành phố, Giám đốc Sở Lao động - Thương binh và Xã hội, Giám đốc Sở Xây dựng, Giám đốc Sở Tài chính, Giám đốc Sở Kế hoạch và Đầu tư, Chủ tịch Ủy ban nhân dân các quận, huyện, Chủ tịch Ủy ban Mặt trận Tổ quốc Việt Nam Thành phố Hồ Chí Minh và các tổ chức, cá nhân liên quan có trách nhiệm thi hành Quyết định này./.
+
+| Nơi nhận: - Như Điều 3; - T hủ tướ ng C h í nh ph ủ ; - B ộ X â y d ự n g ; B ộ T à i c h í nh; - B ộ L a o đ ộ n g - T h ươ n g b i nh v à Xã h ộ i; - T h ườ ng t r ự c T h à nh ủ y ; - T T U B : C T , c á c P C T ; - C á c S ở - n g à nh T h à nh ph ố ; - T h à nh đ o à n T N C S Hồ C hí M i nh; - Hội L iên h i ệ p P hụ nữ T P ; - Hội Cự u C h i ế n b i nh T h à nh p h ố ; - V P U B : C á c P V P ; C á c P hòng C V; - L ư u : V T , ( Đ T M T /C h g ) H. | KT. CHỦ TỊ CH P HÓ CHỦ T Ị CH Ngu y ễn Hữu Tín |

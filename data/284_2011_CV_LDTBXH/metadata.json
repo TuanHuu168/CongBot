@@ -1,0 +1,47 @@
+{
+  "doc_id": "284_2011_CV_LDTBXH",
+  "doc_type": "Công văn",
+  "doc_title": "V/v Giải quyết chế độ ưu đãi trong giáo dục đào tạo đối với người có công với cách mạng và con của họ",
+  "issue_date": "26-01-2011",
+  "effective_date": "26-01-2011",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "284_2011_CV_LDTBXH_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/284_2011_CV_LDTBXH/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn 284/LĐTBXH-NCC về việc giải quyết chế độ ưu đãi trong giáo dục đào tạo, bao gồm tiêu đề, thông tin ban hành và nơi nhận."
+    },
+    {
+      "chunk_id": "284_2011_CV_LDTBXH_main_content",
+      "chunk_type": "article",
+      "file_path": "/data/284_2011_CV_LDTBXH/chunk_2.md",
+      "content_summary": "Nội dung hướng dẫn giải quyết chế độ ưu đãi giáo dục đào tạo đối với người có công và con của họ, cụ thể hóa các quy định của Thông tư liên tịch số 29/2010/TTLT-BGDĐT-BTC-BLĐTBXH và tham chiếu Thông tư liên tịch số 16/2006/TTLT/BLĐTBXH-BGD-ĐT-BTC."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "29_2010_TTLT_BGDDT_BTC_BLDTBXH",
+      "relationship": "implements",
+      "description": "Công văn này hướng dẫn việc thực hiện chế độ ưu đãi giáo dục đào tạo theo quy định của Thông tư liên tịch này."
+    },
+    {
+      "doc_id": "49_2010_ND_CP",
+      "relationship": "references",
+      "description": "Nghị định này được Thông tư liên tịch số 29/2010/TTLT-BGDĐT-BTC-BLĐTBXH hướng dẫn thực hiện, và Công văn này là cấp hướng dẫn tiếp theo."
+    },
+    {
+      "doc_id": "16_2006_TTLT_BLDTBXH_BGDDT_BTC",
+      "relationship": "references",
+      "description": "Các nội dung khác liên quan đến ưu đãi giáo dục và đào tạo đối với người có công với cách mạng và con của họ vẫn được thực hiện theo quy định của Thông tư liên tịch này."
+    }
+  ]
+}

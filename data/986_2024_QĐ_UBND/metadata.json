@@ -1,0 +1,68 @@
+{
+  "doc_id": "986_2024_QĐ_UBND",
+  "doc_type": "Quyết định",
+  "doc_title": "BAN HÀNH KẾ HOẠCH THỜI GIAN NĂM HỌC 2024-2025 ĐỐI VỚI GIÁO DỤC MẦM NON, GIÁO DỤC PHỔ THÔNG VÀ GIÁO DỤC THƯỜNG XUYÊN ÁP DỤNG TRÊN ĐỊA BÀN TỈNH TUYÊN QUANG",
+  "issue_date": "13-08-2024",
+  "effective_date": "13-08-2024",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Local",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": [],
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "986_2024_QĐ_UBND_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/986_2024_QĐ_UBND/chunk_1.md",
+      "content_summary": "Phần mở đầu của Quyết định, bao gồm tiêu đề, thông tin ban hành, và các căn cứ pháp lý để ban hành Quyết định về kế hoạch thời gian năm học 2024-2025 áp dụng trên địa bàn tỉnh Tuyên Quang."
+    },
+    {
+      "chunk_id": "986_2024_QĐ_UBND_art1",
+      "chunk_type": "article",
+      "file_path": "/data/986_2024_QĐ_UBND/chunk_2.md",
+      "content_summary": "Điều 1 quy định chi tiết Kế hoạch thời gian năm học 2024-2025 cho giáo dục mầm non, phổ thông và thường xuyên trên địa bàn tỉnh Tuyên Quang, bao gồm lịch tựu trường, khai giảng, thời gian học tập, xét công nhận, tuyển sinh, các kỳ thi và ngày nghỉ lễ."
+    },
+    {
+      "chunk_id": "986_2024_QĐ_UBND_art2_3",
+      "chunk_type": "article",
+      "file_path": "/data/986_2024_QĐ_UBND/chunk_3.md",
+      "content_summary": "Điều 2 và Điều 3 quy định trách nhiệm của Sở Giáo dục và Đào tạo cùng các cơ quan, đơn vị liên quan trong việc chỉ đạo và tổ chức thực hiện kế hoạch thời gian năm học; đồng thời quy định hiệu lực thi hành của Quyết định."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "Luật_Tổ_chức_chính_quyền_địa_phương_2015_QH",
+      "relationship": "references",
+      "description": "Căn cứ pháp lý để ban hành Quyết định."
+    },
+    {
+      "doc_id": "Luật_sửa_đổi_bổ_sung_Luật_Tổ_chức_CP_CQĐP_2019_QH",
+      "relationship": "references",
+      "description": "Căn cứ pháp lý để ban hành Quyết định."
+    },
+    {
+      "doc_id": "Luật_Giáo_dục_2019_QH",
+      "relationship": "references",
+      "description": "Căn cứ pháp lý để ban hành Quyết định."
+    },
+    {
+      "doc_id": "2045_2024_QĐ_BGDĐT",
+      "relationship": "references",
+      "description": "Căn cứ pháp lý để ban hành Quyết định, đây là quyết định ban hành khung kế hoạch thời gian năm học cấp quốc gia mà Quyết định này của tỉnh Tuyên Quang cụ thể hóa."
+    },
+    {
+      "doc_id": "Luật_Giáo_dục_2019_QH",
+      "relationship": "implements",
+      "description": "Quyết định này cụ thể hóa và hướng dẫn thi hành các quy định của Luật Giáo dục năm 2019 liên quan đến kế hoạch thời gian năm học."
+    },
+    {
+      "doc_id": "2045_2024_QĐ_BGDĐT",
+      "relationship": "implements",
+      "description": "Quyết định này ban hành kế hoạch thời gian năm học cho tỉnh Tuyên Quang dựa trên khung kế hoạch thời gian năm học do Bộ Giáo dục và Đào tạo ban hành."
+    }
+  ]
+}

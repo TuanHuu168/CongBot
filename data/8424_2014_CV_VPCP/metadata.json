@@ -1,0 +1,52 @@
+{
+  "doc_id": "8424_2014_CV_VPCP",
+  "doc_type": "Công văn",
+  "doc_title": "V/v trợ cấp một lần đối với người có thành tích tham gia kháng chiến",
+  "issue_date": "27-10-2014",
+  "effective_date": "27-10-2014",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "8424_2014_CV_VPCP_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/8424_2014_CV_VPCP/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn, bao gồm tiêu đề, thông tin ban hành, và đối tượng nhận Công văn."
+    },
+    {
+      "chunk_id": "8424_2014_CV_VPCP_article1",
+      "chunk_type": "article",
+      "file_path": "/data/8424_2014_CV_VPCP/chunk_2.md",
+      "content_summary": "Nội dung chính của Công văn, đưa ra ý kiến chỉ đạo của Phó Thủ tướng về việc rà soát đối tượng và quy định mức trợ cấp một lần."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "5969_2014_CV_UBND",
+      "relationship": "references",
+      "description": "Công văn số 5969/UBND-TM ngày 19 tháng 8 năm 2014 của Ủy ban nhân dân tỉnh Nghệ An về đề nghị bổ sung kinh phí."
+    },
+    {
+      "doc_id": "3418_2014_CV_BLĐTBXH",
+      "relationship": "references",
+      "description": "Công văn số 3418/LĐTBXH-NCC ngày 17 tháng 9 năm 2014 của Bộ Lao động - Thương binh và Xã hội."
+    },
+    {
+      "doc_id": "13365_2014_CV_BTC",
+      "relationship": "references",
+      "description": "Công văn số 13365/BTC-NSNN ngày 23 tháng 9 năm 2014 của Bộ Tài chính."
+    },
+    {
+      "doc_id": "2211_2014_CV_BTĐKT",
+      "relationship": "references",
+      "description": "Công văn số 2211/BTĐKT-VIII ngày 12 tháng 9 năm 2014 của Ban Thi đua - Khen thưởng Trung ương."
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "doc_id": "1414_2013_CV_TCT",
+  "doc_type": "Công văn",
+  "doc_title": "V/v hỗ trợ người có công với cách mạng cải thiện nhà ở",
+  "issue_date": "04-05-2013",
+  "effective_date": "04-05-2013",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": [],
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "1414_2013_CV_TCT_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/1414_2013_CV_TCT/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn 1414/TCT-CS, bao gồm tiêu đề, thông tin ban hành từ Bộ Tài chính - Tổng cục Thuế gửi Cục Thuế tỉnh Hà Tĩnh, và mục đích trả lời công văn về chính sách hỗ trợ tiền sử dụng đất."
+    },
+    {
+      "chunk_id": "1414_2013_CV_TCT_content_1",
+      "chunk_type": "content",
+      "file_path": "/data/1414_2013_CV_TCT/chunk_2.md",
+      "content_summary": "Trích dẫn khoản 5, Điều 2 Nghị định số 120/2010/NĐ-CP của Chính phủ quy định về việc thực hiện miễn, giảm tiền sử dụng đất trực tiếp cho đối tượng được miễn, giảm và cách tính."
+    },
+    {
+      "chunk_id": "1414_2013_CV_TCT_content_2",
+      "chunk_type": "content",
+      "file_path": "/data/1414_2013_CV_TCT/chunk_3.md",
+      "content_summary": "Trích dẫn khoản 1, khoản 2, Điều 1 Quyết định số 117/2007/QĐ-TTg (sửa đổi, bổ sung một số điều của Quyết định số 118/TTg và Điều 3 Quyết định số 20/2000/QĐ-TTg) quy định về đối tượng được hỗ trợ cải thiện nhà ở và các mức hỗ trợ tiền sử dụng đất cụ thể."
+    },
+    {
+      "chunk_id": "1414_2013_CV_TCT_content_3",
+      "chunk_type": "content",
+      "file_path": "/data/1414_2013_CV_TCT/chunk_4.md",
+      "content_summary": "Phần kết luận của Công văn, trích dẫn quy định tại khoản 7, Điều 2 Quyết định 118/TTg về hỗ trợ thân nhân người có công, đồng thời đưa ra ý kiến của Tổng cục Thuế về việc áp dụng chính sách và hướng dẫn giải quyết trường hợp hộ nghèo."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "120_2010_ND_CP",
+      "relationship": "references",
+      "description": "Nghị định số 120/2010/NĐ-CP ngày 30/12/2010 của Chính phủ quy định về việc miễn, giảm tiền sử dụng đất khi nhà nước giao đất, cho phép chuyển mục đích sử dụng đất."
+    },
+    {
+      "doc_id": "44_2008_ND_CP",
+      "relationship": "references",
+      "description": "Nghị định số 44/2008/NĐ-CP ngày 09 tháng 4 năm 2008 của Chính phủ, được tham chiếu trong Nghị định 120/2010/NĐ-CP liên quan đến miễn, giảm tiền sử dụng đất."
+    },
+    {
+      "doc_id": "117_2007_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 117/2007/QĐ-TTg ngày 27/7/2007 của Thủ tướng Chính phủ, sửa đổi, bổ sung một số điều của Quyết định số 118/TTg và Điều 3 Quyết định số 20/2000/QĐ-TTg về hỗ trợ người có công với cách mạng cải thiện nhà ở."
+    },
+    {
+      "doc_id": "118_1996_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 118/TTg ngày 27/02/1996 của Thủ tướng Chính phủ về việc hỗ trợ người có công với cách mạng cải thiện nhà ở, được sửa đổi, bổ sung bởi Quyết định số 117/2007/QĐ-TTg."
+    },
+    {
+      "doc_id": "20_2000_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 20/2000/QĐ-TTg ngày 03/02/2000 của Thủ tướng Chính phủ về việc hỗ trợ người hoạt động cách mạng từ trước Cách mạng tháng Tám năm 1945 cải thiện nhà, được sửa đổi, bổ sung bởi Quyết định số 117/2007/QĐ-TTg (Điều 3)."
+    },
+    {
+      "doc_id": "198_2004_ND_CP",
+      "relationship": "references",
+      "description": "Nghị định số 198/2004/NĐ-CP, được tham chiếu liên quan đến việc giải quyết giảm tiền sử dụng đất theo diện hộ nghèo."
+    }
+  ]
+}

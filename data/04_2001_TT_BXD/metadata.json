@@ -1,0 +1,69 @@
+{
+  "doc_id": "04_2001_TT_BXD",
+  "doc_type": "Thông tư",
+  "doc_title": "THÔNG TƯ CỦA BỘ XÂY DỰNG SỐ 04/2001/TT-BXD NGÀY 20 THÁNG 8 NĂM 2001 HƯỚNG DẪN BỔ SUNG VIỆC HỖ TRỢ NGƯỜI THAM GIA HOẠT ĐỘNG CÁCH MẠNG TỪ 31 THÁNG 12 NĂM 1944 VỀ TRƯỚC CẢI THIỆN NHÀ Ở THEO QUYẾT ĐỊNH SỐ 20/2000/QĐ-TTG NGÀY 3/2/2000 CỦA THỦ TƯỚNG CHÍNH PHỦ",
+  "issue_date": "20-08-2001",
+  "effective_date": "20-08-2001",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "04_2001_TT_BXD_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/04_2001_TT_BXD/chunk_1.md",
+      "content_summary": "Phần mở đầu của Thông tư số 04/2001/TT-BXD, bao gồm tiêu đề, thông tin ban hành, và các căn cứ pháp lý cho việc ban hành Thông tư hướng dẫn bổ sung hỗ trợ cải thiện nhà ở cho người hoạt động cách mạng trước năm 1945."
+    },
+    {
+      "chunk_id": "04_2001_TT_BXD_secI",
+      "chunk_type": "article",
+      "file_path": "/data/04_2001_TT_BXD/chunk_2.md",
+      "content_summary": "Nội dung hướng dẫn bổ sung về đối tượng được hỗ trợ cải thiện nhà ở, bao gồm người được công nhận tham gia hoạt động cách mạng và người đang hưởng chế độ trợ cấp ưu đãi nhưng chưa có quyết định công nhận chính thức."
+    },
+    {
+      "chunk_id": "04_2001_TT_BXD_secII_1",
+      "chunk_type": "article",
+      "file_path": "/data/04_2001_TT_BXD/chunk_3.md",
+      "content_summary": "Hướng dẫn cụ thể về việc hỗ trợ cải thiện nhà ở cho các trường hợp đặc biệt, bao gồm hộ gia đình có cả vợ và chồng cùng tham gia hoạt động cách mạng và các hình thức hỗ trợ khác nhau tùy thuộc vào loại hình nhà ở đang thuê."
+    },
+    {
+      "chunk_id": "04_2001_TT_BXD_secII_2",
+      "chunk_type": "article",
+      "file_path": "/data/04_2001_TT_BXD/chunk_4.md",
+      "content_summary": "Tiếp tục hướng dẫn chi tiết các trường hợp được hỗ trợ cải thiện nhà ở, bao gồm người đã mua nhà hóa giá, người chuyển cư, người đã chuyển nhượng hợp đồng thuê nhà, và quy định về xử lý vướng mắc trong quá trình thực hiện Thông tư."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "20_2000_QĐ_TTg",
+      "relationship": "implements",
+      "description": "Quyết định của Thủ tướng Chính phủ về việc hỗ trợ người hoạt động cách mạng từ trước Cách mạng tháng 8 năm 1945 cải thiện nhà ở, là văn bản được Thông tư này hướng dẫn bổ sung."
+    },
+    {
+      "doc_id": "32_1960_TT_TCTW",
+      "relationship": "references",
+      "description": "Thông tư của Ban Tổ chức Trung ương hướng dẫn thi hành chính sách đối với cán bộ, Đảng viên hoạt động lâu năm, được tham chiếu để xác định đối tượng."
+    },
+    {
+      "doc_id": "03_1963_NV_BNV",
+      "relationship": "references",
+      "description": "Thông tư của Bộ Nội vụ hướng dẫn thi hành chế độ trợ cấp ưu đãi công nhân, viên chức Nhà nước có công lao, thành tích khi về hưu, được tham chiếu để xác định đối tượng."
+    },
+    {
+      "doc_id": "61_1994_NĐ_CP",
+      "relationship": "references",
+      "description": "Nghị định của Chính phủ, được tham chiếu để xác định mốc thời gian đối với việc mua nhà ở thuộc sở hữu nhà nước."
+    },
+    {
+      "doc_id": "05_2000_TT_BXD",
+      "relationship": "references",
+      "description": "Thông tư của Bộ Xây dựng, được tham chiếu để giải quyết việc hỗ trợ cải thiện nhà ở cho con của người được hưởng chế độ."
+    }
+  ]
+}

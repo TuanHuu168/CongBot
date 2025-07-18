@@ -1,0 +1,47 @@
+{
+  "doc_id": "2428_2013_CV_BXD",
+  "doc_type": "Công văn",
+  "doc_title": "V/v hỗ trợ người có công với cách mạng về nhà ở theo QĐ số 22/2013/QĐ-TTg",
+  "issue_date": "15-11-2013",
+  "effective_date": "15-11-2013",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "2428_2013_CV_BXD_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/2428_2013_CV_BXD/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn 2428/BXD-QLN, nêu rõ mục đích và căn cứ ban hành công văn là để hướng dẫn triển khai Quyết định 22/2013/QĐ-TTg và Thông tư 09/2013/TT-BXD về hỗ trợ nhà ở cho người có công với cách mạng."
+    },
+    {
+      "chunk_id": "2428_2013_CV_BXD_article_1",
+      "chunk_type": "article",
+      "file_path": "/data/2428_2013_CV_BXD/chunk_2.md",
+      "content_summary": "Phần nội dung chính của Công văn, đưa ra các đề nghị cụ thể về việc lập Đề án, ưu tiên sử dụng kinh phí hỗ trợ nhà ở và yêu cầu báo cáo định kỳ về tình hình thực hiện chính sách hỗ trợ người có công với cách mạng về nhà ở."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "22_2013_QD_TTg",
+      "relationship": "references",
+      "description": "Quyết định số 22/2013/QĐ-TTg ngày 26/4/2013 của Thủ tướng Chính phủ về hỗ trợ người có công với cách mạng về nhà ở, được Công văn này hướng dẫn thực hiện."
+    },
+    {
+      "doc_id": "09_2013_TT_BXD",
+      "relationship": "references",
+      "description": "Thông tư số 09/2013/TT-BXD ngày 01/7/2013 của Bộ Xây dựng hướng dẫn thực hiện Quyết định số 22/2013/QĐ-TTg, được Công văn này đề cập và làm rõ thêm."
+    },
+    {
+      "doc_id": "14774_2013_CV_BTC",
+      "relationship": "references",
+      "description": "Công văn số 14774/BTC-NSNN ngày 30/10/2013 của Bộ Tài chính về việc tạm cấp kinh phí hỗ trợ người có công với cách mạng về nhà ở, được Công văn này trích dẫn để hướng dẫn ưu tiên kinh phí."
+    }
+  ]
+}

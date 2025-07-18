@@ -1,0 +1,2 @@
+| Nơi nhận: - Như trên; - UBND các tỉnh Hưng Yên, Hòa Bình, Thanh Hóa, Quảng Trị, Ninh Thuận, Hậu Giang; - UBND thành phố Cần Thơ; - Bộ trưởng (để báo cáo); - Lưu: VT, Vụ KHTC. | KT. BỘ TRƯỞNG THỨ TRƯỞNG Lê Tấn Dũng |
+|---|

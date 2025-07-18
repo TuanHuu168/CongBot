@@ -1,0 +1,52 @@
+{
+  "doc_id": "2214_2013_CV_BXD",
+  "doc_type": "Công văn",
+  "doc_title": "Hỗ trợ người có công với cách mạng về nhà ở",
+  "issue_date": "23-10-2013",
+  "effective_date": "23-10-2013",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "2214_2013_CV_BXD_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/2214_2013_CV_BXD/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn, bao gồm tiêu đề, thông tin ban hành, cơ quan nhận và giới thiệu các văn bản pháp luật căn cứ về việc hỗ trợ nhà ở người có công với cách mạng."
+    },
+    {
+      "chunk_id": "2214_2013_CV_BXD_main_body",
+      "chunk_type": "article",
+      "file_path": "/data/2214_2013_CV_BXD/chunk_2.md",
+      "content_summary": "Mô tả tình hình chậm trễ trong việc báo cáo danh sách các hộ được hỗ trợ và đề nghị Bộ Tài chính, Bộ Kế hoạch và Đầu tư bố trí vốn để kịp thời triển khai chương trình hỗ trợ nhà ở cho người có công."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "22_2013_QD_TTg",
+      "relationship": "references",
+      "description": "Công văn này tham chiếu Quyết định số 22/2013/QĐ-TTg của Thủ tướng Chính phủ về việc hỗ trợ người có công với cách mạng về nhà ở."
+    },
+    {
+      "doc_id": "09_2013_TT_BXD",
+      "relationship": "references",
+      "description": "Công văn này tham chiếu Thông tư số 09/2013/TT-BXD của Bộ Xây dựng hướng dẫn thực hiện Quyết định số 22/2013/QĐ-TTg."
+    },
+    {
+      "doc_id": "09_2013_TT_BXD",
+      "relationship": "implements",
+      "description": "Thông tư số 09/2013/TT-BXD do Bộ Xây dựng ban hành nhằm hướng dẫn thực hiện Quyết định số 22/2013/QĐ-TTg."
+    },
+    {
+      "doc_id": "1983_2013_CV_BXD",
+      "relationship": "references",
+      "description": "Công văn này tham chiếu công văn số 1983/BXD-QLN ngày 23/9/2013 của Bộ Xây dựng về việc gửi danh sách báo cáo các tỉnh, thành phố."
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "doc_id": "5115_2018_CV_LĐTBXH-KHTC",
+  "doc_type": "Công văn",
+  "doc_title": "Công văn số 5115/LĐTBXH-KHTC v/v thí điểm thực hiện chi trả trợ cấp ưu đãi người có công với cách mạng qua hệ thống Bưu điện",
+  "issue_date": "03-12-2018",
+  "effective_date": "01-01-2019",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "5115_2018_CV_LĐTBXH-KHTC_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/5115_2018_CV_LĐTBXH-KHTC/chunk_1.md",
+      "content_summary": "Phần mở đầu công văn bao gồm tiêu đề, thông tin ban hành, cơ quan ban hành, ngày ban hành và danh sách các cơ quan nhận công văn."
+    },
+    {
+      "chunk_id": "5115_2018_CV_LĐTBXH-KHTC_art1",
+      "chunk_type": "article",
+      "file_path": "/data/5115_2018_CV_LĐTBXH-KHTC/chunk_2.md",
+      "content_summary": "Nội dung chính của công văn về việc mở rộng thí điểm chi trả trợ cấp ưu đãi người có công với cách mạng qua Bưu điện tại 07 địa phương từ ngày 01/01/2019, cùng với trách nhiệm của Sở Lao động - Thương binh và Xã hội các tỉnh, thành phố trong việc phối hợp, kiểm tra, hướng dẫn và thanh quyết toán."
+    },
+    {
+      "chunk_id": "5115_2018_CV_LĐTBXH-KHTC_appendix",
+      "chunk_type": "appendix",
+      "file_path": "/data/5115_2018_CV_LĐTBXH-KHTC/chunk_3.md",
+      "content_summary": "Phần cuối công văn bao gồm thông tin về nơi nhận và chữ ký của người có thẩm quyền ban hành."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "3395_2018_CV_LĐTBXH-KHTC",
+      "relationship": "references",
+      "description": "Công văn số 3395/LĐTBXH-KHTC ngày 16/8/2018 của Bộ Lao động - Thương binh và Xã hội về việc chấp thuận chủ trương tiếp tục mở rộng thí điểm chi trả trợ cấp ưu đãi người có công với cách mạng qua Bưu điện."
+    },
+    {
+      "doc_id": "4736_2018_CV_BĐVN-TCBC",
+      "relationship": "references",
+      "description": "Công văn số 4736/BĐVN-TCBC ngày 20/10/2018 của Tổng công ty Bưu điện Việt Nam về việc khắc phục các tồn tại trong công tác chi trả trợ cấp ưu đãi người."
+    }
+  ]
+}

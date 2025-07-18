@@ -1,0 +1,15 @@
+2. Quy trình, trách nhiệm giải quyết chế độ hỗ trợ
+
+a) Đối tượng quy định tại khoản 1, 2, 3 và 4 Điều 2 Nghị định này không ủy quyền cho thân nhân ở trong nước lập hồ sơ, nhận chế độ hỗ trợ:
+
+Đối tượng hoặc thân nhân đối tượng (đối với đối tượng từ trần) nộp trực tiếp hoặc qua đường bưu điện 01 bộ hồ sơ theo quy định tại khoản 1 hoặc khoản 2 hoặc khoản 3 Điều 6 Nghị định này cho Cơ quan đại diện ngoại giao hoặc Cơ quan đại diện lãnh sự Việt Nam ở nước ngoài nơi đối tượng cư trú.
+
+Trường hợp, nước sở tại có tổ chức Hội Cựu chiến binh hoặc Hội người Việt Nam ở nước ngoài (gọi chung là tổ chức hội) được Cơ quan đại diện ngoại giao hoặc Cơ quan đại diện lãnh sự của Việt Nam ghi nhận thì đối tượng hoặc thân nhân đối tượng nộp hồ sơ cho tổ chức hội nêu trên ở nơi cư trú. Tổ chức hội tiếp nhận, tổng hợp chuyển hồ sơ (kèm theo danh sách đối tượng) về Cơ quan đại diện ngoại giao hoặc Cơ quan đại diện lãnh sự của Việt Nam ở nước ngoài;
+
+Cơ quan đại diện lãnh sự của Việt Nam có trách nhiệm tiếp nhận hồ sơ do đối tượng hoặc thân nhân đối tượng hoặc tổ chức hội chuyển đến, tổ chức rà soát, tổng hợp, chuyển hồ sơ (kèm theo danh sách đối tượng) về Cơ quan đại diện ngoại giao Việt Nam ở nước ngoài;
+
+Cơ quan đại diện ngoại giao ở nước ngoài, có trách nhiệm chỉ đạo cơ quan chức năng thuộc quyền tiếp nhận hồ sơ của đối tượng hoặc thân nhân đối tượng hoặc do Cơ quan đại diện lãnh sự hoặc tổ chức hội chuyển đến (sau đây gọi chung là tổ chức và cá nhân).
+
+Trong thời gian 20 ngày làm việc, kể từ ngày nhận đủ hồ sơ hợp lệ của tổ chức và cá nhân chuyển đến (theo từng đợt), hoàn thành việc tổng hợp, rà soát phân loại hồ sơ đối tượng đề nghị hưởng chế độ hỗ trợ theo nhóm đối tượng và địa bàn cư trú trước khi đi định cư ở nước ngoài hoặc trước khi hoạch định biên giới Quốc gia; lập danh sách theo Mẫu số 3 hoặc Mẫu số 3A, công văn đề nghị giải quyết chế độ hỗ trợ theo Mẫu số 2 tại Phụ lục II ban hành kèm theo Nghị định này; chuyển hồ sơ của đối tượng hoặc thân nhân đối tượng (bao gồm cả danh sách và công văn đề nghị) về Ủy ban nhân dân cấp tỉnh nơi trực tiếp quản lý đối tượng trước khi đi định cư ở nước ngoài (qua Sở Lao động - Thương binh và Xã hội) hoặc về Bộ Quốc phòng qua Cục Chính sách, Tổng cục Chính trị Quân đội nhân dân Việt Nam (sau đây được viết tắt là Cục Chính sách, Tổng cục Chính trị) theo thẩm quyền giải quyết chế độ hỗ trợ quy định tại khoản 1 Điều này;
+
+Bộ Quốc phòng, Ủy ban nhân dân cấp tỉnh có trách nhiệm chỉ đạo cơ quan, đơn vị thuộc quyền tiếp nhận hồ sơ do Cơ quan đại diện ngoại giao của Việt Nam ở nước ngoài chuyển đến. Theo từng đợt, trong thời gian 20 ngày làm việc, kể từ ngày nhận đủ hồ sơ hợp lệ, hoàn thành việc xét duyệt, thẩm định ra quyết định hỗ trợ theo Mẫu số 4 (kèm theo danh sách đối tượng Mẫu 3B hoặc Mẫu 3C) và ký "Giấy chứng nhận" theo Mẫu số 6 tại Phụ lục II ban hành kèm theo Nghị định này đối với các đối tượng thuộc thẩm quyền giải quyết quy định tại khoản 1 Điều này.

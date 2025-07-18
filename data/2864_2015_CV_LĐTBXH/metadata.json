@@ -1,0 +1,42 @@
+{
+  "doc_id": "2864_2015_CV_LĐTBXH",
+  "doc_type": "Công văn",
+  "doc_title": "V/v giải quyết các chế độ chính sách cho những trường hợp từ trần hoặc bị thương trong lúc thực hiện nghĩa vụ lao động tại các Đoàn xây dựng kinh tế",
+  "issue_date": "22-07-2015",
+  "effective_date": "22-07-2015",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "2864_2015_CV_LĐTBXH_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/2864_2015_CV_LĐTBXH/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn, bao gồm tiêu đề, thông tin ban hành, ngày tháng, và nêu rõ mục đích trả lời Công văn của Ủy ban nhân dân tỉnh Long An."
+    },
+    {
+      "chunk_id": "2864_2015_CV_LĐTBXH_content",
+      "chunk_type": "article",
+      "file_path": "/data/2864_2015_CV_LĐTBXH/chunk_2.md",
+      "content_summary": "Giải đáp của Bộ Lao động - Thương binh và Xã hội về việc giải quyết chính sách cho quân nhân từ trần hoặc bị thương trong lúc thực hiện nghĩa vụ lao động tại các Đoàn Xây dựng kinh tế, khẳng định không có cơ sở xác nhận liệt sĩ hoặc thương binh A trong các trường hợp này dựa trên quy định hiện hành và ý kiến của Bộ Quốc phòng."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "1879_2015_CV_UBND_LA",
+      "relationship": "references",
+      "description": "Công văn số 1879/UBND-VX ngày 27/05/2015 của Ủy ban nhân dân tỉnh Long An về việc giải quyết chính sách đối với quân nhân từ trần hoặc bị thương trong lúc thực hiện nghĩa vụ lao động tại các Đoàn Xây dựng kinh tế, được Công văn này trả lời."
+    },
+    {
+      "doc_id": "4966_2015_CV_BQP",
+      "relationship": "references",
+      "description": "Công văn số 4966/BQP-CT ngày 12/6/2015 của Bộ Quốc phòng trả lời Ủy ban nhân dân tỉnh Long An về chính sách đối với quân nhân tham gia lao động sản xuất, xây dựng kinh tế, được tham chiếu trong Công văn này."
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+Điều 5. Chế độ trợ cấp một lần và chế độ bảo hiểm y tế, mai táng phí
+
+1. Đối tượng quy định tại Điểm a, Điểm c và Điểm d Khoản 1 Điều 2 Nghị định này đã từ trần trước ngày 01 tháng 01 năm 2012, bao gồm cả đối tượng từ trần khi đang tại ngũ hoặc đang công tác thì một trong những thân nhân sau đây của đối tượng được hưởng chế độ trợ cấp một lần bằng 3.600.000 đồng: vợ hoặc chồng; con đẻ, con nuôi; bố đẻ, mẹ đẻ hoặc người nuôi dưỡng hợp pháp.
+
+2. Đối tượng quy định tại Khoản 1 Điều 2 Nghị định này nếu chưa được hưởng chế độ bảo hiểm y tế thì được hưởng chế độ bảo hiểm y tế theo quy định của pháp luật về bảo hiểm y tế; khi từ trần, người lo mai táng được hưởng chế độ mai táng phí, thân nhân được hưởng trợ cấp tuất hàng tháng hoặc trợ cấp tuất một lần và các chế độ, chính sách khác như người hưởng lương hưu theo quy định hiện hành của pháp luật về bảo hiểm xã hội.

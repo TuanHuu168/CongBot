@@ -1,0 +1,42 @@
+{
+  "doc_id": "895_2013_CV_LĐTBXH",
+  "doc_type": "Công văn",
+  "doc_title": "V/v hướng dẫn giải quyết chế độ ưu đãi người có công",
+  "issue_date": "21-03-2013",
+  "effective_date": "21-03-2013",
+  "expiry_date": null,
+  "status": "active",
+  "document_scope": "Quốc gia",
+  "replaces": [],
+  "replaced_by": null,
+  "amends": null,
+  "amended_by": null,
+  "retroactive": false,
+  "retroactive_date": null,
+  "chunks": [
+    {
+      "chunk_id": "895_2013_CV_LĐTBXH_preamble",
+      "chunk_type": "preamble",
+      "file_path": "/data/895_2013_CV_LĐTBXH/chunk_1.md",
+      "content_summary": "Phần mở đầu của Công văn 895/LĐTBXH-NCC, giới thiệu bối cảnh ban hành Công văn dựa trên Pháp lệnh 04/2012/UBTVQH13 sửa đổi, bổ sung Pháp lệnh ưu đãi người có công với cách mạng và Tờ trình 77/TTr-LĐTBXH về dự thảo Nghị định hướng dẫn thi hành."
+    },
+    {
+      "chunk_id": "895_2013_CV_LĐTBXH_art1",
+      "chunk_type": "article",
+      "file_path": "/data/895_2013_CV_LĐTBXH/chunk_2.md",
+      "content_summary": "Nội dung chính của Công văn 895/LĐTBXH-NCC, hướng dẫn các Sở Lao động - Thương binh và Xã hội tiếp tục giải quyết chế độ ưu đãi người có công trong thời gian chờ Nghị định hướng dẫn mới, và xử lý các trường hợp đã được xác nhận bởi Bộ Quốc phòng, Bộ Công an."
+    }
+  ],
+  "related_documents": [
+    {
+      "doc_id": "04_2012_PL_UBTVQH13",
+      "relationship": "implements",
+      "description": "Công văn này cung cấp hướng dẫn tạm thời để thực hiện Pháp lệnh số 04/2012/UBTVQH13 sửa đổi, bổ sung một số điều của Pháp lệnh ưu đãi người có công với cách mạng, trước khi có Nghị định hướng dẫn chi tiết."
+    },
+    {
+      "doc_id": "77_2012_TTr_LĐTBXH",
+      "relationship": "references",
+      "description": "Tờ trình của Bộ Lao động - Thương binh và Xã hội gửi Chính phủ về dự thảo Nghị định quy định chi tiết, hướng dẫn thi hành Pháp lệnh ưu đãi người có công, được đề cập như bối cảnh ban hành Công văn này."
+    }
+  ]
+}

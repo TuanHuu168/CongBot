@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp, Shield, ShieldAlert, Info, Zap, Settings, PlayCircle, SkipForward } from 'lucide-react';
+import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle,RotateCcw, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp, Shield, ShieldAlert, Info, Zap, Settings, PlayCircle, SkipForward } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
 import { getApiBaseUrl } from '../../apiService';
+import RestoreChunksPanel from '../../components/admin/RestoreChunksPanel';
 import axios from 'axios';
-
 const DocumentsTab = ({
     documents,
     isLoading,
@@ -335,6 +335,7 @@ const DocumentsTab = ({
     };
 
     // Thực hiện vô hiệu hóa chunks
+    // Thực hiện vô hiệu hóa chunks
     const executeChunkInvalidation = async () => {
         if (chunksToInvalidate.length === 0) {
             Swal.fire({
@@ -346,51 +347,211 @@ const DocumentsTab = ({
             return;
         }
 
+        // Helper function để parse ngày DD-MM-YYYY
+        const parseDate = (dateStr) => {
+            if (!dateStr || dateStr === 'N/A' || dateStr === 'Không xác định') return new Date(0);
+
+            // Xử lý format DD-MM-YYYY
+            const parts = dateStr.trim().split('-');
+            if (parts.length !== 3) return new Date(0);
+
+            try {
+                const day = parseInt(parts[0]);
+                const month = parseInt(parts[1]) - 1; // Month is 0-indexed in JS
+                const year = parseInt(parts[2]);
+
+                if (isNaN(day) || isNaN(month) || isNaN(year)) return new Date(0);
+                if (day < 1 || day > 31 || month < 0 || month > 11 || year < 1900) return new Date(0);
+
+                return new Date(year, month, day);
+            } catch (error) {
+                console.error('Lỗi parse ngày:', dateStr, error);
+                return new Date(0);
+            }
+        };
+
+        const formatDateForDisplay = (dateStr) => {
+            if (!dateStr || dateStr === 'N/A') return 'Không xác định';
+            const date = parseDate(dateStr);
+            if (date.getTime() === 0) return 'Không hợp lệ';
+            return dateStr; // Giữ nguyên format DD-MM-YYYY
+        };
+
+        const compareDates = (date1Str, date2Str) => {
+            const date1 = parseDate(date1Str);
+            const date2 = parseDate(date2Str);
+
+            if (date1.getTime() === 0 || date2.getTime() === 0) {
+                return null; // Không thể so sánh
+            }
+
+            return date1.getTime() - date2.getTime();
+        };
+
+        // Kiểm tra logic thời gian
+        const currentDocEffectiveDate = currentProcessingDoc?.metadata?.effective_date;
+        const currentDocId = currentProcessingDoc?.metadata?.doc_id || currentProcessingDoc?.doc_id;
+        const invalidChunksWithWrongDate = [];
+
+        console.log('Validation thời gian:');
+        console.log(`Document hiện tại: ${currentDocId} (${currentDocEffectiveDate})`);
+
+        for (const chunk of chunksToInvalidate) {
+            const chunkEffectiveDate = chunk.effective_date;
+            const chunkId = chunk.chunk_id;
+            const chunkDocId = chunk.doc_id;
+
+            console.log(`Kiểm tra chunk: ${chunkId} (${chunkDocId}) - ${chunkEffectiveDate}`);
+
+            // So sánh ngày hiệu lực (format DD-MM-YYYY)
+            if (chunkEffectiveDate && currentDocEffectiveDate) {
+                const chunkDate = parseDate(chunkEffectiveDate);
+                const currentDate = parseDate(currentDocEffectiveDate);
+
+                console.log(`  Chunk date: ${chunkDate}, Current date: ${currentDate}`);
+
+                if (chunkDate >= currentDate) {
+                    invalidChunksWithWrongDate.push({
+                        chunk_id: chunkId,
+                        chunk_doc_id: chunkDocId,
+                        chunk_date: chunkEffectiveDate,
+                        current_date: currentDocEffectiveDate,
+                        reason: `Chunk có ngày hiệu lực ${chunkEffectiveDate} muộn hơn hoặc bằng ${currentDocEffectiveDate}`
+                    });
+                    console.log(`  ✗ Vi phạm nguyên tắc thời gian`);
+                } else {
+                    console.log(`  ✓ Hợp lệ`);
+                }
+            } else {
+                console.log(`  ? Thiếu thông tin ngày hiệu lực`);
+            }
+        }
+
+        // Nếu có chunks sai logic thời gian
+        if (invalidChunksWithWrongDate.length > 0) {
+            const errorDetails = invalidChunksWithWrongDate.map(item =>
+                `• ${item.chunk_id} (${item.chunk_doc_id}): ${item.chunk_date} >= ${item.current_date}`
+            ).join('\n');
+
+            await Swal.fire({
+                title: 'Vi phạm nguyên tắc thời gian',
+                html: `
+                <div class="text-left">
+                    <p class="text-red-600 font-medium mb-3">CẢNH BÁO: Phát hiện ${invalidChunksWithWrongDate.length} chunks vi phạm nguyên tắc thời gian!</p>
+                    
+                    <div class="bg-red-50 border border-red-200 rounded p-3 mb-3">
+                        <p class="text-sm text-red-800 font-medium mb-2">Nguyên tắc:</p>
+                        <p class="text-sm text-red-700">Văn bản mới chỉ có thể vô hiệu hóa chunks của văn bản có ngày hiệu lực SỚM HƠN.</p>
+                    </div>
+                    
+                    <div class="bg-gray-50 border border-gray-200 rounded p-3 mb-3">
+                        <p class="text-sm font-medium text-gray-800 mb-2">Document hiện tại:</p>
+                        <p class="text-sm text-gray-700">${currentDocId} (hiệu lực: ${currentDocEffectiveDate})</p>
+                    </div>
+                    
+                    <div class="bg-red-50 border border-red-200 rounded p-3">
+                        <p class="text-sm font-medium text-red-800 mb-2">Chunks vi phạm:</p>
+                        <div class="text-sm text-red-700 space-y-1">
+                            ${invalidChunksWithWrongDate.map(item =>
+                    `<div>• <strong>${item.chunk_id}</strong> (${item.chunk_doc_id})<br>
+                                 &nbsp;&nbsp;Ngày hiệu lực: ${item.chunk_date} (không được >= ${item.current_date})</div>`
+                ).join('')}
+                        </div>
+                    </div>
+                    
+                    <p class="text-sm text-gray-600 mt-3">Vui lòng kiểm tra lại phân tích AI hoặc metadata của các văn bản.</p>
+                </div>
+            `,
+                icon: 'error',
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Đã hiểu',
+                allowOutsideClick: false
+            });
+            return;
+        }
+
+        // Hiển thị thông tin confirmation chi tiết
+        const validChunks = chunksToInvalidate.filter(chunk => {
+            const chunkDate = parseDate(chunk.effective_date);
+            const currentDate = parseDate(currentDocEffectiveDate);
+            return chunkDate < currentDate;
+        });
+
         const confirmResult = await Swal.fire({
             title: 'Xác nhận vô hiệu hóa',
             html: `
-                <div class="text-left">
-                    <p>Bạn có chắc chắn muốn vô hiệu hóa <strong>${chunksToInvalidate.length}</strong> chunks?</p>
-                    <p class="text-sm text-gray-600 mt-2">Hành động này sẽ:</p>
-                    <ul class="text-sm text-gray-600 list-disc list-inside mt-1">
+            <div class="text-left">
+                <p class="mb-3">Bạn có chắc chắn muốn vô hiệu hóa <strong>${validChunks.length}</strong> chunks?</p>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded p-3 mb-3">
+                    <p class="text-sm font-medium text-blue-800 mb-1">Document hiện tại:</p>
+                    <p class="text-sm text-blue-700">${currentDocId} (hiệu lực: ${currentDocEffectiveDate})</p>
+                </div>
+                
+                <div class="bg-green-50 border border-green-200 rounded p-3 mb-3">
+                    <p class="text-sm font-medium text-green-800 mb-2">Sẽ vô hiệu hóa chunks:</p>
+                    <div class="text-sm text-green-700 max-h-32 overflow-y-auto">
+                        ${validChunks.slice(0, 5).map(chunk =>
+                `<div>• ${chunk.chunk_id} (${chunk.doc_id}) - ${chunk.effective_date}</div>`
+            ).join('')}
+                        ${validChunks.length > 5 ? `<div class="text-xs text-green-600 mt-1">... và ${validChunks.length - 5} chunks khác</div>` : ''}
+                    </div>
+                </div>
+                
+                <div class="bg-orange-50 border border-orange-200 rounded p-3 mb-3">
+                    <p class="text-sm font-medium text-orange-800 mb-1">Hành động này sẽ:</p>
+                    <ul class="text-sm text-orange-700 list-disc list-inside">
                         <li>Vô hiệu hóa cache liên quan trong MongoDB</li>
-                        <li>Cập nhật validity status trong ChromaDB</li>
+                        <li>Đánh dấu chunks trong ChromaDB</li>
                         <li>Không thể hoàn tác</li>
                     </ul>
                 </div>
-            `,
+                
+                <p class="text-sm text-red-600 font-medium">Hành động này không thể hoàn tác!</p>
+            </div>
+        `,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Vô hiệu hóa',
             cancelButtonText: 'Hủy',
             confirmButtonColor: '#ef4444',
-            cancelButtonColor: '#6b7280'
+            cancelButtonColor: '#6b7280',
+            allowOutsideClick: false
         });
 
         if (!confirmResult.isConfirmed) return;
 
         try {
             setIsInvalidatingChunks(true);
-            console.log('Bắt đầu vô hiệu hóa chunks:', chunksToInvalidate);
+            console.log('Bắt đầu vô hiệu hóa chunks:', validChunks.map(c => c.chunk_id));
 
             const response = await axios.post(`${API_BASE_URL}/invalidate-chunks`, {
-                chunk_ids: chunksToInvalidate.map(c => c.chunk_id),
-                reason: 'Superseded by new document from system scan',
-                new_document_id: currentProcessingDoc?.doc_id
+                chunk_ids: validChunks.map(c => c.chunk_id),
+                reason: `Superseded by new document: ${currentDocId} (effective: ${currentDocEffectiveDate})`,
+                new_document_id: currentDocId
             });
 
-            Swal.fire({
+            await Swal.fire({
                 title: 'Vô hiệu hóa thành công',
                 html: `
-                    <div class="text-left">
-                        <p><strong>Đã vô hiệu hóa:</strong></p>
-                        <p>• ${response.data.invalidated_cache_count} cache entries</p>
-                        <p>• ${response.data.invalidated_chunks_count} chunks</p>
-                        <p class="text-sm text-gray-600 mt-2">Hệ thống đã được cập nhật.</p>
+                <div class="text-left">
+                    <p class="text-green-600 font-medium mb-3">Đã vô hiệu hóa thành công!</p>
+                    
+                    <div class="bg-green-50 border border-green-200 rounded p-3 mb-3">
+                        <p class="text-sm font-medium text-green-800 mb-2">Kết quả:</p>
+                        <div class="text-sm text-green-700">
+                            <div>• Cache entries: ${response.data.invalidated_cache_count}</div>
+                            <div>• ChromaDB cache: ${response.data.invalidated_chunks_count}</div>
+                            <div>• Main chunks marked: ${response.data.main_chunks_updated || 0}</div>
+                        </div>
                     </div>
-                `,
+                    
+                    <p class="text-sm text-gray-600">Hệ thống đã được cập nhật. Các chunks bị vô hiệu hóa sẽ không được sử dụng trong tìm kiếm.</p>
+                </div>
+            `,
                 icon: 'success',
-                confirmButtonColor: '#10b981'
+                confirmButtonColor: '#10b981',
+                confirmButtonText: 'Đóng'
             });
 
             // Reset related chunks state cho document hiện tại
@@ -401,11 +562,18 @@ const DocumentsTab = ({
 
         } catch (error) {
             console.error('Lỗi khi vô hiệu hóa chunks:', error);
-            Swal.fire({
+            await Swal.fire({
                 title: 'Lỗi vô hiệu hóa',
-                text: error.response?.data?.detail || 'Không thể vô hiệu hóa chunks',
+                html: `
+                <div class="text-left">
+                    <p class="text-red-600 font-medium mb-2">Không thể vô hiệu hóa chunks</p>
+                    <div class="bg-red-50 border border-red-200 rounded p-3">
+                        <p class="text-sm text-red-700">${error.response?.data?.detail || error.message || 'Lỗi không xác định'}</p>
+                    </div>
+                </div>
+            `,
                 icon: 'error',
-                confirmButtonColor: '#10b981'
+                confirmButtonColor: '#ef4444'
             });
         } finally {
             setIsInvalidatingChunks(false);
@@ -630,10 +798,10 @@ const DocumentsTab = ({
                                 <div
                                     key={doc.doc_id}
                                     className={`p-3 rounded-lg border transition-all cursor-pointer ${index === currentDocIndex
-                                            ? 'border-purple-300 bg-purple-50'
-                                            : index < currentDocIndex
-                                                ? 'border-green-200 bg-green-50'
-                                                : 'border-gray-200 bg-gray-50'
+                                        ? 'border-purple-300 bg-purple-50'
+                                        : index < currentDocIndex
+                                            ? 'border-green-200 bg-green-50'
+                                            : 'border-gray-200 bg-gray-50'
                                         }`}
                                     onClick={() => handleProcessDocument(doc, index)}
                                 >
@@ -641,10 +809,10 @@ const DocumentsTab = ({
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center">
                                                 <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mr-3 ${index === currentDocIndex
-                                                        ? 'bg-purple-600 text-white'
-                                                        : index < currentDocIndex
-                                                            ? 'bg-green-600 text-white'
-                                                            : 'bg-gray-400 text-white'
+                                                    ? 'bg-purple-600 text-white'
+                                                    : index < currentDocIndex
+                                                        ? 'bg-green-600 text-white'
+                                                        : 'bg-gray-400 text-white'
                                                     }`}>
                                                     {index < currentDocIndex ? '✓' : index + 1}
                                                 </span>
@@ -2163,11 +2331,23 @@ const DocumentsTab = ({
                                 <FileText size={16} className="inline mr-2" />
                                 Xem thông tin chunks
                             </button>
+                            <button
+                                onClick={() => setActiveMainTab('restore')}
+                                className={`flex-1 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${activeMainTab === 'restore'
+                                    ? 'border-green-600 text-green-600 bg-green-50'
+                                    : 'border-transparent text-gray-500 hover:text-gray-700'
+                                    }`}
+                            >
+                                <RotateCcw size={16} className="inline mr-2" />
+                                Khôi phục chunks
+                            </button>
                         </div>
                     </div>
 
                     <div className="p-5">
-                        {activeMainTab === 'upload' ? renderUploadTab() : renderChunkInfoTab()}
+                        {activeMainTab === 'upload' ? renderUploadTab() :
+                            activeMainTab === 'chunks' ? renderChunkInfoTab() :
+                                activeMainTab === 'restore' ? <RestoreChunksPanel /> : null}
                     </div>
                 </motion.div>
 
