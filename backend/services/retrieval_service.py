@@ -18,7 +18,7 @@ from services.activity_service import activity_service, ActivityType
 
 class RetrievalService:
     def __init__(self):
-        """Khởi tạo dịch vụ truy xuất hybrid (Vector + Elasticsearch)"""
+        """Khởi tạo dịch vụ truy xuất hybrid"""
         self.chroma = chroma_client
         self.es_client = elasticsearch_client
         self.db = mongodb_client.get_database()

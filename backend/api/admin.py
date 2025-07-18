@@ -2775,3 +2775,248 @@ async def restore_chunk_validity(request: dict):
         
     except Exception as e:
         handle_error("restore_chunk_validity", e)
+        
+@router.post("/scan-system-relationships")
+async def scan_system_relationships():
+    """Scan toàn bộ hệ thống tìm documents có relationships"""
+    try:
+        if not os.path.exists(DATA_DIR):
+            raise HTTPException(status_code=404, detail="Thư mục data không tồn tại")
+        
+        # Đọc metadata của tất cả documents
+        documents_metadata = []
+        for doc_dir in os.listdir(DATA_DIR):
+            doc_path = os.path.join(DATA_DIR, doc_dir)
+            metadata_path = os.path.join(doc_path, "metadata.json")
+            
+            if os.path.isdir(doc_path) and os.path.exists(metadata_path):
+                try:
+                    with open(metadata_path, 'r', encoding='utf-8') as f:
+                        metadata = json.load(f)
+                    documents_metadata.append(metadata)
+                except Exception as e:
+                    print(f"Lỗi đọc metadata của {doc_dir}: {str(e)}")
+        
+        if not documents_metadata:
+            raise HTTPException(status_code=404, detail="Không tìm thấy document nào")
+        
+        # Tìm documents có relationships
+        documents_with_relationships = []
+        
+        for doc in documents_metadata:
+            doc_id = doc.get("doc_id")
+            related_documents = []
+            
+            # Kiểm tra replaces
+            if doc.get("replaces") and isinstance(doc.get("replaces"), list):
+                for replaced_doc in doc["replaces"]:
+                    related_documents.append({
+                        "doc_id": replaced_doc,
+                        "relationship": "replaces", 
+                        "description": f"{doc_id} thay thế {replaced_doc}"
+                    })
+            
+            # Kiểm tra amends
+            if doc.get("amends"):
+                related_documents.append({
+                    "doc_id": doc.get("amends"),
+                    "relationship": "amends",
+                    "description": f"{doc_id} sửa đổi {doc.get('amends')}"
+                })
+            
+            # Kiểm tra replaced_by (doc này bị thay thế)
+            if doc.get("replaced_by"):
+                # Tìm document thay thế để xử lý
+                replacing_doc = None
+                for other_doc in documents_metadata:
+                    if other_doc.get("doc_id") == doc.get("replaced_by"):
+                        replacing_doc = other_doc
+                        break
+                
+                if replacing_doc and replacing_doc.get("doc_id") not in [d["doc_id"] for d in documents_with_relationships]:
+                    # Thêm document thay thế vào list với relationship tới doc hiện tại
+                    related_docs = [{
+                        "doc_id": doc_id,
+                        "relationship": "replaces",
+                        "description": f"{replacing_doc.get('doc_id')} thay thế {doc_id}"
+                    }]
+                    
+                    documents_with_relationships.append({
+                        "doc_id": replacing_doc.get("doc_id"),
+                        "doc_type": replacing_doc.get("doc_type"),
+                        "doc_title": replacing_doc.get("doc_title"),
+                        "effective_date": replacing_doc.get("effective_date"),
+                        "metadata": replacing_doc,
+                        "related_documents": related_docs
+                    })
+            
+            # Kiểm tra amended_by (doc này bị sửa đổi)
+            if doc.get("amended_by"):
+                # Tìm document sửa đổi để xử lý
+                amending_doc = None
+                for other_doc in documents_metadata:
+                    if other_doc.get("doc_id") == doc.get("amended_by"):
+                        amending_doc = other_doc
+                        break
+                
+                if amending_doc and amending_doc.get("doc_id") not in [d["doc_id"] for d in documents_with_relationships]:
+                    # Thêm document sửa đổi vào list
+                    related_docs = [{
+                        "doc_id": doc_id,
+                        "relationship": "amends",
+                        "description": f"{amending_doc.get('doc_id')} sửa đổi {doc_id}"
+                    }]
+                    
+                    documents_with_relationships.append({
+                        "doc_id": amending_doc.get("doc_id"),
+                        "doc_type": amending_doc.get("doc_type"),
+                        "doc_title": amending_doc.get("doc_title"),
+                        "effective_date": amending_doc.get("effective_date"),
+                        "metadata": amending_doc,
+                        "related_documents": related_docs
+                    })
+            
+            # Nếu document hiện tại có relationships trực tiếp
+            if related_documents:
+                documents_with_relationships.append({
+                    "doc_id": doc_id,
+                    "doc_type": doc.get("doc_type"),
+                    "doc_title": doc.get("doc_title"),
+                    "effective_date": doc.get("effective_date"),
+                    "metadata": doc,
+                    "related_documents": related_documents
+                })
+        
+        # Loại bỏ duplicates dựa trên doc_id
+        unique_documents = []
+        seen_doc_ids = set()
+        for doc in documents_with_relationships:
+            if doc["doc_id"] not in seen_doc_ids:
+                unique_documents.append(doc)
+                seen_doc_ids.add(doc["doc_id"])
+        
+        log_admin_activity(ActivityType.SYSTEM_STATUS,
+                          f"Scan system relationships: {len(documents_metadata)} total docs, {len(unique_documents)} with relationships",
+                          {
+                              "total_documents": len(documents_metadata),
+                              "documents_with_relationships": len(unique_documents),
+                              "action": "scan_system_relationships"
+                          })
+        
+        return {
+            "total_documents": len(documents_metadata),
+            "documents_with_relationships": unique_documents,
+            "message": f"Tìm thấy {len(unique_documents)} documents có relationships cần xử lý"
+        }
+        
+    except Exception as e:
+        handle_error("scan_system_relationships", e)
+
+@router.post("/process-document-relationships")
+async def process_document_relationships(request: dict):
+    """Xử lý relationships của một document cụ thể - giống như upload document mới"""
+    try:
+        doc_metadata = request.get("document_metadata")
+        related_documents = request.get("related_documents", [])
+        
+        if not doc_metadata or not related_documents:
+            raise HTTPException(status_code=400, detail="Thiếu thông tin document hoặc related_documents")
+        
+        doc_id = doc_metadata.get("doc_id")
+        print(f"Bắt đầu xử lý relationships cho document: {doc_id}")
+        print(f"Related documents: {[rd.get('doc_id') for rd in related_documents]}")
+        
+        # Sử dụng lại logic từ search-related-chunks
+        related_chunks_data = []
+        
+        for related_doc in related_documents:
+            related_doc_id = related_doc.get("doc_id")
+            relationship = related_doc.get("relationship")
+            description = related_doc.get("description")
+            
+            print(f"Đang tìm chunks cho {related_doc_id} với relationship: {relationship}")
+            
+            try:
+                # Tìm chunks trong ChromaDB dựa trên doc_id với FULL CONTENT
+                collection = chroma_client.get_main_collection()
+                if not collection:
+                    print(f"Không thể lấy main collection từ ChromaDB")
+                    continue
+                
+                results = collection.get(
+                    where={"doc_id": related_doc_id},
+                    include=["documents", "metadatas"]
+                )
+                
+                chunks_found = []
+                if results and results.get("ids"):
+                    print(f"Tìm thấy {len(results['ids'])} chunks cho {related_doc_id}")
+                    
+                    for i, chunk_id in enumerate(results["ids"]):
+                        metadata = results["metadatas"][i] if i < len(results["metadatas"]) else {}
+                        document = results["documents"][i] if i < len(results["documents"]) else ""
+                        
+                        # Loại bỏ prefix "passage: " nếu có để lấy FULL CONTENT
+                        if document.startswith("passage: "):
+                            document = document[9:]
+                        
+                        chunk_data = {
+                            "chunk_id": chunk_id,
+                            "content": document,  # FULL CONTENT cho LLM
+                            "full_content": document,
+                            "content_summary": metadata.get("content_summary", ""),
+                            "doc_id": metadata.get("doc_id", ""),
+                            "doc_type": metadata.get("doc_type", ""),
+                            "doc_title": metadata.get("doc_title", ""),
+                            "chunk_type": metadata.get("chunk_type", ""),
+                            "chunk_index": metadata.get("chunk_index", ""),
+                            "effective_date": metadata.get("effective_date", ""),
+                            "validity_status": metadata.get("validity_status", "valid")
+                        }
+                        chunks_found.append(chunk_data)
+                        
+                        print(f"Chunk {chunk_id}: {len(document)} ký tự content")
+                
+                if chunks_found:
+                    related_chunks_data.append({
+                        "doc_id": related_doc_id,
+                        "relationship": relationship,
+                        "description": description,
+                        "chunks": chunks_found,
+                        "exists_in_db": True
+                    })
+                    print(f"Đã thêm {len(chunks_found)} chunks cho {related_doc_id}")
+                else:
+                    related_chunks_data.append({
+                        "doc_id": related_doc_id,
+                        "relationship": relationship,
+                        "description": description,
+                        "chunks": [],
+                        "exists_in_db": False
+                    })
+                    print(f"Không tìm thấy chunks cho {related_doc_id}")
+                    
+            except Exception as e:
+                print(f"Lỗi khi tìm chunks cho {related_doc_id}: {str(e)}")
+                related_chunks_data.append({
+                    "doc_id": related_doc_id,
+                    "relationship": relationship,
+                    "description": description,
+                    "chunks": [],
+                    "exists_in_db": False,
+                    "error": str(e)
+                })
+        
+        total_chunks = sum(len(item.get("chunks", [])) for item in related_chunks_data)
+        print(f"Tổng cộng tìm thấy {total_chunks} chunks từ {len(related_chunks_data)} related documents")
+        
+        return {
+            "doc_id": doc_id,
+            "related_chunks_data": related_chunks_data,
+            "total_related_docs": len(related_documents),
+            "total_chunks_found": total_chunks,
+            "message": f"Đã tìm thấy {total_chunks} chunks từ {len(related_documents)} văn bản liên quan"
+        }
+        
+    except Exception as e:
+        handle_error("process_document_relationships", e)

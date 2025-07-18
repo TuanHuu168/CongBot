@@ -1,0 +1,1 @@
+Điều 2. Các cơ quan, đơn vị, địa phương được phân bổ danh mục và kế hoạch vốn năm 2023 nêu tại Điều 1 Quyết định này chịu trách nhiệm tổ chức thực hiện công tác chuẩn bị đầu tư và các công việc có liên quan để đầu tư công trình theo đúng quy định hiện hành của Nhà nước.

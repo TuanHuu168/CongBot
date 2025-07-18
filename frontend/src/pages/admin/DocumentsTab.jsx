@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp, Shield, ShieldAlert, Info, Zap, Settings } from 'lucide-react';
+import { Search, Trash2, Upload, FileText, Eye, Calendar, FileSymlink, CheckCircle, XCircle, Clock, RefreshCw, AlertCircle, FolderOpen, File, FileImage, Brain, ChevronDown, ChevronUp, Shield, ShieldAlert, Info, Zap, Settings, PlayCircle, SkipForward } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { formatDate } from '../../utils/formatUtils';
 import { getApiBaseUrl } from '../../apiService';
@@ -53,6 +53,12 @@ const DocumentsTab = ({
     const [chunksToInvalidate, setChunksToInvalidate] = useState([]);
     const [isInvalidatingChunks, setIsInvalidatingChunks] = useState(false);
     const [showRelatedChunksPanel, setShowRelatedChunksPanel] = useState(false);
+
+    // State cho system relationship scan
+    const [systemRelationshipDocs, setSystemRelationshipDocs] = useState([]);
+    const [isScanningSystem, setIsScanningSystem] = useState(false);
+    const [currentProcessingDoc, setCurrentProcessingDoc] = useState(null);
+    const [currentDocIndex, setCurrentDocIndex] = useState(0);
 
     const API_BASE_URL = getApiBaseUrl();
 
@@ -174,6 +180,20 @@ const DocumentsTab = ({
         setShowRelatedChunksPanel(false);
     }, [uploadMode]);
 
+    // Reset khi chuyển tab
+    useEffect(() => {
+        if (activeMainTab !== 'upload') {
+            // Reset system scan state khi không ở upload tab
+            setSystemRelationshipDocs([]);
+            setCurrentProcessingDoc(null);
+            setCurrentDocIndex(0);
+            setRelatedChunksInfo(null);
+            setLlmAnalysisResult(null);
+            setChunksToInvalidate([]);
+            setShowRelatedChunksPanel(false);
+        }
+    }, [activeMainTab]);
+
     // Lấy thông tin chunks của document
     const fetchChunkInfo = async (docId) => {
         try {
@@ -253,7 +273,7 @@ const DocumentsTab = ({
 
     // Gọi LLM phân tích chunks cần vô hiệu hóa
     const analyzeChunksWithLLM = async () => {
-        if (!relatedChunksInfo || !documentProcessingStatus?.result) {
+        if (!relatedChunksInfo || !currentProcessingDoc) {
             return;
         }
 
@@ -262,7 +282,7 @@ const DocumentsTab = ({
             console.log('Bắt đầu phân tích với LLM...');
 
             // Chuẩn bị dữ liệu cho LLM
-            const newDocumentContent = documentProcessingStatus.result.metadata;
+            const newDocumentContent = currentProcessingDoc.metadata;
             const existingChunks = relatedChunksInfo
                 .filter(item => item.exists_in_db && item.chunks.length > 0)
                 .flatMap(item => item.chunks);
@@ -274,7 +294,7 @@ const DocumentsTab = ({
                     doc_title: newDocumentContent.doc_title,
                     effective_date: newDocumentContent.effective_date,
                     chunks: newDocumentContent.chunks,
-                    related_documents: newDocumentContent.related_documents
+                    related_documents: currentProcessingDoc.related_documents
                 },
                 existing_chunks: existingChunks,
                 analysis_type: 'invalidation_check'
@@ -355,8 +375,8 @@ const DocumentsTab = ({
 
             const response = await axios.post(`${API_BASE_URL}/invalidate-chunks`, {
                 chunk_ids: chunksToInvalidate.map(c => c.chunk_id),
-                reason: 'Superseded by new document',
-                new_document_id: documentProcessingStatus?.result?.doc_id
+                reason: 'Superseded by new document from system scan',
+                new_document_id: currentProcessingDoc?.doc_id
             });
 
             Swal.fire({
@@ -373,7 +393,7 @@ const DocumentsTab = ({
                 confirmButtonColor: '#10b981'
             });
 
-            // Reset related chunks state
+            // Reset related chunks state cho document hiện tại
             setRelatedChunksInfo(null);
             setLlmAnalysisResult(null);
             setChunksToInvalidate([]);
@@ -410,6 +430,141 @@ const DocumentsTab = ({
                 return prev;
             }
         });
+    };
+
+    // Scan toàn bộ hệ thống tìm relationships
+    const handleSystemRelationshipScan = async () => {
+        const confirmResult = await Swal.fire({
+            title: 'Scan mối quan hệ trong hệ thống',
+            html: `
+                <div class="text-left">
+                    <p>Tính năng này sẽ:</p>
+                    <ul class="list-disc list-inside mt-2 text-sm">
+                        <li>Đọc metadata của tất cả documents</li>
+                        <li>Tìm các mối quan hệ (replaces, amends, replaced_by, amended_by)</li>
+                        <li>Đưa ra danh sách documents cần xử lý</li>
+                        <li>Cho phép bạn xem và quyết định từng document một</li>
+                    </ul>
+                    <p class="text-gray-600 text-sm mt-2">Sau đó bạn có thể xử lý từng document để vô hiệu hóa chunks cần thiết.</p>
+                </div>
+            `,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Bắt đầu scan',
+            cancelButtonText: 'Hủy',
+            confirmButtonColor: '#10b981',
+            cancelButtonColor: '#6b7280'
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
+        try {
+            setIsScanningSystem(true);
+
+            const response = await axios.post(`${API_BASE_URL}/scan-system-relationships`);
+
+            setSystemRelationshipDocs(response.data.documents_with_relationships);
+            setCurrentDocIndex(0);
+
+            Swal.fire({
+                title: 'Scan hoàn thành',
+                html: `
+                    <div class="text-left">
+                        <p><strong>Kết quả scan:</strong></p>
+                        <p>• Tổng documents: ${response.data.total_documents}</p>
+                        <p>• Documents có relationships: ${response.data.documents_with_relationships.length}</p>
+                        <p class="text-sm text-gray-600 mt-2">
+                            ${response.data.documents_with_relationships.length > 0
+                        ? 'Bạn có thể xem và xử lý từng document bên dưới.'
+                        : 'Không có document nào cần xử lý.'
+                    }
+                        </p>
+                    </div>
+                `,
+                icon: response.data.documents_with_relationships.length > 0 ? 'success' : 'info',
+                confirmButtonColor: '#10b981'
+            });
+
+        } catch (error) {
+            console.error('Lỗi khi scan hệ thống:', error);
+            Swal.fire({
+                title: 'Lỗi scan hệ thống',
+                text: error.response?.data?.detail || 'Không thể scan hệ thống',
+                icon: 'error',
+                confirmButtonColor: '#10b981'
+            });
+        } finally {
+            setIsScanningSystem(false);
+        }
+    };
+
+    // Xử lý document cụ thể từ system scan
+    const handleProcessDocument = async (document, index) => {
+        try {
+            setCurrentProcessingDoc(document);
+            setCurrentDocIndex(index);
+
+            console.log(`Bắt đầu xử lý document ${document.doc_id}:`, document);
+
+            const response = await axios.post(`${API_BASE_URL}/process-document-relationships`, {
+                document_metadata: document.metadata,
+                related_documents: document.related_documents
+            });
+
+            setRelatedChunksInfo(response.data.related_chunks_data);
+            setShowRelatedChunksPanel(true);
+
+            console.log('Kết quả xử lý document:', response.data);
+
+        } catch (error) {
+            console.error('Lỗi khi xử lý document:', error);
+            Swal.fire({
+                title: 'Lỗi xử lý document',
+                text: error.response?.data?.detail || 'Không thể xử lý document',
+                icon: 'error',
+                confirmButtonColor: '#10b981'
+            });
+        }
+    };
+
+    // Chuyển sang document tiếp theo
+    const handleNextDocument = () => {
+        if (currentDocIndex < systemRelationshipDocs.length - 1) {
+            // Reset state trước khi chuyển
+            setRelatedChunksInfo(null);
+            setLlmAnalysisResult(null);
+            setChunksToInvalidate([]);
+            setShowRelatedChunksPanel(false);
+            setCurrentProcessingDoc(null);
+
+            // Chuyển sang document tiếp theo
+            const nextIndex = currentDocIndex + 1;
+            const nextDoc = systemRelationshipDocs[nextIndex];
+            handleProcessDocument(nextDoc, nextIndex);
+        }
+    };
+
+    // Bỏ qua document hiện tại
+    const handleSkipDocument = () => {
+        if (currentDocIndex < systemRelationshipDocs.length - 1) {
+            handleNextDocument();
+        } else {
+            // Đã hết documents
+            setSystemRelationshipDocs([]);
+            setCurrentProcessingDoc(null);
+            setCurrentDocIndex(0);
+            setRelatedChunksInfo(null);
+            setLlmAnalysisResult(null);
+            setChunksToInvalidate([]);
+            setShowRelatedChunksPanel(false);
+
+            Swal.fire({
+                title: 'Hoàn thành xử lý',
+                text: 'Đã xử lý hết tất cả documents có relationships',
+                icon: 'success',
+                confirmButtonColor: '#10b981'
+            });
+        }
     };
 
     // Lấy icon tệp dựa trên extension
@@ -773,7 +928,122 @@ const DocumentsTab = ({
         });
     };
 
-    // Render phần phân tích văn bản liên quan với design mới
+    // Render system relationship scan status
+    const renderSystemRelationshipStatus = () => {
+        if (systemRelationshipDocs.length === 0) return null;
+
+        return (
+            <motion.div
+                className="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 overflow-hidden"
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 flex items-center justify-between text-white">
+                    <div className="flex items-center">
+                        <Settings size={20} className="mr-2" />
+                        <h4 className="font-semibold">System Relationship Scan</h4>
+                        <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
+                            {currentDocIndex + 1}/{systemRelationshipDocs.length}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => {
+                            setSystemRelationshipDocs([]);
+                            setCurrentProcessingDoc(null);
+                            setCurrentDocIndex(0);
+                            setRelatedChunksInfo(null);
+                            setLlmAnalysisResult(null);
+                            setChunksToInvalidate([]);
+                            setShowRelatedChunksPanel(false);
+                        }}
+                        className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    >
+                        <XCircle size={16} />
+                    </button>
+                </div>
+
+                <div className="p-5">
+                    <div className="bg-white rounded-lg border border-purple-100 p-4 mb-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <h5 className="font-medium text-gray-800">Documents cần xử lý</h5>
+                            <span className="text-sm text-gray-600">{systemRelationshipDocs.length} documents</span>
+                        </div>
+
+                        <div className="space-y-3 max-h-60 overflow-y-auto">
+                            {systemRelationshipDocs.map((doc, index) => (
+                                <div
+                                    key={doc.doc_id}
+                                    className={`p-3 rounded-lg border transition-all cursor-pointer ${index === currentDocIndex
+                                            ? 'border-purple-300 bg-purple-50'
+                                            : index < currentDocIndex
+                                                ? 'border-green-200 bg-green-50'
+                                                : 'border-gray-200 bg-gray-50'
+                                        }`}
+                                    onClick={() => handleProcessDocument(doc, index)}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center">
+                                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mr-3 ${index === currentDocIndex
+                                                        ? 'bg-purple-600 text-white'
+                                                        : index < currentDocIndex
+                                                            ? 'bg-green-600 text-white'
+                                                            : 'bg-gray-400 text-white'
+                                                    }`}>
+                                                    {index < currentDocIndex ? '✓' : index + 1}
+                                                </span>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-medium text-gray-800 truncate">{doc.doc_id}</p>
+                                                    <p className="text-xs text-gray-600 truncate">{doc.doc_title}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {doc.related_documents.length} relationships
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {index === currentDocIndex && (
+                                            <PlayCircle size={16} className="text-purple-600 flex-shrink-0" />
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {currentProcessingDoc && (
+                            <div className="mt-4 pt-4 border-t border-gray-200">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-medium text-gray-800">Đang xử lý: {currentProcessingDoc.doc_id}</p>
+                                        <p className="text-sm text-gray-600">{currentProcessingDoc.related_documents.length} văn bản liên quan</p>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={handleSkipDocument}
+                                            className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition-colors flex items-center"
+                                        >
+                                            <SkipForward size={14} className="mr-1" />
+                                            Bỏ qua
+                                        </button>
+                                        {currentDocIndex < systemRelationshipDocs.length - 1 && (
+                                            <button
+                                                onClick={handleNextDocument}
+                                                className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                                            >
+                                                Tiếp theo
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </motion.div>
+        );
+    };
+
+    // Render phần phân tích văn bản liên quan
     const renderRelatedChunksAnalysis = () => {
         if (!showRelatedChunksPanel) return null;
 
@@ -792,6 +1062,11 @@ const DocumentsTab = ({
                         <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
                             AI Assistant
                         </span>
+                        {currentProcessingDoc && (
+                            <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
+                                {currentProcessingDoc.doc_id}
+                            </span>
+                        )}
                     </div>
                     <button
                         onClick={() => setShowRelatedChunksPanel(false)}
@@ -852,16 +1127,16 @@ const DocumentsTab = ({
                                                     <h5 className="font-medium text-gray-800">{relatedDoc.doc_id}</h5>
                                                 </div>
                                                 <span className={`px-2 py-1 rounded text-xs font-medium ${relatedDoc.relationship === 'references' ? 'bg-blue-100 text-blue-800' :
-                                                        relatedDoc.relationship === 'replaces' ? 'bg-red-100 text-red-800' :
-                                                            relatedDoc.relationship === 'amends' ? 'bg-yellow-100 text-yellow-800' :
-                                                                'bg-gray-100 text-gray-800'
+                                                    relatedDoc.relationship === 'replaces' ? 'bg-red-100 text-red-800' :
+                                                        relatedDoc.relationship === 'amends' ? 'bg-yellow-100 text-yellow-800' :
+                                                            'bg-gray-100 text-gray-800'
                                                     }`}>
                                                     {relatedDoc.relationship}
                                                 </span>
                                             </div>
                                             <span className={`px-3 py-1 rounded-full text-xs font-medium ${relatedDoc.exists_in_db
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-gray-100 text-gray-600'
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-600'
                                                 }`}>
                                                 {relatedDoc.exists_in_db
                                                     ? `${relatedDoc.chunks.length} chunks`
@@ -896,7 +1171,7 @@ const DocumentsTab = ({
                                                 className="flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors"
                                             >
                                                 <ChevronDown id={`icon-${index}`} size={16} className="mr-1 transition-transform" />
-                                                Xem chi tiết {relatedDoc.chunks.length} chunks
+                                                Xem chi tiết {relatedDoc.chunks.length} chunks (với full content)
                                             </button>
 
                                             <div id={`chunks-${index}`} style={{ display: 'none' }} className="space-y-3">
@@ -912,6 +1187,7 @@ const DocumentsTab = ({
                                                         <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
                                                             <span>Loại: {chunk.chunk_type}</span>
                                                             <span>{chunk.effective_date}</span>
+                                                            <span>Content: {chunk.content?.length || 0} ký tự</span>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -937,6 +1213,7 @@ const DocumentsTab = ({
                                     </div>
                                     <p className="text-sm text-gray-600 mb-4">
                                         Sử dụng AI để phân tích và xác định chunks nào cần vô hiệu hóa dựa trên mối quan hệ pháp lý.
+                                        AI sẽ nhận đầy đủ nội dung chunks để phân tích chính xác.
                                     </p>
                                     <button
                                         onClick={analyzeChunksWithLLM}
@@ -1031,27 +1308,35 @@ const DocumentsTab = ({
                                                 </div>
 
                                                 {/* Action Buttons */}
-                                                {chunksToInvalidate.length > 0 && (
-                                                    <div className="flex space-x-3 pt-4 border-t border-gray-200">
+                                                <div className="flex space-x-3 pt-4 border-t border-gray-200">
+                                                    <button
+                                                        onClick={executeChunkInvalidation}
+                                                        disabled={isInvalidatingChunks || chunksToInvalidate.length === 0}
+                                                        className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        {isInvalidatingChunks ? (
+                                                            <>
+                                                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                                                                Đang vô hiệu hóa...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <XCircle size={16} className="mr-2" />
+                                                                Vô hiệu hóa {chunksToInvalidate.length} chunks
+                                                            </>
+                                                        )}
+                                                    </button>
+
+                                                    {/* Nút để chuyển sang document tiếp theo */}
+                                                    {systemRelationshipDocs.length > 0 && currentDocIndex < systemRelationshipDocs.length - 1 && (
                                                         <button
-                                                            onClick={executeChunkInvalidation}
-                                                            disabled={isInvalidatingChunks}
-                                                            className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                                            onClick={handleNextDocument}
+                                                            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center"
                                                         >
-                                                            {isInvalidatingChunks ? (
-                                                                <>
-                                                                    <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
-                                                                    Đang vô hiệu hóa...
-                                                                </>
-                                                            ) : (
-                                                                <>
-                                                                    <XCircle size={16} className="mr-2" />
-                                                                    Vô hiệu hóa {chunksToInvalidate.length} chunks
-                                                                </>
-                                                            )}
+                                                            Tiếp theo
                                                         </button>
-                                                    </div>
-                                                )}
+                                                    )}
+                                                </div>
                                             </div>
                                         ) : (
                                             <div className="text-center py-6">
@@ -1059,10 +1344,20 @@ const DocumentsTab = ({
                                                     <Shield size={24} className="text-green-600" />
                                                 </div>
                                                 <h6 className="font-medium text-gray-800 mb-2">Không có chunks cần vô hiệu hóa</h6>
-                                                <p className="text-sm text-gray-600">
+                                                <p className="text-sm text-gray-600 mb-4">
                                                     AI đã phân tích và không tìm thấy chunks nào cần vô hiệu hóa.
-                                                    Văn bản mới này không thay thế hoàn toàn các chunks hiện có.
+                                                    Văn bản này không thay thế hoàn toàn các chunks hiện có.
                                                 </p>
+
+                                                {/* Nút để chuyển sang document tiếp theo */}
+                                                {systemRelationshipDocs.length > 0 && currentDocIndex < systemRelationshipDocs.length - 1 && (
+                                                    <button
+                                                        onClick={handleNextDocument}
+                                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center mx-auto"
+                                                    >
+                                                        Chuyển sang document tiếp theo
+                                                    </button>
+                                                )}
                                             </div>
                                         )}
                                     </div>
@@ -1209,6 +1504,42 @@ const DocumentsTab = ({
     // Render tab tải lên dữ liệu
     const renderUploadTab = () => (
         <div className="space-y-6">
+            {/* System Scan Button */}
+            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 rounded-lg border border-purple-200 p-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h4 className="font-medium text-purple-700 mb-1 flex items-center">
+                            <Settings size={16} className="mr-2" />
+                            Scan mối quan hệ toàn hệ thống
+                        </h4>
+                        <p className="text-sm text-purple-600">
+                            Tìm các documents có relationships và xử lý từng document để vô hiệu hóa chunks cần thiết
+                        </p>
+                    </div>
+                    <button
+                        onClick={handleSystemRelationshipScan}
+                        disabled={isScanningSystem}
+                        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-lg font-medium hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {isScanningSystem ? (
+                            <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                                Đang scan...
+                            </>
+                        ) : (
+                            <>
+                                <Settings size={16} className="mr-2" />
+                                Scan hệ thống
+                            </>
+                        )}
+                    </button>
+                </div>
+            </div>
+
+            {renderSystemRelationshipStatus()}
+            {renderProcessingStatus()}
+            {renderRelatedChunksAnalysis()}
+
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-3">
                     Chọn phương thức tải lên
@@ -1254,9 +1585,6 @@ const DocumentsTab = ({
                     </label>
                 </div>
             </div>
-
-            {renderProcessingStatus()}
-            {renderRelatedChunksAnalysis()}
 
             {uploadMode === 'auto' ? (
                 <form onSubmit={handleDocumentUpload} className="space-y-6">
@@ -1685,8 +2013,8 @@ const DocumentsTab = ({
 
                                                 {/* Trạng thái validity */}
                                                 <span className={`px-2 py-1 rounded text-xs font-medium ${chunk.validity_status === 'valid'
-                                                        ? 'bg-blue-100 text-blue-800'
-                                                        : 'bg-orange-100 text-orange-800'
+                                                    ? 'bg-blue-100 text-blue-800'
+                                                    : 'bg-orange-100 text-orange-800'
                                                     }`}>
                                                     {chunk.validity_status === 'valid' ? 'Còn hiệu lực' : 'Đã vô hiệu hóa'}
                                                 </span>
@@ -1876,10 +2204,10 @@ const DocumentsTab = ({
                                                     <div className="min-w-0 flex-1">
                                                         <h3 className="text-sm font-medium text-gray-900 flex items-center mb-1">
                                                             <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium mr-2 flex-shrink-0 ${document.doc_type === 'Luật' ? 'bg-red-100 text-red-800' :
-                                                                    document.doc_type === 'Nghị định' ? 'bg-blue-100 text-blue-800' :
-                                                                        document.doc_type === 'Thông tư' ? 'bg-green-100 text-green-800' :
-                                                                            document.doc_type === 'Quyết định' ? 'bg-yellow-100 text-yellow-800' :
-                                                                                'bg-purple-100 text-purple-800'
+                                                                document.doc_type === 'Nghị định' ? 'bg-blue-100 text-blue-800' :
+                                                                    document.doc_type === 'Thông tư' ? 'bg-green-100 text-green-800' :
+                                                                        document.doc_type === 'Quyết định' ? 'bg-yellow-100 text-yellow-800' :
+                                                                            'bg-purple-100 text-purple-800'
                                                                 }`}>
                                                                 {document.doc_type}
                                                             </span>
