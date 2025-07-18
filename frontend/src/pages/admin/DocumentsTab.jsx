@@ -583,6 +583,597 @@ const DocumentsTab = ({
         }
     };
 
+    // Render system relationship scan status
+    const renderSystemRelationshipStatus = () => {
+        if (systemRelationshipDocs.length === 0) return null;
+
+        return (
+            <motion.div
+                className="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 overflow-hidden"
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 flex items-center justify-between text-white">
+                    <div className="flex items-center">
+                        <Settings size={20} className="mr-2" />
+                        <h4 className="font-semibold">System Relationship Scan</h4>
+                        <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
+                            {currentDocIndex + 1}/{systemRelationshipDocs.length}
+                        </span>
+                    </div>
+                    <button
+                        onClick={() => {
+                            setSystemRelationshipDocs([]);
+                            setCurrentProcessingDoc(null);
+                            setCurrentDocIndex(0);
+                            setRelatedChunksInfo(null);
+                            setLlmAnalysisResult(null);
+                            setChunksToInvalidate([]);
+                            setShowRelatedChunksPanel(false);
+                        }}
+                        className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    >
+                        <XCircle size={16} />
+                    </button>
+                </div>
+
+                <div className="p-5">
+                    <div className="bg-white rounded-lg border border-purple-100 p-4 mb-4">
+                        <div className="flex items-center justify-between mb-3">
+                            <h5 className="font-medium text-gray-800">Documents cần xử lý</h5>
+                            <span className="text-sm text-gray-600">{systemRelationshipDocs.length} documents</span>
+                        </div>
+
+                        <div className="space-y-3 max-h-60 overflow-y-auto">
+                            {systemRelationshipDocs.map((doc, index) => (
+                                <div
+                                    key={doc.doc_id}
+                                    className={`p-3 rounded-lg border transition-all cursor-pointer ${index === currentDocIndex
+                                            ? 'border-purple-300 bg-purple-50'
+                                            : index < currentDocIndex
+                                                ? 'border-green-200 bg-green-50'
+                                                : 'border-gray-200 bg-gray-50'
+                                        }`}
+                                    onClick={() => handleProcessDocument(doc, index)}
+                                >
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center">
+                                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mr-3 ${index === currentDocIndex
+                                                        ? 'bg-purple-600 text-white'
+                                                        : index < currentDocIndex
+                                                            ? 'bg-green-600 text-white'
+                                                            : 'bg-gray-400 text-white'
+                                                    }`}>
+                                                    {index < currentDocIndex ? '✓' : index + 1}
+                                                </span>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="font-medium text-gray-800 truncate">{String(doc.doc_id)}</p>
+                                                    <p className="text-xs text-gray-600 truncate">{String(doc.doc_title || '')}</p>
+                                                    <p className="text-xs text-gray-500">
+                                                        {doc.related_documents?.length || 0} relationships
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {index === currentDocIndex && (
+                                            <PlayCircle size={16} className="text-purple-600 flex-shrink-0" />
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {currentProcessingDoc && (
+                            <div className="mt-4 pt-4 border-t border-gray-200">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-medium text-gray-800">
+                                            Đang xử lý: {String(currentProcessingDoc.doc_id)}
+                                        </p>
+                                        <p className="text-sm text-gray-600">
+                                            {currentProcessingDoc.related_documents?.length || 0} văn bản liên quan
+                                        </p>
+                                    </div>
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={handleSkipDocument}
+                                            className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition-colors flex items-center"
+                                        >
+                                            <SkipForward size={14} className="mr-1" />
+                                            Bỏ qua
+                                        </button>
+                                        {currentDocIndex < systemRelationshipDocs.length - 1 && (
+                                            <button
+                                                onClick={handleNextDocument}
+                                                className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
+                                            >
+                                                Tiếp theo
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </motion.div>
+        );
+    };
+
+    // Render phần phân tích văn bản liên quan
+    const renderRelatedChunksAnalysis = () => {
+        if (!showRelatedChunksPanel) return null;
+
+        return (
+            <motion.div
+                className="mb-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 overflow-hidden"
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                {/* Header */}
+                <div className="bg-gradient-to-r from-orange-600 to-amber-600 px-4 py-3 flex items-center justify-between text-white">
+                    <div className="flex items-center">
+                        <Brain size={20} className="mr-2" />
+                        <h4 className="font-semibold">Phân tích văn bản liên quan</h4>
+                        <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
+                            AI Assistant
+                        </span>
+                        {currentProcessingDoc && (
+                            <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
+                                {String(currentProcessingDoc.doc_id)}
+                            </span>
+                        )}
+                    </div>
+                    <button
+                        onClick={() => setShowRelatedChunksPanel(false)}
+                        className="p-1 hover:bg-white/20 rounded-full transition-colors"
+                    >
+                        <XCircle size={16} />
+                    </button>
+                </div>
+
+                <div className="p-5">
+                    {loadingRelatedChunks && (
+                        <div className="flex items-center justify-center py-8">
+                            <div className="flex items-center space-x-3">
+                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-orange-600"></div>
+                                <span className="text-orange-700 font-medium">Đang tải thông tin chunks liên quan...</span>
+                            </div>
+                        </div>
+                    )}
+
+                    {relatedChunksInfo && !loadingRelatedChunks && (
+                        <div className="space-y-4">
+                            {/* Summary Card */}
+                            <div className="bg-white rounded-lg border border-orange-100 p-4">
+                                <div className="flex items-center mb-3">
+                                    <Info size={16} className="text-orange-600 mr-2" />
+                                    <h5 className="font-medium text-gray-800">Tóm tắt phân tích</h5>
+                                </div>
+                                <div className="grid grid-cols-3 gap-4 text-sm">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-blue-600">
+                                            {relatedChunksInfo.length}
+                                        </div>
+                                        <div className="text-gray-600">Văn bản liên quan</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-green-600">
+                                            {relatedChunksInfo.filter(doc => doc.exists_in_db).length}
+                                        </div>
+                                        <div className="text-gray-600">Tồn tại trong DB</div>
+                                    </div>
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600">
+                                            {relatedChunksInfo.reduce((sum, doc) => sum + (doc.chunks?.length || 0), 0)}
+                                        </div>
+                                        <div className="text-gray-600">Tổng chunks</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Related Documents List */}
+                            {relatedChunksInfo.map((relatedDoc, index) => (
+                                <div key={index} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                    <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center space-x-3">
+                                                <div className="flex items-center">
+                                                    <FileText size={16} className="text-blue-600 mr-2" />
+                                                    <h5 className="font-medium text-gray-800">
+                                                        {String(relatedDoc.doc_id)}
+                                                    </h5>
+                                                </div>
+                                                <span className={`px-2 py-1 rounded text-xs font-medium ${relatedDoc.relationship === 'references' ? 'bg-blue-100 text-blue-800' :
+                                                    relatedDoc.relationship === 'replaces' ? 'bg-red-100 text-red-800' :
+                                                        relatedDoc.relationship === 'amends' ? 'bg-yellow-100 text-yellow-800' :
+                                                            'bg-gray-100 text-gray-800'
+                                                    }`}>
+                                                    {String(relatedDoc.relationship)}
+                                                </span>
+                                            </div>
+                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${relatedDoc.exists_in_db
+                                                ? 'bg-green-100 text-green-800'
+                                                : 'bg-gray-100 text-gray-600'
+                                                }`}>
+                                                {relatedDoc.exists_in_db
+                                                    ? `${relatedDoc.chunks?.length || 0} chunks`
+                                                    : 'Không tồn tại trong DB'
+                                                }
+                                            </span>
+                                        </div>
+
+                                        <p className="text-sm text-gray-600 mt-2">
+                                            {String(relatedDoc.description)}
+                                        </p>
+
+                                        {relatedDoc.error && (
+                                            <div className="mt-2 p-2 bg-red-50 rounded border border-red-200">
+                                                <p className="text-sm text-red-600">
+                                                    ⚠️ Lỗi: {String(relatedDoc.error)}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {relatedDoc.exists_in_db && relatedDoc.chunks?.length > 0 && (
+                                        <div className="p-4">
+                                            <button
+                                                onClick={() => {
+                                                    const expandedDiv = document.getElementById(`chunks-${index}`);
+                                                    const icon = document.getElementById(`icon-${index}`);
+                                                    if (expandedDiv.style.display === 'none') {
+                                                        expandedDiv.style.display = 'block';
+                                                        icon.style.transform = 'rotate(180deg)';
+                                                    } else {
+                                                        expandedDiv.style.display = 'none';
+                                                        icon.style.transform = 'rotate(0deg)';
+                                                    }
+                                                }}
+                                                className="flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors"
+                                            >
+                                                <ChevronDown id={`icon-${index}`} size={16} className="mr-1 transition-transform" />
+                                                Xem chi tiết {relatedDoc.chunks?.length || 0} chunks (với full content)
+                                            </button>
+
+                                            <div id={`chunks-${index}`} style={{ display: 'none' }} className="space-y-3">
+                                                {relatedDoc.chunks?.slice(0, 5).map((chunk, chunkIndex) => (
+                                                    <div key={chunkIndex} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                                        <div className="flex items-center justify-between mb-2">
+                                                            <span className="text-sm font-medium text-gray-800">
+                                                                {String(chunk.chunk_id)}
+                                                            </span>
+                                                            <span className="text-xs text-gray-500">#{chunkIndex + 1}</span>
+                                                        </div>
+                                                        <p className="text-xs text-gray-600 line-clamp-2">
+                                                            {String(chunk.content_summary || chunk.content?.substring(0, 100) + '...')}
+                                                        </p>
+                                                        <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
+                                                            <span>Loại: {String(chunk.chunk_type)}</span>
+                                                            <span>{String(chunk.effective_date)}</span>
+                                                            <span>Content: {chunk.content?.length || 0} ký tự</span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                                {relatedDoc.chunks?.length > 5 && (
+                                                    <div className="text-center">
+                                                        <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+                                                            ... và {relatedDoc.chunks?.length - 5} chunks khác
+                                                        </span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+
+                            {/* AI Analysis Button */}
+                            {relatedChunksInfo.some(doc => doc.exists_in_db && doc.chunks?.length > 0) && !llmAnalysisResult && (
+                                <div className="bg-white rounded-lg border border-orange-200 p-4">
+                                    <div className="flex items-center mb-3">
+                                        <Zap size={16} className="text-orange-600 mr-2" />
+                                        <h5 className="font-medium text-gray-800">Phân tích thông minh với AI</h5>
+                                    </div>
+                                    <p className="text-sm text-gray-600 mb-4">
+                                        Sử dụng AI để phân tích và xác định chunks nào cần vô hiệu hóa dựa trên mối quan hệ pháp lý.
+                                        AI sẽ nhận đầy đủ nội dung chunks để phân tích chính xác.
+                                    </p>
+                                    <button
+                                        onClick={analyzeChunksWithLLM}
+                                        disabled={isAnalyzingWithLLM}
+                                        className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-lg font-medium hover:from-orange-700 hover:to-amber-700 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isAnalyzingWithLLM ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                                                AI đang phân tích chunks...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Brain size={16} className="mr-2" />
+                                                Phân tích với AI
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* LLM Analysis Results */}
+                            {llmAnalysisResult && (
+                                <motion.div
+                                    className="bg-white rounded-lg border border-blue-200 overflow-hidden"
+                                    variants={fadeInVariants}
+                                    initial="hidden"
+                                    animate="visible"
+                                >
+                                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-white">
+                                        <div className="flex items-center">
+                                            <Settings size={16} className="mr-2" />
+                                            <h5 className="font-medium">Kết quả phân tích AI</h5>
+                                        </div>
+                                    </div>
+
+                                    <div className="p-4">
+                                        <div className="bg-blue-50 rounded-lg p-3 mb-4 border border-blue-200">
+                                            <p className="text-sm text-blue-800 font-medium mb-2">📋 Tóm tắt phân tích:</p>
+                                            <p className="text-sm text-blue-700">
+                                                {String(llmAnalysisResult.analysis_summary)}
+                                            </p>
+                                        </div>
+
+                                        {llmAnalysisResult.chunks_to_invalidate && llmAnalysisResult.chunks_to_invalidate.length > 0 ? (
+                                            <div className="space-y-4">
+                                                <div className="flex items-center justify-between">
+                                                    <h6 className="font-medium text-gray-800 flex items-center">
+                                                        <ShieldAlert size={16} className="text-red-600 mr-2" />
+                                                        Chunks cần vô hiệu hóa ({llmAnalysisResult.chunks_to_invalidate.length})
+                                                    </h6>
+                                                    <div className="flex space-x-2">
+                                                        <button
+                                                            onClick={() => setChunksToInvalidate(llmAnalysisResult.chunks_to_invalidate)}
+                                                            className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 transition-colors"
+                                                        >
+                                                            Chọn tất cả
+                                                        </button>
+                                                        <button
+                                                            onClick={() => setChunksToInvalidate([])}
+                                                            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200 transition-colors"
+                                                        >
+                                                            Bỏ chọn tất cả
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid gap-3">
+                                                    {llmAnalysisResult.chunks_to_invalidate.map((chunk, index) => (
+                                                        <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
+                                                            <div className="p-3">
+                                                                <label className="flex items-start space-x-3 cursor-pointer">
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        checked={chunksToInvalidate.some(c => c.chunk_id === chunk.chunk_id)}
+                                                                        onChange={() => toggleChunkInvalidation(chunk.chunk_id)}
+                                                                        className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
+                                                                    />
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <div className="flex items-center justify-between mb-2">
+                                                                            <span className="font-medium text-gray-800 break-all">
+                                                                                {String(chunk.chunk_id)}
+                                                                            </span>
+                                                                            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
+                                                                                Confidence: {Math.round((chunk.confidence || 0) * 100)}%
+                                                                            </span>
+                                                                        </div>
+                                                                        <p className="text-sm text-red-700 bg-red-50 p-2 rounded border border-red-200">
+                                                                            <strong>Lý do:</strong> {String(chunk.reason)}
+                                                                        </p>
+                                                                    </div>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                {/* Action Buttons */}
+                                                <div className="flex space-x-3 pt-4 border-t border-gray-200">
+                                                    <button
+                                                        onClick={executeChunkInvalidation}
+                                                        disabled={isInvalidatingChunks || chunksToInvalidate.length === 0}
+                                                        className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    >
+                                                        {isInvalidatingChunks ? (
+                                                            <>
+                                                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
+                                                                Đang vô hiệu hóa...
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <XCircle size={16} className="mr-2" />
+                                                                Vô hiệu hóa {chunksToInvalidate.length} chunks
+                                                            </>
+                                                        )}
+                                                    </button>
+
+                                                    {/* Nút để chuyển sang document tiếp theo */}
+                                                    {systemRelationshipDocs.length > 0 && currentDocIndex < systemRelationshipDocs.length - 1 && (
+                                                        <button
+                                                            onClick={handleNextDocument}
+                                                            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center"
+                                                        >
+                                                            Tiếp theo
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-6">
+                                                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-3">
+                                                    <Shield size={24} className="text-green-600" />
+                                                </div>
+                                                <h6 className="font-medium text-gray-800 mb-2">Không có chunks cần vô hiệu hóa</h6>
+                                                <p className="text-sm text-gray-600 mb-4">
+                                                    AI đã phân tích và không tìm thấy chunks nào cần vô hiệu hóa.
+                                                    Văn bản này không thay thế hoàn toàn các chunks hiện có.
+                                                </p>
+
+                                                {/* Nút để chuyển sang document tiếp theo */}
+                                                {systemRelationshipDocs.length > 0 && currentDocIndex < systemRelationshipDocs.length - 1 && (
+                                                    <button
+                                                        onClick={handleNextDocument}
+                                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center mx-auto"
+                                                    >
+                                                        Chuyển sang document tiếp theo
+                                                    </button>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
+                                </motion.div>
+                            )}
+                        </div>
+                    )}
+                </div>
+            </motion.div>
+        );
+    };
+
+    // Render trạng thái xử lý
+    const renderProcessingStatus = () => {
+        if (!documentProcessingStatus) return null;
+
+        const { status, progress, message, result, file_type, original_filename } = documentProcessingStatus;
+        const fileType = file_type?.toUpperCase() || 'TÀI LIỆU';
+        const fileName = original_filename || 'tệp';
+
+        return (
+            <motion.div
+                className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+                variants={fadeInVariants}
+                initial="hidden"
+                animate="visible"
+            >
+                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-white">
+                    <h4 className="font-medium flex items-center">
+                        <Clock size={16} className="mr-2" />
+                        Trạng thái xử lý {fileType}
+                    </h4>
+                </div>
+
+                <div className="p-5">
+                    <div className="mb-3 flex items-center text-sm text-gray-600">
+                        {getFileIcon(fileName)}
+                        <span className="ml-2 font-medium">{fileName}</span>
+                    </div>
+
+                    {status === 'processing' && (
+                        <div className="space-y-4">
+                            <div className="flex items-center justify-between">
+                                <span className="text-sm text-gray-600">Gemini AI đang phân tích {fileType}...</span>
+                                <span className="text-sm font-medium text-blue-600">{Math.round(progress || 0)}%</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div
+                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full transition-all duration-500"
+                                    style={{ width: `${progress || 0}%` }}
+                                ></div>
+                            </div>
+                            <div className="flex items-center text-sm text-gray-600">
+                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-blue-600 mr-2"></div>
+                                {String(message)}
+                            </div>
+                        </div>
+                    )}
+
+                    {status === 'completed' && (
+                        <div className="space-y-4">
+                            <div className="flex items-center text-green-600">
+                                <CheckCircle size={16} className="mr-2" />
+                                <span className="font-medium">Hoàn thành phân tích {fileType}</span>
+                            </div>
+                            <p className="text-sm text-gray-600">{String(message)}</p>
+
+                            {result && (
+                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                                    <div className="grid grid-cols-2 gap-4 text-sm mb-3">
+                                        <div className="flex items-center">
+                                            <FileText size={14} className="text-green-600 mr-1" />
+                                            <span className="font-medium text-gray-700">Số chunks:</span>
+                                            <span className="ml-2 text-green-600 font-medium">{result.chunks_count}</span>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <FileSymlink size={14} className="text-blue-600 mr-1" />
+                                            <span className="font-medium text-gray-700">Văn bản liên quan:</span>
+                                            <span className="ml-2 text-blue-600 font-medium">{result.related_documents_count}</span>
+                                        </div>
+                                    </div>
+
+                                    {result.auto_detected && (
+                                        <div className="bg-blue-50 rounded-lg p-3 mb-3 border border-blue-200">
+                                            <p className="text-xs font-medium text-blue-700 mb-2">Thông tin được phát hiện tự động:</p>
+                                            <div className="text-xs text-blue-600 space-y-1">
+                                                <p><strong>Mã văn bản:</strong> {String(result.auto_detected.doc_id || 'Không xác định')}</p>
+                                                <p><strong>Loại:</strong> {String(result.auto_detected.doc_type || 'Không xác định')}</p>
+                                                <p><strong>Ngày hiệu lực:</strong> {String(result.auto_detected.effective_date || 'Không xác định')}</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <p className="text-xs text-gray-500 italic break-words">
+                                        {String(result.processing_summary)}
+                                    </p>
+                                </div>
+                            )}
+
+                            <div className="flex space-x-3">
+                                <button
+                                    onClick={handleApproveDocumentChunks}
+                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+                                    disabled={documentProcessingStatus?.embedded_to_chroma}
+                                >
+                                    <CheckCircle size={16} className="mr-2" />
+                                    {documentProcessingStatus?.embedded_to_chroma ? 'Đã phê duyệt' : 'Phê duyệt và embedding'}
+                                </button>
+
+                                {!documentProcessingStatus?.embedded_to_chroma && (
+                                    <button
+                                        onClick={handleRegenerateDocumentChunks}
+                                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors flex items-center"
+                                    >
+                                        <RefreshCw size={16} className="mr-2" />
+                                        Tạo lại chunks
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
+                    {status === 'failed' && (
+                        <div className="space-y-3">
+                            <div className="flex items-center text-red-600">
+                                <XCircle size={16} className="mr-2" />
+                                <span className="font-medium">Lỗi xử lý {fileType}</span>
+                            </div>
+                            <p className="text-sm text-red-600 break-words">{String(message)}</p>
+                            <button
+                                onClick={() => {
+                                    setDocumentProcessingId(null);
+                                    setDocumentProcessingStatus(null);
+                                }}
+                                className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition-colors"
+                            >
+                                Đóng
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </motion.div>
+        );
+    };
+
     // Xử lý chọn folder cho manual mode
     const handleFolderSelect = async (event) => {
         const files = Array.from(event.target.files);
@@ -928,579 +1519,6 @@ const DocumentsTab = ({
         });
     };
 
-    // Render system relationship scan status
-    const renderSystemRelationshipStatus = () => {
-        if (systemRelationshipDocs.length === 0) return null;
-
-        return (
-            <motion.div
-                className="mb-6 bg-gradient-to-r from-purple-50 to-indigo-50 rounded-xl border border-purple-200 overflow-hidden"
-                variants={fadeInVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-3 flex items-center justify-between text-white">
-                    <div className="flex items-center">
-                        <Settings size={20} className="mr-2" />
-                        <h4 className="font-semibold">System Relationship Scan</h4>
-                        <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
-                            {currentDocIndex + 1}/{systemRelationshipDocs.length}
-                        </span>
-                    </div>
-                    <button
-                        onClick={() => {
-                            setSystemRelationshipDocs([]);
-                            setCurrentProcessingDoc(null);
-                            setCurrentDocIndex(0);
-                            setRelatedChunksInfo(null);
-                            setLlmAnalysisResult(null);
-                            setChunksToInvalidate([]);
-                            setShowRelatedChunksPanel(false);
-                        }}
-                        className="p-1 hover:bg-white/20 rounded-full transition-colors"
-                    >
-                        <XCircle size={16} />
-                    </button>
-                </div>
-
-                <div className="p-5">
-                    <div className="bg-white rounded-lg border border-purple-100 p-4 mb-4">
-                        <div className="flex items-center justify-between mb-3">
-                            <h5 className="font-medium text-gray-800">Documents cần xử lý</h5>
-                            <span className="text-sm text-gray-600">{systemRelationshipDocs.length} documents</span>
-                        </div>
-
-                        <div className="space-y-3 max-h-60 overflow-y-auto">
-                            {systemRelationshipDocs.map((doc, index) => (
-                                <div
-                                    key={doc.doc_id}
-                                    className={`p-3 rounded-lg border transition-all cursor-pointer ${index === currentDocIndex
-                                            ? 'border-purple-300 bg-purple-50'
-                                            : index < currentDocIndex
-                                                ? 'border-green-200 bg-green-50'
-                                                : 'border-gray-200 bg-gray-50'
-                                        }`}
-                                    onClick={() => handleProcessDocument(doc, index)}
-                                >
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center">
-                                                <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium mr-3 ${index === currentDocIndex
-                                                        ? 'bg-purple-600 text-white'
-                                                        : index < currentDocIndex
-                                                            ? 'bg-green-600 text-white'
-                                                            : 'bg-gray-400 text-white'
-                                                    }`}>
-                                                    {index < currentDocIndex ? '✓' : index + 1}
-                                                </span>
-                                                <div className="flex-1 min-w-0">
-                                                    <p className="font-medium text-gray-800 truncate">{doc.doc_id}</p>
-                                                    <p className="text-xs text-gray-600 truncate">{doc.doc_title}</p>
-                                                    <p className="text-xs text-gray-500">
-                                                        {doc.related_documents.length} relationships
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        {index === currentDocIndex && (
-                                            <PlayCircle size={16} className="text-purple-600 flex-shrink-0" />
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-
-                        {currentProcessingDoc && (
-                            <div className="mt-4 pt-4 border-t border-gray-200">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium text-gray-800">Đang xử lý: {currentProcessingDoc.doc_id}</p>
-                                        <p className="text-sm text-gray-600">{currentProcessingDoc.related_documents.length} văn bản liên quan</p>
-                                    </div>
-                                    <div className="flex space-x-2">
-                                        <button
-                                            onClick={handleSkipDocument}
-                                            className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition-colors flex items-center"
-                                        >
-                                            <SkipForward size={14} className="mr-1" />
-                                            Bỏ qua
-                                        </button>
-                                        {currentDocIndex < systemRelationshipDocs.length - 1 && (
-                                            <button
-                                                onClick={handleNextDocument}
-                                                className="px-3 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700 transition-colors"
-                                            >
-                                                Tiếp theo
-                                            </button>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </motion.div>
-        );
-    };
-
-    // Render phần phân tích văn bản liên quan
-    const renderRelatedChunksAnalysis = () => {
-        if (!showRelatedChunksPanel) return null;
-
-        return (
-            <motion.div
-                className="mb-6 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-200 overflow-hidden"
-                variants={fadeInVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                {/* Header */}
-                <div className="bg-gradient-to-r from-orange-600 to-amber-600 px-4 py-3 flex items-center justify-between text-white">
-                    <div className="flex items-center">
-                        <Brain size={20} className="mr-2" />
-                        <h4 className="font-semibold">Phân tích văn bản liên quan</h4>
-                        <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
-                            AI Assistant
-                        </span>
-                        {currentProcessingDoc && (
-                            <span className="ml-2 px-2 py-1 bg-white/20 rounded-full text-xs font-medium">
-                                {currentProcessingDoc.doc_id}
-                            </span>
-                        )}
-                    </div>
-                    <button
-                        onClick={() => setShowRelatedChunksPanel(false)}
-                        className="p-1 hover:bg-white/20 rounded-full transition-colors"
-                    >
-                        <XCircle size={16} />
-                    </button>
-                </div>
-
-                <div className="p-5">
-                    {loadingRelatedChunks && (
-                        <div className="flex items-center justify-center py-8">
-                            <div className="flex items-center space-x-3">
-                                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-orange-600"></div>
-                                <span className="text-orange-700 font-medium">Đang tải thông tin chunks liên quan...</span>
-                            </div>
-                        </div>
-                    )}
-
-                    {relatedChunksInfo && !loadingRelatedChunks && (
-                        <div className="space-y-4">
-                            {/* Summary Card */}
-                            <div className="bg-white rounded-lg border border-orange-100 p-4">
-                                <div className="flex items-center mb-3">
-                                    <Info size={16} className="text-orange-600 mr-2" />
-                                    <h5 className="font-medium text-gray-800">Tóm tắt phân tích</h5>
-                                </div>
-                                <div className="grid grid-cols-3 gap-4 text-sm">
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold text-blue-600">
-                                            {relatedChunksInfo.length}
-                                        </div>
-                                        <div className="text-gray-600">Văn bản liên quan</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold text-green-600">
-                                            {relatedChunksInfo.filter(doc => doc.exists_in_db).length}
-                                        </div>
-                                        <div className="text-gray-600">Tồn tại trong DB</div>
-                                    </div>
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold text-purple-600">
-                                            {relatedChunksInfo.reduce((sum, doc) => sum + (doc.chunks?.length || 0), 0)}
-                                        </div>
-                                        <div className="text-gray-600">Tổng chunks</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Related Documents List */}
-                            {relatedChunksInfo.map((relatedDoc, index) => (
-                                <div key={index} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                                    <div className="bg-gray-50 px-4 py-3 border-b border-gray-200">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center space-x-3">
-                                                <div className="flex items-center">
-                                                    <FileText size={16} className="text-blue-600 mr-2" />
-                                                    <h5 className="font-medium text-gray-800">{relatedDoc.doc_id}</h5>
-                                                </div>
-                                                <span className={`px-2 py-1 rounded text-xs font-medium ${relatedDoc.relationship === 'references' ? 'bg-blue-100 text-blue-800' :
-                                                    relatedDoc.relationship === 'replaces' ? 'bg-red-100 text-red-800' :
-                                                        relatedDoc.relationship === 'amends' ? 'bg-yellow-100 text-yellow-800' :
-                                                            'bg-gray-100 text-gray-800'
-                                                    }`}>
-                                                    {relatedDoc.relationship}
-                                                </span>
-                                            </div>
-                                            <span className={`px-3 py-1 rounded-full text-xs font-medium ${relatedDoc.exists_in_db
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-gray-100 text-gray-600'
-                                                }`}>
-                                                {relatedDoc.exists_in_db
-                                                    ? `${relatedDoc.chunks.length} chunks`
-                                                    : 'Không tồn tại trong DB'
-                                                }
-                                            </span>
-                                        </div>
-
-                                        <p className="text-sm text-gray-600 mt-2">{relatedDoc.description}</p>
-
-                                        {relatedDoc.error && (
-                                            <div className="mt-2 p-2 bg-red-50 rounded border border-red-200">
-                                                <p className="text-sm text-red-600">⚠️ Lỗi: {relatedDoc.error}</p>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {relatedDoc.exists_in_db && relatedDoc.chunks.length > 0 && (
-                                        <div className="p-4">
-                                            <button
-                                                onClick={() => {
-                                                    const expandedDiv = document.getElementById(`chunks-${index}`);
-                                                    const icon = document.getElementById(`icon-${index}`);
-                                                    if (expandedDiv.style.display === 'none') {
-                                                        expandedDiv.style.display = 'block';
-                                                        icon.style.transform = 'rotate(180deg)';
-                                                    } else {
-                                                        expandedDiv.style.display = 'none';
-                                                        icon.style.transform = 'rotate(0deg)';
-                                                    }
-                                                }}
-                                                className="flex items-center text-sm text-blue-600 hover:text-blue-800 font-medium mb-3 transition-colors"
-                                            >
-                                                <ChevronDown id={`icon-${index}`} size={16} className="mr-1 transition-transform" />
-                                                Xem chi tiết {relatedDoc.chunks.length} chunks (với full content)
-                                            </button>
-
-                                            <div id={`chunks-${index}`} style={{ display: 'none' }} className="space-y-3">
-                                                {relatedDoc.chunks.slice(0, 5).map((chunk, chunkIndex) => (
-                                                    <div key={chunkIndex} className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                                                        <div className="flex items-center justify-between mb-2">
-                                                            <span className="text-sm font-medium text-gray-800">{chunk.chunk_id}</span>
-                                                            <span className="text-xs text-gray-500">#{chunkIndex + 1}</span>
-                                                        </div>
-                                                        <p className="text-xs text-gray-600 line-clamp-2">
-                                                            {chunk.content_summary || chunk.content?.substring(0, 100) + '...'}
-                                                        </p>
-                                                        <div className="flex justify-between items-center mt-2 text-xs text-gray-500">
-                                                            <span>Loại: {chunk.chunk_type}</span>
-                                                            <span>{chunk.effective_date}</span>
-                                                            <span>Content: {chunk.content?.length || 0} ký tự</span>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                                {relatedDoc.chunks.length > 5 && (
-                                                    <div className="text-center">
-                                                        <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
-                                                            ... và {relatedDoc.chunks.length - 5} chunks khác
-                                                        </span>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-
-                            {/* AI Analysis Button */}
-                            {relatedChunksInfo.some(doc => doc.exists_in_db && doc.chunks.length > 0) && !llmAnalysisResult && (
-                                <div className="bg-white rounded-lg border border-orange-200 p-4">
-                                    <div className="flex items-center mb-3">
-                                        <Zap size={16} className="text-orange-600 mr-2" />
-                                        <h5 className="font-medium text-gray-800">Phân tích thông minh với AI</h5>
-                                    </div>
-                                    <p className="text-sm text-gray-600 mb-4">
-                                        Sử dụng AI để phân tích và xác định chunks nào cần vô hiệu hóa dựa trên mối quan hệ pháp lý.
-                                        AI sẽ nhận đầy đủ nội dung chunks để phân tích chính xác.
-                                    </p>
-                                    <button
-                                        onClick={analyzeChunksWithLLM}
-                                        disabled={isAnalyzingWithLLM}
-                                        className="w-full py-3 px-4 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-lg font-medium hover:from-orange-700 hover:to-amber-700 transition-all flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        {isAnalyzingWithLLM ? (
-                                            <>
-                                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
-                                                AI đang phân tích chunks...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Brain size={16} className="mr-2" />
-                                                Phân tích với AI
-                                            </>
-                                        )}
-                                    </button>
-                                </div>
-                            )}
-
-                            {/* LLM Analysis Results */}
-                            {llmAnalysisResult && (
-                                <motion.div
-                                    className="bg-white rounded-lg border border-blue-200 overflow-hidden"
-                                    variants={fadeInVariants}
-                                    initial="hidden"
-                                    animate="visible"
-                                >
-                                    <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-white">
-                                        <div className="flex items-center">
-                                            <Settings size={16} className="mr-2" />
-                                            <h5 className="font-medium">Kết quả phân tích AI</h5>
-                                        </div>
-                                    </div>
-
-                                    <div className="p-4">
-                                        <div className="bg-blue-50 rounded-lg p-3 mb-4 border border-blue-200">
-                                            <p className="text-sm text-blue-800 font-medium mb-2">📋 Tóm tắt phân tích:</p>
-                                            <p className="text-sm text-blue-700">{llmAnalysisResult.analysis_summary}</p>
-                                        </div>
-
-                                        {llmAnalysisResult.chunks_to_invalidate && llmAnalysisResult.chunks_to_invalidate.length > 0 ? (
-                                            <div className="space-y-4">
-                                                <div className="flex items-center justify-between">
-                                                    <h6 className="font-medium text-gray-800 flex items-center">
-                                                        <ShieldAlert size={16} className="text-red-600 mr-2" />
-                                                        Chunks cần vô hiệu hóa ({llmAnalysisResult.chunks_to_invalidate.length})
-                                                    </h6>
-                                                    <div className="flex space-x-2">
-                                                        <button
-                                                            onClick={() => setChunksToInvalidate(llmAnalysisResult.chunks_to_invalidate)}
-                                                            className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded hover:bg-blue-200 transition-colors"
-                                                        >
-                                                            Chọn tất cả
-                                                        </button>
-                                                        <button
-                                                            onClick={() => setChunksToInvalidate([])}
-                                                            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded hover:bg-gray-200 transition-colors"
-                                                        >
-                                                            Bỏ chọn tất cả
-                                                        </button>
-                                                    </div>
-                                                </div>
-
-                                                <div className="grid gap-3">
-                                                    {llmAnalysisResult.chunks_to_invalidate.map((chunk, index) => (
-                                                        <div key={index} className="border border-gray-200 rounded-lg overflow-hidden">
-                                                            <div className="p-3">
-                                                                <label className="flex items-start space-x-3 cursor-pointer">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        checked={chunksToInvalidate.some(c => c.chunk_id === chunk.chunk_id)}
-                                                                        onChange={() => toggleChunkInvalidation(chunk.chunk_id)}
-                                                                        className="mt-1 h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
-                                                                    />
-                                                                    <div className="flex-1 min-w-0">
-                                                                        <div className="flex items-center justify-between mb-2">
-                                                                            <span className="font-medium text-gray-800 break-all">{chunk.chunk_id}</span>
-                                                                            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">
-                                                                                Confidence: {(chunk.confidence * 100).toFixed(0)}%
-                                                                            </span>
-                                                                        </div>
-                                                                        <p className="text-sm text-red-700 bg-red-50 p-2 rounded border border-red-200">
-                                                                            <strong>Lý do:</strong> {chunk.reason}
-                                                                        </p>
-                                                                    </div>
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    ))}
-                                                </div>
-
-                                                {/* Action Buttons */}
-                                                <div className="flex space-x-3 pt-4 border-t border-gray-200">
-                                                    <button
-                                                        onClick={executeChunkInvalidation}
-                                                        disabled={isInvalidatingChunks || chunksToInvalidate.length === 0}
-                                                        className="flex-1 py-2 px-4 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                                                    >
-                                                        {isInvalidatingChunks ? (
-                                                            <>
-                                                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-white mr-2"></div>
-                                                                Đang vô hiệu hóa...
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <XCircle size={16} className="mr-2" />
-                                                                Vô hiệu hóa {chunksToInvalidate.length} chunks
-                                                            </>
-                                                        )}
-                                                    </button>
-
-                                                    {/* Nút để chuyển sang document tiếp theo */}
-                                                    {systemRelationshipDocs.length > 0 && currentDocIndex < systemRelationshipDocs.length - 1 && (
-                                                        <button
-                                                            onClick={handleNextDocument}
-                                                            className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center"
-                                                        >
-                                                            Tiếp theo
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div className="text-center py-6">
-                                                <div className="inline-flex items-center justify-center w-12 h-12 bg-green-100 rounded-full mb-3">
-                                                    <Shield size={24} className="text-green-600" />
-                                                </div>
-                                                <h6 className="font-medium text-gray-800 mb-2">Không có chunks cần vô hiệu hóa</h6>
-                                                <p className="text-sm text-gray-600 mb-4">
-                                                    AI đã phân tích và không tìm thấy chunks nào cần vô hiệu hóa.
-                                                    Văn bản này không thay thế hoàn toàn các chunks hiện có.
-                                                </p>
-
-                                                {/* Nút để chuyển sang document tiếp theo */}
-                                                {systemRelationshipDocs.length > 0 && currentDocIndex < systemRelationshipDocs.length - 1 && (
-                                                    <button
-                                                        onClick={handleNextDocument}
-                                                        className="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center mx-auto"
-                                                    >
-                                                        Chuyển sang document tiếp theo
-                                                    </button>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            )}
-                        </div>
-                    )}
-                </div>
-            </motion.div>
-        );
-    };
-
-    // Render trạng thái xử lý
-    const renderProcessingStatus = () => {
-        if (!documentProcessingStatus) return null;
-
-        const { status, progress, message, result, file_type, original_filename } = documentProcessingStatus;
-        const fileType = file_type?.toUpperCase() || 'TÀI LIỆU';
-        const fileName = original_filename || 'tệp';
-
-        return (
-            <motion.div
-                className="mb-6 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-                variants={fadeInVariants}
-                initial="hidden"
-                animate="visible"
-            >
-                <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3 text-white">
-                    <h4 className="font-medium flex items-center">
-                        <Clock size={16} className="mr-2" />
-                        Trạng thái xử lý {fileType}
-                    </h4>
-                </div>
-
-                <div className="p-5">
-                    <div className="mb-3 flex items-center text-sm text-gray-600">
-                        {getFileIcon(fileName)}
-                        <span className="ml-2 font-medium">{fileName}</span>
-                    </div>
-
-                    {status === 'processing' && (
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <span className="text-sm text-gray-600">Gemini AI đang phân tích {fileType}...</span>
-                                <span className="text-sm font-medium text-blue-600">{Math.round(progress || 0)}%</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-2">
-                                <div
-                                    className="bg-gradient-to-r from-blue-600 to-indigo-600 h-2 rounded-full transition-all duration-500"
-                                    style={{ width: `${progress || 0}%` }}
-                                ></div>
-                            </div>
-                            <div className="flex items-center text-sm text-gray-600">
-                                <div className="animate-spin rounded-full h-4 w-4 border-t-2 border-blue-600 mr-2"></div>
-                                {message}
-                            </div>
-                        </div>
-                    )}
-
-                    {status === 'completed' && (
-                        <div className="space-y-4">
-                            <div className="flex items-center text-green-600">
-                                <CheckCircle size={16} className="mr-2" />
-                                <span className="font-medium">Hoàn thành phân tích {fileType}</span>
-                            </div>
-                            <p className="text-sm text-gray-600">{message}</p>
-
-                            {result && (
-                                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                    <div className="grid grid-cols-2 gap-4 text-sm mb-3">
-                                        <div className="flex items-center">
-                                            <FileText size={14} className="text-green-600 mr-1" />
-                                            <span className="font-medium text-gray-700">Số chunks:</span>
-                                            <span className="ml-2 text-green-600 font-medium">{result.chunks_count}</span>
-                                        </div>
-                                        <div className="flex items-center">
-                                            <FileSymlink size={14} className="text-blue-600 mr-1" />
-                                            <span className="font-medium text-gray-700">Văn bản liên quan:</span>
-                                            <span className="ml-2 text-blue-600 font-medium">{result.related_documents_count}</span>
-                                        </div>
-                                    </div>
-
-                                    {result.auto_detected && (
-                                        <div className="bg-blue-50 rounded-lg p-3 mb-3 border border-blue-200">
-                                            <p className="text-xs font-medium text-blue-700 mb-2">Thông tin được phát hiện tự động:</p>
-                                            <div className="text-xs text-blue-600 space-y-1">
-                                                <p><strong>Mã văn bản:</strong> {result.auto_detected.doc_id || 'Không xác định'}</p>
-                                                <p><strong>Loại:</strong> {result.auto_detected.doc_type || 'Không xác định'}</p>
-                                                <p><strong>Ngày hiệu lực:</strong> {result.auto_detected.effective_date || 'Không xác định'}</p>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <p className="text-xs text-gray-500 italic break-words">{result.processing_summary}</p>
-                                </div>
-                            )}
-
-                            <div className="flex space-x-3">
-                                <button
-                                    onClick={handleApproveDocumentChunks}
-                                    className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-medium hover:bg-green-700 transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
-                                    disabled={documentProcessingStatus?.embedded_to_chroma}
-                                >
-                                    <CheckCircle size={16} className="mr-2" />
-                                    {documentProcessingStatus?.embedded_to_chroma ? 'Đã phê duyệt' : 'Phê duyệt và embedding'}
-                                </button>
-
-                                {!documentProcessingStatus?.embedded_to_chroma && (
-                                    <button
-                                        onClick={handleRegenerateDocumentChunks}
-                                        className="px-4 py-2 bg-yellow-600 text-white rounded-lg text-sm font-medium hover:bg-yellow-700 transition-colors flex items-center"
-                                    >
-                                        <RefreshCw size={16} className="mr-2" />
-                                        Tạo lại chunks
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    )}
-
-                    {status === 'failed' && (
-                        <div className="space-y-3">
-                            <div className="flex items-center text-red-600">
-                                <XCircle size={16} className="mr-2" />
-                                <span className="font-medium">Lỗi xử lý {fileType}</span>
-                            </div>
-                            <p className="text-sm text-red-600 break-words">{message}</p>
-                            <button
-                                onClick={() => {
-                                    setDocumentProcessingId(null);
-                                    setDocumentProcessingStatus(null);
-                                }}
-                                className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 transition-colors"
-                            >
-                                Đóng
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </motion.div>
-        );
-    };
-
     // Render tab tải lên dữ liệu
     const renderUploadTab = () => (
         <div className="space-y-6">
@@ -1777,7 +1795,7 @@ const DocumentsTab = ({
                                 </p>
                                 {folderMetadata && (
                                     <p className="text-xs text-gray-500 mt-1 break-words">
-                                        Metadata: {folderMetadata.doc_id} - {folderMetadata.doc_title}
+                                        Metadata: {String(folderMetadata.doc_id)} - {String(folderMetadata.doc_title)}
                                     </p>
                                 )}
                             </div>
@@ -1934,7 +1952,7 @@ const DocumentsTab = ({
                     <option value="">-- Chọn văn bản --</option>
                     {documents.map(doc => (
                         <option key={doc.doc_id} value={doc.doc_id}>
-                            {doc.doc_id}
+                            {String(doc.doc_id)}
                         </option>
                     ))}
                 </select>
@@ -1961,19 +1979,19 @@ const DocumentsTab = ({
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
                                 <span className="font-medium text-gray-600">Mã văn bản:</span>
-                                <span className="ml-2 break-words">{chunkInfo.doc_info.doc_id}</span>
+                                <span className="ml-2 break-words">{String(chunkInfo.doc_info.doc_id)}</span>
                             </div>
                             <div>
                                 <span className="font-medium text-gray-600">Loại:</span>
-                                <span className="ml-2">{chunkInfo.doc_info.doc_type}</span>
+                                <span className="ml-2">{String(chunkInfo.doc_info.doc_type)}</span>
                             </div>
                             <div className="col-span-2">
                                 <span className="font-medium text-gray-600">Tiêu đề:</span>
-                                <span className="ml-2 break-words">{chunkInfo.doc_info.doc_title}</span>
+                                <span className="ml-2 break-words">{String(chunkInfo.doc_info.doc_title)}</span>
                             </div>
                             <div>
                                 <span className="font-medium text-gray-600">Ngày hiệu lực:</span>
-                                <span className="ml-2">{chunkInfo.doc_info.effective_date}</span>
+                                <span className="ml-2">{String(chunkInfo.doc_info.effective_date)}</span>
                             </div>
                             <div>
                                 <span className="font-medium text-gray-600">Tổng chunks:</span>
@@ -2000,7 +2018,7 @@ const DocumentsTab = ({
                                     <div className="p-4">
                                         <div className="flex justify-between items-start mb-3">
                                             <h4 className="font-medium text-gray-800 break-words">
-                                                {chunk.chunk_id}
+                                                {String(chunk.chunk_id)}
                                             </h4>
                                             <div className="flex space-x-2">
                                                 {/* Trạng thái tồn tại */}
@@ -2022,16 +2040,16 @@ const DocumentsTab = ({
                                         </div>
 
                                         <div className="text-sm text-gray-600 mb-3 break-words">
-                                            <span className="font-medium">Mô tả:</span> {chunk.content_summary}
+                                            <span className="font-medium">Mô tả:</span> {String(chunk.content_summary)}
                                         </div>
 
                                         <div className="text-xs text-gray-500 mb-3">
                                             <div className="grid grid-cols-2 gap-2">
-                                                <span><span className="font-medium">Loại:</span> {chunk.chunk_type}</span>
+                                                <span><span className="font-medium">Loại:</span> {String(chunk.chunk_type)}</span>
                                                 <span><span className="font-medium">Số từ:</span> {chunk.word_count}</span>
                                                 <span><span className="font-medium">Cache liên quan:</span> {chunk.related_cache_count || 0}</span>
                                                 {chunk.file_path && (
-                                                    <span className="col-span-2"><span className="font-medium">Đường dẫn:</span> {chunk.file_path}</span>
+                                                    <span className="col-span-2"><span className="font-medium">Đường dẫn:</span> {String(chunk.file_path)}</span>
                                                 )}
                                             </div>
                                         </div>
@@ -2050,10 +2068,10 @@ const DocumentsTab = ({
                                                 </div>
                                                 <div className="text-xs text-orange-700 space-y-1">
                                                     {chunk.invalidation_info.reason && (
-                                                        <p><span className="font-medium">Lý do:</span> {chunk.invalidation_info.reason}</p>
+                                                        <p><span className="font-medium">Lý do:</span> {String(chunk.invalidation_info.reason)}</p>
                                                     )}
                                                     {chunk.invalidation_info.invalidated_by && (
-                                                        <p><span className="font-medium">Bởi văn bản:</span> {chunk.invalidation_info.invalidated_by}</p>
+                                                        <p><span className="font-medium">Bởi văn bản:</span> {String(chunk.invalidation_info.invalidated_by)}</p>
                                                     )}
                                                     {chunk.invalidation_info.invalidated_at && (
                                                         <p><span className="font-medium">Thời gian:</span> {
@@ -2092,7 +2110,7 @@ const DocumentsTab = ({
                                                     className="text-sm text-gray-700 overflow-y-auto whitespace-pre-wrap break-words transition-all duration-300"
                                                     style={{ maxHeight: '10rem' }}
                                                 >
-                                                    {chunk.content}
+                                                    {String(chunk.content)}
                                                 </div>
                                             </div>
                                         )}
@@ -2187,8 +2205,8 @@ const DocumentsTab = ({
                             <div className="space-y-3">
                                 {documents
                                     .filter(doc =>
-                                        doc.doc_id.toLowerCase().includes(documentFilter.toLowerCase()) ||
-                                        doc.doc_title?.toLowerCase().includes(documentFilter.toLowerCase())
+                                        String(doc.doc_id).toLowerCase().includes(documentFilter.toLowerCase()) ||
+                                        String(doc.doc_title || '').toLowerCase().includes(documentFilter.toLowerCase())
                                     )
                                     .map((document) => (
                                         <motion.div
@@ -2209,11 +2227,13 @@ const DocumentsTab = ({
                                                                         document.doc_type === 'Quyết định' ? 'bg-yellow-100 text-yellow-800' :
                                                                             'bg-purple-100 text-purple-800'
                                                                 }`}>
-                                                                {document.doc_type}
+                                                                {String(document.doc_type)}
                                                             </span>
-                                                            <span className="break-words">{document.doc_id}</span>
+                                                            <span className="break-words">{String(document.doc_id)}</span>
                                                         </h3>
-                                                        <p className="text-sm text-gray-600 break-words line-clamp-2">{document.doc_title}</p>
+                                                        <p className="text-sm text-gray-600 break-words line-clamp-2">
+                                                            {String(document.doc_title)}
+                                                        </p>
                                                     </div>
                                                     <div className="flex space-x-1 flex-shrink-0 ml-2">
                                                         <button
@@ -2240,7 +2260,9 @@ const DocumentsTab = ({
                                                 <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
                                                     <div className="flex items-center">
                                                         <Calendar size={12} className="mr-1 flex-shrink-0" />
-                                                        <span className="break-words">Ngày hiệu lực: {document.effective_date || 'Không xác định'}</span>
+                                                        <span className="break-words">
+                                                            Ngày hiệu lực: {String(document.effective_date || 'Không xác định')}
+                                                        </span>
                                                     </div>
                                                     <div className="flex items-center space-x-3 flex-shrink-0 ml-2">
                                                         <div className="flex items-center">
@@ -2260,8 +2282,8 @@ const DocumentsTab = ({
                                     ))}
 
                                 {documents.filter(doc =>
-                                    doc.doc_id.toLowerCase().includes(documentFilter.toLowerCase()) ||
-                                    doc.doc_title?.toLowerCase().includes(documentFilter.toLowerCase())
+                                    String(doc.doc_id).toLowerCase().includes(documentFilter.toLowerCase()) ||
+                                    String(doc.doc_title || '').toLowerCase().includes(documentFilter.toLowerCase())
                                 ).length === 0 && (
                                         <div className="py-10 text-center">
                                             <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gray-100 mb-3">
